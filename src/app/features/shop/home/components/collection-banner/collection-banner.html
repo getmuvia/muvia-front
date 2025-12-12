@@ -1,1 +1,29 @@
-<p>collection-banner works!</p>
+<section class="w-full py-10 md:py-16">
+
+    <div class="grid md:grid-cols-2 gap-0 items-center bg-text-light/5 dark:bg-text-dark/5 overflow-hidden w-full">
+
+        <div class="relative w-full aspect-square md:aspect-auto md:h-full min-h-[300px] order-1">
+            <img [ngSrc]="promo().image" [alt]="promo().title" fill class="object-cover" />
+        </div>
+
+        <div class="p-8 lg:p-12 text-center md:text-left flex flex-col gap-6 order-2">
+
+            <h2 class="text-4xl font-headline font-bold tracking-tight text-text-light dark:text-text-dark sm:text-5xl">
+                {{ promo().title }}
+            </h2>
+
+            <p class="mt-4 text-text-light/80 dark:text-text-dark/80 font-body">
+                {{ promo().description }}
+            </p>
+
+            <div class="mt-6">
+                <a [routerLink]="promo().link" [queryParams]="promo().queryParams"
+                    class="inline-block rounded-lg bg-primary px-5 py-3 text-base font-medium text-white shadow hover:opacity-90 transition-opacity font-body cursor-pointer">
+                    Ver colección
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
