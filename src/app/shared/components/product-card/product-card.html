@@ -1,0 +1,27 @@
+<div class="flex flex-col gap-3 group p-4 cursor-pointer">
+
+    <div class="relative overflow-hidden rounded-lg aspect-[2/3] bg-gray-100 dark:bg-gray-800">
+
+        <img [ngSrc]="product().imageUrl" [alt]="product().altText || product().name" fill
+            class="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" />
+
+        <button
+            class="absolute top-2 right-2 flex items-center justify-center size-8 rounded-full bg-white/70 dark:bg-black/50 backdrop-blur-sm text-text-light dark:text-text-dark hover:bg-white dark:hover:bg-black transition-colors z-10">
+            <span class="material-symbols-outlined text-base">favorite</span>
+        </button>
+    </div>
+
+    <div class="flex flex-col items-start">
+        <p class="text-sm text-text-light/70 dark:text-text-dark/70 font-body">
+            {{ product().brand }}
+        </p>
+
+        <h3 class="font-body font-bold text-base leading-tight">
+            {{ product().name }}
+        </h3>
+
+        <p class="font-body font-bold text-primary">
+            {{ product().price | currency:'USD':'symbol':'1.2-2' }}
+        </p>
+    </div>
+</div>

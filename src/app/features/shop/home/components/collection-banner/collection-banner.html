@@ -1,0 +1,57 @@
+<section class="w-full py-10 md:py-16">
+
+    <div class="relative bg-text-light/5 dark:bg-text-dark/5 overflow-hidden w-full">
+
+        <!-- Layout para pantallas medianas y grandes: imagen completa con contenido al lado -->
+        <div class="hidden md:flex items-stretch">
+
+            <!-- Imagen - altura define el contenedor, ancho se adapta -->
+            <div class="shrink-0 max-w-[50%]">
+                <img [src]="promo().image" [alt]="promo().title" class="h-auto w-auto max-h-[500px] object-cover" />
+            </div>
+
+            <!-- Contenido - se expande para llenar el espacio restante -->
+            <div class="flex-1 p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
+
+                <h2 class="text-4xl font-headline font-bold tracking-tight text-text-light dark:text-text-dark">
+                    {{ promo().title }}
+                </h2>
+
+                <p class="mt-4 text-text-light/80 dark:text-text-dark/80 font-body">
+                    {{ promo().description }}
+                </p>
+
+                <div class="mt-6">
+                    <a [routerLink]="promo().link" [queryParams]="promo().queryParams"
+                        class="inline-block rounded-lg bg-primary px-5 py-3 text-base font-medium text-white shadow hover:opacity-90 transition-opacity font-body cursor-pointer">
+                        Ver colección
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Layout para móvil: apilado verticalmente -->
+        <div class="md:hidden">
+            <div class="relative w-full aspect-square">
+                <img [ngSrc]="promo().image" [alt]="promo().title" fill class="object-cover" />
+            </div>
+            <div class="p-8 text-center flex flex-col gap-4">
+                <h2 class="text-4xl font-headline font-bold tracking-tight text-text-light dark:text-text-dark">
+                    {{ promo().title }}
+                </h2>
+                <p class="text-text-light/80 dark:text-text-dark/80 font-body">
+                    {{ promo().description }}
+                </p>
+                <div class="mt-2">
+                    <a [routerLink]="promo().link" [queryParams]="promo().queryParams"
+                        class="inline-block rounded-lg bg-primary px-5 py-3 text-base font-medium text-white shadow hover:opacity-90 transition-opacity font-body cursor-pointer">
+                        Ver colección
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>

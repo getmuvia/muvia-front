@@ -1,0 +1,30 @@
+<section class="w-full py-10 md:py-16">
+
+    <h2
+        class="text-text-light dark:text-text-dark text-4xl font-headline font-bold leading-tight tracking-[-0.015em] px-4 pb-6 text-center">
+        Categorías Destacadas
+    </h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0">
+
+        @for (cat of categories(); track cat.id) {
+
+        <a [routerLink]="cat.link" [queryParams]="cat.queryParams"
+            class="relative group overflow-hidden aspect-[6/7] cursor-pointer block">
+
+            <img [ngSrc]="cat.image" [alt]="cat.name" fill
+                class="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110" />
+
+            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.6)_0%,transparent_50%)]"></div>
+
+            <div class="absolute inset-0 flex flex-col justify-end p-6">
+                <p class="text-white text-base font-body font-bold leading-tight line-clamp-3">
+                    {{ cat.name }}
+                </p>
+            </div>
+
+        </a>
+        }
+
+    </div>
+</section>

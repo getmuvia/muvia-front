@@ -1,0 +1,27 @@
+<section class="relative w-full min-h-screen flex items-center justify-center text-center overflow-hidden">
+
+    <img [ngSrc]="heroImage" alt="Sala de estar elegante con muebles minimalistas" fill priority
+        class="object-cover -z-20" />
+
+    <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50 -z-10"></div>
+
+    <div class="relative z-10 flex flex-col gap-4 max-w-3xl p-4 sm:gap-8 animate-fade-in-up">
+
+        <h1
+            class="text-white text-4xl font-headline font-bold leading-tight tracking-[-0.033em] sm:text-5xl drop-shadow-lg">
+            Diseña el Espacio de Tus Sueños
+        </h1>
+
+        <p class="text-white/90 text-base font-body font-normal leading-normal drop-shadow-md">
+            Descubre piezas únicas para transformar tu hogar con estilo y elegancia.
+        </p>
+
+        <div class="pt-4">
+            <a routerLink="/catalog"
+                class="inline-flex items-center justify-center h-12 px-8 rounded-lg bg-primary text-white text-base font-bold tracking-[0.015em] hover:bg-primary/90 hover:scale-105 transition-all duration-300 shadow-lg cursor-pointer">
+                Descubrir Ahora
+            </a>
+        </div>
+
+    </div>
+</section>
