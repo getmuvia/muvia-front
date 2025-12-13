@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { ProductCard } from '../../../../../shared/components/product-card/product-card';
-import { Product } from '../../../../../core/models/product/product';
+import { ProductCard } from '@shared/components/product-card/product-card';
+import { Product } from '@core/models/product/product';
 
 @Component({
   selector: 'app-new-arrivals',
