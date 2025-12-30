@@ -13,8 +13,13 @@ export const routes: Routes = [
                 component: Home,
             },
             {
-                path: '**',
-                redirectTo: 'home'
+                path: '',
+                loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
+            },
+            {
+                path: '',
+                redirectTo: 'home',
+                pathMatch: 'full'
             }
         ]
     },
@@ -22,7 +27,7 @@ export const routes: Routes = [
         path: 'seller',
         component: SellerLayout,
         children: []
-        
-    }
+    },
+
 
 ];
