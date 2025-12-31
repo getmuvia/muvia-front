@@ -13,7 +13,7 @@ export const routes: Routes = [
                 component: Home,
             },
             {
-                path: '',
+                path: 'auth',
                 loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
             },
             {
@@ -28,6 +28,8 @@ export const routes: Routes = [
         component: SellerLayout,
         children: []
     },
-
-
+    {
+        path: '**',
+        redirectTo: 'home'
+    }
 ];

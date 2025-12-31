@@ -51,7 +51,7 @@
             }
 
             <!-- Form -->
-            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+            <form (submit)="onSubmit($event)" novalidate class="space-y-6">
                 <!-- Business Name Field -->
                 <div>
                     <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200"
@@ -59,12 +59,17 @@
                         Nombre del Negocio
                     </label>
                     <div class="mt-2">
-                        <input formControlName="businessName"
+                        <input [field]="registerForm.businessName"
                             class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e]"
                             id="business-name" placeholder="Ej. Studio Decor" type="text" />
                     </div>
-                    @if (registerForm.get('businessName')?.touched && registerForm.get('businessName')?.errors) {
-                    <span class="text-red-500 text-xs mt-1">El nombre del negocio es requerido</span>
+                    @if (isFieldInvalid('businessName')) {
+                    <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+                        <span class="material-symbols-outlined text-sm">error</span>
+                        @for (error of registerForm.businessName().errors(); track $index) {
+                        <span>{{ error.message }}</span>
+                        }
+                    </p>
                     }
                 </div>
 
@@ -74,12 +79,17 @@
                         Email
                     </label>
                     <div class="mt-2">
-                        <input formControlName="email" autocomplete="email"
+                        <input [field]="registerForm.email" autocomplete="email"
                             class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e]"
-                            id="email" placeholder="nombre@ejemplo.com" type="email" />
+                            id="email" placeholder="nombre@ejemplo.com" type="text" />
                     </div>
-                    @if (registerForm.get('email')?.touched && registerForm.get('email')?.errors) {
-                    <span class="text-red-500 text-xs mt-1">Ingresa un correo válido</span>
+                    @if (isFieldInvalid('email')) {
+                    <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+                        <span class="material-symbols-outlined text-sm">error</span>
+                        @for (error of registerForm.email().errors(); track $index) {
+                        <span>{{ error.message }}</span>
+                        }
+                    </p>
                     }
                 </div>
 
@@ -89,7 +99,7 @@
                         Contraseña
                     </label>
                     <div class="relative mt-2">
-                        <input formControlName="password" autocomplete="new-password"
+                        <input [field]="registerForm.password" autocomplete="new-password"
                             class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e] pr-10"
                             id="password" placeholder="••••••••" [type]="showPassword() ? 'text' : 'password'" />
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -99,8 +109,13 @@
                             </span>
                         </div>
                     </div>
-                    @if (registerForm.get('password')?.touched && registerForm.get('password')?.errors) {
-                    <span class="text-red-500 text-xs mt-1">La contraseña debe tener al menos 6 caracteres</span>
+                    @if (isFieldInvalid('password')) {
+                    <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+                        <span class="material-symbols-outlined text-sm">error</span>
+                        @for (error of registerForm.password().errors(); track $index) {
+                        <span>{{ error.message }}</span>
+                        }
+                    </p>
                     }
                 </div>
 
@@ -111,7 +126,7 @@
                         Descripción
                     </label>
                     <div class="mt-2">
-                        <textarea formControlName="description"
+                        <textarea [field]="registerForm.description"
                             class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e] resize-none"
                             id="description" placeholder="Describe brevemente tu estilo o productos..."
                             rows="3"></textarea>
@@ -144,7 +159,7 @@
                 <div class="mt-6 text-center">
                     <p class="text-sm text-[#637588] dark:text-gray-400">
                         ¿Ya tienes una cuenta?
-                        <a routerLink="/login"
+                        <a routerLink="/auth/login"
                             class="font-bold text-primary hover:text-blue-500 transition-colors ml-1">
                             Inicia sesión
                         </a>

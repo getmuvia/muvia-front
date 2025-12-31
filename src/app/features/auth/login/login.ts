@@ -1,49 +1,90 @@
-import { Component, signal } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { RouterLink, Router } from '@angular/router';
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+// Imports específicos de la API experimental que me mostraste
+import {
+  Field,
+  form,
+  minLength,
+  required,
+  submit,
+  validate,
+} from '@angular/forms/signals';
 import { AuthService } from '../../../core/auth';
 
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
 @Component({
-    selector: 'app-login',
-    imports: [ReactiveFormsModule, RouterLink],
-    templateUrl: './login.html',
+  selector: 'app-login',
+  imports: [CommonModule, RouterLink, Field],
+  templateUrl: './login.html',
 })
 export class Login {
-    loginForm: FormGroup;
-    showPassword = signal(false);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-    constructor(
-        private fb: FormBuilder,
-        private authService: AuthService,
-        private router: Router
-    ) {
-        this.loginForm = this.fb.group({
-            email: ['', [Validators.required, Validators.email]],
-            password: ['', [Validators.required, Validators.minLength(6)]]
-        });
-    }
+  loginModel = signal<LoginFormData>({
+    email: '',
+    password: '',
+  });
 
-    get isLoading() {
-        return this.authService.isLoading;
-    }
+  loginForm = form(this.loginModel, (path) => {
+    
+    required(path.email, { message: 'El correo electrónico es requerido' });
+    
+    validate(path.email, ({ value }) => {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (value() && !emailRegex.test(value())) {
+        return {
+          message: 'Ingresa un correo electrónico válido',
+          kind: 'error',
+        };
+      }
+      return null;
+    });
 
-    get error() {
-        return this.authService.error;
-    }
+    required(path.password, { message: 'La contraseña es requerida' });
+    minLength(path.password, 6, { message: 'La contraseña debe tener al menos 6 caracteres' });
+  });
 
-    togglePasswordVisibility(): void {
-        this.showPassword.update(v => !v);
-    }
+  showPassword = signal(false);
 
-    async onSubmit(): Promise<void> {
-        if (this.loginForm.invalid) {
-            this.loginForm.markAllAsTouched();
-            return;
-        }
+  isLoading = signal(false); 
 
-        const success = await this.authService.login(this.loginForm.value);
+  togglePasswordVisibility(): void {
+    this.showPassword.update((v) => !v);
+  }
+
+  isFieldInvalid(fieldName: keyof LoginFormData): boolean {
+    const fieldSignal = this.loginForm[fieldName];
+    if (!fieldSignal) return false;
+
+    const field = fieldSignal();
+    return field && field.touched() && field.errors().length > 0;
+  }
+
+  onSubmit(event: Event) {
+    event.preventDefault();
+
+    submit(this.loginForm, async () => {
+      this.isLoading.set(true);
+      try {
+        // Usamos this.loginModel() o this.loginForm().value()
+        const credentials = this.loginForm().value();
+        const success = await this.authService.login(credentials);
+        
         if (success) {
-            this.router.navigate(['/home']);
+          this.router.navigate(['/home']);
         }
-    }
+      } catch (error) {
+        console.error('Login error', error);
+        // Aquí podrías setear un error general del formulario si la API lo permite
+      } finally {
+        this.isLoading.set(false);
+      }
+    });
+  }
 }
