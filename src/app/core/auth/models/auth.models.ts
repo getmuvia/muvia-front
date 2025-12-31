@@ -25,7 +25,7 @@ export interface RegisterData {
     businessName: string;
     email: string;
     password: string;
-    description?: string;
+    description: string;
 }
 
 /**

@@ -50,7 +50,6 @@ export class Register {
 
     showPassword = signal(false);
 
-    // Expose auth service state directly or use signals if preferred
     get isLoading() {
         return this.authService.isLoading;
     }
@@ -75,7 +74,7 @@ export class Register {
         event.preventDefault();
 
         submit(this.registerForm, async () => {
-            // Direct call to register since isLoading is handled in service/getter
+            
             const credentials = this.registerForm().value();
             const success = await this.authService.register(credentials);
 

@@ -67,7 +67,6 @@ export class Login {
     submit(this.loginForm, async () => {
       this.isLoading.set(true);
       try {
-        // Usamos this.loginModel() o this.loginForm().value()
         const credentials = this.loginForm().value();
         const success = await this.authService.login(credentials);
         

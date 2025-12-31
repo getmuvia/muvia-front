@@ -1,177 +1,145 @@
-<div class="relative flex min-h-screen w-full overflow-hidden">
-    <!-- Left Side: Visual / Hero Section -->
-    <div
-        class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-10 overflow-hidden bg-white dark:bg-[#1a232e]">
-        <!-- Background Image -->
-        <div class="absolute inset-0 z-0 w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105"
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAUpOiefZAKcQm-iatTmWdq6IOJ513rDaF6E3F0zgRWv7CymR-kCazvMHJUymEJ1AGojwLnn5-djHXJq7n1hW0f6-AiwtONeG7HIYpNXlHUHAWDv9IPdF_5JYaEveqle4f_9QAZFGe5bE74cA2kjwKL5Vss_X6yXAJqzNcCkf6DzaRoQUzQL5wjrzvLS0vZr4dfd8Nni7DCGuNtpjTAT896P5TfVVg7iaTWMIsWcBhw0YEo0h6iiat86Rul49T9Qyr2DPAM_M-7hr8');">
-            <div class="absolute inset-0 bg-black/10 dark:bg-black/30"></div>
+<!-- Header / Logo Area -->
+<div class="flex items-center gap-3 mb-10">
+    <a routerLink="/home" class="flex items-center gap-3 cursor-pointer group">
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white">
+            <span class="material-symbols-outlined text-2xl">grid_view</span>
         </div>
-        <!-- Content overlay on image -->
-        <div class="relative z-10 flex h-full flex-col justify-end pb-10 pl-4">
-            <blockquote class="max-w-md">
-                <p class="font-serif text-3xl font-bold text-white leading-tight drop-shadow-md">
-                    "El diseño no es solo lo que se ve y se siente. El diseño es cómo funciona."
-                </p>
-                <footer class="mt-4 text-white/90 font-medium text-lg drop-shadow-sm">— Steve Jobs</footer>
-            </blockquote>
+        <h2 class="text-[#111418] dark:text-white text-xl font-bold tracking-tight">DecoMarket</h2>
+    </a>
+</div>
+
+<!-- Page Heading -->
+<div class="mb-8">
+    <h1 class="font-serif text-4xl font-bold tracking-tight text-[#111418] dark:text-white mb-2">
+        Crear cuenta
+    </h1>
+    <p class="text-base text-[#637588] dark:text-gray-400">
+        Únete a nuestra comunidad y muestra tus objetos al mundo.
+    </p>
+</div>
+
+<!-- Error Message -->
+@if (error()) {
+<div
+    class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm mb-6">
+    {{ error() }}
+</div>
+}
+
+<!-- Form -->
+<form (submit)="onSubmit($event)" novalidate class="space-y-6">
+    <!-- Business Name Field -->
+    <div>
+        <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200" for="business-name">
+            Nombre del Negocio
+        </label>
+        <div class="mt-2">
+            <input [field]="registerForm.businessName"
+                class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e]"
+                id="business-name" placeholder="Ej. Studio Decor" type="text" />
+        </div>
+        @if (isFieldInvalid('businessName')) {
+        <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+            <span class="material-symbols-outlined text-sm">error</span>
+            @for (error of registerForm.businessName().errors(); track $index) {
+            <span>{{ error.message }}</span>
+            }
+        </p>
+        }
+    </div>
+
+    <!-- Email Field -->
+    <div>
+        <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200" for="email">
+            Email
+        </label>
+        <div class="mt-2">
+            <input [field]="registerForm.email" autocomplete="email"
+                class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e]"
+                id="email" placeholder="nombre@ejemplo.com" type="text" />
+        </div>
+        @if (isFieldInvalid('email')) {
+        <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+            <span class="material-symbols-outlined text-sm">error</span>
+            @for (error of registerForm.email().errors(); track $index) {
+            <span>{{ error.message }}</span>
+            }
+        </p>
+        }
+    </div>
+
+    <!-- Password Field -->
+    <div>
+        <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200" for="password">
+            Contraseña
+        </label>
+        <div class="relative mt-2">
+            <input [field]="registerForm.password" autocomplete="new-password"
+                class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e] pr-10"
+                id="password" placeholder="••••••••" [type]="showPassword() ? 'text' : 'password'" />
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                <span (click)="togglePasswordVisibility()"
+                    class="material-symbols-outlined text-[#637588] dark:text-gray-500 cursor-pointer text-xl hover:text-primary transition-colors">
+                    {{ showPassword() ? 'visibility' : 'visibility_off' }}
+                </span>
+            </div>
+        </div>
+        @if (isFieldInvalid('password')) {
+        <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+            <span class="material-symbols-outlined text-sm">error</span>
+            @for (error of registerForm.password().errors(); track $index) {
+            <span>{{ error.message }}</span>
+            }
+        </p>
+        }
+    </div>
+
+    <!-- Description Field (Textarea) -->
+    <div>
+        <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200" for="description">
+            Descripción
+        </label>
+        <div class="mt-2">
+            <textarea [field]="registerForm.description"
+                class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e] resize-none"
+                id="description" placeholder="Describe brevemente tu estilo o productos..." rows="3"></textarea>
         </div>
     </div>
 
-    <!-- Right Side: Registration Form -->
-    <div
-        class="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6 lg:flex-none lg:w-1/2 lg:px-20 xl:px-24 bg-background-light dark:bg-background-dark overflow-y-auto max-h-screen">
-        <div class="mx-auto w-full max-w-sm lg:w-[480px]">
-            <!-- Header / Logo Area -->
-            <div class="flex items-center gap-3 mb-10">
-                <a routerLink="/home" class="flex items-center gap-3 cursor-pointer group">
-                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white">
-                        <span class="material-symbols-outlined text-2xl">grid_view</span>
-                    </div>
-                    <h2 class="text-[#111418] dark:text-white text-xl font-bold tracking-tight">DecoMarket</h2>
-                </a>
-            </div>
-
-            <!-- Page Heading -->
-            <div class="mb-8">
-                <h1 class="font-serif text-4xl font-bold tracking-tight text-[#111418] dark:text-white mb-2">
-                    Crear cuenta
-                </h1>
-                <p class="text-base text-[#637588] dark:text-gray-400">
-                    Únete a nuestra comunidad y muestra tus objetos al mundo.
-                </p>
-            </div>
-
-            <!-- Error Message -->
-            @if (error()) {
-            <div
-                class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg text-sm mb-6">
-                {{ error() }}
-            </div>
+    <!-- Action Button -->
+    <div class="pt-2">
+        <button type="submit" [disabled]="isLoading()"
+            class="flex w-full justify-center rounded-lg bg-primary px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+            @if (isLoading()) {
+            <span class="animate-spin mr-2">⟳</span>
             }
+            Registrarse
+        </button>
+    </div>
+</form>
 
-            <!-- Form -->
-            <form (submit)="onSubmit($event)" novalidate class="space-y-6">
-                <!-- Business Name Field -->
-                <div>
-                    <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200"
-                        for="business-name">
-                        Nombre del Negocio
-                    </label>
-                    <div class="mt-2">
-                        <input [field]="registerForm.businessName"
-                            class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e]"
-                            id="business-name" placeholder="Ej. Studio Decor" type="text" />
-                    </div>
-                    @if (isFieldInvalid('businessName')) {
-                    <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
-                        <span class="material-symbols-outlined text-sm">error</span>
-                        @for (error of registerForm.businessName().errors(); track $index) {
-                        <span>{{ error.message }}</span>
-                        }
-                    </p>
-                    }
-                </div>
-
-                <!-- Email Field -->
-                <div>
-                    <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200" for="email">
-                        Email
-                    </label>
-                    <div class="mt-2">
-                        <input [field]="registerForm.email" autocomplete="email"
-                            class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e]"
-                            id="email" placeholder="nombre@ejemplo.com" type="text" />
-                    </div>
-                    @if (isFieldInvalid('email')) {
-                    <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
-                        <span class="material-symbols-outlined text-sm">error</span>
-                        @for (error of registerForm.email().errors(); track $index) {
-                        <span>{{ error.message }}</span>
-                        }
-                    </p>
-                    }
-                </div>
-
-                <!-- Password Field -->
-                <div>
-                    <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200" for="password">
-                        Contraseña
-                    </label>
-                    <div class="relative mt-2">
-                        <input [field]="registerForm.password" autocomplete="new-password"
-                            class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e] pr-10"
-                            id="password" placeholder="••••••••" [type]="showPassword() ? 'text' : 'password'" />
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                            <span (click)="togglePasswordVisibility()"
-                                class="material-symbols-outlined text-[#637588] dark:text-gray-500 cursor-pointer text-xl hover:text-primary transition-colors">
-                                {{ showPassword() ? 'visibility' : 'visibility_off' }}
-                            </span>
-                        </div>
-                    </div>
-                    @if (isFieldInvalid('password')) {
-                    <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
-                        <span class="material-symbols-outlined text-sm">error</span>
-                        @for (error of registerForm.password().errors(); track $index) {
-                        <span>{{ error.message }}</span>
-                        }
-                    </p>
-                    }
-                </div>
-
-                <!-- Description Field (Textarea) -->
-                <div>
-                    <label class="block text-sm font-medium leading-6 text-[#111418] dark:text-gray-200"
-                        for="description">
-                        Descripción
-                    </label>
-                    <div class="mt-2">
-                        <textarea [field]="registerForm.description"
-                            class="block w-full rounded-lg border-0 py-3 px-4 text-[#111418] dark:text-white shadow-sm ring-1 ring-inset ring-[#dce0e5] dark:ring-gray-700 placeholder:text-[#637588] dark:placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white dark:bg-[#1a232e] resize-none"
-                            id="description" placeholder="Describe brevemente tu estilo o productos..."
-                            rows="3"></textarea>
-                    </div>
-                </div>
-
-                <!-- Action Button -->
-                <div class="pt-2">
-                    <button type="submit" [disabled]="isLoading()"
-                        class="flex w-full justify-center rounded-lg bg-primary px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
-                        @if (isLoading()) {
-                        <span class="animate-spin mr-2">⟳</span>
-                        }
-                        Registrarse
-                    </button>
-                </div>
-            </form>
-
-            <!-- Footer Links -->
-            <div class="mt-8">
-                <div class="relative">
-                    <div aria-hidden="true" class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-[#dce0e5] dark:border-gray-700"></div>
-                    </div>
-                    <div class="relative flex justify-center text-sm font-medium leading-6">
-                        <span
-                            class="bg-background-light dark:bg-background-dark px-6 text-[#637588] dark:text-gray-400">O</span>
-                    </div>
-                </div>
-                <div class="mt-6 text-center">
-                    <p class="text-sm text-[#637588] dark:text-gray-400">
-                        ¿Ya tienes una cuenta?
-                        <a routerLink="/auth/login"
-                            class="font-bold text-primary hover:text-blue-500 transition-colors ml-1">
-                            Inicia sesión
-                        </a>
-                    </p>
-                </div>
-            </div>
-
-            <!-- Terms -->
-            <p class="mt-10 text-center text-xs text-[#637588] dark:text-gray-500">
-                Al registrarte, aceptas nuestros <a class="underline hover:text-primary" href="#">Términos de
-                    Servicio</a> y <a class="underline hover:text-primary" href="#">Política de Privacidad</a>.
-            </p>
+<!-- Footer Links -->
+<div class="mt-8">
+    <div class="relative">
+        <div aria-hidden="true" class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-[#dce0e5] dark:border-gray-700"></div>
         </div>
+        <div class="relative flex justify-center text-sm font-medium leading-6">
+            <span class="bg-background-light dark:bg-background-dark px-6 text-[#637588] dark:text-gray-400">O</span>
+        </div>
+    </div>
+    <div class="mt-6 text-center">
+        <p class="text-sm text-[#637588] dark:text-gray-400">
+            ¿Ya tienes una cuenta?
+            <a routerLink="/auth/login" class="font-bold text-primary hover:text-blue-500 transition-colors ml-1">
+                Inicia sesión
+            </a>
+        </p>
     </div>
 </div>
+
+<!-- Terms -->
+<p class="mt-10 text-center text-xs text-[#637588] dark:text-gray-500">
+    Al registrarte, aceptas nuestros <a class="underline hover:text-primary" href="#">Términos de
+        Servicio</a> y <a class="underline hover:text-primary" href="#">Política de Privacidad</a>.
+</p>
