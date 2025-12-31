@@ -11,8 +11,8 @@
       "@shared/components/*": [
         "src/app/shared/components/*"
       ],
-      "@core/auth/models/*": [
-        "src/app/core/auth/models/*"
+      "@core/auth/*": [
+        "src/app/core/auth/*"
       ],
     },
     "strict": true,

@@ -1,5 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { User, LoginCredentials, RegisterData, AuthResponse } from '../models/auth.models';
+import { User, LoginData  , RegisterData, AuthResponse } from '../models/auth.models';
 
 /**
  * AuthService handles authentication state and operations.
@@ -29,7 +29,7 @@ export class AuthService {
      * Attempts to login with provided credentials.
      * Currently a stub - will integrate with backend API.
      */
-    async login(credentials: LoginCredentials): Promise<boolean> {
+    async login(credentials: LoginData): Promise<boolean> {
         this.loadingSignal.set(true);
         this.errorSignal.set(null);
 

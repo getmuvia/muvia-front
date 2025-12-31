@@ -9,14 +9,8 @@ import {
     submit,
     validate,
 } from '@angular/forms/signals';
-import { AuthService } from '../../../core/auth';
-
-interface RegisterFormData {
-    businessName: string;
-    email: string;
-    password: string;
-    description: string;
-}
+import { AuthService } from '@core/auth/services/auth.service';
+import { RegisterData } from '@core/auth/models/auth.models';
 
 @Component({
     selector: 'app-register',
@@ -27,7 +21,7 @@ export class Register {
     private authService = inject(AuthService);
     private router = inject(Router);
 
-    registerModel = signal<RegisterFormData>({
+    registerModel = signal<RegisterData>({
         businessName: '',
         email: '',
         password: '',
@@ -69,7 +63,7 @@ export class Register {
         this.showPassword.update((v) => !v);
     }
 
-    isFieldInvalid(fieldName: keyof RegisterFormData): boolean {
+    isFieldInvalid(fieldName: keyof RegisterData): boolean {
         const fieldSignal = this.registerForm[fieldName];
         if (!fieldSignal) return false;
 

@@ -1,7 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
-// Imports específicos de la API experimental que me mostraste
 import {
   Field,
   form,
@@ -10,12 +9,8 @@ import {
   submit,
   validate,
 } from '@angular/forms/signals';
-import { AuthService } from '../../../core/auth';
-
-interface LoginFormData {
-  email: string;
-  password: string;
-}
+import { AuthService } from '@core/auth/services/auth.service';
+import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
   selector: 'app-login',
@@ -26,7 +21,7 @@ export class Login {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  loginModel = signal<LoginFormData>({
+  loginModel = signal<LoginData>({
     email: '',
     password: '',
   });
@@ -58,7 +53,7 @@ export class Login {
     this.showPassword.update((v) => !v);
   }
 
-  isFieldInvalid(fieldName: keyof LoginFormData): boolean {
+  isFieldInvalid(fieldName: keyof LoginData): boolean {
     const fieldSignal = this.loginForm[fieldName];
     if (!fieldSignal) return false;
 
