@@ -11,6 +11,9 @@
       "@shared/components/*": [
         "src/app/shared/components/*"
       ],
+      "@core/auth/*": [
+        "src/app/core/auth/*"
+      ],
     },
     "strict": true,
     "noImplicitOverride": true,

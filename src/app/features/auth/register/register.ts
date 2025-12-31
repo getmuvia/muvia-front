@@ -1,0 +1,86 @@
+import { Component, inject, signal } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import {
+    Field,
+    form,
+    minLength,
+    required,
+    submit,
+    validate,
+} from '@angular/forms/signals';
+import { AuthService } from '@core/auth/services/auth.service';
+import { RegisterData } from '@core/auth/models/auth.models';
+
+@Component({
+    selector: 'app-register',
+    imports: [CommonModule, RouterLink, Field],
+    templateUrl: './register.html',
+})
+export class Register {
+    private authService = inject(AuthService);
+    private router = inject(Router);
+
+    registerModel = signal<RegisterData>({
+        businessName: '',
+        email: '',
+        password: '',
+        description: '',
+    });
+
+    registerForm = form(this.registerModel, (path) => {
+        required(path.businessName, { message: 'El nombre del negocio es requerido' });
+        minLength(path.businessName, 2, { message: 'El nombre del negocio debe tener al menos 2 caracteres' });
+
+        required(path.email, { message: 'El correo electrónico es requerido' });
+        validate(path.email, ({ value }) => {
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (value() && !emailRegex.test(value())) {
+                return {
+                    message: 'Ingresa un correo electrónico válido',
+                    kind: 'error',
+                };
+            }
+            return null;
+        });
+
+        required(path.password, { message: 'La contraseña es requerida' });
+        minLength(path.password, 6, { message: 'La contraseña debe tener al menos 6 caracteres' });
+    });
+
+    showPassword = signal(false);
+
+    get isLoading() {
+        return this.authService.isLoading;
+    }
+
+    get error() {
+        return this.authService.error;
+    }
+
+    togglePasswordVisibility(): void {
+        this.showPassword.update((v) => !v);
+    }
+
+    isFieldInvalid(fieldName: keyof RegisterData): boolean {
+        const fieldSignal = this.registerForm[fieldName];
+        if (!fieldSignal) return false;
+
+        const field = fieldSignal();
+        return field && field.touched() && field.errors().length > 0;
+    }
+
+    onSubmit(event: Event) {
+        event.preventDefault();
+
+        submit(this.registerForm, async () => {
+            
+            const credentials = this.registerForm().value();
+            const success = await this.authService.register(credentials);
+
+            if (success) {
+                this.router.navigate(['/auth/login']);
+            }
+        });
+    }
+}

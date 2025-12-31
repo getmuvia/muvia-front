@@ -7,7 +7,6 @@ import { ShopNavbar } from '../components/shop-navbar/shop-navbar';
   selector: 'app-shop-layout',
   imports: [RouterOutlet, ShopNavbar, ShopFooter],
   templateUrl: './shop-layout.html',
-  styleUrl: './shop-layout.css',
 })
 export class ShopLayout {
 
