@@ -10,7 +10,7 @@
                             </path>
                         </svg>
                     </div>
-                    <h2 class="text-base font-bold tracking-[-0.015em]">DecoHome</h2>
+                    <h2 class="text-base font-bold tracking-[-0.015em] mr-9">DecoHome</h2>
                 </div>
             </div>
             <div class="hidden md:flex items-center gap-9">
@@ -24,18 +24,13 @@
                     class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
                     <span class="material-symbols-outlined">search</span>
                 </button>
-                <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
-                    <span class="material-symbols-outlined">favorite</span>
-                </button>
-                <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
-                    <span class="material-symbols-outlined">shopping_bag</span>
-                </button>
-                <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
-                    <span class="material-symbols-outlined">person</span>
-                </button>
+
+                <a routerLink="/auth/login"
+                    class="login-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
+                    <span class="material-symbols-outlined">login</span>
+                    <span
+                        class="login-text max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out whitespace-nowrap">Login</span>
+                </a>
             </div>
         </div>
     </div>

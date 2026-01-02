@@ -1,0 +1,6 @@
+/* Login button hover animation */
+.login-btn:hover .login-text {
+    max-width: 60px;
+    opacity: 1;
+    margin-left: 4px;
+}
