@@ -10,7 +10,7 @@
                             </path>
                         </svg>
                     </div>
-                    <h2 class="text-base font-bold tracking-[-0.015em]">DecoHome</h2>
+                    <h2 class="text-base font-bold tracking-[-0.015em] mr-9">DecoHome</h2>
                 </div>
             </div>
             <div class="hidden md:flex items-center gap-9">
@@ -24,18 +24,30 @@
                     class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
                     <span class="material-symbols-outlined">search</span>
                 </button>
-                <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
-                    <span class="material-symbols-outlined">favorite</span>
-                </button>
-                <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
-                    <span class="material-symbols-outlined">shopping_bag</span>
-                </button>
-                <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
-                    <span class="material-symbols-outlined">person</span>
-                </button>
+
+                @if (isAuthenticated()) {
+                <!-- Usuario autenticado: mostrar perfil -->
+                <div class="user-menu flex items-center gap-2">
+                    <a routerLink="/seller"
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-white/10 hover:bg-white/20 text-white gap-2 text-sm font-medium leading-normal px-3 transition-all duration-300">
+                        <span class="material-symbols-outlined text-xl">person</span>
+                        <span class="max-w-[120px] truncate">{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
+                    </a>
+                    <button (click)="logout()"
+                        class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent hover:bg-red-500/20 text-white transition-all duration-300"
+                        title="Cerrar sesión">
+                        <span class="material-symbols-outlined text-xl">logout</span>
+                    </button>
+                </div>
+                } @else {
+                <!-- Usuario no autenticado: mostrar botón de login -->
+                <a routerLink="/auth/login"
+                    class="login-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
+                    <span class="material-symbols-outlined">login</span>
+                    <span
+                        class="login-text max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out whitespace-nowrap">Login</span>
+                </a>
+                }
             </div>
         </div>
     </div>
