@@ -9,7 +9,7 @@ import {
     submit,
     validate,
 } from '@angular/forms/signals';
-import { AuthService } from '@core/auth/services/auth.service';
+import { Auth } from '@core/auth/services/auth';
 import { RegisterData } from '@core/auth/models/auth.models';
 
 @Component({
@@ -18,7 +18,7 @@ import { RegisterData } from '@core/auth/models/auth.models';
     templateUrl: './register.html',
 })
 export class Register {
-    private authService = inject(AuthService);
+    private authService = inject(Auth);
     private router = inject(Router);
 
     registerModel = signal<RegisterData>({

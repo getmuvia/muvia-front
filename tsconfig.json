@@ -14,6 +14,9 @@
       "@core/auth/*": [
         "src/app/core/auth/*"
       ],
+      "@environments/*": [
+        "src/environments/*"
+      ]
     },
     "strict": true,
     "noImplicitOverride": true,

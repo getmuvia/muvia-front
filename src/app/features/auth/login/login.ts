@@ -9,7 +9,7 @@ import {
   submit,
   validate,
 } from '@angular/forms/signals';
-import { AuthService } from '@core/auth/services/auth.service';
+import { Auth } from '@core/auth/services/auth';
 import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
@@ -18,18 +18,18 @@ import { LoginData } from '@core/auth/models/auth.models'
   templateUrl: './login.html',
 })
 export class Login {
-  private authService = inject(AuthService);
+  private authService = inject(Auth);
   private router = inject(Router);
 
   loginModel = signal<LoginData>({
-    email: '',
-    password: '',
+    email: 'vendor@test.com',
+    password: 'Test123!@#',
   });
 
   loginForm = form(this.loginModel, (path) => {
-    
+
     required(path.email, { message: 'El correo electrónico es requerido' });
-    
+
     validate(path.email, ({ value }) => {
       const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
       if (value() && !emailRegex.test(value())) {
@@ -47,7 +47,8 @@ export class Login {
 
   showPassword = signal(false);
 
-  isLoading = signal(false); 
+  isLoading = this.authService.isLoading;
+  error = this.authService.error;
 
   togglePasswordVisibility(): void {
     this.showPassword.update((v) => !v);
@@ -65,19 +66,11 @@ export class Login {
     event.preventDefault();
 
     submit(this.loginForm, async () => {
-      this.isLoading.set(true);
-      try {
-        const credentials = this.loginForm().value();
-        const success = await this.authService.login(credentials);
-        
-        if (success) {
-          this.router.navigate(['/home']);
-        }
-      } catch (error) {
-        console.error('Login error', error);
-        // Aquí podrías setear un error general del formulario si la API lo permite
-      } finally {
-        this.isLoading.set(false);
+      const credentials = this.loginForm().value();
+      const success = await this.authService.login(credentials);
+
+      if (success) {
+        this.router.navigate(['/home']);
       }
     });
   }
