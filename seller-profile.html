@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Página de Perfil del Vendedor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#333333",
+              "secondary": "#D4AF37",
+              "background-light": "#F8F8F8",
+              "background-dark": "#111921",
+            },
+            fontFamily: {
+              "display": ["Manrope", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-gray-800 dark:text-gray-200">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root">
+<!-- TopNavBar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-700 px-4 sm:px-6 lg:px-10 py-3 bg-white dark:bg-background-dark/80 backdrop-blur-sm sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-primary dark:text-white">
+<span class="material-symbols-outlined text-3xl">chair</span>
+<h2 class="text-xl font-bold tracking-[-0.015em]">Decor</h2>
+</div>
+<label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-gray-500 dark:text-gray-400 flex border-none bg-background-light dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-gray-900 dark:text-gray-100 focus:outline-0 focus:ring-0 border-none bg-background-light dark:bg-gray-800 focus:border-none h-full placeholder:text-gray-500 dark:placeholder:text-gray-400 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal" placeholder="Buscar" value=""/>
+</div>
+</label>
+</div>
+<div class="flex flex-1 justify-end items-center gap-4 sm:gap-6">
+<div class="hidden lg:flex items-center gap-6">
+<a class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal" href="#">Home</a>
+<a class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal" href="#">Categorías</a>
+<a class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal" href="#">Inspiración</a>
+<a class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-white text-sm font-medium leading-normal" href="#">Magazine</a>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+<span class="truncate">Subir</span>
+</button>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-gray-800 text-gray-800 dark:text-gray-200 gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+<span class="material-symbols-outlined">favorite</span>
+</button>
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-background-light dark:bg-gray-800 text-gray-800 dark:text-gray-200 gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDiDDeDfevtq78PEWC-EDlUdDxxkD6ZzAzwoArVz8RMXF5EZtthoRSRoGVkxnb-xRkXEHRWFoQnK1MoOQRWfsAKCayoPbyUdsmoa4zHcm764JwMe8pj8PtRIWnjJlfjtbn-JAv3IAzkSmjt6SAWRydmOT4_ABPc_Y3-zgoMEguclZcqAicQ37WPE5MfKjGZq0gJLFLEEqlhZJD8gKNrEsY1Dh2FNGTaELMCbVWZwNBq0wPy8qtB2yaEelG06B3-7bQiZjOrViJsVNk");'></div>
+</div>
+</header>
+<main class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<!-- HeaderImage -->
+<div class="w-full h-48 md:h-64 lg:h-80 bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden rounded-xl" data-alt="Abstract image of a modern living room with elegant furniture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJj0G7R1JB3dsQQCmc5vVf70JHcTF1Hx4FOmMkd0e-Wtyhw6RCLst9pOE_R72-tiiDyy6qVR7LIwrBj9riKBL1Zs47k-KydeHtuPAM8N0YdAJ7VNzH2BCsL9Du2wwOkgLEHFrMY1Yrj4vTob44AxyBo2AhKeyQPUuACMceBMtYkJBW6KGVMtPTzP32e4rlKz4wEINe4E8ZzFxu6-3omuvfx-40s-5X7x-Q88UBH3tku6iVciUggkbcKQ0Z9fVxMag1hH1R7_MkgR0");'></div>
+<!-- ProfileHeader -->
+<div class="flex p-4 -mt-16 z-10 relative">
+<div class="flex w-full flex-col gap-4 sm:flex-row sm:justify-between sm:items-end">
+<div class="flex gap-4 items-end">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 ring-4 ring-background-light dark:ring-background-dark" data-alt="Brand logo for 'Atelier Chic'" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC9y9k6IzI848JYSWjnzPMonN-jlIy-qqVxP2BGrgjHwDd-nS2i9gFI3Msr2b5J4XmibV5HSRfExHKj2Qn0ceCf77IiBaLUewplbacLVV3Gdht8CCTcAQ58BLKaF3ypGKDHCVzD9EHg5JBFTSSNUkzoMJdZ-gwB4jhs7eQYAMmQqFPCGDSDcAYzD_lQ3MiTnWn6GpXcvhmUwMJz5rl5Utr8JbWlXdcHt6FGEjS6r_ecRulyKT62ySHOeht4CUfydpqvw6zZJUbY-L0");'></div>
+<div class="flex flex-col justify-center pb-2">
+<p class="text-gray-900 dark:text-white text-3xl font-bold leading-tight tracking-[-0.015em]">Atelier Chic</p>
+<p class="text-gray-500 dark:text-gray-400 text-base font-normal leading-normal">Diseño de interiores y piezas únicas.</p>
+</div>
+</div>
+<div class="flex w-full sm:w-auto max-w-[480px] gap-3">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
+<span class="truncate">Seguir</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto hover:opacity-90 transition-opacity">
+<span class="truncate">Contactar Vendedor</span>
+</button>
+</div>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row gap-8 mt-8">
+<!-- SideNavBar (Adapted as Info Sidebar) -->
+<aside class="w-full lg:w-64 lg:flex-shrink-0">
+<div class="sticky top-28">
+<div class="flex h-full flex-col justify-between bg-white dark:bg-background-dark/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+<div class="flex flex-col gap-6">
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+<span class="material-symbols-outlined text-gray-800 dark:text-gray-200">info</span>
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Sobre Nosotros</p>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm px-3 py-1">Atelier Chic crea piezas de decoración atemporales que combinan artesanía tradicional con estética moderna.</p>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center gap-3 px-3 py-2">
+<span class="material-symbols-outlined text-gray-800 dark:text-gray-200">star</span>
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Reseñas</p>
+</div>
+<div class="flex items-center gap-2 px-3">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-secondary">star_half</span>
+<p class="text-sm text-gray-500 dark:text-gray-400 ml-1">(4.7 de 120)</p>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1 mt-6 border-t border-gray-200 dark:border-gray-700 pt-6">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="#">
+<span class="material-symbols-outlined text-gray-800 dark:text-gray-200">language</span>
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Website</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="#">
+<svg class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.149-4.771-1.664-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44c0-.795-.645-1.44-1.441-1.44z"></path></svg>
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Instagram</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors" href="#">
+<svg class="h-6 w-6 text-gray-800 dark:text-gray-200" fill="currentColor" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.125 18.559c-2.588 0-4.04-1.554-4.04-3.805 0-2.395 1.503-5.334 4.331-5.334 1.155 0 2.062.534 2.062 1.419 0 .96-.732 1.488-1.523 1.488-.539 0-.965-.428-.965-.928 0-.832.522-1.488 1.638-1.488 1.952 0 3.228 1.603 3.228 3.733 0 2.859-2.025 4.82-4.694 4.82zm.1-11.532c-.93 0-1.528.693-1.528 1.576 0 .864.598 1.594 1.528 1.594s1.528-.73 1.528-1.594c0-.883-.599-1.576-1.528-1.576z"></path></svg>
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Pinterest</p>
+</a>
+</div>
+</div>
+</div>
+</aside>
+<!-- Product Gallery -->
+<div class="flex-1">
+<!-- Chips (Filter Controls) -->
+<div class="flex gap-2 p-1 overflow-x-auto">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-primary/20 dark:bg-primary/30 pl-4 pr-3">
+<p class="text-primary dark:text-white text-sm font-medium leading-normal">Todos</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-200 dark:bg-gray-800 pl-4 pr-3 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Precio: Bajo a Alto</p>
+<span class="material-symbols-outlined text-gray-600 dark:text-gray-400">arrow_drop_down</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-200 dark:bg-gray-800 pl-4 pr-3 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Popularidad</p>
+<span class="material-symbols-outlined text-gray-600 dark:text-gray-400">arrow_drop_down</span>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-lg bg-gray-200 dark:bg-gray-800 pl-4 pr-3 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors">
+<p class="text-gray-800 dark:text-gray-200 text-sm font-medium leading-normal">Novedades</p>
+<span class="material-symbols-outlined text-gray-600 dark:text-gray-400">arrow_drop_down</span>
+</button>
+</div>
+<!-- Product Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+<!-- Product Card 1 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-lg">
+<div class="absolute top-2 left-2 z-10 rounded-full bg-secondary px-3 py-1 text-xs font-bold text-primary">NUEVO</div>
+<div class="aspect-square w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="Minimalist wooden chair with clean lines" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsBsY9uOrtIwzrH_VSnHulBvlIv69mWCiOa7DOzs0JGQadh7ATa0zf7OLwv2Yb3VwZXU1F2madPn2lXlc6OC3Ks_CyczM7Lfc_1Fn6bApmVAwvRBpNmp2vXrQ6K_FbRSmrW6jVuTDVVqTUr1cvr1xmnYn0KfOCcu1ugkhNLaQsSe2nZruU0z-AjYs8CrWfFMBcYs5-v1jzpIeiRYwDYqLa5wkS6g7Zgzx-VcgNZllCHCjs6CKFeY7lE6aS2FQt_q49ZumDkFe7X7o"/>
+</div>
+<div class="flex flex-1 flex-col p-4">
+<h3 class="font-bold text-gray-900 dark:text-white">Silla Nórdica de Roble</h3>
+<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">$250.00</p>
+</div>
+<button class="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-90">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+<!-- Product Card 2 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-lg">
+<div class="aspect-square w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="Modern ceramic vase with a matte finish" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArgY0T289O-pJamKbi4jysSEjsp0KzJr_NxbofKKsLWHugfUNutG4ljFoKSNBt4K2nW569i7-TkU5yyK6oSPXZRx4jdLMl-gDwdQRmuQUGfUdEXOkna9AJlUp-VcvVPhBncJj5f0GvcwprWq8pDP-5Ni_0zgZmxRPSnziBKD8sZjqZDuV64DQKcPzDaEQ1SGuQs68l1uaWv4O1PolBMmcj87KCn9orpfYYKtU6WDoQ8FBEDapd31diNYQbZwrMBTR2QuRkrpOGs4Q"/>
+</div>
+<div class="flex flex-1 flex-col p-4">
+<h3 class="font-bold text-gray-900 dark:text-white">Jarrón de Cerámica</h3>
+<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">$75.00</p>
+</div>
+<button class="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-90">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+<!-- Product Card 3 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-lg">
+<div class="absolute top-2 left-2 z-10 rounded-full bg-red-100 dark:bg-red-900/50 px-3 py-1 text-xs font-bold text-red-600 dark:text-red-300">OFERTA</div>
+<div class="aspect-square w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="Abstract wall art with golden accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOODO4ni5d0FAbIKNGNxEIEn-IzEhNKH0vTSB7xuB11DDM7K7aWdvw7uWnURqnivvbAcPhRocAa10oe79enVJJZsGX-3RYLxkZSJxfcXZnD3pqdHDIdTVdqPbdTlm9ApDKTQ6deLgC1EpcOsj_fvnP6aCi1yM2ZGYiBbDRI3qRfCwLBTwuq_IR3Z2hgwpekm9GyfuZ5GFvSFsPbccNhH5ppeaOKf0AMbkNrYxJJRXfj4Na0OVj6MelHHNWv88Tg1yTe4CzjbO89Rs"/>
+</div>
+<div class="flex flex-1 flex-col p-4">
+<h3 class="font-bold text-gray-900 dark:text-white">Lienzo Abstracto 'Dorado'</h3>
+<p class="mt-1 text-sm text-gray-500 dark:text-gray-400"><span class="line-through">$400.00</span> $320.00</p>
+</div>
+<button class="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-90">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+<!-- Product Card 4 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-lg">
+<div class="aspect-square w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="A stylish table lamp with a marble base" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbR_47-AkCrnv7R0e4ZEUJL24FHI0-OVg8-MolHllLURsNNbN28BGqlCbjHHWxBNrokwE4TFlTHzYJTBlv1rNrbVHuvxWTdJnOW5ychL_ktbyU7gY8TzCddkL5j4TL74zt6c06enBHKLlBQdeZvWcejAWkvKehSfho9HDQiAd6ArqXbVCbsuCTyMPxpGcDWWo7ULGYI6fZhiytj-UhQbt38aLSIa5y6VCEQpejmi1xVRpKOOH8KwdsB06VK1dQFp-Qfg5CE_TgoDs"/>
+</div>
+<div class="flex flex-1 flex-col p-4">
+<h3 class="font-bold text-gray-900 dark:text-white">Lámpara de Mármol</h3>
+<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">$180.00</p>
+</div>
+<button class="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-90">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+<!-- Product Card 5 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-lg">
+<div class="aspect-square w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="A set of textured cushions on a sofa" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBSIEtaYAFkyoNyxbZ6wYvZymokaEgSbWc9Wa8_9fLW7V9ESFo-ypjQbR5eYPP7JwcFynfjLfluXIDCqW4gVvkRgr_cgVaFarKopbW50nlMSShMYaz_fz0XMsZGyQZ8i3vXrtg4h2jMwvXL0ESvxEox1RUvAcpUrfmCgQCGTQUudQE-0SIE2YrnBN72FHLDf8f4ED-fbTtXtvuJZPz0f61H1-BxIm1o6IHGc1ISliajfKNSxj7Ym4VL_N4CUr7D5-b0eboHSQ0xqQ"/>
+</div>
+<div class="flex flex-1 flex-col p-4">
+<h3 class="font-bold text-gray-900 dark:text-white">Set de Cojines de Lino</h3>
+<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">$95.00</p>
+</div>
+<button class="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-90">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+<!-- Product Card 6 -->
+<div class="group relative flex flex-col overflow-hidden rounded-xl bg-white dark:bg-background-dark/50 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-lg">
+<div class="aspect-square w-full overflow-hidden">
+<img class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" data-alt="A handcrafted wooden side table" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClwv6VZYBM0kA5sJfW7E1BoNlft-Hgsyu8_plSYAWAwu9udNyquq_wwr0l92UWI_xg9w5jG8PaxqyW_Kn5VLhcPcuj0DmHXN-V7CxY-be46E59WEU7BNz2_biVcSZBVomUuiP6gFEQ53Y1yJ60a2USvDv3Wp6bYIxbVV16XkkcFuF2d5PZ6Mv-JUfHGnHTwdWEmw_z99xWRHminV3cUgMdwQy9eO6whSqzQTmaj3pFTUEo-kO_HXlKYnVtaQ2vs401BVJz7Kvjp3U"/>
+</div>
+<div class="flex flex-1 flex-col p-4">
+<h3 class="font-bold text-gray-900 dark:text-white">Mesa Auxiliar Artesanal</h3>
+<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">$220.00</p>
+</div>
+<button class="absolute bottom-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-primary text-white opacity-0 transition-opacity group-hover:opacity-100 hover:opacity-90">
+<span class="material-symbols-outlined">add_shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Pagination -->
+<nav aria-label="Pagination" class="mt-12 flex items-center justify-center gap-2">
+<a class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors" href="#">
+<span class="material-symbols-outlined">chevron_left</span>
+</a>
+<a class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-white" href="#">1</a>
+<a class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors" href="#">2</a>
+<a class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors" href="#">3</a>
+<span class="inline-flex h-10 w-10 items-center justify-center text-gray-500">...</span>
+<a class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors" href="#">8</a>
+<a class="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors" href="#">
+<span class="material-symbols-outlined">chevron_right</span>
+</a>
+</nav>
+</div>
+</div>
+</main>
+</div>
+</body></html>
