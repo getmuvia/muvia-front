@@ -3,6 +3,7 @@ import { ShopLayout } from './layout/shop-layout/shop-layout';
 import { SellerLayout } from './layout/seller-layout/seller-layout';
 import { Home } from './features/shop/home/home';
 import { SellerProfile } from './features/seller/seller-profile/seller-profile';
+import { ProductCreate } from './features/seller/product-create/product-create';
 import { authGuard } from '@core/auth/guards/auth.guard';
 
 export const routes: Routes = [
@@ -33,6 +34,10 @@ export const routes: Routes = [
             {
                 path: 'profile',
                 component: SellerProfile,
+            },
+            {
+                path: 'products/create',
+                component: ProductCreate,
             },
             {
                 path: '',

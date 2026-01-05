@@ -1,0 +1,54 @@
+<div class="flex flex-col md:flex-row gap-8 items-start">
+    <!-- Left Column: Form Sections -->
+    <div class="flex-1 w-full space-y-8">
+        <!-- Page Header -->
+        <div class="flex flex-col gap-2 mb-8">
+            <h1 class="text-3xl md:text-4xl font-headline font-light text-gray-800 tracking-tight">
+                Nuevo Producto
+            </h1>
+            <p class="text-gray-500 font-body font-light">
+                Completa los detalles para añadir una nueva pieza a tu colección.
+            </p>
+        </div>
+
+        <!-- Basic Info Section -->
+        <app-basic-info-section [form]="productForm" [categories]="categories()"
+            [isLoadingCategories]="isLoadingCategories()">
+        </app-basic-info-section>
+
+        <!-- Specifications Section -->
+        <app-specifications-section [form]="productForm">
+        </app-specifications-section>
+
+        <!-- Keywords Section -->
+        <app-keywords-section [keywords]="keywords()" (keywordsChange)="onKeywordsChange($event)">
+        </app-keywords-section>
+    </div>
+
+    <!-- Right Column: Media Upload & Actions -->
+    <aside class="w-full md:w-96 space-y-8 md:sticky md:top-24">
+        <!-- Image Gallery Upload -->
+        <app-image-gallery-upload [assets]="imageAssets()" (assetsChange)="onImagesChange($event)">
+        </app-image-gallery-upload>
+
+        <!-- 3D Model Upload -->
+        <app-model-3d-upload [asset]="model3dAsset()" (assetChange)="onModel3dChange($event)">
+        </app-model-3d-upload>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-3 pt-4">
+            <button type="button" (click)="onPublish()" [disabled]="isSubmitting()"
+                class="w-full bg-primary hover:bg-primary/90 text-white font-body font-bold py-4 uppercase tracking-widest text-sm transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                @if (isSubmitting()) {
+                <span>Publicando...</span>
+                } @else {
+                <span>Publicar Producto</span>
+                }
+            </button>
+            <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
+                class="w-full bg-transparent border border-gray-300 text-gray-600 font-body font-bold py-3 uppercase tracking-widest text-xs hover:bg-gray-50 transition-colors disabled:opacity-50">
+                Guardar Borrador
+            </button>
+        </div>
+    </aside>
+</div>

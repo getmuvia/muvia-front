@@ -1,0 +1,52 @@
+<section class="liquid-glass p-8 space-y-6" [formGroup]="form">
+    <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+        <h3 class="text-lg font-body font-bold uppercase tracking-wider text-secondary">Especificaciones Técnicas</h3>
+        <span class="material-symbols-outlined text-gray-400">square_foot</span>
+    </div>
+
+    <div formGroupName="specifications" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Dimensions -->
+        <div class="space-y-2" formGroupName="dimensions">
+            <label class="text-xs text-gray-500 uppercase font-body">
+                Dimensiones (L x A x H)
+            </label>
+            <div class="flex gap-2 items-center">
+                <input formControlName="width" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+                    placeholder="Ancho" type="number" min="0" />
+                <span class="text-gray-400">×</span>
+                <input formControlName="depth" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+                    placeholder="Largo" type="number" min="0" />
+                <span class="text-gray-400">×</span>
+                <input formControlName="height"
+                    class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body" placeholder="Alto"
+                    type="number" min="0" />
+                <select formControlName="unit" class="bg-gray-50 border-none p-3 text-sm text-gray-900 font-body">
+                    <option value="cm">cm</option>
+                    <option value="m">m</option>
+                    <option value="in">in</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Weight -->
+        <div class="space-y-2">
+            <label class="text-xs text-gray-500 uppercase font-body">Peso</label>
+            <input formControlName="weight" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+                placeholder="Ej. 15 kg" type="text" />
+        </div>
+
+        <!-- Material -->
+        <div class="space-y-2">
+            <label class="text-xs text-gray-500 uppercase font-body">Material Principal</label>
+            <input formControlName="material" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+                placeholder="Ej. Roble macizo, Vidrio templado" type="text" />
+        </div>
+
+        <!-- Color -->
+        <div class="space-y-2">
+            <label class="text-xs text-gray-500 uppercase font-body">Color Predominante</label>
+            <input formControlName="color" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+                placeholder="Ej. Negro mate, Blanco perla" type="text" />
+        </div>
+    </div>
+</section>

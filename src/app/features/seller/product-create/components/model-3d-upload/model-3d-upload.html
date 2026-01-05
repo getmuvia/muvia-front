@@ -1,0 +1,42 @@
+<div class="liquid-glass p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-base font-body font-bold uppercase tracking-wider text-gray-800">
+            Modelo 3D
+        </h3>
+        <span class="material-symbols-outlined text-secondary">view_in_ar</span>
+    </div>
+
+    <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
+        [class.border-secondary]="isDragging()" [class.border-gray-300]="!isDragging()" (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave()" (drop)="onDrop($event)" (click)="fileInput.click()">
+
+        @if (asset) {
+        <div class="flex flex-col items-center justify-center h-full">
+            <span class="material-symbols-outlined text-4xl text-secondary mb-2">view_in_ar</span>
+            <p class="text-sm font-body font-medium text-gray-800">Modelo cargado</p>
+            <p class="text-xs text-gray-500 font-body mt-1">
+                {{ (asset.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
+            </p>
+        </div>
+        <div
+            class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <button type="button" (click)="removeModel(); $event.stopPropagation()"
+                class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
+                <span class="material-symbols-outlined">delete</span>
+            </button>
+        </div>
+        } @else {
+        <span class="material-symbols-outlined text-4xl text-gray-400 mb-2">deployed_code</span>
+        <p class="text-xs font-body font-medium text-gray-500">
+            Cargar archivo .GLB / .GLTF
+        </p>
+        }
+
+        <div
+            class="absolute top-2 right-2 bg-secondary text-white text-[10px] px-2 py-0.5 uppercase font-bold font-body">
+            Beta
+        </div>
+
+        <input #fileInput type="file" accept=".glb,.gltf" class="hidden" (change)="onFileSelect($event)" />
+    </div>
+</div>
