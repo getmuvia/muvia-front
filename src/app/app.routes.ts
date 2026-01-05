@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ShopLayout } from './layout/shop-layout/shop-layout';
 import { SellerLayout } from './layout/seller-layout/seller-layout';
 import { Home } from './features/shop/home/home';
+import { authGuard } from '@core/auth/guards/auth.guard';
 
 export const routes: Routes = [
     {
@@ -26,6 +27,7 @@ export const routes: Routes = [
     {
         path: 'seller',
         component: SellerLayout,
+        canActivate: [authGuard],
         children: []
     },
     {
