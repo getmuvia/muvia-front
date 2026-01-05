@@ -1,0 +1,28 @@
+<div class="flex p-4 -mt-16 z-10 relative">
+    <div class="flex w-full flex-col gap-4 sm:flex-row sm:justify-between sm:items-end">
+        <div class="flex gap-4 items-end">
+            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 ring-4 ring-background-light dark:ring-background-dark bg-primary/20"
+                [style.background-image]="avatarUrl() ? 'url(' + avatarUrl() + ')' : null">
+            </div>
+            <div class="flex flex-col justify-center pb-2">
+                <p
+                    class="text-text-light dark:text-white text-3xl font-headline font-bold leading-tight tracking-[-0.015em]">
+                    {{ sellerName() || 'Nombre del Vendedor' }}
+                </p>
+                <p class="text-text-light/60 dark:text-white/60 text-base font-body font-normal leading-normal">
+                    {{ description() || 'Descripción del vendedor.' }}
+                </p>
+            </div>
+        </div>
+        <div class="flex w-full sm:w-auto max-w-[480px] gap-3">
+            <button (click)="onFollow()"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-text-light/10 dark:bg-white/10 text-text-light dark:text-white text-sm font-body font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto hover:bg-text-light/20 dark:hover:bg-white/20 transition-colors">
+                <span class="truncate">Seguir</span>
+            </button>
+            <button (click)="onContact()"
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-primary text-white text-sm font-body font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto hover:opacity-90 transition-opacity">
+                <span class="truncate">Contactar Vendedor</span>
+            </button>
+        </div>
+    </div>
+</div>

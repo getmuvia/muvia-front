@@ -1,1 +1,63 @@
-<p>seller-header works!</p>
+<header
+    class="border-b border-text-light/10 dark:border-text-dark/10 bg-background-light dark:bg-background-dark/80 backdrop-blur-sm sticky top-0 z-50">
+    <div class="flex items-center justify-between whitespace-nowrap max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <div class="flex items-center gap-8">
+            <a routerLink="/home" class="flex items-center gap-3 text-text-light dark:text-white">
+                <div class="size-6 text-primary">
+                    <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
+                        </path>
+                    </svg>
+                </div>
+                <h2 class="text-xl font-headline font-bold tracking-[-0.015em]">DecoHome</h2>
+            </a>
+            <label class="hidden md:flex flex-col min-w-40 !h-10 max-w-64">
+                <div class="flex w-full flex-1 items-stretch h-full">
+                    <div
+                        class="text-text-light/50 dark:text-text-dark/50 flex border-none bg-text-light/10 dark:bg-text-dark/20 items-center justify-center pl-4 border-r-0">
+                        <span class="material-symbols-outlined">search</span>
+                    </div>
+                    <input
+                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light dark:text-white focus:outline-0 focus:ring-0 border-none bg-text-light/10 dark:bg-text-dark/20 focus:border-none h-full placeholder:text-text-light/50 dark:placeholder:text-text-dark/50 px-4 border-l-0 pl-2 text-base font-body font-normal leading-normal"
+                        placeholder="Buscar" />
+                </div>
+            </label>
+        </div>
+        <div class="flex flex-1 justify-end items-center gap-4 sm:gap-6">
+            <div class="hidden lg:flex items-center gap-6">
+                <a class="text-text-light/70 dark:text-white/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                    routerLink="/home">Home</a>
+                <a class="text-text-light/70 dark:text-white/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                    href="#">Categorías</a>
+                <a class="text-text-light/70 dark:text-white/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                    href="#">Inspiración</a>
+                <a class="text-text-light/70 dark:text-white/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                    href="#">Magazine</a>
+            </div>
+            <div class="flex items-center gap-2">
+                <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-primary text-white text-sm font-body font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                    <span class="truncate">Subir</span>
+                </button>
+                <button
+                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 bg-text-light/5 dark:bg-text-dark/10 text-text-light dark:text-white gap-2 text-sm font-body font-bold leading-normal tracking-[0.015em] min-w-0 px-2.5 hover:bg-text-light/10 dark:hover:bg-text-dark/20 transition-colors">
+                    <span class="material-symbols-outlined">favorite</span>
+                </button>
+            </div>
+            <div class="user-menu flex items-center gap-2">
+                <div
+                    class="flex cursor-pointer items-center justify-center overflow-hidden h-10 bg-text-light/5 dark:bg-text-dark/10 text-text-light dark:text-white gap-2 text-sm font-medium leading-normal px-3">
+                    <span class="material-symbols-outlined text-xl">person</span>
+                    <span class="max-w-[120px] truncate hidden sm:inline">{{ currentUser()?.businessName || 'Mi Cuenta'
+                        }}</span>
+                </div>
+                <button (click)="logout()"
+                    class="flex cursor-pointer items-center justify-center h-10 w-10 bg-transparent hover:bg-red-500/20 text-text-light dark:text-white transition-all duration-300"
+                    title="Cerrar sesión">
+                    <span class="material-symbols-outlined text-xl">logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
