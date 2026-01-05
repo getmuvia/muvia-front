@@ -1,29 +1,6 @@
 <app-seller-header></app-seller-header>
 
 <main class="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <app-seller-cover-banner [coverImageUrl]="coverImageUrl"></app-seller-cover-banner>
-
-    <app-seller-profile-header [avatarUrl]="avatarUrl" [sellerName]="sellerName" [description]="sellerDescription"
-        (follow)="onFollow()" (contact)="onContact()">
-    </app-seller-profile-header>
-
-    <div class="flex flex-col lg:flex-row gap-8 mt-8">
-        <app-seller-sidebar [aboutText]="aboutText" [rating]="rating" [totalReviews]="totalReviews"
-            [socialLinks]="socialLinks">
-        </app-seller-sidebar>
-
-        <div class="flex-1">
-            <app-seller-filter-chips (chipSelected)="onFilterChange($event)">
-            </app-seller-filter-chips>
-
-            <app-seller-product-grid [products]="products"></app-seller-product-grid>
-
-            <app-seller-pagination [currentPage]="currentPage" [totalPages]="totalPages"
-                (pageChange)="onPageChange($event)">
-            </app-seller-pagination>
-        </div>
-    </div>
-
     <router-outlet></router-outlet>
 </main>
 

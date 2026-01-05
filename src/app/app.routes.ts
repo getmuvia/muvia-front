@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ShopLayout } from './layout/shop-layout/shop-layout';
 import { SellerLayout } from './layout/seller-layout/seller-layout';
 import { Home } from './features/shop/home/home';
+import { SellerProfile } from './features/seller/seller-profile/seller-profile';
 import { authGuard } from '@core/auth/guards/auth.guard';
 
 export const routes: Routes = [
@@ -28,7 +29,17 @@ export const routes: Routes = [
         path: 'seller',
         component: SellerLayout,
         canActivate: [authGuard],
-        children: []
+        children: [
+            {
+                path: 'profile',
+                component: SellerProfile,
+            },
+            {
+                path: '',
+                redirectTo: 'profile',
+                pathMatch: 'full'
+            }
+        ]
     },
     {
         path: '**',
