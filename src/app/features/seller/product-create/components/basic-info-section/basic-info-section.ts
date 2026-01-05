@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Category } from '@core/models/category/category';
 
@@ -9,7 +9,7 @@ import { Category } from '@core/models/category/category';
     styleUrl: './basic-info-section.css',
 })
 export class BasicInfoSection {
-    @Input({ required: true }) form!: FormGroup;
-    @Input() categories: Category[] = [];
-    @Input() isLoadingCategories = false;
+    form = input.required<FormGroup>();
+    categories = input<Category[]>([]);
+    isLoadingCategories = input(false);
 }

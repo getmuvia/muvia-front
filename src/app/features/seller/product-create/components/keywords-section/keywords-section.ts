@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 
 @Component({
     selector: 'app-keywords-section',
@@ -7,8 +7,8 @@ import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
     styleUrl: './keywords-section.css',
 })
 export class KeywordsSection {
-    @Input() keywords: string[] = [];
-    @Output() keywordsChange = new EventEmitter<string[]>();
+    keywords = input<string[]>([]);
+    keywordsChange = output<string[]>();
 
     newKeyword = signal('');
 
@@ -21,20 +21,17 @@ export class KeywordsSection {
 
     addKeyword(): void {
         const keyword = this.newKeyword().trim().toLowerCase();
-        if (keyword && !this.keywords.includes(keyword)) {
-            const updated = [...this.keywords, keyword];
-            this.keywordsChange.emit(updated);
+        if (keyword && !this.keywords().includes(keyword)) {
+            this.keywordsChange.emit([...this.keywords(), keyword]);
             this.newKeyword.set('');
         }
     }
 
     removeKeyword(keyword: string): void {
-        const updated = this.keywords.filter(k => k !== keyword);
-        this.keywordsChange.emit(updated);
+        this.keywordsChange.emit(this.keywords().filter(k => k !== keyword));
     }
 
     onInputChange(event: Event): void {
-        const input = event.target as HTMLInputElement;
-        this.newKeyword.set(input.value);
+        this.newKeyword.set((event.target as HTMLInputElement).value);
     }
 }

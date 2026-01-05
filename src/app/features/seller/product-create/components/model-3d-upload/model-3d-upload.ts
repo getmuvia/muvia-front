@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
@@ -8,8 +8,8 @@ import { CreateProductAsset } from '@core/models/product/create-product.dto';
     styleUrl: './model-3d-upload.css',
 })
 export class Model3dUpload {
-    @Input() asset: CreateProductAsset | null = null;
-    @Output() assetChange = new EventEmitter<CreateProductAsset | null>();
+    asset = input<CreateProductAsset | null>(null);
+    assetChange = output<CreateProductAsset | null>();
 
     isDragging = signal(false);
 
@@ -25,7 +25,6 @@ export class Model3dUpload {
     onDrop(event: DragEvent): void {
         event.preventDefault();
         this.isDragging.set(false);
-
         const files = event.dataTransfer?.files;
         if (files && files.length > 0) {
             this.handleFile(files[0]);
@@ -41,29 +40,15 @@ export class Model3dUpload {
     }
 
     private handleFile(file: File): void {
-        const validExtensions = ['.glb', '.gltf'];
-        const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+        const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+        if (!['.glb', '.gltf'].includes(ext)) return;
 
-        if (!validExtensions.includes(extension)) {
-            console.warn('Invalid file type. Only GLB/GLTF allowed.');
-            return;
-        }
-
-        // Create temporary URL for preview
-        const url = URL.createObjectURL(file);
-
-        const newAsset: CreateProductAsset = {
-            url,
+        this.assetChange.emit({
+            url: URL.createObjectURL(file),
             type: 'model_3d',
             isPrimary: false,
-            metadata: {
-                format: extension.replace('.', ''),
-                scale: '1:1',
-                arPlacement: 'floor'
-            }
-        };
-
-        this.assetChange.emit(newAsset);
+            metadata: { format: ext.replace('.', ''), scale: '1:1', arPlacement: 'floor' }
+        });
     }
 
     removeModel(): void {

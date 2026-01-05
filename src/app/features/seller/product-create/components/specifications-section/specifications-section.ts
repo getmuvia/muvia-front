@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -8,5 +8,5 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
     styleUrl: './specifications-section.css',
 })
 export class SpecificationsSection {
-    @Input({ required: true }) form!: FormGroup;
+    form = input.required<FormGroup>();
 }

@@ -13,11 +13,12 @@
             (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event, true)"
             (click)="primaryInput.click()">
 
-            @if (primaryImage) {
-            <img [src]="primaryImage.url" [alt]="primaryImage.metadata['alt']" class="w-full h-full object-cover" />
+            @if (primaryImage()) {
+            <img [src]="primaryImage()!.url" [alt]="primaryImage()!.metadata['alt']"
+                class="w-full h-full object-cover" />
             <div
                 class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                <button type="button" (click)="removeImage(primaryImage.url); $event.stopPropagation()"
+                <button type="button" (click)="removeImage(primaryImage()!.url); $event.stopPropagation()"
                     class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
@@ -40,7 +41,7 @@
         </div>
 
         <!-- Secondary Image Slots -->
-        @for (asset of secondaryImages; track asset.url) {
+        @for (asset of secondaryImages(); track asset.url) {
         <div class="aspect-square relative overflow-hidden border border-gray-200 group cursor-pointer"
             (click)="setPrimary(asset.url)">
             <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
@@ -60,7 +61,7 @@
         }
 
         <!-- Empty slots for remaining -->
-        @for (i of emptySlots; track i) {
+        @for (i of emptySlots(); track i) {
         <div class="aspect-square bg-gray-50 flex items-center justify-center border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
             (click)="secondaryInput.click()">
             <span class="material-symbols-outlined text-gray-400">add</span>

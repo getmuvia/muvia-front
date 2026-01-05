@@ -10,12 +10,12 @@
         [class.border-secondary]="isDragging()" [class.border-gray-300]="!isDragging()" (dragover)="onDragOver($event)"
         (dragleave)="onDragLeave()" (drop)="onDrop($event)" (click)="fileInput.click()">
 
-        @if (asset) {
+        @if (asset()) {
         <div class="flex flex-col items-center justify-center h-full">
             <span class="material-symbols-outlined text-4xl text-secondary mb-2">view_in_ar</span>
             <p class="text-sm font-body font-medium text-gray-800">Modelo cargado</p>
             <p class="text-xs text-gray-500 font-body mt-1">
-                {{ (asset.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
+                {{ (asset()!.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
             </p>
         </div>
         <div

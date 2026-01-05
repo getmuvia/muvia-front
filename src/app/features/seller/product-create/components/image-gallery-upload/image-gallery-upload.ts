@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, signal } from '@angular/core';
+import { Component, input, output, signal, computed } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
@@ -8,29 +8,19 @@ import { CreateProductAsset } from '@core/models/product/create-product.dto';
     styleUrl: './image-gallery-upload.css',
 })
 export class ImageGalleryUpload {
-    @Input() assets: CreateProductAsset[] = [];
-    @Output() assetsChange = new EventEmitter<CreateProductAsset[]>();
+    assets = input<CreateProductAsset[]>([]);
+    assetsChange = output<CreateProductAsset[]>();
 
     isDragging = signal(false);
-    maxImages = 5;
+    readonly maxImages = 5;
 
-    get primaryImage(): CreateProductAsset | undefined {
-        return this.assets.find(a => a.isPrimary);
-    }
-
-    get secondaryImages(): CreateProductAsset[] {
-        return this.assets.filter(a => !a.isPrimary);
-    }
-
-    get remainingSlots(): number {
-        return Math.max(0, this.maxImages - this.assets.length);
-    }
-
-    /** Returns an array of empty slot indices for the template */
-    get emptySlots(): number[] {
-        const count = Math.min(this.remainingSlots, 4 - this.secondaryImages.length);
+    primaryImage = computed(() => this.assets().find(a => a.isPrimary));
+    secondaryImages = computed(() => this.assets().filter(a => !a.isPrimary));
+    remainingSlots = computed(() => Math.max(0, this.maxImages - this.assets().length));
+    emptySlots = computed(() => {
+        const count = Math.min(this.remainingSlots(), 4 - this.secondaryImages().length);
         return count > 0 ? Array.from({ length: count }, (_, i) => i) : [];
-    }
+    });
 
     onDragOver(event: DragEvent): void {
         event.preventDefault();
@@ -44,7 +34,6 @@ export class ImageGalleryUpload {
     onDrop(event: DragEvent, isPrimary: boolean): void {
         event.preventDefault();
         this.isDragging.set(false);
-
         const files = event.dataTransfer?.files;
         if (files && files.length > 0) {
             this.handleFiles(files, isPrimary);
@@ -56,58 +45,38 @@ export class ImageGalleryUpload {
         if (input.files && input.files.length > 0) {
             this.handleFiles(input.files, isPrimary);
         }
-        // Reset input to allow selecting same file again
         input.value = '';
     }
 
     private handleFiles(files: FileList, isPrimary: boolean): void {
         const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        const maxSize = 5 * 1024 * 1024; // 5MB
+        const maxSize = 5 * 1024 * 1024;
 
         Array.from(files).forEach(file => {
-            if (this.assets.length >= this.maxImages) return;
-            if (!validTypes.includes(file.type)) {
-                console.warn('Invalid file type:', file.type);
-                return;
-            }
-            if (file.size > maxSize) {
-                console.warn('File too large:', file.size);
-                return;
-            }
+            if (this.assets().length >= this.maxImages) return;
+            if (!validTypes.includes(file.type) || file.size > maxSize) return;
 
-            // Create a temporary URL for preview (in real implementation, upload to server)
             const url = URL.createObjectURL(file);
-
-            // If setting as primary, remove primary flag from others
-            let updatedAssets = [...this.assets];
+            let updated = [...this.assets()];
             if (isPrimary) {
-                updatedAssets = updatedAssets.map(a => ({ ...a, isPrimary: false }));
+                updated = updated.map(a => ({ ...a, isPrimary: false }));
             }
 
-            const newAsset: CreateProductAsset = {
+            updated.push({
                 url,
                 type: 'image',
-                isPrimary: isPrimary && !this.primaryImage,
-                metadata: {
-                    alt: file.name.replace(/\.[^/.]+$/, ''),
-                }
-            };
-
-            updatedAssets.push(newAsset);
-            this.assetsChange.emit(updatedAssets);
+                isPrimary: isPrimary && !this.primaryImage(),
+                metadata: { alt: file.name.replace(/\.[^/.]+$/, '') }
+            });
+            this.assetsChange.emit(updated);
         });
     }
 
     removeImage(url: string): void {
-        const updated = this.assets.filter(a => a.url !== url);
-        this.assetsChange.emit(updated);
+        this.assetsChange.emit(this.assets().filter(a => a.url !== url));
     }
 
     setPrimary(url: string): void {
-        const updated = this.assets.map(a => ({
-            ...a,
-            isPrimary: a.url === url
-        }));
-        this.assetsChange.emit(updated);
+        this.assetsChange.emit(this.assets().map(a => ({ ...a, isPrimary: a.url === url })));
     }
 }
