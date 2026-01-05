@@ -8,6 +8,9 @@
       "@core/models/*": [
         "src/app/core/models/*"
       ],
+      "@core/services/*": [
+        "src/app/core/services/*"
+      ],
       "@shared/components/*": [
         "src/app/shared/components/*"
       ],

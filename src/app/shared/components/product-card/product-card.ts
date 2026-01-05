@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { Product } from '@core/models/product/product';
 
@@ -9,6 +9,24 @@ import { Product } from '@core/models/product/product';
   styleUrl: './product-card.css',
 })
 export class ProductCard {
-
   product = input.required<Product>();
+
+  /** Get the primary image URL from assets */
+  imageUrl = computed(() => {
+    const assets = this.product().assets;
+    const primary = assets?.find(a => a.isPrimary) || assets?.[0];
+    return primary?.url || '';
+  });
+
+  /** Get alt text from primary asset metadata */
+  altText = computed(() => {
+    const assets = this.product().assets;
+    const primary = assets?.find(a => a.isPrimary) || assets?.[0];
+    return primary?.metadata?.alt || this.product().title;
+  });
+
+  /** Get price as number */
+  priceNumber = computed(() => {
+    return parseFloat(this.product().price) || 0;
+  });
 }

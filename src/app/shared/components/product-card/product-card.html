@@ -1,8 +1,9 @@
 <div class="flex flex-col gap-3 group p-4 cursor-pointer">
 
+    @if (imageUrl()) {
     <div class="relative overflow-hidden rounded-lg aspect-[2/3] bg-gray-100 dark:bg-gray-800">
 
-        <img [ngSrc]="product().imageUrl" [alt]="product().altText || product().name" fill
+        <img [ngSrc]="imageUrl()" [alt]="altText()" fill
             class="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" />
 
         <button
@@ -10,18 +11,19 @@
             <span class="material-symbols-outlined text-base text-text-light dark:text-white">favorite</span>
         </button>
     </div>
+    }
 
     <div class="flex flex-col items-start">
         <p class="text-sm text-text-light/70 dark:text-text-dark/70 font-body">
-            {{ product().brand }}
+            {{ product().category.name }}
         </p>
 
         <h3 class="font-body font-bold text-base leading-tight">
-            {{ product().name }}
+            {{ product().title }}
         </h3>
 
         <p class="font-body font-bold text-primary">
-            {{ product().price | currency:'USD':'symbol':'1.2-2' }}
+            {{ priceNumber() | currency:'USD':'symbol':'1.2-2' }}
         </p>
     </div>
 </div>

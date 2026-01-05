@@ -13,7 +13,7 @@
         <app-seller-filter-chips (chipSelected)="onFilterChange($event)">
         </app-seller-filter-chips>
 
-        <app-seller-product-grid [products]="products"></app-seller-product-grid>
+        <app-seller-product-grid [products]="products()"></app-seller-product-grid>
 
         <app-seller-pagination [currentPage]="currentPage" [totalPages]="totalPages"
             (pageChange)="onPageChange($event)">
