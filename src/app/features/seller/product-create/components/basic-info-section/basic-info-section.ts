@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, effect } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Category } from '@core/models/category/category';
 
@@ -12,4 +12,12 @@ export class BasicInfoSection {
     form = input.required<FormGroup>();
     categories = input<Category[]>([]);
     isLoadingCategories = input(false);
+    constructor() {
+        effect(() => {
+            const control = this.form().get('categoryId');
+            if (control) {
+                this.isLoadingCategories() ? control.disable() : control.enable();
+            }
+        });
+    }
 }

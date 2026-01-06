@@ -57,7 +57,7 @@
                 </label>
                 <select formControlName="categoryId"
                     class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-secondary focus:ring-0 px-0 py-3 text-lg text-gray-900 font-body"
-                    [disabled]="isLoadingCategories()">
+                    class="w-full bg-transparent border-0 border-b border-gray-300 focus:border-secondary focus:ring-0 px-0 py-3 text-lg text-gray-900 font-body">
                     <option value="" disabled>Selecciona una categoría</option>
                     @for (category of categories(); track category.id) {
                     <option [value]="category.id">{{ category.name }}</option>
