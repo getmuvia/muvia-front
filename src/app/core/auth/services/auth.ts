@@ -12,8 +12,8 @@ import { parseAuthError } from './auth-error';
 })
 export class Auth {
   private readonly http = inject(HttpClient);
-  private readonly storage = new AuthStorage();
-  private readonly state = new AuthState();
+  private readonly storage = inject(AuthStorage);
+  private readonly state = inject(AuthState);
 
   readonly currentUser = this.state.currentUser;
   readonly isAuthenticated = this.state.isAuthenticated;

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal, afterNextRender } from '@angular/core';
 import { SellerCoverBanner } from './components/seller-cover-banner/seller-cover-banner';
 import { SellerProfileHeader } from './components/seller-profile-header/seller-profile-header';
 import { SellerSidebar } from './components/seller-sidebar/seller-sidebar';
@@ -21,7 +21,7 @@ import { ProductService } from '@core/services/product/product';
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
 })
-export class SellerProfile implements OnInit {
+export class SellerProfile {
   private readonly productService = inject(ProductService);
 
   // Demo data - in real implementation, this would come from a service
@@ -45,8 +45,11 @@ export class SellerProfile implements OnInit {
   currentPage = 1;
   totalPages = 8;
 
-  ngOnInit(): void {
-    this.loadProducts();
+  constructor() {
+    // Load products only after hydration (client-side only)
+    afterNextRender(() => {
+      this.loadProducts();
+    });
   }
 
   private loadProducts(): void {

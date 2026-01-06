@@ -1,10 +1,13 @@
-import { inject, PLATFORM_ID } from '@angular/core';
+import { inject, PLATFORM_ID, Injectable } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { User } from '../models/auth.models';
 
 const AUTH_TOKEN_KEY = 'auth_token';
 const USER_KEY = 'auth_user';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class AuthStorage {
     private readonly platformId = inject(PLATFORM_ID);
 

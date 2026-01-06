@@ -5,11 +5,8 @@ import { ProductService } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
 import { Category } from '@core/models/category/category';
 import { CreateProductDto, CreateProductSpecifications, CreateProductAsset } from '@core/models/product/create-product.dto';
-import { BasicInfoSection } from './components/basic-info-section/basic-info-section';
-import { SpecificationsSection } from './components/specifications-section/specifications-section';
-import { KeywordsSection } from './components/keywords-section/keywords-section';
-import { ImageGalleryUpload } from './components/image-gallery-upload/image-gallery-upload';
-import { Model3dUpload } from './components/model-3d-upload/model-3d-upload';
+import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryUpload, Model3dUpload } from './components';
+
 
 @Component({
     selector: 'app-product-create',
