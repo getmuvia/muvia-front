@@ -1,0 +1,83 @@
+<div class="flex flex-col md:flex-row gap-8 items-start">
+    <!-- Left Column: Form -->
+    <div class="flex-1 w-full space-y-8">
+        <!-- Page Header -->
+        <div class="flex flex-col gap-4 mb-8">
+            <h1 class="text-3xl md:text-4xl font-headline font-light text-gray-800 tracking-tight">
+                Nuevo Producto
+            </h1>
+            <p class="text-gray-500 font-body font-light">
+                Completa los detalles para añadir una nueva pieza a tu colección.
+            </p>
+        </div>
+
+        <form (submit)="onSubmit($event)" novalidate>
+            <!-- Basic Info Section -->
+            <div class="mb-8">
+                <app-basic-info-section [titleField]="productForm.title" [descriptionField]="productForm.description"
+                    [priceField]="productForm.price" [stockField]="productForm.stock"
+                    [categoryIdField]="productForm.categoryId" [categories]="categories()"
+                    [isLoadingCategories]="isLoadingCategories()">
+                </app-basic-info-section>
+            </div>
+
+            <!-- Specifications Section -->
+            <div class="mb-8">
+                <app-specifications-section [weightField]="productForm.weight" [materialField]="productForm.material"
+                    [colorField]="productForm.color" [dimensionWidthField]="productForm.dimensionWidth"
+                    [dimensionHeightField]="productForm.dimensionHeight"
+                    [dimensionDepthField]="productForm.dimensionDepth" [dimensionUnitField]="productForm.dimensionUnit">
+                </app-specifications-section>
+            </div>
+
+            <!-- Keywords Section -->
+            <div class="mb-8">
+                <app-keywords-section [keywords]="keywords()" (keywordsChange)="onKeywordsChange($event)">
+                </app-keywords-section>
+                @if (keywordsError()) {
+                <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-2">
+                    <span class="material-symbols-outlined text-sm">error</span>
+                    <span>{{ keywordsError() }}</span>
+                </p>
+                }
+            </div>
+        </form>
+    </div>
+
+    <!-- Right Column: Media Upload & Actions -->
+    <aside class="w-full md:w-96 space-y-8 md:sticky md:top-24">
+        <!-- Image Gallery Upload -->
+        <div>
+            <app-image-gallery-upload [assets]="imageAssets()" (assetsChange)="onImagesChange($event)"
+                (fileSelected)="onFileSelected($event)">
+            </app-image-gallery-upload>
+            @if (imagesError()) {
+            <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-2">
+                <span class="material-symbols-outlined text-sm">error</span>
+                <span>{{ imagesError() }}</span>
+            </p>
+            }
+        </div>
+
+        <!-- 3D Model Upload -->
+        <app-model-3d-upload [asset]="model3dAsset()" (assetChange)="onModel3dChange($event)"
+            (fileSelected)="onFileSelected($event)">
+        </app-model-3d-upload>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col gap-3 pt-4">
+            <button type="submit" (click)="onSubmit($event)" [disabled]="isSubmitting()"
+                class="w-full bg-primary hover:bg-primary/90 text-white font-body font-bold py-4 uppercase tracking-widest text-sm transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                @if (isSubmitting()) {
+                <span>Publicando...</span>
+                } @else {
+                <span>Publicar Producto</span>
+                }
+            </button>
+            <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
+                class="w-full bg-transparent border border-gray-300 text-gray-600 font-body font-bold py-3 uppercase tracking-widest text-xs hover:bg-gray-50 transition-colors disabled:opacity-50">
+                Guardar Borrador
+            </button>
+        </div>
+    </aside>
+</div>

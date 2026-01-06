@@ -1,0 +1,78 @@
+<div class="liquid-glass p-6">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-base font-body font-bold uppercase tracking-wider text-gray-800">
+            Galería de Imágenes
+        </h3>
+        <span class="material-symbols-outlined text-secondary">imagesmode</span>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+        <!-- Primary Image Slot -->
+        <div class="col-span-2 aspect-[4/3] flex flex-col items-center justify-center border-2 border-dashed transition-colors cursor-pointer group relative overflow-hidden"
+            [class.border-secondary]="isDragging()" [class.border-gray-300]="!isDragging()"
+            (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event, true)"
+            (click)="primaryInput.click()">
+
+            @if (primaryImage()) {
+            <img [src]="primaryImage()!.url" [alt]="primaryImage()!.metadata['alt']"
+                class="w-full h-full object-cover" />
+            <div
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <button type="button" (click)="removeImage(primaryImage()!.url); $event.stopPropagation()"
+                    class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+            <div
+                class="absolute top-2 left-2 bg-secondary text-white text-[10px] px-2 py-0.5 uppercase font-bold font-body">
+                Principal
+            </div>
+            } @else {
+            <span class="material-symbols-outlined text-4xl text-gray-400 group-hover:text-secondary mb-2">
+                add_photo_alternate
+            </span>
+            <p class="text-xs text-gray-500 text-center px-4 font-body">
+                Arrastra tu imagen principal aquí
+            </p>
+            }
+
+            <input #primaryInput type="file" accept="image/jpeg,image/png,image/webp" class="hidden"
+                (change)="onFileSelect($event, true)" />
+        </div>
+
+        <!-- Secondary Image Slots -->
+        @for (asset of secondaryImages(); track asset.url) {
+        <div class="aspect-square relative overflow-hidden border border-gray-200 group cursor-pointer"
+            (click)="setPrimary(asset.url)">
+            <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
+            <div
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
+                <button type="button"
+                    class="bg-secondary text-white p-1 text-xs hover:bg-secondary/80 transition-colors"
+                    title="Hacer principal">
+                    <span class="material-symbols-outlined text-sm">star</span>
+                </button>
+                <button type="button" (click)="removeImage(asset.url); $event.stopPropagation()"
+                    class="bg-red-500 text-white p-1 text-xs hover:bg-red-600 transition-colors">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+            </div>
+        </div>
+        }
+
+        <!-- Empty slots for remaining -->
+        @for (i of emptySlots(); track i) {
+        <div class="aspect-square bg-gray-50 flex items-center justify-center border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
+            (click)="secondaryInput.click()">
+            <span class="material-symbols-outlined text-gray-400">add</span>
+        </div>
+        }
+    </div>
+
+    <input #secondaryInput type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden"
+        (change)="onFileSelect($event, false)" />
+
+    <p class="text-xs text-gray-400 mt-4 text-center font-body">
+        JPG, PNG o WEBP. Máx 5MB por archivo.
+    </p>
+</div>

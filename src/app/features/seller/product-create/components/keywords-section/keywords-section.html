@@ -1,0 +1,23 @@
+<section class="liquid-glass p-8">
+    <div class="space-y-4">
+        <label class="text-sm font-body font-medium text-gray-600 uppercase tracking-wide">
+            Etiquetas (Keywords)
+        </label>
+        <div class="flex flex-wrap gap-2 p-4 bg-gray-50 min-h-[80px] items-start border border-dashed border-gray-300">
+            @for (keyword of keywords(); track keyword) {
+            <span class="bg-primary text-white text-xs px-3 py-1 flex items-center gap-1 font-body">
+                {{ keyword }}
+                <button type="button" (click)="removeKeyword(keyword)" class="hover:text-secondary transition-colors">
+                    <span class="material-symbols-outlined text-[14px]">close</span>
+                </button>
+            </span>
+            }
+            <input [value]="newKeyword()" (input)="onInputChange($event)" (keydown)="onKeydown($event)"
+                class="bg-transparent border-none text-sm focus:ring-0 placeholder-gray-400 min-w-[150px] text-gray-900 font-body flex-1"
+                placeholder="Escribe y presiona Enter..." type="text" />
+        </div>
+        <p class="text-xs text-gray-500 font-body">
+            Ayuda a los compradores a encontrar tu producto más rápido.
+        </p>
+    </div>
+</section>

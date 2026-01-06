@@ -3,6 +3,7 @@ import { ShopLayout } from './layout/shop-layout/shop-layout';
 import { SellerLayout } from './layout/seller-layout/seller-layout';
 import { Home } from './features/shop/home/home';
 import { SellerProfile } from './features/seller/seller-profile/seller-profile';
+import { ProductCreate } from './features/seller/product-create/product-create';
 import { authGuard } from '@core/auth/guards/auth.guard';
 
 export const routes: Routes = [
@@ -35,6 +36,10 @@ export const routes: Routes = [
                 component: SellerProfile,
             },
             {
+                path: 'products/create',
+                component: ProductCreate,
+            },
+            {
                 path: '',
                 redirectTo: 'profile',
                 pathMatch: 'full'
@@ -44,10 +49,5 @@ export const routes: Routes = [
     {
         path: '**',
         redirectTo: 'home'
-    },
-    {
-        path: '',
-        redirectTo: 'home',
-        pathMatch: 'full'
     }
 ];

@@ -19,6 +19,9 @@
       ],
       "@environments/*": [
         "src/environments/*"
+      ],
+      "@core/constants/*": [
+        "src/app/core/constants/*"
       ]
     },
     "strict": true,

@@ -1,6 +1,9 @@
-import { signal, computed } from '@angular/core';
+import { signal, computed, Injectable } from '@angular/core';
 import { User } from '../models/auth.models';
 
+@Injectable({
+    providedIn: 'root'
+})
 export class AuthState {
     private readonly _currentUser = signal<User | null>(null);
     private readonly _loading = signal<boolean>(false);
