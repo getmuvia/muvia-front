@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '@environments/environment';
 import { Auth } from '@core/auth/services/auth';
+import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 export interface UploadResponse {
   url: string;
@@ -18,8 +18,8 @@ export interface UploadResponse {
 export class UploadFile {
   private readonly http = inject(HttpClient);
   private readonly auth = inject(Auth);
-  // Assuming the upload endpoint is under /files/upload based on the curl example
-  private readonly apiUrl = `${environment.apiUrl.replace('/api', '')}/files/upload`;
+
+  private readonly apiUrl = API_ENDPOINTS.FILES.UPLOAD;
 
   private getAuthHeaders(): HttpHeaders {
     const token = this.auth.getAccessToken();

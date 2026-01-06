@@ -2,10 +2,10 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { LoginData, RegisterData, AuthResponse } from '../models/auth.models';
-import { environment } from '@environments/environment';
 import { AuthStorage } from './storage';
 import { AuthState } from './auth-state';
 import { parseAuthError } from './auth-error';
+import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +33,7 @@ export class Auth {
 
     try {
       const response = await firstValueFrom(
-        this.http.post<AuthResponse>(`${environment.apiUrl}/auth/login`, credentials)
+        this.http.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, credentials)
       );
       this.handleSuccess(response);
       return true;
@@ -54,7 +54,7 @@ export class Auth {
 
     try {
       const response = await firstValueFrom(
-        this.http.post<AuthResponse>(`${environment.apiUrl}/auth/register`, data)
+        this.http.post<AuthResponse>(API_ENDPOINTS.AUTH.REGISTER, data)
       );
       this.handleSuccess(response);
       return true;
