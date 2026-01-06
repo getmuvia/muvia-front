@@ -10,6 +10,7 @@ import { CreateProductAsset } from '@core/models/product/create-product.dto';
 export class Model3dUpload {
     asset = input<CreateProductAsset | null>(null);
     assetChange = output<CreateProductAsset | null>();
+    fileSelected = output<{ url: string; file: File }>();
 
     isDragging = signal(false);
 
@@ -43,12 +44,14 @@ export class Model3dUpload {
         const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
         if (!['.glb', '.gltf'].includes(ext)) return;
 
+        const url = URL.createObjectURL(file);
         this.assetChange.emit({
-            url: URL.createObjectURL(file),
+            url,
             type: 'model_3d',
             isPrimary: false,
             metadata: { format: ext.replace('.', ''), scale: '1:1', arPlacement: 'floor' }
         });
+        this.fileSelected.emit({ url, file });
     }
 
     removeModel(): void {

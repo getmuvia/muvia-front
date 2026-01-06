@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { ProductService } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
+import { UploadFile } from '@core/services/uploadFile/upload-file';
+import { Auth } from '@core/auth/services/auth';
+import { firstValueFrom } from 'rxjs'; // For waiting for upload service
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
 import { CreateProductDto, CreateProductSpecifications, CreateProductAsset } from '@core/models/product/create-product.dto';
@@ -24,6 +27,10 @@ export class ProductCreate {
     private readonly router = inject(Router);
     private readonly productService = inject(ProductService);
     private readonly categoryService = inject(CategoryService);
+    private readonly uploadService = inject(UploadFile);
+    private readonly auth = inject(Auth);
+
+    pendingUploads = new Map<string, File>();
 
     productModel = signal<ProductFormData>(INITIAL_PRODUCT_FORM);
 
@@ -110,6 +117,10 @@ export class ProductCreate {
         this.model3dAsset.set(asset);
     }
 
+    onFileSelected(event: { url: string; file: File }): void {
+        this.pendingUploads.set(event.url, event.file);
+    }
+
     onSubmit(event: Event): void {
         event.preventDefault();
 
@@ -140,23 +151,77 @@ export class ProductCreate {
 
     private async submitProduct(): Promise<void> {
         this.isSubmitting.set(true);
-        const dto = this.buildProductDto();
 
-        return new Promise((resolve) => {
-            this.productService.createProduct(dto).subscribe({
-                next: (product) => {
-                    console.log('Product created:', product);
-                    this.isSubmitting.set(false);
-                    this.router.navigate(['/seller/profile']);
-                    resolve();
-                },
-                error: (err) => {
-                    console.error('Error creating product:', err);
-                    this.isSubmitting.set(false);
-                    resolve();
-                }
+        try {
+            await this.uploadPendingFiles();
+            const dto = this.buildProductDto();
+
+            return new Promise((resolve) => {
+                this.productService.createProduct(dto).subscribe({
+                    next: (product) => {
+                        console.log('Product created:', product);
+                        this.isSubmitting.set(false);
+                        this.router.navigate(['/seller/profile']);
+                        resolve();
+                    },
+                    error: (err) => {
+                        console.error('Error creating product:', err);
+                        this.isSubmitting.set(false);
+                        resolve();
+                    }
+                });
             });
-        });
+        } catch (error) {
+            console.error('Error uploading files:', error);
+            this.isSubmitting.set(false);
+        }
+    }
+
+    private async uploadPendingFiles(): Promise<void> {
+        const currentUser = this.auth.currentUser();
+        if (!currentUser) throw new Error('User not authenticated');
+
+        const userId = currentUser.id;
+        const uploadFolder = `products/${userId}`;
+
+        // Upload images
+        const currentImages = this.imageAssets();
+        const updatedImages = [...currentImages];
+
+        for (let i = 0; i < updatedImages.length; i++) {
+            const asset = updatedImages[i];
+            const file = this.pendingUploads.get(asset.url);
+
+            if (file) {
+                // Upload file
+                const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
+
+                // Update asset URL
+                updatedImages[i] = {
+                    ...asset,
+                    url: response.url
+                    // We could also update metadata with info from response if needed
+                };
+
+                // Remove from pending map
+                this.pendingUploads.delete(asset.url);
+            }
+        }
+        this.imageAssets.set(updatedImages);
+
+        // Upload 3D model if exists
+        const currentModel = this.model3dAsset();
+        if (currentModel) {
+            const file = this.pendingUploads.get(currentModel.url);
+            if (file) {
+                const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
+                this.model3dAsset.set({
+                    ...currentModel,
+                    url: response.url
+                });
+                this.pendingUploads.delete(currentModel.url);
+            }
+        }
     }
 
     private buildProductDto(): CreateProductDto {

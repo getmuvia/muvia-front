@@ -10,6 +10,7 @@ import { CreateProductAsset } from '@core/models/product/create-product.dto';
 export class ImageGalleryUpload {
     assets = input<CreateProductAsset[]>([]);
     assetsChange = output<CreateProductAsset[]>();
+    fileSelected = output<{ url: string; file: File }>();
 
     isDragging = signal(false);
     readonly maxImages = 5;
@@ -68,6 +69,7 @@ export class ImageGalleryUpload {
                 isPrimary: isPrimary && !this.primaryImage(),
                 metadata: { alt: file.name.replace(/\.[^/.]+$/, '') }
             });
+            this.fileSelected.emit({ url, file });
             this.assetsChange.emit(updated);
         });
     }

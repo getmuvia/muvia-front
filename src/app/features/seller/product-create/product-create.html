@@ -48,7 +48,8 @@
     <aside class="w-full md:w-96 space-y-8 md:sticky md:top-24">
         <!-- Image Gallery Upload -->
         <div>
-            <app-image-gallery-upload [assets]="imageAssets()" (assetsChange)="onImagesChange($event)">
+            <app-image-gallery-upload [assets]="imageAssets()" (assetsChange)="onImagesChange($event)"
+                (fileSelected)="onFileSelected($event)">
             </app-image-gallery-upload>
             @if (imagesError()) {
             <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-2">
@@ -59,7 +60,8 @@
         </div>
 
         <!-- 3D Model Upload -->
-        <app-model-3d-upload [asset]="model3dAsset()" (assetChange)="onModel3dChange($event)">
+        <app-model-3d-upload [asset]="model3dAsset()" (assetChange)="onModel3dChange($event)"
+            (fileSelected)="onFileSelected($event)">
         </app-model-3d-upload>
 
         <!-- Action Buttons -->
