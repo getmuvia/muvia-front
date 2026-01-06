@@ -1,17 +1,16 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal, afterNextRender } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { ProductService } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
 import { Category } from '@core/models/category/category';
+import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
 import { CreateProductDto, CreateProductSpecifications, CreateProductAsset } from '@core/models/product/create-product.dto';
 import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryUpload, Model3dUpload } from './components';
-
 
 @Component({
     selector: 'app-product-create',
     imports: [
-        ReactiveFormsModule,
         BasicInfoSection,
         SpecificationsSection,
         KeywordsSection,
@@ -21,11 +20,42 @@ import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryU
     templateUrl: './product-create.html',
     styleUrl: './product-create.css',
 })
-export class ProductCreate implements OnInit {
-    private readonly fb = inject(FormBuilder);
+export class ProductCreate {
     private readonly router = inject(Router);
     private readonly productService = inject(ProductService);
     private readonly categoryService = inject(CategoryService);
+
+    productModel = signal<ProductFormData>(INITIAL_PRODUCT_FORM);
+
+    productForm = form(this.productModel, (path) => {
+        required(path.title, { message: 'El título es requerido' });
+        minLength(path.title, 3, { message: 'El título debe tener al menos 3 caracteres' });
+
+        required(path.description, { message: 'La descripción es requerida' });
+        minLength(path.description, 10, { message: 'La descripción debe tener al menos 10 caracteres' });
+
+        required(path.price, { message: 'El precio es requerido' });
+        validate(path.price, ({ value }) => {
+            if (value() !== undefined && value() <= 0) {
+                return { message: 'El precio debe ser mayor a 0', kind: 'error' };
+            }
+            return null;
+        });
+
+        required(path.stock, { message: 'El stock es requerido' });
+
+        required(path.categoryId, { message: 'Selecciona una categoría' });
+
+        // Specifications validations
+        required(path.weight, { message: 'El peso es requerido' });
+        required(path.material, { message: 'El material es requerido' });
+        required(path.color, { message: 'El color es requerido' });
+
+        // Dimensions validations
+        required(path.dimensionWidth, { message: 'El ancho es requerido' });
+        required(path.dimensionHeight, { message: 'El alto es requerido' });
+        required(path.dimensionDepth, { message: 'El largo es requerido' });
+    });
 
     categories = signal<Category[]>([]);
     keywords = signal<string[]>([]);
@@ -34,27 +64,14 @@ export class ProductCreate implements OnInit {
     isSubmitting = signal(false);
     isLoadingCategories = signal(true);
 
-    productForm: FormGroup = this.fb.group({
-        title: ['', [Validators.required, Validators.minLength(3)]],
-        description: ['', [Validators.required, Validators.minLength(10)]],
-        price: [0, [Validators.required, Validators.min(0.01)]],
-        stock: [1, [Validators.required, Validators.min(0)]],
-        categoryId: ['', Validators.required],
-        specifications: this.fb.group({
-            weight: [''],
-            material: [''],
-            color: [''],
-            dimensions: this.fb.group({
-                width: [0],
-                height: [0],
-                depth: [0],
-                unit: ['cm']
-            })
-        })
-    });
+    // Error messages for non-form fields
+    keywordsError = signal<string | null>(null);
+    imagesError = signal<string | null>(null);
 
-    ngOnInit(): void {
-        this.loadCategories();
+    constructor() {
+        afterNextRender(() => {
+            this.loadCategories();
+        });
     }
 
     private loadCategories(): void {
@@ -71,69 +88,92 @@ export class ProductCreate implements OnInit {
         });
     }
 
+    isFieldInvalid(fieldName: keyof ProductFormData): boolean {
+        const fieldSignal = this.productForm[fieldName];
+        if (!fieldSignal) return false;
+
+        const field = fieldSignal();
+        return field && field.touched() && field.errors().length > 0;
+    }
+
     onKeywordsChange(keywords: string[]): void {
         this.keywords.set(keywords);
+        this.keywordsError.set(null);
     }
 
     onImagesChange(assets: CreateProductAsset[]): void {
         this.imageAssets.set(assets);
+        this.imagesError.set(null);
     }
 
     onModel3dChange(asset: CreateProductAsset | null): void {
         this.model3dAsset.set(asset);
     }
 
-    onPublish(): void {
-        if (this.productForm.invalid) {
-            this.productForm.markAllAsTouched();
+    onSubmit(event: Event): void {
+        event.preventDefault();
+
+        let hasErrors = false;
+
+        if (this.keywords().length === 0) {
+            this.keywordsError.set('Agrega al menos una palabra clave');
+            hasErrors = true;
+        }
+
+        if (this.imageAssets().length === 0) {
+            this.imagesError.set('Agrega al menos una imagen');
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
             return;
         }
 
-        this.submitProduct();
+        submit(this.productForm, async () => {
+            await this.submitProduct();
+        });
     }
 
     onSaveDraft(): void {
-        // TODO: Implement draft saving logic
         console.log('Saving draft...', this.buildProductDto());
     }
 
-    private submitProduct(): void {
+    private async submitProduct(): Promise<void> {
         this.isSubmitting.set(true);
         const dto = this.buildProductDto();
 
-        this.productService.createProduct(dto).subscribe({
-            next: (product) => {
-                console.log('Product created:', product);
-                this.isSubmitting.set(false);
-                this.router.navigate(['/seller/profile']);
-            },
-            error: (err) => {
-                console.error('Error creating product:', err);
-                this.isSubmitting.set(false);
-            }
+        return new Promise((resolve) => {
+            this.productService.createProduct(dto).subscribe({
+                next: (product) => {
+                    console.log('Product created:', product);
+                    this.isSubmitting.set(false);
+                    this.router.navigate(['/seller/profile']);
+                    resolve();
+                },
+                error: (err) => {
+                    console.error('Error creating product:', err);
+                    this.isSubmitting.set(false);
+                    resolve();
+                }
+            });
         });
     }
 
     private buildProductDto(): CreateProductDto {
-        const formValue = this.productForm.value;
+        const formValue = this.productForm().value();
+
         const specs: CreateProductSpecifications = {
-            weight: formValue.specifications.weight || undefined,
-            material: formValue.specifications.material || undefined,
-            color: formValue.specifications.color || undefined,
+            weight: formValue.weight,
+            material: formValue.material,
+            color: formValue.color,
+            dimensions: {
+                width: formValue.dimensionWidth,
+                height: formValue.dimensionHeight,
+                depth: formValue.dimensionDepth,
+                unit: formValue.dimensionUnit
+            }
         };
 
-        // Only add dimensions if any value is set
-        const dims = formValue.specifications.dimensions;
-        if (dims.width || dims.height || dims.depth) {
-            specs.dimensions = {
-                width: dims.width || 0,
-                height: dims.height || 0,
-                depth: dims.depth || 0,
-                unit: dims.unit || 'cm'
-            };
-        }
-
-        // Combine all assets
         const allAssets: CreateProductAsset[] = [...this.imageAssets()];
         const model3d = this.model3dAsset();
         if (model3d) {
@@ -143,8 +183,8 @@ export class ProductCreate implements OnInit {
         return {
             title: formValue.title,
             description: formValue.description,
-            price: parseFloat(formValue.price),
-            stock: parseInt(formValue.stock, 10),
+            price: formValue.price,
+            stock: formValue.stock,
             categoryId: formValue.categoryId,
             specifications: specs,
             keywords: this.keywords(),
