@@ -1,0 +1,15 @@
+@if (products().length > 0) {
+<div class="mt-24 mb-12">
+    <div class="flex items-center justify-between mb-8">
+        <h2 class="text-text-light text-2xl font-bold uppercase tracking-wide font-headline">Productos Similares</h2>
+        <a routerLink="/products"
+            class="text-primary font-bold text-sm hover:underline uppercase tracking-wide cursor-pointer font-body">Ver
+            todos</a>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        @for (product of products(); track product.id) {
+        <app-product-card [product]="product" />
+        }
+    </div>
+</div>
+}

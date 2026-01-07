@@ -1,0 +1,50 @@
+<div class="flex flex-col w-full min-h-screen bg-white">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full flex-grow">
+        @if (isLoading()) {
+        <!-- Loading State -->
+        <div class="flex items-center justify-center py-24">
+            <div class="flex flex-col items-center gap-4">
+                <span class="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
+                <p class="text-text-light/60 font-body">Cargando producto...</p>
+            </div>
+        </div>
+        } @else if (error()) {
+        <!-- Error State -->
+        <div class="flex flex-col items-center justify-center py-24">
+            <span class="material-symbols-outlined text-6xl text-text-light/20 mb-4">error</span>
+            <h3 class="text-xl font-bold text-text-light font-body mb-2">{{ error() }}</h3>
+            <a routerLink="/products" class="text-primary hover:underline font-body">Volver a productos</a>
+        </div>
+        } @else if (product()) {
+        <!-- Breadcrumb -->
+        <div class="flex flex-wrap gap-2 pb-6">
+            <a routerLink="/home" class="text-text-light/50 text-sm font-medium hover:text-primary font-body">Home</a>
+            <span class="text-text-light/30 text-sm font-medium">/</span>
+            <a routerLink="/products"
+                class="text-text-light/50 text-sm font-medium hover:text-primary font-body">Productos</a>
+            <span class="text-text-light/30 text-sm font-medium">/</span>
+            @if (product()?.category) {
+            <span class="text-text-light/50 text-sm font-medium font-body">{{ product()?.category?.name }}</span>
+            <span class="text-text-light/30 text-sm font-medium">/</span>
+            }
+            <span class="text-text-light text-sm font-medium font-body">{{ product()?.title }}</span>
+        </div>
+
+        <!-- Product Content Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+            <!-- Left: Image Gallery -->
+            <app-image-gallery [assets]="product()?.assets || []" />
+
+            <!-- Right: Product Info + Tabs -->
+            <div class="flex flex-col">
+                <app-product-info [product]="product()!" (contactSeller)="onContactSeller()" />
+
+                <app-product-tabs [product]="product()!" />
+            </div>
+        </div>
+
+        <!-- Similar Products -->
+        <app-similar-products [products]="similarProducts()" />
+        }
+    </main>
+</div>
