@@ -7,7 +7,8 @@
         <!-- Filter Bar -->
         <app-filter-bar [categories]="categories()" [activeFilters]="activeFilters()" [selectedSort]="selectedSort()"
             [viewMode]="viewMode()" (filterToggle)="onFilterToggle()" (removeFilter)="onRemoveFilter($event)"
-            (sortChange)="onSortChange($event)" (viewModeChange)="onViewModeChange($event)" />
+            (sortChange)="onSortChange($event)" (viewModeChange)="onViewModeChange($event)"
+            (searchChange)="searchProducts($event)" />
 
         <!-- Product Grid -->
         <div class="mt-8">

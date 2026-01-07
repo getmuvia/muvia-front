@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { Category } from '@core/models/category/category';
 
 export interface SortOption {
@@ -22,6 +22,10 @@ export class FilterBar {
     removeFilter = output<string>();
     sortChange = output<string>();
     viewModeChange = output<'grid' | 'list'>();
+    searchChange = output<string>();
+
+    searchQuery = signal<string>('');
+    private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
     sortOptions: SortOption[] = [
         { value: 'featured', label: 'Destacados' },
@@ -29,6 +33,27 @@ export class FilterBar {
         { value: 'price_desc', label: 'Precio: Alto a Bajo' },
         { value: 'newest', label: 'Nuevos' },
     ];
+
+    onSearchInput(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        this.searchQuery.set(input.value);
+
+        // Debounce: wait 400ms after user stops typing
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
+        }
+        this.searchTimeout = setTimeout(() => {
+            this.searchChange.emit(input.value);
+        }, 400);
+    }
+
+    onSearchSubmit(event: Event): void {
+        event.preventDefault();
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
+        }
+        this.searchChange.emit(this.searchQuery());
+    }
 
     onSortChange(event: Event): void {
         const select = event.target as HTMLSelectElement;
