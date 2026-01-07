@@ -1,0 +1,28 @@
+<!-- Page Header Section with warm background for navbar visibility -->
+<section class="relative w-full pt-24 pb-12 bg-primary">
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-white/20 pb-8">
+            <div class="max-w-3xl">
+                <span class="text-secondary font-bold text-xs uppercase tracking-[0.2em] mb-3 block font-body">
+                    {{ subtitle() }}
+                </span>
+                <h1 class="text-white text-4xl md:text-5xl lg:text-6xl font-headline font-light tracking-tight mb-4">
+                    {{ title() }} <span class="font-bold">{{ titleBold() }}</span>
+                </h1>
+                <p class="text-white/80 text-base md:text-lg font-body font-light leading-relaxed max-w-xl">
+                    {{ description() }}
+                </p>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden md:block">
+                    <span class="block text-3xl font-bold text-white font-body">
+                        {{ productCount() }}
+                    </span>
+                    <span class="text-xs uppercase tracking-widest text-white/60 font-body">
+                        Productos
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,53 @@
+<div
+    class="flex flex-wrap items-center justify-between gap-4 sticky top-16 z-30 py-4 bg-white/95 backdrop-blur-sm transition-all border-b border-text-light/10">
+    <!-- Left side: Filter button and active filters -->
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <button (click)="onFilterToggle()"
+            class="px-4 py-2 bg-primary text-white text-xs font-bold uppercase tracking-wider font-body hover:bg-primary/80 transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-base">tune</span>
+            Filtrar
+        </button>
+
+        @if (activeFilters().length > 0) {
+        <div class="h-6 w-px bg-text-light/20 mx-2"></div>
+
+        @for (filter of activeFilters(); track filter) {
+        <button (click)="onRemoveFilter(filter)"
+            class="px-3 py-1.5 border border-text-light/20 text-text-light text-xs uppercase font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-1 group">
+            {{ filter }}
+            <span class="material-symbols-outlined text-sm text-text-light/50 group-hover:text-primary">close</span>
+        </button>
+        }
+        }
+    </div>
+
+    <!-- Right side: Sort and view mode -->
+    <div class="flex items-center gap-6">
+        <!-- Sort dropdown -->
+        <div class="flex items-center gap-3 group cursor-pointer relative">
+            <span class="text-xs font-bold uppercase text-text-light/50 font-body">Ordenar:</span>
+            <select [value]="selectedSort()" (change)="onSortChange($event)"
+                class="bg-transparent border-none text-sm font-bold text-text-light p-0 pr-8 focus:ring-0 cursor-pointer uppercase tracking-wide appearance-none font-body">
+                @for (option of sortOptions; track option.value) {
+                <option [value]="option.value">{{ option.label }}</option>
+                }
+            </select>
+            <span
+                class="material-symbols-outlined absolute right-0 pointer-events-none text-text-light text-sm">expand_more</span>
+        </div>
+
+        <!-- View mode toggle -->
+        <div class="flex bg-text-light/5 p-1">
+            <button (click)="onToggleViewMode('grid')" [class]="viewMode() === 'grid' 
+                    ? 'p-1.5 bg-white shadow-sm text-primary transition-all' 
+                    : 'p-1.5 text-text-light/40 hover:text-primary transition-colors'">
+                <span class="material-symbols-outlined text-xl">grid_view</span>
+            </button>
+            <button (click)="onToggleViewMode('list')" [class]="viewMode() === 'list' 
+                    ? 'p-1.5 bg-white shadow-sm text-primary transition-all' 
+                    : 'p-1.5 text-text-light/40 hover:text-primary transition-colors'">
+                <span class="material-symbols-outlined text-xl">view_list</span>
+            </button>
+        </div>
+    </div>
+</div>
