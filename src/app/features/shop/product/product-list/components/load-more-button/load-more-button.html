@@ -1,0 +1,15 @@
+@if (hasMore()) {
+<div class="flex justify-center mt-24">
+    <button (click)="onLoadMore()" [disabled]="isLoading()"
+        class="group px-10 py-4 bg-transparent border border-primary text-primary text-xs font-bold uppercase tracking-[0.2em] font-body hover:bg-primary hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+        @if (isLoading()) {
+        <span class="flex items-center gap-2">
+            <span class="animate-spin material-symbols-outlined text-base">progress_activity</span>
+            Cargando...
+        </span>
+        } @else {
+        Cargar Más Productos
+        }
+    </button>
+</div>
+}
