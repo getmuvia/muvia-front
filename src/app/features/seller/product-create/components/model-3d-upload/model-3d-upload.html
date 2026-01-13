@@ -1,42 +1,82 @@
 <div class="liquid-glass p-6">
     <div class="flex justify-between items-center mb-6">
         <h3 class="text-base font-body font-bold uppercase tracking-wider text-gray-800">
-            Modelo 3D
+            Modelos 3D
         </h3>
         <span class="material-symbols-outlined text-secondary">view_in_ar</span>
     </div>
 
-    <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
-        [class.border-secondary]="isDragging()" [class.border-gray-300]="!isDragging()" (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave()" (drop)="onDrop($event)" (click)="fileInput.click()">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- GLB/GLTF Upload (Web Viewer) -->
+        <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
+            [class.border-secondary]="isDraggingGlb()" [class.border-gray-300]="!isDraggingGlb()"
+            (dragover)="onDragOverGlb($event)" (dragleave)="onDragLeaveGlb()" (drop)="onDropGlb($event)"
+            (click)="glbFileInput.click()">
 
-        @if (asset()) {
-        <div class="flex flex-col items-center justify-center h-full">
-            <span class="material-symbols-outlined text-4xl text-secondary mb-2">view_in_ar</span>
-            <p class="text-sm font-body font-medium text-gray-800">Modelo cargado</p>
-            <p class="text-xs text-gray-500 font-body mt-1">
-                {{ (asset()!.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
+            @if (glbAsset()) {
+            <div class="flex flex-col items-center justify-center h-full">
+                <span class="material-symbols-outlined text-3xl text-secondary mb-2">3d_rotation</span>
+                <p class="text-sm font-body font-medium text-gray-800">GLB cargado</p>
+                <p class="text-xs text-gray-500 font-body mt-1">
+                    {{ (glbAsset()!.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
+                </p>
+            </div>
+            <div
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <button type="button" (click)="removeGlbModel(); $event.stopPropagation()"
+                    class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+            } @else {
+            <span class="material-symbols-outlined text-3xl text-gray-400 mb-2">deployed_code</span>
+            <p class="text-xs font-body font-medium text-gray-500 text-center px-2">
+                .GLB / .GLTF
             </p>
-        </div>
-        <div
-            class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-            <button type="button" (click)="removeModel(); $event.stopPropagation()"
-                class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
-                <span class="material-symbols-outlined">delete</span>
-            </button>
-        </div>
-        } @else {
-        <span class="material-symbols-outlined text-4xl text-gray-400 mb-2">deployed_code</span>
-        <p class="text-xs font-body font-medium text-gray-500">
-            Cargar archivo .GLB / .GLTF
-        </p>
-        }
+            <p class="text-[10px] font-body text-gray-400 mt-1">Visor Web</p>
+            }
 
-        <div
-            class="absolute top-2 right-2 bg-secondary text-white text-[10px] px-2 py-0.5 uppercase font-bold font-body">
-            Beta
+            <div
+                class="absolute top-2 right-2 bg-primary text-white text-[10px] px-2 py-0.5 uppercase font-bold font-body">
+                Web
+            </div>
+
+            <input #glbFileInput type="file" accept=".glb,.gltf" class="hidden" (change)="onFileSelectGlb($event)" />
         </div>
 
-        <input #fileInput type="file" accept=".glb,.gltf" class="hidden" (change)="onFileSelect($event)" />
+        <!-- USDZ Upload (iOS AR) -->
+        <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
+            [class.border-secondary]="isDraggingUsdz()" [class.border-gray-300]="!isDraggingUsdz()"
+            (dragover)="onDragOverUsdz($event)" (dragleave)="onDragLeaveUsdz()" (drop)="onDropUsdz($event)"
+            (click)="usdzFileInput.click()">
+
+            @if (usdzAsset()) {
+            <div class="flex flex-col items-center justify-center h-full">
+                <span class="material-symbols-outlined text-3xl text-secondary mb-2">view_in_ar</span>
+                <p class="text-sm font-body font-medium text-gray-800">USDZ cargado</p>
+                <p class="text-xs text-gray-500 font-body mt-1">iOS AR</p>
+            </div>
+            <div
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <button type="button" (click)="removeUsdzModel(); $event.stopPropagation()"
+                    class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+            } @else {
+            <span class="material-symbols-outlined text-3xl text-gray-400 mb-2">phone_iphone</span>
+            <p class="text-xs font-body font-medium text-gray-500 text-center px-2">
+                .USDZ
+            </p>
+            <p class="text-[10px] font-body text-gray-400 mt-1">AR en iOS</p>
+            }
+
+            <div
+                class="absolute top-2 right-2 bg-secondary text-white text-[10px] px-2 py-0.5 uppercase font-bold font-body">
+                iOS
+            </div>
+
+            <input #usdzFileInput type="file" accept=".usdz" class="hidden" (change)="onFileSelectUsdz($event)" />
+        </div>
     </div>
 </div>
