@@ -1,9 +1,12 @@
-<header class="absolute top-0 z-50 w-full bg-transparent">
+<header [ngClass]="isTransparent() ? 'absolute top-0 bg-transparent' : 'relative bg-transparent shadow-sm'"
+    class="z-50 w-full">
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between whitespace-nowrap h-16">
             <div class="flex items-center gap-8">
-                <div class="flex items-center gap-3 text-white">
-                    <div class="size-6 text-primary">
+                <!-- Logo: White on Home, Earth on Inner -->
+                <div [ngClass]="isTransparent() ? 'text-white' : 'text-[#b07d62]'"
+                    class="flex items-center gap-3 transition-colors">
+                    <div class="size-6">
                         <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
@@ -14,35 +17,49 @@
                 </div>
             </div>
             <div class="hidden md:flex items-center gap-9">
-                <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="#">Novedades</a>
-                <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="#">Categorías</a>
-                <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="#">Marcas</a>
-                <a class="text-sm font-medium text-white hover:text-primary transition-colors" href="/products">Products</a>
+                <!-- Links: White on Home, Earth on Inner. Hover effect only on Home (to primary/earth) if Bg doesn't change?
+                     User said: Home -> Transparent/White, Hover -> Earth Color (BG?). 
+                     Logic: If Home: Text White.
+                     If Inner: Text Earth. 
+                -->
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                    class="text-sm font-medium transition-colors" href="#">Novedades</a>
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                    class="text-sm font-medium transition-colors" href="#">Categorías</a>
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                    class="text-sm font-medium transition-colors" href="#">Marcas</a>
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                    class="text-sm font-medium transition-colors" href="/products">Products</a>
             </div>
             <div class="flex flex-1 justify-end items-center gap-2">
+                <!-- Search Button -->
                 <button
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
+                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-[#b07d62] hover:bg-[#b07d62]/10'"
+                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
                     <span class="material-symbols-outlined">search</span>
                 </button>
 
                 @if (isAuthenticated()) {
-                <!-- Usuario autenticado: mostrar perfil -->
+                <!-- Usuario autenticado -->
                 <div class="user-menu flex items-center gap-2">
                     <a routerLink="/seller"
-                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-white/10 hover:bg-white/20 text-white gap-2 text-sm font-medium leading-normal px-3 transition-all duration-300">
+                        [ngClass]="isTransparent() ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-[#b07d62]/10 text-[#b07d62]'"
+                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-medium leading-normal px-3 transition-all duration-300">
                         <span class="material-symbols-outlined text-xl">person</span>
                         <span class="max-w-[120px] truncate">{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
                     </a>
                     <button (click)="logout()"
-                        class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent hover:bg-red-500/20 text-white transition-all duration-300"
+                        [ngClass]="isTransparent() ? 'text-white hover:bg-red-500/20' : 'text-[#b07d62] hover:bg-red-500/10'"
+                        class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent transition-all duration-300"
                         title="Cerrar sesión">
                         <span class="material-symbols-outlined text-xl">logout</span>
                     </button>
                 </div>
                 } @else {
-                <!-- Usuario no autenticado: mostrar botón de login -->
+                <!-- Login Button -->
                 <a routerLink="/auth/login"
-                    class="login-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent hover:bg-white/10 text-white gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
+                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-[#b07d62] hover:bg-[#b07d62]/10'"
+                    class="login-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
                     <span class="material-symbols-outlined">login</span>
                     <span
                         class="login-text max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out whitespace-nowrap">Login</span>

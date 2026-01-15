@@ -16,6 +16,7 @@ export const routes: Routes = [
             {
                 path: 'home',
                 component: Home,
+                data: { headerStyle: 'transparent' }
             },
             {
                 path: 'products',
