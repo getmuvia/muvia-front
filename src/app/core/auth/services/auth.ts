@@ -101,4 +101,25 @@ export class Auth {
       }
     }
   }
+
+  /**
+   * Verify the current session with the backend.
+   * Returns true if valid, false (and logs out) if invalid.
+   */
+  async verifySession(): Promise<boolean> {
+    if (!this.storage.hasSession()) {
+      return false;
+    }
+
+    try {
+      const response = await firstValueFrom(
+        this.http.get<AuthResponse>(API_ENDPOINTS.AUTH.CHECK_STATUS)
+      );
+      this.handleSuccess(response);
+      return true;
+    } catch {
+      this.logout();
+      return false;
+    }
+  }
 }

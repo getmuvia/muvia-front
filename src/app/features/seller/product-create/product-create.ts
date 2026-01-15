@@ -67,7 +67,8 @@ export class ProductCreate {
     categories = signal<Category[]>([]);
     keywords = signal<string[]>([]);
     imageAssets = signal<CreateProductAsset[]>([]);
-    model3dAsset = signal<CreateProductAsset | null>(null);
+    model3dGlbAsset = signal<CreateProductAsset | null>(null);
+    model3dUsdzAsset = signal<CreateProductAsset | null>(null);
     isSubmitting = signal(false);
     isLoadingCategories = signal(true);
 
@@ -113,8 +114,12 @@ export class ProductCreate {
         this.imagesError.set(null);
     }
 
-    onModel3dChange(asset: CreateProductAsset | null): void {
-        this.model3dAsset.set(asset);
+    onModel3dGlbChange(asset: CreateProductAsset | null): void {
+        this.model3dGlbAsset.set(asset);
+    }
+
+    onModel3dUsdzChange(asset: CreateProductAsset | null): void {
+        this.model3dUsdzAsset.set(asset);
     }
 
     onFileSelected(event: { url: string; file: File }): void {
@@ -209,17 +214,31 @@ export class ProductCreate {
         }
         this.imageAssets.set(updatedImages);
 
-        // Upload 3D model if exists
-        const currentModel = this.model3dAsset();
-        if (currentModel) {
-            const file = this.pendingUploads.get(currentModel.url);
+        // Upload 3D GLB model if exists
+        const glbModel = this.model3dGlbAsset();
+        if (glbModel) {
+            const file = this.pendingUploads.get(glbModel.url);
             if (file) {
                 const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
-                this.model3dAsset.set({
-                    ...currentModel,
+                this.model3dGlbAsset.set({
+                    ...glbModel,
                     url: response.url
                 });
-                this.pendingUploads.delete(currentModel.url);
+                this.pendingUploads.delete(glbModel.url);
+            }
+        }
+
+        // Upload 3D USDZ model if exists
+        const usdzModel = this.model3dUsdzAsset();
+        if (usdzModel) {
+            const file = this.pendingUploads.get(usdzModel.url);
+            if (file) {
+                const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
+                this.model3dUsdzAsset.set({
+                    ...usdzModel,
+                    url: response.url
+                });
+                this.pendingUploads.delete(usdzModel.url);
             }
         }
     }
@@ -240,9 +259,13 @@ export class ProductCreate {
         };
 
         const allAssets: CreateProductAsset[] = [...this.imageAssets()];
-        const model3d = this.model3dAsset();
-        if (model3d) {
-            allAssets.push(model3d);
+        const glbModel = this.model3dGlbAsset();
+        if (glbModel) {
+            allAssets.push(glbModel);
+        }
+        const usdzModel = this.model3dUsdzAsset();
+        if (usdzModel) {
+            allAssets.push(usdzModel);
         }
 
         return {

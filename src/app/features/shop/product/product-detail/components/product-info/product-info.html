@@ -1,0 +1,33 @@
+<div class="flex flex-col pt-2">
+    <!-- Title, Category, Share -->
+    <div class="flex justify-between items-start">
+        <div>
+            <h1 class="text-text-light text-4xl font-bold leading-tight font-headline">{{ product().title }}</h1>
+            <p class="text-text-light/60 mt-2 text-lg font-body">{{ product().category.name }}</p>
+        </div>
+        <div class="flex gap-2">
+            <button class="text-text-light/50 cursor-pointer hover:text-primary transition-colors" title="Compartir">
+                <span class="material-symbols-outlined">share</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Price -->
+    <p class="text-primary text-3xl font-bold mt-6 font-body">{{ priceNumber | currency:'USD':'symbol':'1.2-2' }}</p>
+
+    <!-- Seller Info -->
+    @if (product().seller) {
+    <div class="mt-4 flex items-center gap-2 text-text-light/60 font-body">
+        <span class="material-symbols-outlined text-lg text-primary">storefront</span>
+        <span class="text-sm">Vendido por <strong class="text-text-light">{{ product().seller?.name }}</strong></span>
+    </div>
+    }
+
+    <!-- Contact Button -->
+    <div class="mt-8 flex flex-col gap-4">
+        <button (click)="onContactSeller()"
+            class="w-full flex items-center justify-center h-14 px-6 bg-primary text-white text-lg font-bold hover:bg-primary/90 transition-colors uppercase tracking-wide font-body">
+            Contactar al Vendedor
+        </button>
+    </div>
+</div>

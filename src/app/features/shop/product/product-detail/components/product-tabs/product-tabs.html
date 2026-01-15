@@ -1,0 +1,96 @@
+<div class="mt-12 border-t border-text-light/10">
+    <!-- Tab Headers -->
+    <div class="flex border-b border-text-light/10">
+        <button (click)="setActiveTab('description')"
+            [class]="activeTab() === 'description' 
+                ? 'flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary tracking-wide uppercase font-body' 
+                : 'flex-1 py-4 text-sm font-bold text-text-light/50 border-b-2 border-transparent hover:border-text-light/20 tracking-wide uppercase transition-colors font-body'">
+            Descripción
+        </button>
+        <button (click)="setActiveTab('details')"
+            [class]="activeTab() === 'details' 
+                ? 'flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary tracking-wide uppercase font-body' 
+                : 'flex-1 py-4 text-sm font-bold text-text-light/50 border-b-2 border-transparent hover:border-text-light/20 tracking-wide uppercase transition-colors font-body'">
+            Detalles
+        </button>
+        <button (click)="setActiveTab('shipping')"
+            [class]="activeTab() === 'shipping' 
+                ? 'flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary tracking-wide uppercase font-body' 
+                : 'flex-1 py-4 text-sm font-bold text-text-light/50 border-b-2 border-transparent hover:border-text-light/20 tracking-wide uppercase transition-colors font-body'">
+            Envío
+        </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="py-6 text-text-light/70 text-base leading-relaxed space-y-4 font-body">
+        @switch (activeTab()) {
+        @case ('description') {
+        <p>{{ product().description }}</p>
+        }
+        @case ('details') {
+        <div class="space-y-3">
+            @if (product().specifications.material) {
+            <div class="flex justify-between border-b border-text-light/10 pb-2">
+                <span class="font-bold text-text-light">Material</span>
+                <span>{{ product().specifications.material }}</span>
+            </div>
+            }
+            @if (product().specifications.color) {
+            <div class="flex justify-between border-b border-text-light/10 pb-2">
+                <span class="font-bold text-text-light">Color</span>
+                <span>{{ product().specifications.color }}</span>
+            </div>
+            }
+            @if (product().specifications.weight) {
+            <div class="flex justify-between border-b border-text-light/10 pb-2">
+                <span class="font-bold text-text-light">Peso</span>
+                <span>{{ product().specifications.weight }}</span>
+            </div>
+            }
+            @if (product().specifications.dimensions) {
+            <div class="flex justify-between border-b border-text-light/10 pb-2">
+                <span class="font-bold text-text-light">Dimensiones</span>
+                <span>
+                    {{ product().specifications.dimensions?.width }} x
+                    {{ product().specifications.dimensions?.height }} x
+                    {{ product().specifications.dimensions?.depth }}
+                    {{ product().specifications.dimensions?.unit }}
+                </span>
+            </div>
+            }
+            @if (product().stock !== undefined) {
+            <div class="flex justify-between border-b border-text-light/10 pb-2">
+                <span class="font-bold text-text-light">Stock</span>
+                <span>{{ product().stock }} unidades</span>
+            </div>
+            }
+        </div>
+        }
+        @case ('shipping') {
+        <div class="space-y-4">
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-primary">local_shipping</span>
+                <div>
+                    <p class="font-bold text-text-light">Envío Estándar</p>
+                    <p class="text-sm">Entrega en 5-7 días hábiles</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-primary">verified</span>
+                <div>
+                    <p class="font-bold text-text-light">Garantía</p>
+                    <p class="text-sm">30 días de garantía de satisfacción</p>
+                </div>
+            </div>
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-primary">undo</span>
+                <div>
+                    <p class="font-bold text-text-light">Devoluciones</p>
+                    <p class="text-sm">Devolución gratuita dentro de los primeros 15 días</p>
+                </div>
+            </div>
+        </div>
+        }
+        }
+    </div>
+</div>

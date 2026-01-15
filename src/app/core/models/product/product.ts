@@ -49,6 +49,14 @@ export interface ProductCategory {
 }
 
 /**
+ * Seller associated with a product
+ */
+export interface ProductSeller {
+  id: string;
+  name: string;
+}
+
+/**
  * Product from the backend API
  */
 export interface Product {
@@ -62,6 +70,9 @@ export interface Product {
   specifications: ProductSpecifications;
   keywords: string[];
   createdAt: string;
+  updatedAt?: string;
   assets: ProductAsset[];
   category: ProductCategory;
+  seller?: ProductSeller;
 }
+

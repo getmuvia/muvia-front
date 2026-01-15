@@ -3,6 +3,7 @@ import { ShopLayout } from './layout/shop-layout/shop-layout';
 import { SellerLayout } from './layout/seller-layout/seller-layout';
 import { Home } from './features/shop/home/home';
 import { ProductList } from './features/shop/product/product-list/product-list';
+import { ProductDetail } from './features/shop/product/product-detail/product-detail';
 import { SellerProfile } from './features/seller/seller-profile/seller-profile';
 import { ProductCreate } from './features/seller/product-create/product-create';
 import { authGuard } from '@core/auth/guards/auth.guard';
@@ -15,10 +16,15 @@ export const routes: Routes = [
             {
                 path: 'home',
                 component: Home,
+                data: { headerStyle: 'transparent' }
             },
             {
                 path: 'products',
                 component: ProductList,
+            },
+            {
+                path: 'products/:id',
+                component: ProductDetail,
             },
             {
                 path: 'auth',

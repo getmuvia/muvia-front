@@ -12,11 +12,13 @@ export const AUTH_ROUTES: Routes = [
         children: [
             {
                 path: 'login',
-                component: Login
+                component: Login,
+                data: { headerStyle: 'transparent' }
             },
             {
                 path: 'register',
-                component: Register
+                component: Register,
+                data: { headerStyle: 'transparent' }
             },
             {
                 path: '',

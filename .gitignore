@@ -46,4 +46,7 @@ Thumbs.db
 
 .angular
 .vscode/
+
+src/environments/environment.ts
+
 diseño.html

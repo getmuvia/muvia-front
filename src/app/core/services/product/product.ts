@@ -91,4 +91,13 @@ export class ProductService {
       headers: this.getAuthHeaders()
     });
   }
+
+  /**
+   * Get a product by its ID (public endpoint)
+   * GET /products/:id
+   */
+  getProductById(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  }
 }
+

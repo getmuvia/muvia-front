@@ -35,7 +35,8 @@
         <!-- Layout para móvil: apilado verticalmente -->
         <div class="md:hidden">
             <div class="relative w-full aspect-square">
-                <img [ngSrc]="promo().image" [alt]="promo().title" fill class="object-cover" />
+                <img [ngSrc]="promo().image" [alt]="promo().title" width="600" height="600"
+                    class="w-full h-full object-cover" />
             </div>
             <div class="p-8 text-center flex flex-col gap-4">
                 <h2 class="text-4xl font-headline font-bold tracking-tight text-text-light dark:text-text-dark">
