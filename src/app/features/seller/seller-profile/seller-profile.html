@@ -1,12 +1,11 @@
-<app-seller-cover-banner [coverImageUrl]="coverImageUrl"></app-seller-cover-banner>
+<app-seller-cover-banner [coverImageUrl]="coverImageUrl()"></app-seller-cover-banner>
 
-<app-seller-profile-header [avatarUrl]="avatarUrl" [sellerName]="sellerName" [description]="sellerDescription"
-    (follow)="onFollow()" (contact)="onContact()">
+<app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
+    [hasCoverImage]="!!coverImageUrl()" (follow)="onFollow()" (contact)="onContact()">
 </app-seller-profile-header>
 
 <div class="flex flex-col lg:flex-row gap-8 mt-8">
-    <app-seller-sidebar [aboutText]="aboutText" [rating]="rating" [totalReviews]="totalReviews"
-        [socialLinks]="socialLinks">
+    <app-seller-sidebar [aboutText]="aboutText()" [businessHours]="businessHours()" [socialLinks]="socialLinks()">
     </app-seller-sidebar>
 
     <div class="flex-1">

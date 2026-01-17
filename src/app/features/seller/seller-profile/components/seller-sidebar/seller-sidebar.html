@@ -1,7 +1,15 @@
 <aside class="w-full lg:w-64 lg:flex-shrink-0">
     <div class="sticky top-28">
         <div
-            class="flex h-full flex-col justify-between bg-background-light dark:bg-background-dark/50 p-4 border border-text-light/10 dark:border-white/10">
+            class="flex h-full flex-col justify-between bg-background-light dark:bg-background-dark/50 p-4 border border-text-light/10 dark:border-white/10 relative group/sidebar">
+
+            <!-- Edit Button Overlay -->
+            <button
+                class="absolute top-2 right-2 p-2 rounded-full bg-white/30 backdrop-blur-md text-text-light dark:text-white opacity-0 group-hover/sidebar:opacity-100 transition-opacity z-10 hover:bg-white/50"
+                title="Editar Información">
+                <span class="material-symbols-outlined text-sm">edit</span>
+            </button>
+
             <div class="flex flex-col gap-6">
                 <!-- About Section -->
                 <div class="flex flex-col gap-2">
@@ -10,41 +18,48 @@
                         <p class="text-text-light dark:text-white text-sm font-body font-medium leading-normal">Sobre
                             Nosotros</p>
                     </div>
-                    <p class="text-text-light/60 dark:text-white/60 text-sm font-body px-3 py-1">
+                    <p class="text-text-light/60 dark:text-white/60 text-sm font-body px-3 py-1 text-pretty">
                         {{ aboutText() || 'Descripción del negocio del vendedor.' }}
                     </p>
                 </div>
 
-                <!-- Reviews Section -->
+                <!-- Business Hours Section -->
                 <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-3 px-3 py-2">
-                        <span class="material-symbols-outlined text-text-light dark:text-white">star</span>
-                        <p class="text-text-light dark:text-white text-sm font-body font-medium leading-normal">Reseñas
-                        </p>
+                    <div class="flex items-center gap-3 px-3 py-2 bg-text-light/5 dark:bg-white/10">
+                        <span class="material-symbols-outlined text-text-light dark:text-white">schedule</span>
+                        <p class="text-text-light dark:text-white text-sm font-body font-medium leading-normal">Horario
+                            de Atención</p>
                     </div>
-                    <div class="flex items-center gap-2 px-3">
-                        @for (star of [1, 2, 3, 4, 5]; track star) {
-                        @if (star <= rating()) { <span class="material-symbols-outlined text-primary"
-                            style="font-variation-settings: 'FILL' 1;">star</span>
-                            } @else if (star - 0.5 <= rating()) { <span class="material-symbols-outlined text-primary">
-                                star_half</span>
-                                } @else {
-                                <span
-                                    class="material-symbols-outlined text-text-light/30 dark:text-white/30">star</span>
-                                }
-                                }
-                                <p class="text-sm text-text-light/60 dark:text-white/60 font-body ml-1">
-                                    ({{ rating() | number:'1.1-1' }} de {{ totalReviews() }})
-                                </p>
+                    <div class="flex flex-col gap-2 px-3">
+                        @for (day of weekDays; track day.key) {
+                        <div class="flex justify-between items-center text-sm font-body">
+                            <span class="text-text-light/80 dark:text-white/80 w-24">{{ day.label }}</span>
+                            @if (businessHours()[day.key]?.isClosed) {
+                            <span class="text-red-500/80 font-medium">Cerrado</span>
+                            } @else {
+                            <span class="text-text-light/60 dark:text-white/60">
+                                {{ businessHours()[day.key]?.open }} - {{ businessHours()[day.key]?.close }}
+                            </span>
+                            }
+                        </div>
+                        }
                     </div>
                 </div>
             </div>
 
             <!-- Social Links -->
-            <div class="flex flex-col gap-1 mt-6 border-t border-text-light/10 dark:border-white/10 pt-6">
+            <div
+                class="flex flex-col gap-1 mt-6 border-t border-text-light/10 dark:border-white/10 pt-6 relative group/social">
+                <!-- Edit Button Overlay for Socials (Optional, or consistent with sidebar) -->
+                <button
+                    class="absolute top-2 right-2 p-1.5 rounded-full bg-white/30 backdrop-blur-md text-text-light dark:text-white opacity-0 group-hover/social:opacity-100 transition-opacity z-10 hover:bg-white/50"
+                    title="Editar Redes">
+                    <span class="material-symbols-outlined text-xs">edit</span>
+                </button>
+
                 @for (link of socialLinks(); track link.name) {
-                <a [href]="link.url"
-                    class="flex items-center gap-3 px-3 py-2 hover:bg-text-light/5 dark:hover:bg-white/10 transition-colors">
+                <a [href]="link.url" target="_blank"
+                    class="flex items-center gap-3 px-3 py-2 hover:bg-text-light/5 dark:hover:bg-white/10 transition-colors rounded-md">
                     @switch (link.icon) {
                     @case ('language') {
                     <span class="material-symbols-outlined text-text-light dark:text-white">language</span>

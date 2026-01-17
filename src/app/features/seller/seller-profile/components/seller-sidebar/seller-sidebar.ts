@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+
 
 export interface SellerSocialLink {
     name: string;
@@ -9,13 +9,22 @@ export interface SellerSocialLink {
 
 @Component({
     selector: 'app-seller-sidebar',
-    imports: [DecimalPipe],
+    imports: [],
     templateUrl: './seller-sidebar.html',
     styleUrl: './seller-sidebar.css',
 })
 export class SellerSidebar {
     aboutText = input<string>('');
-    rating = input<number>(0);
-    totalReviews = input<number>(0);
+    businessHours = input<any>({}); // Using any temporarily, ideally BusinessHours
     socialLinks = input<SellerSocialLink[]>([]);
+
+    weekDays = [
+        { key: 'monday', label: 'Lunes' },
+        { key: 'tuesday', label: 'Martes' },
+        { key: 'wednesday', label: 'Miércoles' },
+        { key: 'thursday', label: 'Jueves' },
+        { key: 'friday', label: 'Viernes' },
+        { key: 'saturday', label: 'Sábado' },
+        { key: 'sunday', label: 'Domingo' }
+    ];
 }

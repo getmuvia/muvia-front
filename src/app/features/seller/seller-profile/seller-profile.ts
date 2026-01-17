@@ -7,6 +7,11 @@ import { SellerProductGrid } from './components/seller-product-grid/seller-produ
 import { SellerPagination } from './components/seller-pagination/seller-pagination';
 import { Product } from '@core/models/product/product';
 import { ProductService } from '@core/services/product/product';
+import { UserService } from '@core/services/user/user';
+import { BusinessHours } from '@core/models/user/vendor-profile';
+
+import { Auth } from '@core/auth/services/auth';
+import { VendorResponse } from '@core/models/user/vendor-profile';
 
 @Component({
   selector: 'app-seller-profile',
@@ -23,22 +28,17 @@ import { ProductService } from '@core/services/product/product';
 })
 export class SellerProfile {
   private readonly productService = inject(ProductService);
+  private readonly userService = inject(UserService);
+  private readonly auth = inject(Auth);
 
-  // Demo data - in real implementation, this would come from a service
-  coverImageUrl = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=400&fit=crop';
-  avatarUrl = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop';
-  sellerName = 'Atelier Chic';
-  sellerDescription = 'Diseño de interiores y piezas únicas.';
-  aboutText = 'Atelier Chic crea piezas de decoración atemporales que combinan artesanía tradicional con estética moderna.';
-  rating = 4.7;
-  totalReviews = 120;
-  socialLinks = [
-    { name: 'Website', url: '#', icon: 'language' as const },
-    { name: 'Instagram', url: '#', icon: 'instagram' as const },
-    { name: 'Pinterest', url: '#', icon: 'pinterest' as const }
-  ];
+  coverImageUrl = signal<string>('');
+  avatarUrl = signal<string>('');
+  sellerName = signal<string>('');
+  sellerDescription = signal<string>('');
+  aboutText = signal<string>('');
+  socialLinks = signal<any[]>([]);
+  businessHours = signal<BusinessHours>({});
 
-  // Products from API
   products = signal<Product[]>([]);
   isLoading = signal(false);
 
@@ -46,9 +46,28 @@ export class SellerProfile {
   totalPages = 8;
 
   constructor() {
-    // Load products only after hydration (client-side only)
     afterNextRender(() => {
+      this.loadProfile();
       this.loadProducts();
+    });
+  }
+
+  private loadProfile(): void {
+    const userId = this.auth.currentUser()?.id;
+    if (!userId) return;
+
+    this.userService.getVendorProfile(userId).subscribe({
+      next: (response: VendorResponse) => {
+        const profile = response.vendorProfile;
+        this.coverImageUrl.set(profile.coverImage || '');
+        this.avatarUrl.set(profile.logoUrl || '');
+        this.sellerName.set(profile.businessName || 'Nombre del Vendedor');
+        this.sellerDescription.set(profile.description || '');
+        this.aboutText.set(profile.aboutMe || '');
+        this.socialLinks.set(profile.socialLinks || []);
+        this.businessHours.set(profile.businessHours || {});
+      },
+      error: (err) => console.error('Error loading profile:', err)
     });
   }
 

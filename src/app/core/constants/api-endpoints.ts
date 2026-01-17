@@ -1,4 +1,4 @@
-import { environment } from '@environments/environment';
+import { environment } from "@environments/environment";
 
 const BASE = environment.apiUrl;
 
@@ -17,5 +17,9 @@ export const API_ENDPOINTS = {
     },
     FILES: {
         UPLOAD: `${BASE}/files/upload`,
+    },
+    USERS: {
+        ME: `${BASE}/users/me`,
+        VENDOR: `${BASE}/users/vendor`,
     }
 } as const;

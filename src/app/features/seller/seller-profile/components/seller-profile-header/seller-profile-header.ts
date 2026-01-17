@@ -10,6 +10,7 @@ export class SellerProfileHeader {
     avatarUrl = input<string>('');
     sellerName = input<string>('');
     description = input<string>('');
+    hasCoverImage = input<boolean>(false);
 
     follow = output<void>();
     contact = output<void>();

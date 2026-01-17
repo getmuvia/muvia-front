@@ -1,3 +1,11 @@
-<div class="w-full h-48 md:h-64 lg:h-[450px] bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden bg-primary/20"
+<div class="w-full h-48 md:h-64 lg:h-[450px] bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden relative group/banner"
+    [class.bg-gray-300]="!coverImageUrl()"
     [style.background-image]="coverImageUrl() ? 'url(' + coverImageUrl() + ')' : null">
+
+    @if (!coverImageUrl()) {
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-600 gap-2">
+        <span class="material-symbols-outlined text-6xl">store</span>
+        <p class="text-sm font-medium">Sin imagen de portada</p>
+    </div>
+    }
 </div>
