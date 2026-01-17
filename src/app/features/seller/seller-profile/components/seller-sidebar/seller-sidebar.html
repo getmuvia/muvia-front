@@ -1,35 +1,48 @@
 <aside class="w-full lg:w-64 lg:flex-shrink-0">
     <div class="sticky top-28">
         <div
-            class="flex h-full flex-col justify-between bg-background-light dark:bg-background-dark/50 p-4 border border-text-light/10 dark:border-white/10 relative group/sidebar">
+            class="flex h-full flex-col justify-between bg-background-light dark:bg-background-dark/50 p-4 border border-text-light/10 dark:border-white/10 relative group/sidebar rounded-xl overflow-hidden">
 
-            <!-- Edit Button Overlay -->
-            <button
-                class="absolute top-2 right-2 p-2 rounded-full bg-white/30 backdrop-blur-md text-text-light dark:text-white opacity-0 group-hover/sidebar:opacity-100 transition-opacity z-10 hover:bg-white/50"
-                title="Editar Información">
-                <span class="material-symbols-outlined text-sm">edit</span>
-            </button>
+            <!-- Header with Title & Edit Trigger -->
+            <div class="absolute top-0 right-0 p-2 z-10">
+                <button (click)="editInfo.emit()"
+                    class="p-2 rounded-full text-text-light/50 dark:text-white/50 hover:text-primary dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-all"
+                    title="Editar Información">
+                    <span class="material-symbols-outlined text-lg">edit</span>
+                </button>
+            </div>
 
-            <div class="flex flex-col gap-6">
+            <div class="flex flex-col gap-6 pt-2">
                 <!-- About Section -->
                 <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-3 px-3 py-2 bg-text-light/5 dark:bg-white/10">
+                    <div class="flex items-center gap-3 px-3 py-2 bg-text-light/5 dark:bg-white/5 rounded-lg">
                         <span class="material-symbols-outlined text-text-light dark:text-white">info</span>
                         <p class="text-text-light dark:text-white text-sm font-body font-medium leading-normal">Sobre
                             Nosotros</p>
                     </div>
+
+                    @if (aboutText()) {
                     <p class="text-text-light/60 dark:text-white/60 text-sm font-body px-3 py-1 text-pretty">
-                        {{ aboutText() || 'Descripción del negocio del vendedor.' }}
+                        {{ aboutText() }}
                     </p>
+                    } @else {
+                    <div
+                        class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg text-gray-400 dark:text-white/30 gap-1">
+                        <span class="material-symbols-outlined text-xl">description</span>
+                        <p class="text-xs font-medium text-center">Sin descripción</p>
+                    </div>
+                    }
                 </div>
 
                 <!-- Business Hours Section -->
                 <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-3 px-3 py-2 bg-text-light/5 dark:bg-white/10">
+                    <div class="flex items-center gap-3 px-3 py-2 bg-text-light/5 dark:bg-white/5 rounded-lg">
                         <span class="material-symbols-outlined text-text-light dark:text-white">schedule</span>
                         <p class="text-text-light dark:text-white text-sm font-body font-medium leading-normal">Horario
                             de Atención</p>
                     </div>
+
+                    @if (weekDays.length > 0 && businessHours()) {
                     <div class="flex flex-col gap-2 px-3">
                         @for (day of weekDays; track day.key) {
                         <div class="flex justify-between items-center text-sm font-body">
@@ -38,43 +51,45 @@
                             <span class="text-red-500/80 font-medium">Cerrado</span>
                             } @else {
                             <span class="text-text-light/60 dark:text-white/60">
-                                {{ businessHours()[day.key]?.open }} - {{ businessHours()[day.key]?.close }}
+                                {{ businessHours()[day.key]?.open || '--' }} - {{ businessHours()[day.key]?.close ||
+                                '--' }}
                             </span>
                             }
                         </div>
                         }
                     </div>
+                    } @else {
+                    <div
+                        class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg text-gray-400 dark:text-white/30 gap-1">
+                        <span class="material-symbols-outlined text-xl">calendar_off</span>
+                        <p class="text-xs font-medium text-center">Sin horario</p>
+                    </div>
+                    }
                 </div>
             </div>
 
             <!-- Social Links -->
-            <div
-                class="flex flex-col gap-1 mt-6 border-t border-text-light/10 dark:border-white/10 pt-6 relative group/social">
-                <!-- Edit Button Overlay for Socials (Optional, or consistent with sidebar) -->
-                <button
-                    class="absolute top-2 right-2 p-1.5 rounded-full bg-white/30 backdrop-blur-md text-text-light dark:text-white opacity-0 group-hover/social:opacity-100 transition-opacity z-10 hover:bg-white/50"
-                    title="Editar Redes">
-                    <span class="material-symbols-outlined text-xs">edit</span>
-                </button>
-
+            <div class="flex flex-col gap-1 mt-6 border-t border-text-light/10 dark:border-white/10 pt-6">
+                @if (socialLinks().length > 0) {
                 @for (link of socialLinks(); track link.name) {
                 <a [href]="link.url" target="_blank"
-                    class="flex items-center gap-3 px-3 py-2 hover:bg-text-light/5 dark:hover:bg-white/10 transition-colors rounded-md">
+                    class="flex items-center gap-3 px-3 py-2 hover:bg-text-light/5 dark:hover:bg-white/10 transition-colors rounded-md group/link">
                     @switch (link.icon) {
                     @case ('language') {
-                    <span class="material-symbols-outlined text-text-light dark:text-white">language</span>
+                    <span
+                        class="material-symbols-outlined text-text-light dark:text-white group-hover/link:text-primary transition-colors">language</span>
                     }
                     @case ('instagram') {
-                    <svg class="h-6 w-6 text-text-light dark:text-white" fill="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
+                    <svg class="h-5 w-5 text-text-light dark:text-white group-hover/link:text-primary transition-colors"
+                        fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path
-                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.149-4.771-1.664-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44c0-.795-.645-1.44-1.441-1.44z">
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.149-4.771-1.664-4.919-4.919-.058-1.645-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919 1.266-.058 1.644-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.358-.2 6.78-2.618 6.98-6.98.059-1.281.073-1.689.073-4.948s-.014-3.667-.072-4.947c-.2-4.358-2.618-6.78-6.98-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44 1.441-.645 1.441-1.44c0-.795-.645-1.44-1.441-1.44z">
                         </path>
                     </svg>
                     }
                     @case ('pinterest') {
-                    <svg class="h-6 w-6 text-text-light dark:text-white" fill="currentColor" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
+                    <svg class="h-5 w-5 text-text-light dark:text-white group-hover/link:text-primary transition-colors"
+                        fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M12 0c-6.627 0-12 5.373-12 12 0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z">
                         </path>
@@ -85,7 +100,16 @@
                         }}</p>
                 </a>
                 }
+                } @else {
+                <div
+                    class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 dark:border-white/10 rounded-lg text-gray-400 dark:text-white/30 gap-1">
+                    <span class="material-symbols-outlined text-xl">link_off</span>
+                    <p class="text-xs font-medium text-center">Sin redes sociales</p>
+                </div>
+                }
             </div>
+
+
         </div>
     </div>
 </aside>

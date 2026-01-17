@@ -1,4 +1,4 @@
-import { Component, inject, signal, afterNextRender } from '@angular/core';
+import { Component, inject, signal, afterNextRender, computed } from '@angular/core';
 import { SellerCoverBanner } from './components/seller-cover-banner/seller-cover-banner';
 import { SellerProfileHeader } from './components/seller-profile-header/seller-profile-header';
 import { SellerSidebar } from './components/seller-sidebar/seller-sidebar';
@@ -6,6 +6,7 @@ import { SellerFilterChips } from './components/seller-filter-chips/seller-filte
 import { SellerProductGrid } from './components/seller-product-grid/seller-product-grid';
 import { SellerPagination } from './components/seller-pagination/seller-pagination';
 import { ImageEditorModal } from '@shared/components/modals/image-editor-modal/image-editor-modal';
+import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/sidebar-edit-modal';
 import { Product } from '@core/models/product/product';
 import { ProductService } from '@core/services/product/product';
 import { UserService } from '@core/services/user/user';
@@ -24,7 +25,8 @@ import { VendorResponse } from '@core/models/user/vendor-profile';
     SellerFilterChips,
     SellerProductGrid,
     SellerPagination,
-    ImageEditorModal
+    ImageEditorModal,
+    SidebarEditModal
   ],
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
@@ -55,6 +57,15 @@ export class SellerProfile {
   isModalOpen = signal(false);
   modalTitle = signal('');
   activeField = signal<'coverImage' | 'logoUrl' | null>(null);
+
+  isSidebarModalOpen = signal(false);
+
+  // Computed data for sidebar modal
+  sidebarData = computed(() => ({
+    aboutMe: this.aboutText(),
+    businessHours: this.businessHours(),
+    socialLinks: this.socialLinks()
+  }));
 
   constructor() {
     // Load data only after hydration
@@ -135,6 +146,18 @@ export class SellerProfile {
         });
       },
       error: (err) => console.error('Error uploading file:', err)
+    });
+  }
+
+  onSaveSidebarInfo(data: any) {
+    this.userService.updateProfile(data).subscribe({
+      next: () => {
+        this.aboutText.set(data.aboutMe);
+        this.businessHours.set(data.businessHours);
+        this.socialLinks.set(data.socialLinks);
+        this.isSidebarModalOpen.set(false);
+      },
+      error: (err) => console.error('Error updating sidebar info:', err)
     });
   }
 

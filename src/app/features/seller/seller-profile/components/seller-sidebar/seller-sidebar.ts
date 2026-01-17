@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 
 export interface SellerSocialLink {
@@ -15,8 +15,10 @@ export interface SellerSocialLink {
 })
 export class SellerSidebar {
     aboutText = input<string>('');
-    businessHours = input<any>({}); // Using any temporarily, ideally BusinessHours
+    businessHours = input<any>({});
     socialLinks = input<SellerSocialLink[]>([]);
+
+    editInfo = output<void>();
 
     weekDays = [
         { key: 'monday', label: 'Lunes' },
