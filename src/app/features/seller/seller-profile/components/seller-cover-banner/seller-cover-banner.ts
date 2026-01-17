@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 
 @Component({
     selector: 'app-seller-cover-banner',
@@ -8,4 +8,5 @@ import { Component, input } from '@angular/core';
 })
 export class SellerCoverBanner {
     coverImageUrl = input<string>('');
+    edit = output<void>();
 }

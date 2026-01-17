@@ -12,6 +12,7 @@ export class SellerProfileHeader {
     description = input<string>('');
     hasCoverImage = input<boolean>(false);
 
+    editAvatar = output<void>();
     follow = output<void>();
     contact = output<void>();
 

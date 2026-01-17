@@ -3,7 +3,7 @@
     @if (imageUrl()) {
     <div class="relative overflow-hidden rounded-lg aspect-[2/3] bg-gray-100 dark:bg-gray-800">
 
-        <img [ngSrc]="imageUrl()" [alt]="altText()" fill
+        <img [ngSrc]="imageUrl()" [alt]="altText()" fill [priority]="priority()"
             class="object-cover transition-transform duration-300 ease-in-out group-hover:scale-105" />
 
         <button

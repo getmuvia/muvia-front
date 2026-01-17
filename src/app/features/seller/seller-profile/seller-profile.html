@@ -1,8 +1,14 @@
-<app-seller-cover-banner [coverImageUrl]="coverImageUrl()"></app-seller-cover-banner>
+<app-seller-cover-banner [coverImageUrl]="coverImageUrl()" (edit)="openEditModal('cover')"></app-seller-cover-banner>
 
 <app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
-    [hasCoverImage]="!!coverImageUrl()" (follow)="onFollow()" (contact)="onContact()">
+    [hasCoverImage]="!!coverImageUrl()" (follow)="onFollow()" (contact)="onContact()"
+    (editAvatar)="openEditModal('avatar')">
 </app-seller-profile-header>
+
+<app-image-editor-modal [isOpen]="isModalOpen()" [title]="modalTitle()"
+    [mode]="activeField() === 'coverImage' ? 'cover' : 'avatar'" (save)="onSaveImage($event)"
+    (cancel)="isModalOpen.set(false)">
+</app-image-editor-modal>
 
 <div class="flex flex-col lg:flex-row gap-8 mt-8">
     <app-seller-sidebar [aboutText]="aboutText()" [businessHours]="businessHours()" [socialLinks]="socialLinks()">
