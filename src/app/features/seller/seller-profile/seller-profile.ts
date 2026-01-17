@@ -37,7 +37,6 @@ export class SellerProfile {
   private readonly uploadFileService = inject(UploadFile);
   private readonly auth = inject(Auth);
 
-  // Profile Data Signals
   coverImageUrl = signal<string>('');
   avatarUrl = signal<string>('');
   sellerName = signal<string>('');
@@ -46,21 +45,18 @@ export class SellerProfile {
   socialLinks = signal<any[]>([]);
   businessHours = signal<BusinessHours>({});
 
-  // Products from API
   products = signal<Product[]>([]);
   isLoading = signal(false);
 
   currentPage = 1;
   totalPages = 8;
 
-  // Modal State
   isModalOpen = signal(false);
   modalTitle = signal('');
   activeField = signal<'coverImage' | 'logoUrl' | null>(null);
 
   isSidebarModalOpen = signal(false);
 
-  // Computed data for sidebar modal
   sidebarData = computed(() => ({
     aboutMe: this.aboutText(),
     businessHours: this.businessHours(),
@@ -68,7 +64,6 @@ export class SellerProfile {
   }));
 
   constructor() {
-    // Load data only after hydration
     afterNextRender(() => {
       this.loadProfile();
       this.loadProducts();
@@ -81,6 +76,7 @@ export class SellerProfile {
 
     this.userService.getVendorProfile(userId).subscribe({
       next: (response: VendorResponse) => {
+        console.log('response profile: ', response);
         const profile = response.vendorProfile;
         this.coverImageUrl.set(profile.coverImage || '');
         this.avatarUrl.set(profile.logoUrl || '');
@@ -108,7 +104,6 @@ export class SellerProfile {
     });
   }
 
-  // Edit Logic
   openEditModal(type: 'cover' | 'avatar') {
     if (type === 'cover') {
       this.modalTitle.set('Editar Portada');
@@ -129,12 +124,14 @@ export class SellerProfile {
     // 1. Upload File
     this.uploadFileService.uploadFile(file, `users/${userId}`).subscribe({
       next: (response) => {
+        console.log('response file: ', response);
         const url = response.url;
 
         // 2. Update Profile with new URL
         const updateData = { [field]: url };
+        const payload = { vendorProfile: updateData };
 
-        this.userService.updateProfile(updateData).subscribe({
+        this.userService.updateProfile(payload).subscribe({
           next: () => {
             // 3. Update Local State
             if (field === 'coverImage') this.coverImageUrl.set(url);
@@ -150,7 +147,8 @@ export class SellerProfile {
   }
 
   onSaveSidebarInfo(data: any) {
-    this.userService.updateProfile(data).subscribe({
+    const payload = { vendorProfile: data };
+    this.userService.updateProfile(payload).subscribe({
       next: () => {
         this.aboutText.set(data.aboutMe);
         this.businessHours.set(data.businessHours);

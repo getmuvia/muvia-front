@@ -25,6 +25,24 @@ export interface VendorProfile {
     isVerified?: boolean;
 }
 
+export interface BusinessHoursItem {
+    open: string;
+    close: string;
+    isClosed?: boolean;
+}
+
+export interface UpdateVendorProfilePayload {
+    vendorProfile: {
+        businessName?: string;
+        description?: string;
+        logoUrl?: string;
+        coverImage?: string;
+        aboutMe?: string;
+        socialLinks?: SocialLink[];
+        businessHours?: Record<string, BusinessHoursItem>;
+    };
+}
+
 export interface VendorResponse {
     id: string;
     role: string;

@@ -1,9 +1,9 @@
-<div class="w-full h-48 md:h-64 lg:h-[450px] bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden relative group/banner"
-    [class.bg-gray-300]="!coverImageUrl()"
-    [style.background-image]="coverImageUrl() ? 'url(' + coverImageUrl() + ')' : null">
-
-    @if (!coverImageUrl()) {
-    <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-600 gap-2">
+<div
+    class="w-full h-48 md:h-64 lg:h-[450px] flex flex-col justify-end overflow-hidden relative group/banner bg-gray-100">
+    @if (coverImageUrl()) {
+    <img [src]="coverImageUrl()" alt="Cover Image" class="w-full h-full object-cover absolute inset-0 z-10">
+    } @else {
+    <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-400 gap-2 bg-gray-100 z-10">
         <span class="material-symbols-outlined text-6xl">store</span>
         <p class="text-sm font-medium">Sin imagen de portada</p>
     </div>
@@ -11,7 +11,7 @@
 
     <!-- Edit Button -->
     <button (click)="edit.emit()"
-        class="absolute bottom-4 right-4 p-3 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white border border-white/20 shadow-lg transition-all transform hover:scale-105 active:scale-95 group-hover/banner:opacity-100 opacity-0 md:opacity-0 z-20"
+        class="absolute bottom-4 right-4 p-3 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur-md text-white border border-white/20 shadow-lg transition-all transform hover:scale-105 active:scale-95 group-hover/banner:opacity-100 opacity-0 md:opacity-0 z-30"
         [class.opacity-100]="!coverImageUrl()" title="Cambiar portada">
         <span class="material-symbols-outlined text-xl">photo_camera</span>
     </button>
