@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
 
 
 export interface SellerSocialLink {
@@ -9,7 +10,7 @@ export interface SellerSocialLink {
 
 @Component({
     selector: 'app-seller-sidebar',
-    imports: [],
+    imports: [EditTriggerButton],
     templateUrl: './seller-sidebar.html',
     styleUrl: './seller-sidebar.css',
 })

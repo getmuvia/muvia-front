@@ -1,4 +1,4 @@
-<app-seller-cover-banner [coverImageUrl]="coverImageUrl()" (edit)="openEditModal('cover')"></app-seller-cover-banner>
+<app-seller-cover-banner [coverImage]="coverImageUrl()" (edit)="openEditModal('cover')"></app-seller-cover-banner>
 
 <app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
     [hasCoverImage]="!!coverImageUrl()" (follow)="onFollow()" (contact)="onContact()"

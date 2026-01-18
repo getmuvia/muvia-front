@@ -41,12 +41,10 @@ export const routes: Routes = [
         path: 'seller',
         component: SellerLayout,
         canActivate: [authGuard],
-        data: { headerStyle: 'transparent' },
         children: [
             {
                 path: 'profile',
                 component: SellerProfile,
-                data: { headerStyle: 'transparent' }
             },
             {
                 path: 'products/create',

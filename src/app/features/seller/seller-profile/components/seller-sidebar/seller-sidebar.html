@@ -1,16 +1,12 @@
 <aside class="w-full lg:w-64 lg:flex-shrink-0">
     <div class="sticky top-28">
         <div
-            class="flex h-full flex-col justify-between bg-background-light p-4 border border-text-light/10 relative group/sidebar rounded-xl overflow-hidden">
+            class="flex h-full flex-col justify-between bg-background-light p-4 border border-text-light/10 relative group/sidebar">
 
             <!-- Header with Title & Edit Trigger -->
-            <div class="absolute top-0 right-0 p-2 z-10">
-                <button (click)="editInfo.emit()"
-                    class="p-2 rounded-full text-text-light/50 hover:text-primary hover:bg-black/5 transition-all"
-                    title="Editar Información">
-                    <span class="material-symbols-outlined text-lg">edit</span>
-                </button>
-            </div>
+            <app-edit-trigger-button (click)="editInfo.emit()" tooltip="Editar Información"
+                customClass="top-2 right-2 group-hover/sidebar:opacity-100" icon="edit">
+            </app-edit-trigger-button>
 
             <div class="flex flex-col gap-6 pt-2">
                 <!-- About Section -->

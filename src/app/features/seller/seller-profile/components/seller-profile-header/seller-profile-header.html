@@ -11,11 +11,9 @@
                 }
 
                 <!-- Edit Avatar Button -->
-                <button (click)="editAvatar.emit()"
-                    class="absolute bottom-0 right-0 p-2 rounded-full bg-white text-gray-700 shadow-md border border-gray-100 hover:bg-gray-50 transition-colors z-20"
-                    title="Cambiar logo">
-                    <span class="material-symbols-outlined text-sm">photo_camera</span>
-                </button>
+                <app-edit-trigger-button (click)="editAvatar.emit()" tooltip="Cambiar logo"
+                    customClass="bottom-0 right-0 group-hover/header:opacity-100" icon="photo_camera">
+                </app-edit-trigger-button>
             </div>
             <div class="flex flex-col justify-center pb-2">
                 <p class="text-3xl font-headline font-bold leading-tight tracking-[-0.015em]"

@@ -1,4 +1,6 @@
-<header class="border-b border-text-light/10 bg-background-light backdrop-blur-sm sticky top-0 z-50">
+<header
+    [ngClass]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'border-b border-text-light/10 bg-background-light backdrop-blur-sm sticky top-0'"
+    class="z-50">
     <div class="flex items-center justify-between whitespace-nowrap max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div class="flex items-center gap-8">
             <a routerLink="/home" class="flex items-center gap-3 text-text-light">
