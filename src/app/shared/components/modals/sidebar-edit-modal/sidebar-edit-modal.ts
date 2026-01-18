@@ -10,12 +10,12 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="close()">
-        <div class="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
             
             <!-- Header -->
-            <div class="px-6 py-4 border-b border-gray-100 dark:border-white/10 flex justify-between items-center bg-white dark:bg-zinc-900 sticky top-0 z-10">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Editar Información</h3>
-                <button (click)="close()" class="text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-white transition-colors rounded-full p-1 hover:bg-gray-100 dark:hover:bg-white/10">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+                <h3 class="text-lg font-bold text-gray-900">Editar Información</h3>
+                <button (click)="close()" class="text-gray-400 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-gray-100">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
             </div>
@@ -25,31 +25,31 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
                 
                 <!-- About Me -->
                 <div class="flex flex-col gap-2">
-                    <label class="text-sm font-bold text-gray-700 dark:text-white">Sobre Nosotros</label>
+                    <label class="text-sm font-bold text-gray-700">Sobre Nosotros</label>
                     <textarea formControlName="aboutMe" rows="4" 
-                        class="w-full px-4 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                        class="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                         placeholder="Descripción de tu negocio..."></textarea>
                 </div>
 
                 <!-- Business Hours -->
                 <div class="flex flex-col gap-3">
-                    <label class="text-sm font-bold text-gray-700 dark:text-white">Horario de Atención</label>
-                    <div class="flex flex-col gap-2 bg-gray-50 dark:bg-zinc-800/50 p-4 rounded-xl border border-gray-100 dark:border-white/5">
+                    <label class="text-sm font-bold text-gray-700">Horario de Atención</label>
+                    <div class="flex flex-col gap-2 bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <div formGroupName="businessHours">
                             @for (day of weekDays; track day.key) {
-                                <div [formGroupName]="day.key" class="flex flex-wrap items-center gap-3 py-1 border-b border-gray-100 dark:border-white/5 last:border-0 hover:bg-white/50 dark:hover:bg-white/5 px-2 rounded-lg transition-colors">
-                                    <span class="w-24 text-sm font-medium text-gray-700 dark:text-gray-300">{{ day.label }}</span>
+                                <div [formGroupName]="day.key" class="flex flex-wrap items-center gap-3 py-1 border-b border-gray-100 last:border-0 hover:bg-white/50 px-2 rounded-lg transition-colors">
+                                    <span class="w-24 text-sm font-medium text-gray-700">{{ day.label }}</span>
                                     
                                     <label class="flex items-center gap-2 cursor-pointer select-none">
                                         <input type="checkbox" formControlName="isClosed" class="accent-primary w-4 h-4 rounded">
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">Cerrado</span>
+                                        <span class="text-xs text-gray-500">Cerrado</span>
                                     </label>
 
                                     @if (!form.get('businessHours')?.get(day.key)?.get('isClosed')?.value) {
                                         <div class="flex items-center gap-2 ml-auto sm:ml-0">
-                                            <input type="time" formControlName="open" class="px-2 py-1 rounded border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-sm">
+                                            <input type="time" formControlName="open" class="px-2 py-1 rounded border border-gray-200 bg-gray-50 text-gray-900 text-sm">
                                             <span class="text-gray-400">-</span>
-                                            <input type="time" formControlName="close" class="px-2 py-1 rounded border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-sm">
+                                            <input type="time" formControlName="close" class="px-2 py-1 rounded border border-gray-200 bg-gray-50 text-gray-900 text-sm">
                                         </div>
                                     }
                                 </div>
@@ -61,7 +61,7 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
                 <!-- Social Links -->
                 <div class="flex flex-col gap-3">
                      <div class="flex justify-between items-center">
-                        <label class="text-sm font-bold text-gray-700 dark:text-white">Redes Sociales</label>
+                        <label class="text-sm font-bold text-gray-700">Redes Sociales</label>
                         <button type="button" (click)="addSocialLink()" class="text-primary hover:text-primary-600 text-sm font-bold flex items-center gap-1">
                             <span class="material-symbols-outlined text-lg">add</span> Agregar
                         </button>
@@ -70,16 +70,16 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
                     <div formArrayName="socialLinks" class="flex flex-col gap-3">
                         @for (link of socialLinksControls.controls; track $index) {
                             <div [formGroupName]="$index" class="flex items-center gap-2 animate-fade-in-up">
-                                <select formControlName="icon" class="px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white text-sm max-w-[120px]">
+                                <select formControlName="icon" class="px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 text-sm max-w-[120px]">
                                     <option value="language">Web</option>
                                     <option value="instagram">Instagram</option>
                                     <option value="facebook">Facebook</option>
                                     <option value="twitter">Twitter</option>
                                     <option value="pinterest">Pinterest</option>
                                 </select>
-                                <input type="text" formControlName="name" placeholder="Nombre (ej. Instagram)" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 text-sm w-0 min-w-[80px]">
-                                <input type="text" formControlName="url" placeholder="URL (https://...)" class="flex-[2] px-3 py-2 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 text-sm w-0 min-w-[120px]">
-                                <button type="button" (click)="removeSocialLink($index)" class="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
+                                <input type="text" formControlName="name" placeholder="Nombre (ej. Instagram)" class="flex-1 px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-500 text-sm w-0 min-w-[80px]">
+                                <input type="text" formControlName="url" placeholder="URL (https://...)" class="flex-[2] px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-900 placeholder:text-gray-500 text-sm w-0 min-w-[120px]">
+                                <button type="button" (click)="removeSocialLink($index)" class="p-2 text-red-500 hover:bg-red-50 rounded-lg">
                                     <span class="material-symbols-outlined text-lg">delete</span>
                                 </button>
                             </div>
@@ -90,9 +90,9 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
             </div>
 
              <!-- Footer -->
-            <div class="p-4 border-t border-gray-100 dark:border-white/10 flex justify-end gap-3 bg-gray-50 dark:bg-zinc-800/50">
+            <div class="p-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
                 <button (click)="close()" 
-                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-white/10 transition-colors">
+                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">
                     Cancelar
                 </button>
                 <button (click)="onSubmit()" 

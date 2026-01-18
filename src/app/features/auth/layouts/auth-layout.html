@@ -1,11 +1,10 @@
 <div class="relative flex min-h-screen w-full overflow-hidden">
     <!-- Left Side: Visual / Hero Section -->
-    <div
-        class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-10 overflow-hidden bg-white dark:bg-[#1a232e]">
+    <div class="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-10 overflow-hidden bg-white">
         <!-- Background Image -->
         <div class="absolute inset-0 z-0 w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105"
             style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAUpOiefZAKcQm-iatTmWdq6IOJ513rDaF6E3F0zgRWv7CymR-kCazvMHJUymEJ1AGojwLnn5-djHXJq7n1hW0f6-AiwtONeG7HIYpNXlHUHAWDv9IPdF_5JYaEveqle4f_9QAZFGe5bE74cA2kjwKL5Vss_X6yXAJqzNcCkf6DzaRoQUzQL5wjrzvLS0vZr4dfd8Nni7DCGuNtpjTAT896P5TfVVg7iaTWMIsWcBhw0YEo0h6iiat86Rul49T9Qyr2DPAM_M-7hr8');">
-            <div class="absolute inset-0 bg-black/10 dark:bg-black/30"></div>
+            <div class="absolute inset-0 bg-black/10"></div>
         </div>
         <!-- Content overlay on image -->
         <div class="relative z-10 flex h-full flex-col justify-end pb-10 pl-4">
@@ -20,7 +19,7 @@
 
     <!-- Right Side: Content Container -->
     <div
-        class="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6 lg:flex-none lg:w-1/2 lg:px-20 xl:px-24 bg-background-light dark:bg-background-dark overflow-y-auto max-h-screen">
+        class="flex flex-1 flex-col items-center justify-center px-4 py-12 sm:px-6 lg:flex-none lg:w-1/2 lg:px-20 xl:px-24 bg-background-light overflow-y-auto max-h-screen">
         <div class="mx-auto w-full max-w-sm lg:w-[480px]">
             <router-outlet></router-outlet>
         </div>

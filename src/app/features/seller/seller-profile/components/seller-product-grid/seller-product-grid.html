@@ -2,7 +2,7 @@
     @for (product of products(); track product.id; let i = $index) {
     <app-product-card [product]="product" [priority]="i === 0"></app-product-card>
     } @empty {
-    <div class="col-span-full flex flex-col items-center justify-center py-12 text-text-light/60 dark:text-white/60">
+    <div class="col-span-full flex flex-col items-center justify-center py-12 text-text-light/60">
         <span class="material-symbols-outlined text-6xl mb-4">inventory_2</span>
         <p class="font-body text-lg">No hay productos disponibles</p>
     </div>

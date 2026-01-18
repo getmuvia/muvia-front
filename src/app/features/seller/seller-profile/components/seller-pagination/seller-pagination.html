@@ -2,21 +2,20 @@
     <!-- Previous Button -->
     <button (click)="previousPage()" [disabled]="currentPage() === 1"
         [class]="currentPage() === 1
-            ? 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 dark:bg-white/10 text-text-light/30 dark:text-white/30 cursor-not-allowed'
-            : 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 dark:bg-white/10 text-text-light/60 dark:text-white/60 hover:bg-text-light/10 dark:hover:bg-white/20 transition-colors cursor-pointer'">
+            ? 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 text-text-light/30 cursor-not-allowed'
+            : 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 text-text-light/60 hover:bg-text-light/10 transition-colors cursor-pointer'">
         <span class="material-symbols-outlined">chevron_left</span>
     </button>
 
     <!-- Page Numbers -->
     @for (page of visiblePages(); track $index) {
     @if (page === '...') {
-    <span
-        class="inline-flex h-10 w-10 items-center justify-center text-text-light/60 dark:text-white/60 font-body">...</span>
+    <span class="inline-flex h-10 w-10 items-center justify-center text-text-light/60 font-body">...</span>
     } @else {
     <button (click)="goToPage(+page)"
         [class]="page === currentPage()
                     ? 'inline-flex h-10 w-10 items-center justify-center bg-primary text-white font-body font-bold cursor-default'
-                    : 'inline-flex h-10 w-10 items-center justify-center text-text-light dark:text-white font-body hover:bg-text-light/5 dark:hover:bg-white/10 transition-colors cursor-pointer'">
+                    : 'inline-flex h-10 w-10 items-center justify-center text-text-light font-body hover:bg-text-light/5 transition-colors cursor-pointer'">
         {{ page }}
     </button>
     }
@@ -25,8 +24,8 @@
     <!-- Next Button -->
     <button (click)="nextPage()" [disabled]="currentPage() === totalPages()"
         [class]="currentPage() === totalPages()
-            ? 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 dark:bg-white/10 text-text-light/30 dark:text-white/30 cursor-not-allowed'
-            : 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 dark:bg-white/10 text-text-light/60 dark:text-white/60 hover:bg-text-light/10 dark:hover:bg-white/20 transition-colors cursor-pointer'">
+            ? 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 text-text-light/30 cursor-not-allowed'
+            : 'inline-flex h-10 w-10 items-center justify-center bg-text-light/5 text-text-light/60 hover:bg-text-light/10 transition-colors cursor-pointer'">
         <span class="material-symbols-outlined">chevron_right</span>
     </button>
 </nav>
