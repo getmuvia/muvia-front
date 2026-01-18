@@ -148,6 +148,7 @@ export class SellerProfile {
 
   onSaveSidebarInfo(data: any) {
     const payload = { vendorProfile: data };
+    console.log('Updating Sidebar with:', payload);
     this.userService.updateProfile(payload).subscribe({
       next: () => {
         this.aboutText.set(data.aboutMe);

@@ -203,7 +203,19 @@ export class SidebarEditModal {
     onSubmit() {
         if (this.form.valid) {
             this.isSaving.set(true);
-            this.save.emit(this.form.value);
+            const formValue = { ...this.form.value };
+
+            if (formValue.businessHours) {
+                Object.keys(formValue.businessHours).forEach(key => {
+                    const day = formValue.businessHours[key];
+                    if (day.isClosed) {
+                        day.open = '00:00';
+                        day.close = '00:00';
+                    }
+                });
+            }
+
+            this.save.emit(formValue);
         }
     }
 
