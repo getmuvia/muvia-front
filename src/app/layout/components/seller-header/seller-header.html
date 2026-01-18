@@ -1,5 +1,5 @@
 <header
-    [ngClass]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'border-b border-text-light/10 bg-background-light backdrop-blur-sm sticky top-0'"
+    [ngClass]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'border-b border-white/20 bg-white/60 backdrop-blur-xl sticky top-0 shadow-sm'"
     class="z-50">
     <div class="flex items-center justify-between whitespace-nowrap max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div class="flex items-center gap-8">
@@ -38,7 +38,7 @@
             </div>
             <div class="flex items-center gap-2">
                 <button routerLink="/seller/products/create"
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-primary text-white text-sm font-body font-bold leading-normal tracking-[0.015em] hover:opacity-90 transition-opacity">
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-gradient-to-r from-[#b07d62] to-[#e8b496] text-white text-sm font-body font-bold leading-normal tracking-[0.015em] hover:scale-105 transition-all duration-300">
                     <span class="truncate">Subir</span>
                 </button>
                 <button
