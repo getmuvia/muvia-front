@@ -1,12 +1,20 @@
-import { Component, inject, signal, afterNextRender } from '@angular/core';
+import { Component, inject, signal, afterNextRender, computed } from '@angular/core';
 import { SellerCoverBanner } from './components/seller-cover-banner/seller-cover-banner';
 import { SellerProfileHeader } from './components/seller-profile-header/seller-profile-header';
 import { SellerSidebar } from './components/seller-sidebar/seller-sidebar';
 import { SellerFilterChips } from './components/seller-filter-chips/seller-filter-chips';
 import { SellerProductGrid } from './components/seller-product-grid/seller-product-grid';
 import { SellerPagination } from './components/seller-pagination/seller-pagination';
+import { ImageEditorModal } from '@shared/components/modals/image-editor-modal/image-editor-modal';
+import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/sidebar-edit-modal';
 import { Product } from '@core/models/product/product';
 import { ProductService } from '@core/services/product/product';
+import { UserService } from '@core/services/user/user';
+import { UploadFile } from '@core/services/uploadFile/upload-file';
+import { BusinessHours } from '@core/models/user/vendor-profile';
+
+import { Auth } from '@core/auth/services/auth';
+import { VendorResponse } from '@core/models/user/vendor-profile';
 
 @Component({
   selector: 'app-seller-profile',
@@ -16,39 +24,69 @@ import { ProductService } from '@core/services/product/product';
     SellerSidebar,
     SellerFilterChips,
     SellerProductGrid,
-    SellerPagination
+    SellerPagination,
+    ImageEditorModal,
+    SidebarEditModal
   ],
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
 })
 export class SellerProfile {
   private readonly productService = inject(ProductService);
+  private readonly userService = inject(UserService);
+  private readonly uploadFileService = inject(UploadFile);
+  private readonly auth = inject(Auth);
 
-  // Demo data - in real implementation, this would come from a service
-  coverImageUrl = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&h=400&fit=crop';
-  avatarUrl = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop';
-  sellerName = 'Atelier Chic';
-  sellerDescription = 'Diseño de interiores y piezas únicas.';
-  aboutText = 'Atelier Chic crea piezas de decoración atemporales que combinan artesanía tradicional con estética moderna.';
-  rating = 4.7;
-  totalReviews = 120;
-  socialLinks = [
-    { name: 'Website', url: '#', icon: 'language' as const },
-    { name: 'Instagram', url: '#', icon: 'instagram' as const },
-    { name: 'Pinterest', url: '#', icon: 'pinterest' as const }
-  ];
+  coverImageUrl = signal<string>('');
+  avatarUrl = signal<string>('');
+  sellerName = signal<string>('');
+  sellerDescription = signal<string>('');
+  aboutText = signal<string>('');
+  socialLinks = signal<any[]>([]);
+  businessHours = signal<BusinessHours>({});
 
-  // Products from API
   products = signal<Product[]>([]);
   isLoading = signal(false);
 
   currentPage = 1;
   totalPages = 8;
 
+  isModalOpen = signal(false);
+  modalTitle = signal('');
+  activeField = signal<'coverImage' | 'logoUrl' | null>(null);
+
+  isSidebarModalOpen = signal(false);
+
+  sidebarData = computed(() => ({
+    aboutMe: this.aboutText(),
+    businessHours: this.businessHours(),
+    socialLinks: this.socialLinks()
+  }));
+
   constructor() {
-    // Load products only after hydration (client-side only)
     afterNextRender(() => {
+      this.loadProfile();
       this.loadProducts();
+    });
+  }
+
+  private loadProfile(): void {
+    const userId = this.auth.currentUser()?.id;
+    if (!userId) return;
+
+    this.userService.getVendorProfile(userId).subscribe({
+      next: (response: VendorResponse) => {
+        console.log('response profile: ', response);
+        const profile = response.vendorProfile;
+        this.coverImageUrl.set(profile.coverImage || '');
+        this.avatarUrl.set(profile.logoUrl || '');
+        this.sellerName.set(profile.businessName || 'Nombre del Vendedor');
+        this.sellerDescription.set(profile.description || '');
+        this.aboutText.set(profile.aboutMe || '');
+        this.socialLinks.set(profile.socialLinks || []);
+        this.businessHours.set(profile.businessHours || {});
+      },
+      error: (err) => console.error('Error loading profile:', err)
     });
   }
 
@@ -63,6 +101,62 @@ export class SellerProfile {
         console.error('Error loading products:', err);
         this.isLoading.set(false);
       }
+    });
+  }
+
+  openEditModal(type: 'cover' | 'avatar') {
+    if (type === 'cover') {
+      this.modalTitle.set('Editar Portada');
+      this.activeField.set('coverImage');
+    } else {
+      this.modalTitle.set('Editar Logo');
+      this.activeField.set('logoUrl');
+    }
+    this.isModalOpen.set(true);
+  }
+
+  onSaveImage(file: File) {
+    const field = this.activeField();
+    const userId = this.auth.currentUser()?.id;
+
+    if (!field || !userId) return;
+
+    // 1. Upload File
+    this.uploadFileService.uploadFile(file, `users/${userId}`).subscribe({
+      next: (response) => {
+        console.log('response file: ', response);
+        const url = response.url;
+
+        // 2. Update Profile with new URL
+        const updateData = { [field]: url };
+        const payload = { vendorProfile: updateData };
+
+        this.userService.updateProfile(payload).subscribe({
+          next: () => {
+            // 3. Update Local State
+            if (field === 'coverImage') this.coverImageUrl.set(url);
+            if (field === 'logoUrl') this.avatarUrl.set(url);
+
+            this.isModalOpen.set(false);
+          },
+          error: (err) => console.error('Error updating profile:', err)
+        });
+      },
+      error: (err) => console.error('Error uploading file:', err)
+    });
+  }
+
+  onSaveSidebarInfo(data: any) {
+    const payload = { vendorProfile: data };
+    console.log('Updating Sidebar with:', payload);
+    this.userService.updateProfile(payload).subscribe({
+      next: () => {
+        this.aboutText.set(data.aboutMe);
+        this.businessHours.set(data.businessHours);
+        this.socialLinks.set(data.socialLinks);
+        this.isSidebarModalOpen.set(false);
+      },
+      error: (err) => console.error('Error updating sidebar info:', err)
     });
   }
 

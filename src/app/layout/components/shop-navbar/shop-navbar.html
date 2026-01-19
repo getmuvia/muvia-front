@@ -4,7 +4,7 @@
         <div class="flex items-center justify-between whitespace-nowrap h-16">
             <div class="flex items-center gap-8">
                 <!-- Logo: White on Home, Earth on Inner -->
-                <div [ngClass]="isTransparent() ? 'text-white' : 'text-[#b07d62]'"
+                <div [ngClass]="isTransparent() ? 'text-white' : 'text-primary'"
                     class="flex items-center gap-3 transition-colors">
                     <div class="size-6">
                         <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -22,19 +22,19 @@
                      Logic: If Home: Text White.
                      If Inner: Text Earth. 
                 -->
-                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-sm font-medium transition-colors" href="#">Novedades</a>
-                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-sm font-medium transition-colors" href="#">Categorías</a>
-                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-sm font-medium transition-colors" href="#">Marcas</a>
-                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-[#b07d62]'"
+                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-sm font-medium transition-colors" href="/products">Products</a>
             </div>
             <div class="flex flex-1 justify-end items-center gap-2">
                 <!-- Search Button -->
                 <button
-                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-[#b07d62] hover:bg-[#b07d62]/10'"
+                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
                     class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
                     <span class="material-symbols-outlined">search</span>
                 </button>
@@ -43,13 +43,13 @@
                 <!-- Usuario autenticado -->
                 <div class="user-menu flex items-center gap-2">
                     <a routerLink="/seller"
-                        [ngClass]="isTransparent() ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-[#b07d62]/10 text-[#b07d62]'"
+                        [ngClass]="isTransparent() ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-primary/10 text-primary'"
                         class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-medium leading-normal px-3 transition-all duration-300">
                         <span class="material-symbols-outlined text-xl">person</span>
                         <span class="max-w-[120px] truncate">{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
                     </a>
                     <button (click)="logout()"
-                        [ngClass]="isTransparent() ? 'text-white hover:bg-red-500/20' : 'text-[#b07d62] hover:bg-red-500/10'"
+                        [ngClass]="isTransparent() ? 'text-white hover:bg-red-500/20' : 'text-primary hover:bg-red-500/10'"
                         class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent transition-all duration-300"
                         title="Cerrar sesión">
                         <span class="material-symbols-outlined text-xl">logout</span>
@@ -58,7 +58,7 @@
                 } @else {
                 <!-- Login Button -->
                 <a routerLink="/auth/login"
-                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-[#b07d62] hover:bg-[#b07d62]/10'"
+                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
                     class="login-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
                     <span class="material-symbols-outlined">login</span>
                     <span

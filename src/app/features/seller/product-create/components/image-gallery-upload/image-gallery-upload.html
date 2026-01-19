@@ -1,6 +1,6 @@
 <div class="liquid-glass p-6">
     <div class="flex justify-between items-center mb-6">
-        <h3 class="text-base font-body font-bold uppercase tracking-wider text-gray-800">
+        <h3 class="text-base font-body font-bold uppercase tracking-wider text-text-light">
             Galería de Imágenes
         </h3>
         <span class="material-symbols-outlined text-secondary">imagesmode</span>
@@ -9,7 +9,7 @@
     <div class="grid grid-cols-2 gap-4 mb-4">
         <!-- Primary Image Slot -->
         <div class="col-span-2 aspect-[4/3] flex flex-col items-center justify-center border-2 border-dashed transition-colors cursor-pointer group relative overflow-hidden"
-            [class.border-secondary]="isDragging()" [class.border-gray-300]="!isDragging()"
+            [class.border-secondary]="isDragging()" [class.border-text-light/20]="!isDragging()"
             (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event, true)"
             (click)="primaryInput.click()">
 
@@ -28,10 +28,10 @@
                 Principal
             </div>
             } @else {
-            <span class="material-symbols-outlined text-4xl text-gray-400 group-hover:text-secondary mb-2">
+            <span class="material-symbols-outlined text-4xl text-text-light/40 group-hover:text-secondary mb-2">
                 add_photo_alternate
             </span>
-            <p class="text-xs text-gray-500 text-center px-4 font-body">
+            <p class="text-xs text-text-light/60 text-center px-4 font-body">
                 Arrastra tu imagen principal aquí
             </p>
             }
@@ -42,7 +42,7 @@
 
         <!-- Secondary Image Slots -->
         @for (asset of secondaryImages(); track asset.url) {
-        <div class="aspect-square relative overflow-hidden border border-gray-200 group cursor-pointer"
+        <div class="aspect-square relative overflow-hidden border border-text-light/20 group cursor-pointer"
             (click)="setPrimary(asset.url)">
             <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
             <div
@@ -62,9 +62,9 @@
 
         <!-- Empty slots for remaining -->
         @for (i of emptySlots(); track i) {
-        <div class="aspect-square bg-gray-50 flex items-center justify-center border border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors"
+        <div class="aspect-square bg-surface-element flex items-center justify-center border border-text-light/20 cursor-pointer hover:bg-surface-element transition-colors"
             (click)="secondaryInput.click()">
-            <span class="material-symbols-outlined text-gray-400">add</span>
+            <span class="material-symbols-outlined text-text-light/40">add</span>
         </div>
         }
     </div>
@@ -72,7 +72,7 @@
     <input #secondaryInput type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden"
         (change)="onFileSelect($event, false)" />
 
-    <p class="text-xs text-gray-400 mt-4 text-center font-body">
+    <p class="text-xs text-text-light/40 mt-4 text-center font-body">
         JPG, PNG o WEBP. Máx 5MB por archivo.
     </p>
 </div>

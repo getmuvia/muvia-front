@@ -1,3 +1,17 @@
-<div class="w-full h-48 md:h-64 lg:h-[450px] bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden bg-primary/20"
-    [style.background-image]="coverImageUrl() ? 'url(' + coverImageUrl() + ')' : null">
+<div
+    class="w-full h-48 md:h-64 lg:h-[450px] flex flex-col justify-end overflow-hidden relative group/banner bg-background-light">
+    @if (coverImageUrl()) {
+    <img [src]="coverImageUrl()" alt="Cover Image" class="w-full h-full object-cover absolute inset-0 z-10">
+    } @else {
+    <div
+        class="absolute inset-0 flex flex-col items-center justify-center text-text-light/40 gap-2 bg-background-light z-10">
+        <span class="material-symbols-outlined text-6xl">store</span>
+        <p class="text-sm font-medium font-body">Sin imagen de portada</p>
+    </div>
+    }
+
+    <!-- Edit Button -->
+    <app-edit-trigger-button (click)="edit.emit()" tooltip="Cambiar portada"
+        customClass="bottom-4 right-4 group-hover/banner:opacity-100" [class.opacity-100]="!coverImageUrl()">
+    </app-edit-trigger-button>
 </div>

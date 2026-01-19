@@ -1,11 +1,16 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
+import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
 
 @Component({
     selector: 'app-seller-cover-banner',
-    imports: [],
-    templateUrl: './seller-cover-banner.html',
-    styleUrl: './seller-cover-banner.css',
+    imports: [EditTriggerButton],
+    templateUrl: './seller-cover-banner.html'
 })
 export class SellerCoverBanner {
-    coverImageUrl = input<string>('');
+    coverImage = input<string | null>(null);
+    edit = output<void>();
+
+    coverImageUrl = computed(() => {
+        return this.coverImage();
+    });
 }

@@ -3,10 +3,10 @@
     <div class="flex-1 w-full space-y-8">
         <!-- Page Header -->
         <div class="flex flex-col gap-4 mb-8">
-            <h1 class="text-3xl md:text-4xl font-headline font-light text-gray-800 tracking-tight">
+            <h1 class="text-3xl md:text-4xl font-headline font-light text-text-light tracking-tight">
                 Nuevo Producto
             </h1>
-            <p class="text-gray-500 font-body font-light">
+            <p class="text-text-light/60 font-body font-light">
                 Completa los detalles para añadir una nueva pieza a tu colección.
             </p>
         </div>
@@ -76,7 +76,7 @@
                 }
             </button>
             <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
-                class="w-full bg-transparent border border-gray-300 text-gray-600 font-body font-bold py-3 uppercase tracking-widest text-xs hover:bg-gray-50 transition-colors disabled:opacity-50">
+                class="w-full bg-transparent border border-text-light/20 text-text-light/70 font-body font-bold py-3 uppercase tracking-widest text-xs hover:bg-surface-element transition-colors disabled:opacity-50">
                 Guardar Borrador
             </button>
         </div>

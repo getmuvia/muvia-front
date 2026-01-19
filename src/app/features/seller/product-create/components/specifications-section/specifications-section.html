@@ -1,29 +1,29 @@
 <section class="liquid-glass p-8 space-y-6">
-    <div class="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+    <div class="flex justify-between items-center border-b border-text-light/20 pb-4 mb-6">
         <h3 class="text-lg font-body font-bold uppercase tracking-wider text-secondary">Especificaciones Técnicas</h3>
-        <span class="material-symbols-outlined text-gray-400">square_foot</span>
+        <span class="material-symbols-outlined text-text-light/40">square_foot</span>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Dimensions -->
         <div class="space-y-2">
-            <label class="text-xs text-gray-500 uppercase font-body">
+            <label class="text-xs text-text-light/60 uppercase font-body">
                 Dimensiones (L x A x H)
             </label>
             <div class="flex gap-2 items-center">
                 <input [field]="dimensionWidthField()"
-                    class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body" placeholder="Ancho"
-                    type="number" />
-                <span class="text-gray-400">×</span>
+                    class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                    placeholder="Ancho" type="number" />
+                <span class="text-text-light/40">×</span>
                 <input [field]="dimensionDepthField()"
-                    class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body" placeholder="Largo"
-                    type="number" />
-                <span class="text-gray-400">×</span>
+                    class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                    placeholder="Largo" type="number" />
+                <span class="text-text-light/40">×</span>
                 <input [field]="dimensionHeightField()"
-                    class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body" placeholder="Alto"
-                    type="number" />
+                    class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                    placeholder="Alto" type="number" />
                 <select [field]="dimensionUnitField()"
-                    class="bg-gray-50 border-none p-3 text-sm text-gray-900 font-body">
+                    class="bg-surface-element border-none p-3 text-sm text-text-light font-body">
                     <option value="cm">cm</option>
                     <option value="m">m</option>
                     <option value="in">in</option>
@@ -40,8 +40,9 @@
 
         <!-- Weight -->
         <div class="space-y-2">
-            <label class="text-xs text-gray-500 uppercase font-body">Peso</label>
-            <input [field]="weightField()" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+            <label class="text-xs text-text-light/60 uppercase font-body">Peso</label>
+            <input [field]="weightField()"
+                class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
                 placeholder="Ej. 15 kg" type="text" />
             @if (isFieldInvalid(weightField())) {
             <p class="text-sm text-red-500 font-medium flex items-center gap-1">
@@ -55,8 +56,9 @@
 
         <!-- Material -->
         <div class="space-y-2">
-            <label class="text-xs text-gray-500 uppercase font-body">Material Principal</label>
-            <input [field]="materialField()" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+            <label class="text-xs text-text-light/60 uppercase font-body">Material Principal</label>
+            <input [field]="materialField()"
+                class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
                 placeholder="Ej. Roble macizo, Vidrio templado" type="text" />
             @if (isFieldInvalid(materialField())) {
             <p class="text-sm text-red-500 font-medium flex items-center gap-1">
@@ -70,8 +72,9 @@
 
         <!-- Color -->
         <div class="space-y-2">
-            <label class="text-xs text-gray-500 uppercase font-body">Color Predominante</label>
-            <input [field]="colorField()" class="w-full bg-gray-50 border-none p-3 text-sm text-gray-900 font-body"
+            <label class="text-xs text-text-light/60 uppercase font-body">Color Predominante</label>
+            <input [field]="colorField()"
+                class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
                 placeholder="Ej. Negro mate, Blanco perla" type="text" />
             @if (isFieldInvalid(colorField())) {
             <p class="text-sm text-red-500 font-medium flex items-center gap-1">
