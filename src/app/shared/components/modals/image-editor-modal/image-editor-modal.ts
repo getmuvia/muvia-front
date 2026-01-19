@@ -11,9 +11,9 @@ import { CommonModule } from '@angular/common';
         <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
             
             <!-- Header -->
-            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
-                <h3 class="text-lg font-bold text-gray-900">{{ title() }}</h3>
-                <button (click)="close()" class="text-gray-400 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-gray-100">
+            <div class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10">
+                <h3 class="text-lg font-bold text-text-light">{{ title() }}</h3>
+                <button (click)="close()" class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
             </div>
@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
             <div class="p-6 flex flex-col items-center gap-6 overflow-y-auto">
                 
                 <!-- Preview Area -->
-                <div class="relative w-full aspect-video bg-gray-100 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-gray-50 hover:border-primary"
+                <div class="relative w-full aspect-video bg-surface-element rounded-xl overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
                     (click)="fileInput.click()">
                     
                     @if (previewUrl()) {
@@ -42,7 +42,7 @@ import { CommonModule } from '@angular/common';
                              </div>
                         </div>
                     } @else {
-                        <div class="flex flex-col items-center gap-3 text-gray-400">
+                        <div class="flex flex-col items-center gap-3 text-text-light/40">
                              <span class="material-symbols-outlined text-4xl">add_photo_alternate</span>
                              <span class="text-sm font-medium">Haz clic para subir una imagen</span>
                         </div>
@@ -51,16 +51,16 @@ import { CommonModule } from '@angular/common';
 
                 <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" accept="image/png, image/jpeg, image/webp">
 
-                <p class="text-xs text-center text-gray-500 px-4">
+                <p class="text-xs text-center text-text-light/60 px-4">
                     Se recomienda una imagen de alta resolución. Formatos soportados: PNG, JPG, WEBP.
                 </p>
 
             </div>
 
             <!-- Footer -->
-            <div class="p-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
+            <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
                 <button (click)="close()" 
-                    class="px-4 py-2 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-200 transition-colors">
+                    class="px-4 py-2 rounded-lg text-sm font-medium text-text-light hover:bg-gray-200 transition-colors">
                     Cancelar
                 </button>
                 <button (click)="onSave()" 

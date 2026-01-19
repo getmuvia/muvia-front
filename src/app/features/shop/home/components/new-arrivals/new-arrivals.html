@@ -10,7 +10,7 @@
             @for (product of products(); track product.id) {
             <app-product-card [product]="product" />
             } @empty {
-            <p class="col-span-full text-center text-gray-500 py-10">
+            <p class="col-span-full text-center text-text-light/60 py-10">
                 No hay novedades por el momento.
             </p>
             }

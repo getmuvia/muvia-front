@@ -50,7 +50,7 @@
                     placeholder="••••••••" />
 
                 <button type="button" (click)="togglePasswordVisibility()"
-                    class="absolute right-3 p-1 rounded-full text-text-secondary hover:text-text-main hover:bg-gray-200 transition-colors flex items-center justify-center">
+                    class="absolute right-3 p-1 rounded-full text-text-secondary hover:text-text-main hover:bg-surface-element transition-colors flex items-center justify-center">
                     <span class="material-symbols-outlined text-[20px]">
                         {{ showPassword() ? 'visibility' : 'visibility_off' }}
                     </span>
@@ -68,7 +68,7 @@
         </div>
 
         <button type="submit" [disabled]="isLoading()"
-            class="mt-2 flex w-full h-12 items-center justify-center rounded-lg bg-primary hover:bg-blue-600 active:bg-blue-700 text-white text-base font-bold tracking-wide transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+            class="mt-2 flex w-full h-12 items-center justify-center rounded-lg bg-primary hover:bg-primary/90 active:bg-primary text-white text-base font-bold tracking-wide transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
             @if (isLoading()) {
             <span class="animate-spin mr-2">⟳</span>
             }

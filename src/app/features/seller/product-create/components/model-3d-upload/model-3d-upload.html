@@ -1,6 +1,6 @@
 <div class="liquid-glass p-6">
     <div class="flex justify-between items-center mb-6">
-        <h3 class="text-base font-body font-bold uppercase tracking-wider text-gray-800">
+        <h3 class="text-base font-body font-bold uppercase tracking-wider text-text-light">
             Modelos 3D
         </h3>
         <span class="material-symbols-outlined text-secondary">view_in_ar</span>
@@ -9,15 +9,15 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- GLB/GLTF Upload (Web Viewer) -->
         <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
-            [class.border-secondary]="isDraggingGlb()" [class.border-gray-300]="!isDraggingGlb()"
+            [class.border-secondary]="isDraggingGlb()" [class.border-text-light/20]="!isDraggingGlb()"
             (dragover)="onDragOverGlb($event)" (dragleave)="onDragLeaveGlb()" (drop)="onDropGlb($event)"
             (click)="glbFileInput.click()">
 
             @if (glbAsset()) {
             <div class="flex flex-col items-center justify-center h-full">
                 <span class="material-symbols-outlined text-3xl text-secondary mb-2">3d_rotation</span>
-                <p class="text-sm font-body font-medium text-gray-800">GLB cargado</p>
-                <p class="text-xs text-gray-500 font-body mt-1">
+                <p class="text-sm font-body font-medium text-text-light">GLB cargado</p>
+                <p class="text-xs text-text-light/60 font-body mt-1">
                     {{ (glbAsset()!.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
                 </p>
             </div>
@@ -29,11 +29,11 @@
                 </button>
             </div>
             } @else {
-            <span class="material-symbols-outlined text-3xl text-gray-400 mb-2">deployed_code</span>
-            <p class="text-xs font-body font-medium text-gray-500 text-center px-2">
+            <span class="material-symbols-outlined text-3xl text-text-light/40 mb-2">deployed_code</span>
+            <p class="text-xs font-body font-medium text-text-light/60 text-center px-2">
                 .GLB / .GLTF
             </p>
-            <p class="text-[10px] font-body text-gray-400 mt-1">Visor Web</p>
+            <p class="text-[10px] font-body text-text-light/40 mt-1">Visor Web</p>
             }
 
             <div
@@ -46,15 +46,15 @@
 
         <!-- USDZ Upload (iOS AR) -->
         <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
-            [class.border-secondary]="isDraggingUsdz()" [class.border-gray-300]="!isDraggingUsdz()"
+            [class.border-secondary]="isDraggingUsdz()" [class.border-text-light/20]="!isDraggingUsdz()"
             (dragover)="onDragOverUsdz($event)" (dragleave)="onDragLeaveUsdz()" (drop)="onDropUsdz($event)"
             (click)="usdzFileInput.click()">
 
             @if (usdzAsset()) {
             <div class="flex flex-col items-center justify-center h-full">
                 <span class="material-symbols-outlined text-3xl text-secondary mb-2">view_in_ar</span>
-                <p class="text-sm font-body font-medium text-gray-800">USDZ cargado</p>
-                <p class="text-xs text-gray-500 font-body mt-1">iOS AR</p>
+                <p class="text-sm font-body font-medium text-text-light">USDZ cargado</p>
+                <p class="text-xs text-text-light/60 font-body mt-1">iOS AR</p>
             </div>
             <div
                 class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -64,11 +64,11 @@
                 </button>
             </div>
             } @else {
-            <span class="material-symbols-outlined text-3xl text-gray-400 mb-2">phone_iphone</span>
-            <p class="text-xs font-body font-medium text-gray-500 text-center px-2">
+            <span class="material-symbols-outlined text-3xl text-text-light/40 mb-2">phone_iphone</span>
+            <p class="text-xs font-body font-medium text-text-light/60 text-center px-2">
                 .USDZ
             </p>
-            <p class="text-[10px] font-body text-gray-400 mt-1">AR en iOS</p>
+            <p class="text-[10px] font-body text-text-light/40 mt-1">AR en iOS</p>
             }
 
             <div
