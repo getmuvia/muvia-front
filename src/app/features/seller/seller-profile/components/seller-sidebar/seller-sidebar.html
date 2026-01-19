@@ -11,7 +11,7 @@
             <div class="flex flex-col gap-6 pt-2">
                 <!-- About Section -->
                 <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-3 px-3 py-2 bg-text-light/5 rounded-lg">
+                    <div class="flex items-center gap-3 px-3 py-2 bg-surface-element rounded-lg">
                         <span class="material-symbols-outlined text-text-light">info</span>
                         <p class="text-text-light text-sm font-body font-medium leading-normal">Sobre
                             Nosotros</p>
@@ -23,16 +23,16 @@
                     </p>
                     } @else {
                     <div
-                        class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg text-gray-400 gap-1">
+                        class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-lg text-text-light/40 gap-1">
                         <span class="material-symbols-outlined text-xl">description</span>
-                        <p class="text-xs font-medium text-center">Sin descripción</p>
+                        <p class="text-xs font-medium text-center font-body">Sin descripción</p>
                     </div>
                     }
                 </div>
 
                 <!-- Business Hours Section -->
                 <div class="flex flex-col gap-2">
-                    <div class="flex items-center gap-3 px-3 py-2 bg-text-light/5 rounded-lg">
+                    <div class="flex items-center gap-3 px-3 py-2 bg-surface-element rounded-lg">
                         <span class="material-symbols-outlined text-text-light">schedule</span>
                         <p class="text-text-light text-sm font-body font-medium leading-normal">Horario
                             de Atención</p>
@@ -44,7 +44,7 @@
                         <div class="flex justify-between items-center text-sm font-body">
                             <span class="text-text-light/80 w-24">{{ day.label }}</span>
                             @if (businessHours()[day.key]?.isClosed) {
-                            <span class="text-red-500/80 font-medium">Cerrado</span>
+                            <span class="text-red-500/80 font-medium font-body">Cerrado</span>
                             } @else {
                             <span class="text-text-light/60">
                                 {{ businessHours()[day.key]?.open || '--' }} - {{ businessHours()[day.key]?.close ||
@@ -56,9 +56,9 @@
                     </div>
                     } @else {
                     <div
-                        class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg text-gray-400 gap-1">
+                        class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-lg text-text-light/40 gap-1">
                         <span class="material-symbols-outlined text-xl">calendar_off</span>
-                        <p class="text-xs font-medium text-center">Sin horario</p>
+                        <p class="text-xs font-medium text-center font-body">Sin horario</p>
                     </div>
                     }
                 </div>
@@ -69,7 +69,7 @@
                 @if (socialLinks().length > 0) {
                 @for (link of socialLinks(); track link.name) {
                 <a [href]="link.url" target="_blank"
-                    class="flex items-center gap-3 px-3 py-2 hover:bg-text-light/5 transition-colors rounded-md group/link">
+                    class="flex items-center gap-3 px-3 py-2 hover:bg-surface-element transition-colors rounded-md group/link">
                     @switch (link.icon) {
                     @case ('language') {
                     <span
@@ -98,9 +98,9 @@
                 }
                 } @else {
                 <div
-                    class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-lg text-gray-400 gap-1">
+                    class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-lg text-text-light/40 gap-1">
                     <span class="material-symbols-outlined text-xl">link_off</span>
-                    <p class="text-xs font-medium text-center">Sin redes sociales</p>
+                    <p class="text-xs font-medium text-center font-body">Sin redes sociales</p>
                 </div>
                 }
             </div>

@@ -4,10 +4,10 @@
 
     <div class="flex w-full flex-col gap-4 sm:flex-row sm:justify-between sm:items-end">
         <div class="flex gap-4 items-end">
-            <div class="relative flex items-center justify-center bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 ring-4 ring-background-light bg-gray-300"
+            <div class="relative flex items-center justify-center bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 ring-4 ring-background-light bg-surface-element"
                 [style.background-image]="avatarUrl() ? 'url(' + avatarUrl() + ')' : null">
                 @if (!avatarUrl()) {
-                <span class="material-symbols-outlined text-5xl text-gray-500">storefront</span>
+                <span class="material-symbols-outlined text-5xl text-text-light/50">storefront</span>
                 }
 
                 <!-- Edit Avatar Button -->
@@ -16,17 +16,17 @@
                 </app-edit-trigger-button>
             </div>
             <div class="flex flex-col justify-center pb-2">
-                <p class="text-3xl font-headline font-bold leading-tight tracking-[-0.015em] text-gray-900">
+                <p class="text-3xl font-headline font-bold leading-tight tracking-[-0.015em] text-text-light">
                     {{ sellerName() || 'Nombre del Vendedor' }}
                 </p>
-                <p class="text-base font-body font-normal leading-normal text-gray-600">
+                <p class="text-base font-body font-normal leading-normal text-text-light/80">
                     {{ description() || 'Descripción del vendedor.' }}
                 </p>
             </div>
         </div>
         <div class="flex w-full sm:w-auto max-w-[480px] gap-3">
             <button (click)="onFollow()"
-                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-text-light/10 text-text-light text-sm font-body font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto hover:bg-text-light/20 transition-colors">
+                class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-surface-element text-text-light text-sm font-body font-bold leading-normal tracking-[0.015em] flex-1 sm:flex-auto hover:bg-surface-element/80 transition-colors">
                 <span class="truncate">Seguir</span>
             </button>
             <button (click)="onContact()"

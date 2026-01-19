@@ -4,13 +4,15 @@
 
 /* Custom Tailwind Theme Configuration */
 @theme {
-  --color-primary: #b07d62;
+  --color-primary: #8B5A2B;
   --color-secondary: #c9a45c;
   --color-background-light: #f8f8f8;
   --color-text-light: #2d2d2d;
 
   --font-headline: "Cormorant Garamond", serif;
   --font-body: "Montserrat", sans-serif;
+
+  --color-surface-element: #f4f4f4;
 }
 
 /* Material Symbols Configuration */

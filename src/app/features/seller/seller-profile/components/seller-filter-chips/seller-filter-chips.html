@@ -3,7 +3,7 @@
     <button (click)="onChipClick(chip.id)"
         [class]="chip.id === activeChipId()
                 ? 'flex h-9 shrink-0 items-center justify-center gap-x-2 bg-primary/20 pl-4 pr-3'
-                : 'flex h-9 shrink-0 items-center justify-center gap-x-2 bg-text-light/5 pl-4 pr-3 hover:bg-text-light/10 transition-colors'">
+                : 'flex h-9 shrink-0 items-center justify-center gap-x-2 bg-surface-element pl-4 pr-3 hover:bg-surface-element/80 transition-colors'">
         <p [class]="chip.id === activeChipId()
                 ? 'text-primary text-sm font-body font-medium leading-normal'
                 : 'text-text-light text-sm font-body font-medium leading-normal'">
