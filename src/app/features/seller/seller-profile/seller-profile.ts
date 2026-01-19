@@ -11,10 +11,8 @@ import { Product } from '@core/models/product/product';
 import { ProductService } from '@core/services/product/product';
 import { UserService } from '@core/services/user/user';
 import { UploadFile } from '@core/services/uploadFile/upload-file';
-import { BusinessHours } from '@core/models/user/vendor-profile';
-
 import { Auth } from '@core/auth/services/auth';
-import { VendorResponse } from '@core/models/user/vendor-profile';
+import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 
 @Component({
   selector: 'app-seller-profile',
@@ -26,7 +24,8 @@ import { VendorResponse } from '@core/models/user/vendor-profile';
     SellerProductGrid,
     SellerPagination,
     ImageEditorModal,
-    SidebarEditModal
+    SidebarEditModal,
+    Skeleton
   ],
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
@@ -37,16 +36,18 @@ export class SellerProfile {
   private readonly uploadFileService = inject(UploadFile);
   private readonly auth = inject(Auth);
 
-  coverImageUrl = signal<string>('');
-  avatarUrl = signal<string>('');
-  sellerName = signal<string>('');
-  sellerDescription = signal<string>('');
-  aboutText = signal<string>('');
-  socialLinks = signal<any[]>([]);
-  businessHours = signal<BusinessHours>({});
+  coverImageUrl = computed(() => this.userService.vendorProfile()?.coverImage || '');
+  avatarUrl = computed(() => this.userService.vendorProfile()?.logoUrl || '');
+  sellerName = computed(() => this.userService.vendorProfile()?.businessName || 'Nombre del Vendedor');
+  sellerDescription = computed(() => this.userService.vendorProfile()?.description || '');
+  aboutText = computed(() => this.userService.vendorProfile()?.aboutMe || '');
+  socialLinks = computed(() => this.userService.vendorProfile()?.socialLinks || []);
+  businessHours = computed(() => this.userService.vendorProfile()?.businessHours || {});
 
-  products = signal<Product[]>([]);
-  isLoading = signal(false);
+  products = computed(() => this.productService.userProducts() || []);
+
+  isProfileLoading = computed(() => !this.userService.vendorProfile());
+  isProductsLoading = computed(() => this.productService.userProducts() === null);
 
   currentPage = 1;
   totalPages = 8;
@@ -65,43 +66,17 @@ export class SellerProfile {
 
   constructor() {
     afterNextRender(() => {
-      this.loadProfile();
-      this.loadProducts();
+      this.loadData();
     });
   }
 
-  private loadProfile(): void {
+  private loadData(): void {
     const userId = this.auth.currentUser()?.id;
     if (!userId) return;
 
-    this.userService.getVendorProfile(userId).subscribe({
-      next: (response: VendorResponse) => {
-        console.log('response profile: ', response);
-        const profile = response.vendorProfile;
-        this.coverImageUrl.set(profile.coverImage || '');
-        this.avatarUrl.set(profile.logoUrl || '');
-        this.sellerName.set(profile.businessName || 'Nombre del Vendedor');
-        this.sellerDescription.set(profile.description || '');
-        this.aboutText.set(profile.aboutMe || '');
-        this.socialLinks.set(profile.socialLinks || []);
-        this.businessHours.set(profile.businessHours || {});
-      },
-      error: (err) => console.error('Error loading profile:', err)
-    });
-  }
-
-  private loadProducts(): void {
-    this.isLoading.set(true);
-    this.productService.getUserProducts().subscribe({
-      next: (products: Product[]) => {
-        this.products.set(products);
-        this.isLoading.set(false);
-      },
-      error: (err: unknown) => {
-        console.error('Error loading products:', err);
-        this.isLoading.set(false);
-      }
-    });
+    // Trigger background refresh (Stale-While-Revalidate)
+    this.userService.loadVendorProfile(userId);
+    this.productService.loadUserProducts();
   }
 
   openEditModal(type: 'cover' | 'avatar') {
@@ -124,21 +99,14 @@ export class SellerProfile {
     // 1. Upload File
     this.uploadFileService.uploadFile(file, `users/${userId}`).subscribe({
       next: (response) => {
-        console.log('response file: ', response);
         const url = response.url;
 
-        // 2. Update Profile with new URL
+        // 2. Update Profile (Service handles optimistic update)
         const updateData = { [field]: url };
         const payload = { vendorProfile: updateData };
 
         this.userService.updateProfile(payload).subscribe({
-          next: () => {
-            // 3. Update Local State
-            if (field === 'coverImage') this.coverImageUrl.set(url);
-            if (field === 'logoUrl') this.avatarUrl.set(url);
-
-            this.isModalOpen.set(false);
-          },
+          next: () => this.isModalOpen.set(false),
           error: (err) => console.error('Error updating profile:', err)
         });
       },
@@ -148,14 +116,8 @@ export class SellerProfile {
 
   onSaveSidebarInfo(data: any) {
     const payload = { vendorProfile: data };
-    console.log('Updating Sidebar with:', payload);
     this.userService.updateProfile(payload).subscribe({
-      next: () => {
-        this.aboutText.set(data.aboutMe);
-        this.businessHours.set(data.businessHours);
-        this.socialLinks.set(data.socialLinks);
-        this.isSidebarModalOpen.set(false);
-      },
+      next: () => this.isSidebarModalOpen.set(false),
       error: (err) => console.error('Error updating sidebar info:', err)
     });
   }

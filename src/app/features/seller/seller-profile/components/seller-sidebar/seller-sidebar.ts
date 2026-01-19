@@ -1,12 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
-
-
-export interface SellerSocialLink {
-    name: string;
-    url: string;
-    icon: 'language' | 'instagram' | 'pinterest';
-}
+import { SocialLink } from '@core/models/user/vendor-profile';
 
 @Component({
     selector: 'app-seller-sidebar',
@@ -17,7 +11,7 @@ export interface SellerSocialLink {
 export class SellerSidebar {
     aboutText = input<string>('');
     businessHours = input<any>({});
-    socialLinks = input<SellerSocialLink[]>([]);
+    socialLinks = input<SocialLink[]>([]);
 
     editInfo = output<void>();
 

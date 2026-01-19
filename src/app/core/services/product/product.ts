@@ -1,6 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { Auth } from '@core/auth/services/auth';
 import { Product } from '@core/models/product/product';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
@@ -47,6 +47,8 @@ export class ProductService {
     });
   }
 
+  readonly userProducts = signal<Product[] | null>(null);
+
   /**
    * Get all products with pagination (public endpoint)
    * GET /products?page=1&limit=10
@@ -79,6 +81,17 @@ export class ProductService {
   getUserProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(API_ENDPOINTS.PRODUCTS.MY_PRODUCTS, {
       headers: this.getAuthHeaders()
+    }).pipe(
+      tap(products => this.userProducts.set(products))
+    );
+  }
+
+  /**
+   * Stale-While-Revalidate strategy for loading user products
+   */
+  loadUserProducts(): void {
+    this.getUserProducts().subscribe({
+      error: (err) => console.error('Background product refresh failed', err)
     });
   }
 
@@ -89,7 +102,11 @@ export class ProductService {
   createProduct(dto: CreateProductDto): Observable<Product> {
     return this.http.post<Product>(this.apiUrl, dto, {
       headers: this.getAuthHeaders()
-    });
+    }).pipe(
+      tap(newProduct => {
+        this.userProducts.update(current => [newProduct, ...(current || [])]);
+      })
+    );
   }
 
   /**
