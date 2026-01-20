@@ -12,16 +12,17 @@ export class UserService {
     private http = inject(HttpClient);
     private auth = inject(Auth);
 
-    // State
     readonly vendorProfile = signal<VendorProfile | null>(null);
 
-    updateProfile(data: UpdateVendorProfilePayload): Observable<VendorProfile> {
+    updateProfile(data: UpdateVendorProfilePayload): Observable<VendorResponse> {
         const token = this.auth.getAccessToken();
         const headers = { Authorization: `Bearer ${token}` };
-        return this.http.patch<VendorProfile>(API_ENDPOINTS.USERS.ME, data, { headers }).pipe(
-            tap(updatedProfile => {
-                // Optimistic update / Sync state
-                this.vendorProfile.update(current => ({ ...current, ...updatedProfile } as VendorProfile));
+        return this.http.patch<VendorResponse>(API_ENDPOINTS.USERS.ME, data, { headers }).pipe(
+            tap(updatedUser => {
+
+                if (updatedUser.vendorProfile) {
+                    this.vendorProfile.update(current => ({ ...current, ...updatedUser.vendorProfile }));
+                }
             })
         );
     }
@@ -38,14 +39,12 @@ export class UserService {
      * Stale-While-Revalidate strategy for loading profile
      */
     loadVendorProfile(userId: string): void {
-        // We already have data? Great, the component can use it immediately.
-        // But we ALWAYS fetch fresh data in the background.
+
         this.getVendorProfile(userId).subscribe({
             error: (err) => console.error('Background profile refresh failed', err)
         });
     }
 
-    // Placeholder to get current profile if separate from auth
     getProfile(): Observable<VendorProfile> {
         return this.http.get<VendorProfile>(API_ENDPOINTS.USERS.ME);
     }

@@ -64,9 +64,13 @@ import { CommonModule } from '@angular/common';
                     Cancelar
                 </button>
                 <button (click)="onSave()" 
-                    [disabled]="!selectedFile()"
+                    [disabled]="!selectedFile() || isLoading()"
                     class="px-6 py-2 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-lg">check</span>
+                    @if (isLoading()) {
+                        <span class="material-symbols-outlined text-lg animate-spin">refresh</span>
+                    } @else {
+                        <span class="material-symbols-outlined text-lg">check</span>
+                    }
                     Guardar
                 </button>
             </div>
@@ -89,6 +93,8 @@ export class ImageEditorModal {
     title = input<string>('Editar Imagen');
     currentImageUrl = input<string>('');
     mode = input<'cover' | 'avatar'>('cover');
+
+    isLoading = input<boolean>(false);
 
     save = output<File>();
     cancel = output<void>();

@@ -16,7 +16,10 @@ export const API_ENDPOINTS = {
         MY_PRODUCTS: `${BASE}/products/my-products`,
     },
     FILES: {
-        UPLOAD: `${BASE}/files/upload`,
+        UPLOAD: `${BASE}/files/upload-url`,
+    },
+    STORAGE: {
+        GOOGLE_CLOUD_BASE_URL: 'https://storage.googleapis.com/itera-484104.firebasestorage.app',
     },
     USERS: {
         ME: `${BASE}/users/me`,

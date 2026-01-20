@@ -1,15 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable, switchMap } from 'rxjs';
 import { Auth } from '@core/auth/services/auth';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 export interface UploadResponse {
   url: string;
   key: string;
-  size: number;
-  contentType: string;
-  metadata: Record<string, unknown>;
 }
 
 @Injectable({
@@ -20,6 +17,7 @@ export class UploadFile {
   private readonly auth = inject(Auth);
 
   private readonly apiUrl = API_ENDPOINTS.FILES.UPLOAD;
+  private readonly storageFirebaseUrl = API_ENDPOINTS.STORAGE.GOOGLE_CLOUD_BASE_URL;
 
   private getAuthHeaders(): HttpHeaders {
     const token = this.auth.getAccessToken();
@@ -34,14 +32,33 @@ export class UploadFile {
    * @param folder The folder path (e.g. 'products/{userId}')
    */
   uploadFile(file: File, folder: string): Observable<UploadResponse> {
-    const formData = new FormData();
-    formData.append('file', file);
 
-    // Append folder as query param as requested
-    const url = `${this.apiUrl}?folder=${folder}`;
+    const body = {
+      filename: file.name,
+      contentType: file.type
+    };
 
-    return this.http.post<UploadResponse>(url, formData, {
+    const requestUrl = `${this.apiUrl}?folder=${folder}`;
+
+    return this.http.post<UploadResponse>(requestUrl, body, {
       headers: this.getAuthHeaders()
-    });
+    }).pipe(
+      switchMap(response => {
+
+        return this.http.put(response.url, file, {
+          headers: {
+            'Content-Type': file.type
+          }
+        }
+        ).pipe(
+          map(() => {
+            return {
+              key: response.key,
+              url: `${this.storageFirebaseUrl}/${response.key}`
+            };
+          })
+        );
+      })
+    );
   }
 }

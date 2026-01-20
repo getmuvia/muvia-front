@@ -96,9 +96,9 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
                     Cancelar
                 </button>
                 <button (click)="onSubmit()" 
-                    [disabled]="form.invalid || isSaving()"
+                    [disabled]="form.invalid || isLoading() || form.pristine"
                     class="px-6 py-2 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
-                    @if (isSaving()) {
+                    @if (isLoading()) {
                         <span class="material-symbols-outlined text-lg animate-spin">refresh</span>
                     } @else {
                         <span class="material-symbols-outlined text-lg">save</span>
@@ -123,13 +123,13 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
 export class SidebarEditModal {
     isOpen = input<boolean>(false);
     initialData = input<any>(null);
+    isLoading = input<boolean>(false);
 
     save = output<any>();
     closeModal = output<void>();
 
     fb = inject(FormBuilder);
     form: FormGroup;
-    isSaving = signal(false);
 
     weekDays = [
         { key: 'monday', label: 'Lunes' },
@@ -177,6 +177,7 @@ export class SidebarEditModal {
 
     removeSocialLink(index: number) {
         this.socialLinksControls.removeAt(index);
+        this.form.markAsDirty();
     }
 
     patchForm(data: any) {
@@ -202,7 +203,6 @@ export class SidebarEditModal {
 
     onSubmit() {
         if (this.form.valid) {
-            this.isSaving.set(true);
             const formValue = { ...this.form.value };
 
             if (formValue.businessHours) {

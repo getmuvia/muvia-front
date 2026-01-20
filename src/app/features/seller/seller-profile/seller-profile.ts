@@ -55,6 +55,7 @@ export class SellerProfile {
   isModalOpen = signal(false);
   modalTitle = signal('');
   activeField = signal<'coverImage' | 'logoUrl' | null>(null);
+  isSaving = signal(false);
 
   isSidebarModalOpen = signal(false);
 
@@ -96,6 +97,8 @@ export class SellerProfile {
 
     if (!field || !userId) return;
 
+    this.isSaving.set(true);
+
     // 1. Upload File
     this.uploadFileService.uploadFile(file, `users/${userId}`).subscribe({
       next: (response) => {
@@ -106,19 +109,35 @@ export class SellerProfile {
         const payload = { vendorProfile: updateData };
 
         this.userService.updateProfile(payload).subscribe({
-          next: () => this.isModalOpen.set(false),
-          error: (err) => console.error('Error updating profile:', err)
+          next: () => {
+            this.isModalOpen.set(false);
+            this.isSaving.set(false);
+          },
+          error: (err) => {
+            console.error('Error updating profile:', err);
+            this.isSaving.set(false);
+          }
         });
       },
-      error: (err) => console.error('Error uploading file:', err)
+      error: (err) => {
+        console.error('Error uploading file:', err);
+        this.isSaving.set(false);
+      }
     });
   }
 
   onSaveSidebarInfo(data: any) {
+    this.isSaving.set(true);
     const payload = { vendorProfile: data };
     this.userService.updateProfile(payload).subscribe({
-      next: () => this.isSidebarModalOpen.set(false),
-      error: (err) => console.error('Error updating sidebar info:', err)
+      next: () => {
+        this.isSidebarModalOpen.set(false);
+        this.isSaving.set(false);
+      },
+      error: (err) => {
+        console.error('Error updating sidebar info:', err);
+        this.isSaving.set(false);
+      }
     });
   }
 
