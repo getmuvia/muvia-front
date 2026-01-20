@@ -23,7 +23,7 @@
 </app-seller-profile-header>
 }
 
-<app-image-editor-modal [isOpen]="isModalOpen()" [title]="modalTitle()"
+<app-image-editor-modal [isOpen]="isModalOpen()" [title]="modalTitle()" [isLoading]="isSaving()"
     [mode]="activeField() === 'coverImage' ? 'cover' : 'avatar'" (save)="onSaveImage($event)"
     (cancel)="isModalOpen.set(false)">
 </app-image-editor-modal>
@@ -85,6 +85,6 @@
     </div>
 </div>
 
-<app-sidebar-edit-modal [isOpen]="isSidebarModalOpen()" [initialData]="sidebarData()" (save)="onSaveSidebarInfo($event)"
-    (closeModal)="isSidebarModalOpen.set(false)">
+<app-sidebar-edit-modal [isOpen]="isSidebarModalOpen()" [initialData]="sidebarData()" [isLoading]="isSaving()"
+    (save)="onSaveSidebarInfo($event)" (closeModal)="isSidebarModalOpen.set(false)">
 </app-sidebar-edit-modal>
