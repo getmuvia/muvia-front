@@ -1,4 +1,4 @@
 export const environment = {
     production: false,
-    apiUrl: 'http://localhost:3000'
+    apiUrl: 'https://itera-back-654213572628.us-central1.run.app'
 };
