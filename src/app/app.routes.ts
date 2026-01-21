@@ -1,30 +1,24 @@
 import { Routes } from '@angular/router';
-import { ShopLayout } from './layout/shop-layout/shop-layout';
-import { SellerLayout } from './layout/seller-layout/seller-layout';
-import { Home } from './features/shop/home/home';
-import { ProductList } from './features/shop/product/product-list/product-list';
-import { ProductDetail } from './features/shop/product/product-detail/product-detail';
-import { SellerProfile } from './features/seller/seller-profile/seller-profile';
-import { ProductCreate } from './features/seller/product-create/product-create';
 import { authGuard } from '@core/auth/guards/auth.guard';
 
 export const routes: Routes = [
     {
         path: '',
-        component: ShopLayout,
+        loadComponent: () => import('./layout/shop-layout/shop-layout').then(m => m.ShopLayout),
         children: [
             {
                 path: 'home',
-                component: Home,
+                loadComponent: () => import('./features/shop/home/home').then(m => m.Home),
                 data: { headerStyle: 'transparent' }
             },
             {
                 path: 'products',
-                component: ProductList,
+                loadComponent: () => import('./features/shop/product/product-list/product-list').then(m => m.ProductList),
+                data: { headerStyle: 'transparent' }
             },
             {
                 path: 'products/:id',
-                component: ProductDetail,
+                loadComponent: () => import('./features/shop/product/product-detail/product-detail').then(m => m.ProductDetail),
             },
             {
                 path: 'auth',
@@ -39,16 +33,16 @@ export const routes: Routes = [
     },
     {
         path: 'seller',
-        component: SellerLayout,
+        loadComponent: () => import('./layout/seller-layout/seller-layout').then(m => m.SellerLayout),
         canActivate: [authGuard],
         children: [
             {
                 path: 'profile',
-                component: SellerProfile,
+                loadComponent: () => import('./features/seller/seller-profile/seller-profile').then(m => m.SellerProfile),
             },
             {
                 path: 'products/create',
-                component: ProductCreate,
+                loadComponent: () => import('./features/seller/product-create/product-create').then(m => m.ProductCreate),
             },
             {
                 path: '',
