@@ -16,15 +16,15 @@ export class ProductDetail implements OnInit {
   private readonly productStore = inject(ProductStore);
 
   product = this.productStore.selectedProduct;
-  isLoading = this.productStore.isLoading;
-  error = this.productStore.error;
+  isLoading = this.productStore['isLoading'];
+  error = this.productStore['error'];
   similarProducts = signal<Product[]>([]);
 
   constructor() {
     effect(() => {
       const product = this.product();
+      
       if (product) {
-        // Use untracked just in case, though similarProducts doesn't affect product
         untracked(() => this.loadSimilarProducts(product.categoryId, product.id));
       }
     });
@@ -38,7 +38,6 @@ export class ProductDetail implements OnInit {
   }
 
   loadProduct(id: string): void {
-    // Store handles state management automatically
     this.productStore.getProductById(id);
   }
 
@@ -57,7 +56,6 @@ export class ProductDetail implements OnInit {
   onContactSeller(): void {
     const prod = this.product();
     if (prod?.seller) {
-      // For now, just log - could open a modal or navigate to seller contact page
       console.log('Contact seller:', prod.seller.name);
       alert(`Contactar a: ${prod.seller.name}`);
     }

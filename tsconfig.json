@@ -22,6 +22,9 @@
       ],
       "@core/constants/*": [
         "src/app/core/constants/*"
+      ],
+      "@core/store/*": [
+        "src/app/core/store/*"
       ]
     },
     "strict": true,

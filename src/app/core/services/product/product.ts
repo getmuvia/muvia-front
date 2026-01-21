@@ -8,6 +8,7 @@ import { pipe, tap, switchMap, exhaustMap } from 'rxjs';
 import { Product } from '@core/models/product/product';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
+import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/features/with-request-status';
 
 export interface PaginationParams {
   page?: number;
@@ -30,21 +31,18 @@ interface ProductState {
   products: Product[];
   selectedProduct: Product | null;
   totalItems: number;
-  isLoading: boolean;
-  error: string | null;
 }
 
 const initialState: ProductState = {
   products: [],
   selectedProduct: null,
   totalItems: 0,
-  isLoading: false,
-  error: null,
 };
 
 export const ProductStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
+  withRequestStatus(),
 
   withMethods((store, http = inject(HttpClient)) => {
     const apiUrl = API_ENDPOINTS.PRODUCTS.BASE;
@@ -54,18 +52,15 @@ export const ProductStore = signalStore(
       // 1. CARGA DE MIS PRODUCTOS (Lectura)
       loadUserProducts: rxMethod<void>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
+          tap(() => patchState(store, setLoading())),
           switchMap(() =>
             http.get<Product[]>(API_ENDPOINTS.PRODUCTS.MY_PRODUCTS).pipe(
               tapResponse({
                 next: (products) => patchState(store, {
                   products,
-                  isLoading: false
+                  ...setLoaded()
                 }),
-                error: (err: any) => patchState(store, {
-                  isLoading: false,
-                  error: err?.message || 'Error al cargar productos'
-                }),
+                error: (err: any) => patchState(store, setError(err?.message || 'Error al cargar productos')),
               })
             )
           )
@@ -79,24 +74,20 @@ export const ProductStore = signalStore(
         onError?: (message: string) => void;
       }>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
-          // exhaustMap ignora nuevos clics mientras este se procesa (Evita duplicados)
+          tap(() => patchState(store, setLoading())),
           exhaustMap(({ dto, onSuccess, onError }) =>
             http.post<Product>(apiUrl, dto).pipe(
               tapResponse({
                 next: (newProduct) => {
                   patchState(store, (state) => ({
                     products: [newProduct, ...state.products],
-                    isLoading: false
                   }));
+                  patchState(store, setLoaded());
                   if (onSuccess) onSuccess();
                 },
                 error: (err: any) => {
                   const errorMsg = err?.error?.message || 'No se pudo crear el producto';
-                  patchState(store, {
-                    isLoading: false,
-                    error: errorMsg
-                  });
+                  patchState(store, setError(errorMsg));
                   if (onError) onError(errorMsg);
                 },
               })
@@ -108,7 +99,7 @@ export const ProductStore = signalStore(
       // 3. BÚSQUEDA y PAGINACIÓN (Lectura con parámetros)
       searchProducts: rxMethod<SearchParams>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, error: null })),
+          tap(() => patchState(store, setLoading())),
           switchMap((params) => {
             const queryParams = new HttpParams()
               .set('search', params.search)
@@ -120,12 +111,9 @@ export const ProductStore = signalStore(
                 next: (response) => patchState(store, {
                   products: response.data,
                   totalItems: response.total,
-                  isLoading: false
+                  ...setLoaded()
                 }),
-                error: (err: any) => patchState(store, {
-                  isLoading: false,
-                  error: 'Error en la búsqueda'
-                }),
+                error: (err: any) => patchState(store, setError('Error en la búsqueda')),
               })
             );
           })
@@ -135,18 +123,15 @@ export const ProductStore = signalStore(
       // 4. OBTENER POR ID (Lectura individual)
       getProductById: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { isLoading: true, selectedProduct: null, error: null })),
+          tap(() => patchState(store, { selectedProduct: null, ...setLoading() })),
           switchMap((id) =>
             http.get<Product>(`${apiUrl}/${id}`).pipe(
               tapResponse({
                 next: (product) => patchState(store, {
                   selectedProduct: product,
-                  isLoading: false
+                  ...setLoaded()
                 }),
-                error: (err: any) => patchState(store, {
-                  isLoading: false,
-                  error: 'Producto no encontrado'
-                }),
+                error: (err: any) => patchState(store, setError('Producto no encontrado')),
               })
             )
           )
@@ -154,8 +139,7 @@ export const ProductStore = signalStore(
       ),
 
       // 5. UTILIDAD (Stateless)
-      // Mantenemos este método para consultas independientes (ej. productos similares) 
-      // Public Stateless Methods (kept as utility methods on the store)
+      // Mantenemos este método para consultas independientes (ej. productos similares)
       getAllProducts: (params: SearchParams = { search: '' }) => {
         let queryParams = new HttpParams()
           .set('page', (params.page || 1).toString())

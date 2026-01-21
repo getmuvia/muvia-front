@@ -48,7 +48,7 @@ export class SellerProfile {
   products = this.productStore.products;
 
   isProfileLoading = computed(() => !this.userService.vendorProfile());
-  isProductsLoading = this.productStore.isLoading;
+  isProductsLoading = this.productStore['isLoading'];
 
   currentPage = 1;
   totalPages = 8;
@@ -76,7 +76,6 @@ export class SellerProfile {
     const userId = this.auth.currentUser()?.id;
     if (!userId) return;
 
-    // Trigger background refresh (Stale-While-Revalidate)
     this.userService.loadVendorProfile(userId);
     this.productStore.loadUserProducts();
   }
