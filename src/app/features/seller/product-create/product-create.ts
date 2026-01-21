@@ -1,7 +1,7 @@
 import { Component, inject, signal, afterNextRender } from '@angular/core';
 import { Router } from '@angular/router';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
-import { ProductService } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
 import { UploadFile } from '@core/services/uploadFile/upload-file';
 import { Auth } from '@core/auth/services/auth';
@@ -22,10 +22,11 @@ import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryU
     ],
     templateUrl: './product-create.html',
     styleUrl: './product-create.css',
+    providers: [ProductStore]
 })
 export class ProductCreate {
     private readonly router = inject(Router);
-    private readonly productService = inject(ProductService);
+    private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
     private readonly uploadService = inject(UploadFile);
     private readonly auth = inject(Auth);
@@ -162,14 +163,15 @@ export class ProductCreate {
             const dto = this.buildProductDto();
 
             return new Promise((resolve) => {
-                this.productService.createProduct(dto).subscribe({
-                    next: (product) => {
-                        console.log('Product created:', product);
+                this.productStore.createProduct({
+                    dto,
+                    onSuccess: () => {
+                        console.log('Product created successfully');
                         this.isSubmitting.set(false);
                         this.router.navigate(['/seller/profile']);
                         resolve();
                     },
-                    error: (err) => {
+                    onError: (err) => {
                         console.error('Error creating product:', err);
                         this.isSubmitting.set(false);
                         resolve();

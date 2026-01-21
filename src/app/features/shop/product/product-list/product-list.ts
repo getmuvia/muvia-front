@@ -1,5 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { ProductService, PaginatedResponse } from '@core/services/product/product';
+import { ProductStore, PaginatedResponse } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
 import { Product } from '@core/models/product/product';
 import { Category } from '@core/models/category/category';
@@ -10,9 +10,10 @@ import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components
   imports: [PageHeader, FilterBar, ProductGrid, LoadMoreButton],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
+  providers: [ProductStore]
 })
 export class ProductList implements OnInit {
-  private readonly productService = inject(ProductService);
+  private readonly productStore = inject(ProductStore);
   private readonly categoryService = inject(CategoryService);
 
   // Products state
@@ -44,7 +45,7 @@ export class ProductList implements OnInit {
 
   loadProducts(): void {
     this.isLoading.set(true);
-    this.productService.getAllProducts({ page: 1, limit: this.pageLimit }).subscribe({
+    this.productStore.getAllProducts({ page: 1, limit: this.pageLimit, search: '' }).subscribe({
       next: (response) => {
         this.products.set(response.data);
         this.totalProducts.set(response.total);
@@ -75,11 +76,12 @@ export class ProductList implements OnInit {
     this.isLoadingMore.set(true);
     const nextPage = this.currentPage() + 1;
 
-    const request = this.searchQuery()
-      ? this.productService.searchProducts({ search: this.searchQuery(), page: nextPage, limit: this.pageLimit })
-      : this.productService.getAllProducts({ page: nextPage, limit: this.pageLimit });
-
-    request.subscribe({
+    // Always use getAllProducts (stateless) to support appending logic
+    this.productStore.getAllProducts({
+      page: nextPage,
+      limit: this.pageLimit,
+      search: this.searchQuery()
+    }).subscribe({
       next: (response) => {
         this.products.update(current => [...current, ...response.data]);
         this.currentPage.set(response.page);
@@ -95,13 +97,13 @@ export class ProductList implements OnInit {
   searchProducts(query: string): void {
     this.searchQuery.set(query);
     this.isLoading.set(true);
+    this.currentPage.set(1); // Reset page on search
 
-    if (!query.trim()) {
-      this.loadProducts();
-      return;
-    }
-
-    this.productService.searchProducts({ search: query, page: 1, limit: this.pageLimit }).subscribe({
+    this.productStore.getAllProducts({
+      page: 1,
+      limit: this.pageLimit,
+      search: query
+    }).subscribe({
       next: (response) => {
         this.products.set(response.data);
         this.totalProducts.set(response.total);
