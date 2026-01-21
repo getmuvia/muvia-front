@@ -1,29 +1,27 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
-import { Auth } from '@core/auth/services/auth';
+import { inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { rxMethod } from '@ngrx/signals/rxjs-interop';
+import { tapResponse } from '@ngrx/operators';
+import { pipe, tap, switchMap, exhaustMap } from 'rxjs';
+
 import { Product } from '@core/models/product/product';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
+import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/features/with-request-status';
+import { withPagination } from '@core/store/features/with-pagination';
+import { withEntitySelection } from '@core/store/features/with-selection';
+import { STORE_CONFIG } from '@core/store/store.config';
 
-/**
- * Pagination parameters for product queries
- */
 export interface PaginationParams {
   page?: number;
   limit?: number;
 }
 
-/**
- * Search parameters extending pagination
- */
 export interface SearchParams extends PaginationParams {
   search: string;
 }
 
-/**
- * Paginated response from the API
- */
 export interface PaginatedResponse<T> {
   data: T[];
   total: number;
@@ -32,89 +30,158 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-export class ProductService {
-  private readonly http = inject(HttpClient);
-  private readonly auth = inject(Auth);
-  private readonly apiUrl = API_ENDPOINTS.PRODUCTS.BASE;
-
-  private getAuthHeaders(): HttpHeaders {
-    const token = this.auth.getAccessToken();
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
-  readonly userProducts = signal<Product[] | null>(null);
-
-  /**
-   * Get all products with pagination (public endpoint)
-   * GET /products?page=1&limit=10
-   */
-  getAllProducts(params: PaginationParams = {}): Observable<PaginatedResponse<Product>> {
-    const queryParams = new HttpParams()
-      .set('page', (params.page || 1).toString())
-      .set('limit', (params.limit || 10).toString());
-
-    return this.http.get<PaginatedResponse<Product>>(this.apiUrl, { params: queryParams });
-  }
-
-  /**
-   * Search products by text with pagination (public endpoint)
-   * GET /products?search=zapatos&page=1&limit=15
-   */
-  searchProducts(params: SearchParams): Observable<PaginatedResponse<Product>> {
-    const queryParams = new HttpParams()
-      .set('search', params.search)
-      .set('page', (params.page || 1).toString())
-      .set('limit', (params.limit || 15).toString());
-
-    return this.http.get<PaginatedResponse<Product>>(this.apiUrl, { params: queryParams });
-  }
-
-  /**
-   * Get products of the authenticated user.
-   * Requires valid authentication token.
-   */
-  getUserProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(API_ENDPOINTS.PRODUCTS.MY_PRODUCTS, {
-      headers: this.getAuthHeaders()
-    }).pipe(
-      tap(products => this.userProducts.set(products))
-    );
-  }
-
-  /**
-   * Stale-While-Revalidate strategy for loading user products
-   */
-  loadUserProducts(): void {
-    this.getUserProducts().subscribe({
-      error: (err) => console.error('Background product refresh failed', err)
-    });
-  }
-
-  /**
-   * Create a new product.
-   * Requires valid authentication token.
-   */
-  createProduct(dto: CreateProductDto): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, dto, {
-      headers: this.getAuthHeaders()
-    }).pipe(
-      tap(newProduct => {
-        this.userProducts.update(current => [newProduct, ...(current || [])]);
-      })
-    );
-  }
-
-  /**
-   * Get a product by its ID (public endpoint)
-   * GET /products/:id
-   */
-  getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
-  }
+interface ProductState {
+  products: Product[];
 }
 
+const initialState: ProductState = {
+  products: [],
+};
+
+/**
+ * ProductStore
+ * Manages the state for Products including user's products, search results, and details.
+ * Uses the following features:
+ * - `withRequestStatus`: helper for loading/error states.
+ * - `withPagination`: helper for handling paginated lists.
+ * - `withEntitySelection`: helper for handling a selected product details.
+ */
+export const ProductStore = signalStore(
+  { providedIn: 'root' },
+  withState(initialState),
+  withRequestStatus(),
+  withPagination(),
+  withEntitySelection<Product>(),
+
+  withMethods((store, http = inject(HttpClient)) => {
+    const apiUrl = API_ENDPOINTS.PRODUCTS.BASE;
+
+    return {
+
+      /**
+       * Loads the current user's products.
+       * Updates `products` state and handles loading/error status automatically.
+       */
+      loadUserProducts: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, setLoading())),
+          switchMap(() =>
+            http.get<Product[]>(API_ENDPOINTS.PRODUCTS.MY_PRODUCTS).pipe(
+              tapResponse({
+                next: (products) => patchState(store, {
+                  products,
+                  ...setLoaded()
+                }),
+                error: (err: any) => patchState(store, setError(err?.message || 'Error al cargar productos')),
+              })
+            )
+          )
+        )
+      ),
+
+      /**
+       * Creates a new product.
+       * - Optimistically adds the product to the store on success.
+       * - Accepts callbacks for custom UI handling (modals, toasts).
+       */
+      createProduct: rxMethod<{
+        dto: CreateProductDto;
+        onSuccess?: () => void;
+        onError?: (message: string) => void;
+      }>(
+        pipe(
+          tap(() => patchState(store, setLoading())),
+          exhaustMap(({ dto, onSuccess, onError }) =>
+            http.post<Product>(apiUrl, dto).pipe(
+              tapResponse({
+                next: (newProduct) => {
+                  patchState(store, (state) => ({
+                    products: [newProduct, ...state.products],
+                  }));
+                  patchState(store, setLoaded());
+                  if (onSuccess) onSuccess();
+                },
+                error: (err: any) => {
+                  const errorMsg = err?.error?.message || 'No se pudo crear el producto';
+                  patchState(store, setError(errorMsg));
+                  if (onError) onError(errorMsg);
+                },
+              })
+            )
+          )
+        )
+      ),
+
+      /**
+       * Searches products with pagination.
+       * - Updates `products` list.
+       * - Updates `pagination` state via `withPagination`.
+       */
+      searchProducts: rxMethod<SearchParams>(
+        pipe(
+          tap(() => patchState(store, setLoading())),
+          switchMap((params) => {
+            const queryParams = new HttpParams()
+              .set('search', params.search)
+              .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
+              .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString());
+
+            return http.get<PaginatedResponse<Product>>(apiUrl, { params: queryParams }).pipe(
+              tapResponse({
+                next: (response) => {
+                  patchState(store, {
+                    products: response.data,
+                    ...setLoaded()
+                  });
+                  store.setPagination(response);
+                },
+                error: (err: any) => patchState(store, setError('Error en la búsqueda')),
+              })
+            );
+          })
+        )
+      ),
+
+      /**
+       * Fetches a single product by ID.
+       * - Clears previous selection first.
+       * - Updates `selectedEntity` via `withEntitySelection`.
+       */
+      getProductById: rxMethod<string>(
+        pipe(
+          tap(() => {
+            store.clearSelection();
+            patchState(store, setLoading());
+          }),
+          switchMap((id) =>
+            http.get<Product>(`${apiUrl}/${id}`).pipe(
+              tapResponse({
+                next: (product) => {
+                  store.selectEntity(product);
+                  patchState(store, setLoaded());
+                },
+                error: (err: any) => patchState(store, setError('Producto no encontrado')),
+              })
+            )
+          )
+        )
+      ),
+
+      /**
+       * Stateless Utility: Fetches products without affecting the store.
+       * Useful for independent queries like "Related Products".
+       */
+      getAllProducts: (params: SearchParams = { search: '' }) => {
+        let queryParams = new HttpParams()
+          .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
+          .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString());
+
+        if (params.search) {
+          queryParams = queryParams.set('search', params.search);
+        }
+
+        return http.get<PaginatedResponse<Product>>(apiUrl, { params: queryParams });
+      },
+    };
+  })
+);

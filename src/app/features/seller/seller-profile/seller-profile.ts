@@ -8,7 +8,7 @@ import { SellerPagination } from './components/seller-pagination/seller-paginati
 import { ImageEditorModal } from '@shared/components/modals/image-editor-modal/image-editor-modal';
 import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/sidebar-edit-modal';
 import { Product } from '@core/models/product/product';
-import { ProductService } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product';
 import { UserService } from '@core/services/user/user';
 import { UploadFile } from '@core/services/uploadFile/upload-file';
 import { Auth } from '@core/auth/services/auth';
@@ -29,9 +29,10 @@ import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
   ],
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
+  providers: [ProductStore]
 })
 export class SellerProfile {
-  private readonly productService = inject(ProductService);
+  readonly productStore = inject(ProductStore);
   private readonly userService = inject(UserService);
   private readonly uploadFileService = inject(UploadFile);
   private readonly auth = inject(Auth);
@@ -44,10 +45,10 @@ export class SellerProfile {
   socialLinks = computed(() => this.userService.vendorProfile()?.socialLinks || []);
   businessHours = computed(() => this.userService.vendorProfile()?.businessHours || {});
 
-  products = computed(() => this.productService.userProducts() || []);
+  products = this.productStore.products;
 
   isProfileLoading = computed(() => !this.userService.vendorProfile());
-  isProductsLoading = computed(() => this.productService.userProducts() === null);
+  isProductsLoading = this.productStore['isLoading'];
 
   currentPage = 1;
   totalPages = 8;
@@ -75,9 +76,8 @@ export class SellerProfile {
     const userId = this.auth.currentUser()?.id;
     if (!userId) return;
 
-    // Trigger background refresh (Stale-While-Revalidate)
     this.userService.loadVendorProfile(userId);
-    this.productService.loadUserProducts();
+    this.productStore.loadUserProducts();
   }
 
   openEditModal(type: 'cover' | 'avatar') {
