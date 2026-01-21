@@ -1,4 +1,5 @@
-import { Component, inject, signal, afterNextRender } from '@angular/core';
+import { Component, inject, signal, afterNextRender, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
@@ -26,6 +27,7 @@ import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryU
     providers: [ProductStore]
 })
 export class ProductCreate {
+    private readonly destroyRef = inject(DestroyRef);
     private readonly router = inject(Router);
     private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
@@ -85,7 +87,9 @@ export class ProductCreate {
 
     private loadCategories(): void {
         this.isLoadingCategories.set(true);
-        this.categoryService.getCategories().subscribe({
+        this.categoryService.getCategories().pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
             next: (categories) => {
                 this.categories.set(categories);
                 this.isLoadingCategories.set(false);

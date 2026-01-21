@@ -1,4 +1,5 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore } from '@core/services/product/product.store';
 import { PaginatedResponse } from '@core/services/product/product';
@@ -15,6 +16,7 @@ import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components
   providers: [ProductStore]
 })
 export class ProductList implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   readonly store = inject(ProductStore);
   private readonly categoryService = inject(CategoryService);
 
@@ -37,7 +39,9 @@ export class ProductList implements OnInit {
   }
 
   loadCategories(): void {
-    this.categoryService.getCategories().subscribe({
+    this.categoryService.getCategories().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (categories) => {
         this.categories.set(categories);
       },

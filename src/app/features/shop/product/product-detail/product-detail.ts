@@ -1,4 +1,5 @@
-import { Component, inject, signal, OnInit, effect, untracked } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, untracked, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductStore } from '@core/services/product/product.store';
@@ -13,6 +14,7 @@ import { ImageGallery, ProductInfo, ProductTabs, SimilarProducts } from './compo
   providers: [ProductStore]
 })
 export class ProductDetail implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly productStore = inject(ProductStore);
 
@@ -43,9 +45,11 @@ export class ProductDetail implements OnInit {
   }
 
   loadSimilarProducts(categoryId: string, excludeId: string): void {
-    this.productStore.getAllProducts({ page: 1, limit: 5, search: '' }).subscribe({
+    this.productStore.getAllProducts({ page: 1, limit: 5, search: '' }).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (response) => {
-        const filtered = response.data.filter(p => p.id !== excludeId).slice(0, 4);
+        const filtered = response.data.filter((p: Product) => p.id !== excludeId).slice(0, 4);
         this.similarProducts.set(filtered);
       },
       error: (error: HttpErrorResponse) => {

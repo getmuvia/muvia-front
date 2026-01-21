@@ -1,4 +1,5 @@
-import { Component, inject, signal, afterNextRender, computed } from '@angular/core';
+import { Component, inject, signal, afterNextRender, computed, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SellerCoverBanner } from './components/seller-cover-banner/seller-cover-banner';
 import { SellerProfileHeader } from './components/seller-profile-header/seller-profile-header';
@@ -32,6 +33,7 @@ import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
   providers: [ProductStore]
 })
 export class SellerProfile {
+  private readonly destroyRef = inject(DestroyRef);
   readonly productStore = inject(ProductStore);
   private readonly userService = inject(UserService);
   private readonly uploadFileService = inject(UploadFileService);
@@ -100,7 +102,9 @@ export class SellerProfile {
     this.isSaving.set(true);
 
     // 1. Upload File
-    this.uploadFileService.uploadFile(file, `users/${userId}`).subscribe({
+    this.uploadFileService.uploadFile(file, `users/${userId}`).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (response) => {
         const url = response.url;
 
@@ -108,7 +112,9 @@ export class SellerProfile {
         const updateData = { [field]: url };
         const payload = { vendorProfile: updateData };
 
-        this.userService.updateProfile(payload).subscribe({
+        this.userService.updateProfile(payload).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
           next: () => {
             this.isModalOpen.set(false);
             this.isSaving.set(false);
@@ -129,7 +135,9 @@ export class SellerProfile {
   onSaveSidebarInfo(data: any) {
     this.isSaving.set(true);
     const payload = { vendorProfile: data };
-    this.userService.updateProfile(payload).subscribe({
+    this.userService.updateProfile(payload).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: () => {
         this.isSidebarModalOpen.set(false);
         this.isSaving.set(false);
