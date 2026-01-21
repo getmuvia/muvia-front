@@ -9,7 +9,7 @@ import {
     submit,
     validate,
 } from '@angular/forms/signals';
-import { Auth } from '@core/auth/services/auth';
+import { AuthService } from '@core/auth/services/auth';
 import { RegisterData } from '@core/auth/models/auth.models';
 
 @Component({
@@ -18,7 +18,7 @@ import { RegisterData } from '@core/auth/models/auth.models';
     templateUrl: './register.html',
 })
 export class Register {
-    private authService = inject(Auth);
+    private authService = inject(AuthService);
     private router = inject(Router);
 
     registerModel = signal<RegisterData>({
@@ -74,7 +74,7 @@ export class Register {
         event.preventDefault();
 
         submit(this.registerForm, async () => {
-            
+
             const credentials = this.registerForm().value();
             const success = await this.authService.register(credentials);
 

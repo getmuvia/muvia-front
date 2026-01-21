@@ -10,8 +10,8 @@ import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/s
 import { Product } from '@core/models/product/product';
 import { ProductStore } from '@core/services/product/product';
 import { UserService } from '@core/services/user/user';
-import { UploadFile } from '@core/services/uploadFile/upload-file';
-import { Auth } from '@core/auth/services/auth';
+import { UploadFileService } from '@core/services/uploadFile/upload-file';
+import { AuthService } from '@core/auth/services/auth';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 
 @Component({
@@ -34,8 +34,8 @@ import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 export class SellerProfile {
   readonly productStore = inject(ProductStore);
   private readonly userService = inject(UserService);
-  private readonly uploadFileService = inject(UploadFile);
-  private readonly auth = inject(Auth);
+  private readonly uploadFileService = inject(UploadFileService);
+  private readonly auth = inject(AuthService);
 
   coverImageUrl = computed(() => this.userService.vendorProfile()?.coverImage || '');
   avatarUrl = computed(() => this.userService.vendorProfile()?.logoUrl || '');

@@ -9,7 +9,7 @@ import {
   submit,
   validate,
 } from '@angular/forms/signals';
-import { Auth } from '@core/auth/services/auth';
+import { AuthService } from '@core/auth/services/auth';
 import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
@@ -18,7 +18,7 @@ import { LoginData } from '@core/auth/models/auth.models'
   templateUrl: './login.html',
 })
 export class Login {
-  private authService = inject(Auth);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   loginModel = signal<LoginData>({

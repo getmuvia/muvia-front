@@ -1,6 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
-import { Auth } from '@core/auth/services/auth';
+import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
 import { NgClass } from '@angular/common';
 
@@ -11,7 +11,7 @@ import { NgClass } from '@angular/common';
   styleUrl: './seller-header.css',
 })
 export class SellerHeader implements OnInit {
-  private readonly authService = inject(Auth);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 

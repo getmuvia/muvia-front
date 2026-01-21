@@ -2,18 +2,18 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { LoginData, RegisterData, AuthResponse } from '../models/auth.models';
-import { AuthStorage } from './storage';
-import { AuthState } from './auth-state';
+import { AuthStorageService } from './storage';
+import { AuthStateService } from './auth-state';
 import { parseAuthError } from './auth-error';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 @Injectable({
   providedIn: 'root'
 })
-export class Auth {
+export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly storage = inject(AuthStorage);
-  private readonly state = inject(AuthState);
+  private readonly storage = inject(AuthStorageService);
+  private readonly state = inject(AuthStateService);
 
   readonly currentUser = this.state.currentUser;
   readonly isAuthenticated = this.state.isAuthenticated;

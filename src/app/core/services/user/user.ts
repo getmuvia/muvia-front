@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
-import { Auth } from '@core/auth/services/auth';
+import { AuthService } from '@core/auth/services/auth';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
     private http = inject(HttpClient);
-    private auth = inject(Auth);
+    private auth = inject(AuthService);
 
     readonly vendorProfile = signal<VendorProfile | null>(null);
 

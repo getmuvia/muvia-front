@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { ProductStore } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
-import { UploadFile } from '@core/services/uploadFile/upload-file';
-import { Auth } from '@core/auth/services/auth';
+import { UploadFileService } from '@core/services/uploadFile/upload-file';
+import { AuthService } from '@core/auth/services/auth';
 import { firstValueFrom } from 'rxjs'; // For waiting for upload service
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
@@ -28,8 +28,8 @@ export class ProductCreate {
     private readonly router = inject(Router);
     private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
-    private readonly uploadService = inject(UploadFile);
-    private readonly auth = inject(Auth);
+    private readonly uploadService = inject(UploadFileService);
+    private readonly auth = inject(AuthService);
 
     pendingUploads = new Map<string, File>();
 

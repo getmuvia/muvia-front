@@ -1,7 +1,7 @@
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CanActivateFn, Router } from '@angular/router';
-import { Auth } from '../services/auth';
+import { AuthService } from '../services/auth';
 
 /**
  * Guard that protects routes requiring authentication.
@@ -12,7 +12,7 @@ import { Auth } from '../services/auth';
  */
 export const authGuard: CanActivateFn = () => {
     const platformId = inject(PLATFORM_ID);
-    const authService = inject(Auth);
+    const authService = inject(AuthService);
     const router = inject(Router);
 
     // During SSR, allow navigation - validation happens on the client
@@ -37,7 +37,7 @@ export const authGuard: CanActivateFn = () => {
  */
 export const guestGuard: CanActivateFn = () => {
     const platformId = inject(PLATFORM_ID);
-    const authService = inject(Auth);
+    const authService = inject(AuthService);
     const router = inject(Router);
 
     // During SSR, allow navigation - validation happens on the client

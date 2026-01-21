@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Auth } from '@core/auth/services/auth';
+import { AuthService } from '@core/auth/services/auth';
 import { Category } from '@core/models/category/category';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
@@ -10,7 +10,7 @@ import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 })
 export class CategoryService {
   private readonly http = inject(HttpClient);
-  private readonly auth = inject(Auth);
+  private readonly auth = inject(AuthService);
   private readonly apiUrl = API_ENDPOINTS.CATEGORIES.BASE;
 
   private getAuthHeaders(): HttpHeaders {

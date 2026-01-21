@@ -4,7 +4,7 @@ import { User } from '../models/auth.models';
 @Injectable({
     providedIn: 'root'
 })
-export class AuthState {
+export class AuthStateService {
     private readonly _currentUser = signal<User | null>(null);
     private readonly _loading = signal<boolean>(false);
     private readonly _error = signal<string | null>(null);

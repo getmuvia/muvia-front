@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, Observable, switchMap } from 'rxjs';
-import { Auth } from '@core/auth/services/auth';
+import { AuthService } from '@core/auth/services/auth';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 export interface UploadResponse {
@@ -12,9 +12,9 @@ export interface UploadResponse {
 @Injectable({
   providedIn: 'root',
 })
-export class UploadFile {
+export class UploadFileService {
   private readonly http = inject(HttpClient);
-  private readonly auth = inject(Auth);
+  private readonly auth = inject(AuthService);
 
   private readonly apiUrl = API_ENDPOINTS.FILES.UPLOAD;
   private readonly storageFirebaseUrl = API_ENDPOINTS.STORAGE.GOOGLE_CLOUD_BASE_URL;
