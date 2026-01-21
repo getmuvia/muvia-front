@@ -25,6 +25,9 @@
       ],
       "@core/store/*": [
         "src/app/core/store/*"
+      ],
+      "@core/interceptors/*": [
+        "src/app/core/interceptors/*"
       ]
     },
     "strict": true,

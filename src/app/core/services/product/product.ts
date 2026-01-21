@@ -137,9 +137,6 @@ export const ProductStore = signalStore(
               tapResponse({
                 next: (response) => {
                   patchState(store, (state) => ({
-                    // Intelligent State Update:
-                    // If page is 1, we replace the list (new search/filter).
-                    // If page > 1, we append new products to the existing list (infinite scroll).
                     products: response.page === 1
                       ? response.data
                       : [...state.products, ...response.data],

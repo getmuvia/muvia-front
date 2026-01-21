@@ -12,10 +12,6 @@
 
         <!-- Product Grid -->
         <div class="mt-8">
-            <!-- 
-                Pass isLoading only if we have NO products (Initial Load / Search).
-                If we have products and are loading (Load More), we keep the grid and show button spinner.
-            -->
             <app-product-grid [products]="store.products()"
                 [isLoading]="store.isLoading() && store.products().length === 0" [viewMode]="viewMode()" />
         </div>

@@ -2,10 +2,10 @@ import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-    selector: 'app-skeleton',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-skeleton',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div 
       [className]="computedClasses()"
       [style.width]="width()"
@@ -14,14 +14,14 @@ import { CommonModule } from '@angular/common';
   `
 })
 export class Skeleton {
-    width = input<string>('100%');
-    height = input<string>('1rem');
-    shape = input<'rect' | 'circle'>('rect');
-    className = input<string>('');
+  width = input<string>('100%');
+  height = input<string>('1rem');
+  shape = input<'rect' | 'circle'>('rect');
+  className = input<string>('');
 
-    computedClasses = computed(() => {
-        const baseClasses = 'animate-pulse bg-gray-200 dark:bg-zinc-800';
-        const shapeClasses = this.shape() === 'circle' ? 'rounded-full' : 'rounded-md';
-        return `${baseClasses} ${shapeClasses} ${this.className()}`;
-    });
+  computedClasses = computed(() => {
+    const baseClasses = 'animate-pulse bg-text-light/10';
+    const shapeClasses = this.shape() === 'circle' ? 'rounded-full' : 'rounded-md';
+    return `${baseClasses} ${shapeClasses} ${this.className()}`;
+  });
 }
