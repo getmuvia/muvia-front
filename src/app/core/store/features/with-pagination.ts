@@ -22,9 +22,16 @@ const initialPaginationState: PaginationState = {
     totalPages: 0,
 };
 
+/**
+ * SignalStore Feature for managing pagination state.
+ * Adds signals: `page`, `limit`, `total`, `totalPages`.
+ * Adds computed: `hasNextPage`, `hasPrevPage`.
+ * Adds methods: `setPagination`, `goToPage`, `nextPage`, `prevPage`, `updateLimit`.
+ */
 export function withPagination() {
     return signalStoreFeature(
         withState<PaginationState>(initialPaginationState),
+
         withComputed(({ page, limit, total, totalPages }) => ({
             hasNextPage: computed(() => page() < totalPages()),
             hasPrevPage: computed(() => page() > 1),
@@ -35,8 +42,10 @@ export function withPagination() {
                 totalPages: totalPages(),
             })),
         })),
+
         withMethods((store) => ({
-            // Actualiza todo el estado de paginación basado en la respuesta de la API
+            
+            /** Updates the full pagination state from an API response */
             setPagination(result: PaginatedResult) {
                 patchState(store, {
                     page: result.page,
@@ -46,11 +55,12 @@ export function withPagination() {
                 });
             },
 
-            // Helpers de navegación
+            /** Navigates to a specific page number */
             goToPage(page: number) {
                 patchState(store, { page });
             },
 
+            /** Increments the page number if next page exists */
             nextPage() {
                 const current = store.page();
                 if (current < store.totalPages()) {
@@ -58,6 +68,7 @@ export function withPagination() {
                 }
             },
 
+            /** Decrements the page number if previous page exists */
             prevPage() {
                 const current = store.page();
                 if (current > 1) {
@@ -65,8 +76,9 @@ export function withPagination() {
                 }
             },
 
+            /** Updates the limit per page and resets to page 1 */
             updateLimit(limit: number) {
-                patchState(store, { limit, page: 1 }); // Reiniciar a pág 1 al cambiar límite
+                patchState(store, { limit, page: 1 });
             }
         }))
     );

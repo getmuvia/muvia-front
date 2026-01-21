@@ -38,6 +38,14 @@ const initialState: ProductState = {
   products: [],
 };
 
+/**
+ * ProductStore
+ * Manages the state for Products including user's products, search results, and details.
+ * Uses the following features:
+ * - `withRequestStatus`: helper for loading/error states.
+ * - `withPagination`: helper for handling paginated lists.
+ * - `withEntitySelection`: helper for handling a selected product details.
+ */
 export const ProductStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -50,7 +58,10 @@ export const ProductStore = signalStore(
 
     return {
 
-      // 1. CARGA DE MIS PRODUCTOS (Lectura)
+      /**
+       * Loads the current user's products.
+       * Updates `products` state and handles loading/error status automatically.
+       */
       loadUserProducts: rxMethod<void>(
         pipe(
           tap(() => patchState(store, setLoading())),
@@ -68,7 +79,11 @@ export const ProductStore = signalStore(
         )
       ),
 
-      // 2. CREAR PRODUCTO (Escritura con Callbacks)
+      /**
+       * Creates a new product.
+       * - Optimistically adds the product to the store on success.
+       * - Accepts callbacks for custom UI handling (modals, toasts).
+       */
       createProduct: rxMethod<{
         dto: CreateProductDto;
         onSuccess?: () => void;
@@ -97,7 +112,11 @@ export const ProductStore = signalStore(
         )
       ),
 
-      // 3. BÚSQUEDA y PAGINACIÓN (Lectura con parámetros)
+      /**
+       * Searches products with pagination.
+       * - Updates `products` list.
+       * - Updates `pagination` state via `withPagination`.
+       */
       searchProducts: rxMethod<SearchParams>(
         pipe(
           tap(() => patchState(store, setLoading())),
@@ -123,7 +142,11 @@ export const ProductStore = signalStore(
         )
       ),
 
-      // 4. OBTENER POR ID (Lectura individual)
+      /**
+       * Fetches a single product by ID.
+       * - Clears previous selection first.
+       * - Updates `selectedEntity` via `withEntitySelection`.
+       */
       getProductById: rxMethod<string>(
         pipe(
           tap(() => {
@@ -144,8 +167,10 @@ export const ProductStore = signalStore(
         )
       ),
 
-      // 5. UTILIDAD (Stateless)
-      // Mantenemos este método para consultas independientes (ej. productos similares)
+      /**
+       * Stateless Utility: Fetches products without affecting the store.
+       * Useful for independent queries like "Related Products".
+       */
       getAllProducts: (params: SearchParams = { search: '' }) => {
         let queryParams = new HttpParams()
           .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
