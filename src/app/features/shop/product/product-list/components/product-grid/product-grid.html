@@ -2,25 +2,20 @@
 <!-- Loading skeleton -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-12 gap-x-8">
     @for (i of [1,2,3,4,5,6,7,8]; track i) {
-    <div class="flex flex-col gap-3 animate-pulse">
-        <div class="aspect-[2/3] bg-text-light/10"></div>
+    <div class="flex flex-col gap-3">
+        <app-skeleton height="auto" className="aspect-[2/3]" />
         <div class="space-y-2">
-            <div class="h-3 bg-text-light/10 w-1/3"></div>
-            <div class="h-4 bg-text-light/10 w-2/3"></div>
-            <div class="h-4 bg-text-light/10 w-1/4"></div>
+            <app-skeleton width="33%" height="0.75rem" />
+            <app-skeleton width="66%" height="1rem" />
+            <app-skeleton width="25%" height="1rem" />
         </div>
     </div>
     }
 </div>
 } @else if (products().length === 0) {
 <!-- Empty state -->
-<div class="flex flex-col items-center justify-center py-24">
-    <span class="material-symbols-outlined text-6xl text-text-light/20 mb-4">inventory_2</span>
-    <h3 class="text-xl font-bold text-text-light font-body mb-2">No hay productos</h3>
-    <p class="text-text-light/60 font-body text-center max-w-md">
-        No encontramos productos que coincidan con tu búsqueda. Intenta con otros filtros.
-    </p>
-</div>
+<app-empty-state title="No hay productos"
+    description="No encontramos productos que coincidan con tu búsqueda. Intenta con otros filtros." />
 } @else {
 <!-- Product grid -->
 <div [class]="viewMode() === 'grid' 

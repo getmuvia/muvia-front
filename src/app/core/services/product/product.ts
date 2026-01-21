@@ -119,20 +119,29 @@ export const ProductStore = signalStore(
        */
       searchProducts: rxMethod<SearchParams>(
         pipe(
-          tap(() => patchState(store, setLoading())),
+          tap((params) => {
+            const page = params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE;
+            patchState(store, (state) => ({
+              ...setLoading(),
+              products: page === 1 ? [] : state.products
+            }));
+          }),
           switchMap((params) => {
+            const page = params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE;
             const queryParams = new HttpParams()
               .set('search', params.search)
-              .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
+              .set('page', page.toString())
               .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString());
 
             return http.get<PaginatedResponse<Product>>(apiUrl, { params: queryParams }).pipe(
               tapResponse({
                 next: (response) => {
-                  patchState(store, {
-                    products: response.data,
+                  patchState(store, (state) => ({
+                    products: response.page === 1
+                      ? response.data
+                      : [...state.products, ...response.data],
                     ...setLoaded()
-                  });
+                  }));
                   store.setPagination(response);
                 },
                 error: (err: any) => patchState(store, setError('Error en la búsqueda')),

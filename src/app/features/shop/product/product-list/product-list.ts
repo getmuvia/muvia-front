@@ -13,50 +13,25 @@ import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components
   providers: [ProductStore]
 })
 export class ProductList implements OnInit {
-  private readonly productStore = inject(ProductStore);
+  readonly store = inject(ProductStore);
   private readonly categoryService = inject(CategoryService);
 
-  // Products state
-  products = signal<Product[]>([]);
-  isLoading = signal<boolean>(false);
-  isLoadingMore = signal<boolean>(false);
-
-  // Pagination state
-  currentPage = signal<number>(1);
-  totalProducts = signal<number>(0);
-  pageLimit = 12;
-
-  // Computed
-  hasMore = computed(() => this.products().length < this.totalProducts());
+  // Derived UI state
+  isLoadingMore = computed(() => this.store.isLoading() && this.store.products().length > 0);
 
   // Search state
   searchQuery = signal<string>('');
 
-  // Filter state
+  // Local Filter UI state (could be moved to Store if needed)
   categories = signal<Category[]>([]);
   activeFilters = signal<string[]>([]);
   selectedSort = signal<string>('featured');
   viewMode = signal<'grid' | 'list'>('grid');
 
   ngOnInit(): void {
-    this.loadProducts();
+    // Initial load
+    this.store.searchProducts({ page: 1, search: '' });
     this.loadCategories();
-  }
-
-  loadProducts(): void {
-    this.isLoading.set(true);
-    this.productStore.getAllProducts({ page: 1, limit: this.pageLimit, search: '' }).subscribe({
-      next: (response) => {
-        this.products.set(response.data);
-        this.totalProducts.set(response.total);
-        this.currentPage.set(response.page);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading products:', err);
-        this.isLoading.set(false);
-      }
-    });
   }
 
   loadCategories(): void {
@@ -71,49 +46,20 @@ export class ProductList implements OnInit {
   }
 
   loadMore(): void {
-    if (this.isLoadingMore() || !this.hasMore()) return;
+    if (this.store.isLoading() || !this.store.hasNextPage()) return; // Prevent spam
 
-    this.isLoadingMore.set(true);
-    const nextPage = this.currentPage() + 1;
-
-    // Always use getAllProducts (stateless) to support appending logic
-    this.productStore.getAllProducts({
-      page: nextPage,
-      limit: this.pageLimit,
+    this.store.searchProducts({
+      page: this.store.page() + 1,
       search: this.searchQuery()
-    }).subscribe({
-      next: (response) => {
-        this.products.update(current => [...current, ...response.data]);
-        this.currentPage.set(response.page);
-        this.isLoadingMore.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading more products:', err);
-        this.isLoadingMore.set(false);
-      }
     });
   }
 
   searchProducts(query: string): void {
     this.searchQuery.set(query);
-    this.isLoading.set(true);
-    this.currentPage.set(1); // Reset page on search
-
-    this.productStore.getAllProducts({
+    // Reset to page 1 for new search
+    this.store.searchProducts({
       page: 1,
-      limit: this.pageLimit,
       search: query
-    }).subscribe({
-      next: (response) => {
-        this.products.set(response.data);
-        this.totalProducts.set(response.total);
-        this.currentPage.set(response.page);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error searching products:', err);
-        this.isLoading.set(false);
-      }
     });
   }
 
