@@ -9,6 +9,7 @@ import { Product } from '@core/models/product/product';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/features/with-request-status';
+import { withPagination } from '@core/store/features/with-pagination';
 
 export interface PaginationParams {
   page?: number;
@@ -30,19 +31,18 @@ export interface PaginatedResponse<T> {
 interface ProductState {
   products: Product[];
   selectedProduct: Product | null;
-  totalItems: number;
 }
 
 const initialState: ProductState = {
   products: [],
   selectedProduct: null,
-  totalItems: 0,
 };
 
 export const ProductStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withRequestStatus(),
+  withPagination(),
 
   withMethods((store, http = inject(HttpClient)) => {
     const apiUrl = API_ENDPOINTS.PRODUCTS.BASE;
@@ -108,11 +108,13 @@ export const ProductStore = signalStore(
 
             return http.get<PaginatedResponse<Product>>(apiUrl, { params: queryParams }).pipe(
               tapResponse({
-                next: (response) => patchState(store, {
-                  products: response.data,
-                  totalItems: response.total,
-                  ...setLoaded()
-                }),
+                next: (response) => {
+                  patchState(store, {
+                    products: response.data,
+                    ...setLoaded()
+                  });
+                  store.setPagination(response);
+                },
                 error: (err: any) => patchState(store, setError('Error en la búsqueda')),
               })
             );
