@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import {
   Field,
   form,
@@ -14,7 +13,7 @@ import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, RouterLink, Field],
+  imports: [RouterLink, Field],
   templateUrl: './login.html',
 })
 export class Login {

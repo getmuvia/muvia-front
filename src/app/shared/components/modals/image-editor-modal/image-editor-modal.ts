@@ -1,10 +1,8 @@
 import { Component, input, output, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-image-editor-modal',
     standalone: true,
-    imports: [CommonModule],
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="onBackdropClick($event)">

@@ -1,12 +1,11 @@
 import { Component, input, output, signal, effect, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
 
 @Component({
     selector: 'app-sidebar-edit-modal',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    imports: [ReactiveFormsModule],
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="close()">

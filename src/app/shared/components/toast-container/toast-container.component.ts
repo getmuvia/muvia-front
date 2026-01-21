@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule } from '@angular/common'; // For NgClass, though we can use just class binding
 import { ToastService, Toast } from '@core/services/toast/toast';
 
 @Component({

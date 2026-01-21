@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import {
     Field,
     form,
@@ -14,7 +13,7 @@ import { RegisterData } from '@core/auth/models/auth.models';
 
 @Component({
     selector: 'app-register',
-    imports: [CommonModule, RouterLink, Field],
+    imports: [RouterLink, Field],
     templateUrl: './register.html',
 })
 export class Register {
