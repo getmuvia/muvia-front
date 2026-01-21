@@ -1,6 +1,7 @@
 // Core Services - Barrel Export
 export { CategoryService } from './category/category';
-export { ProductStore } from './product/product';
+export { ProductService } from './product/product';
+export { ProductStore } from './product/product.store';
 export type { PaginationParams, SearchParams, PaginatedResponse } from './product/product';
 export { ToastService } from './toast/toast';
 export type { Toast, ToastType } from './toast/toast';

@@ -1,7 +1,7 @@
 import { Component, inject, signal, OnInit, effect, untracked } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ProductStore } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product.store';
 import { Product } from '@core/models/product/product';
 import { ImageGallery, ProductInfo, ProductTabs, SimilarProducts } from './components';
 

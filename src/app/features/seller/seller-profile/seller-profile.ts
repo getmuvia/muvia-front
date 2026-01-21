@@ -8,8 +8,7 @@ import { SellerProductGrid } from './components/seller-product-grid/seller-produ
 import { SellerPagination } from './components/seller-pagination/seller-pagination';
 import { ImageEditorModal } from '@shared/components/modals/image-editor-modal/image-editor-modal';
 import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/sidebar-edit-modal';
-import { Product } from '@core/models/product/product';
-import { ProductStore } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { AuthService } from '@core/auth/services/auth';

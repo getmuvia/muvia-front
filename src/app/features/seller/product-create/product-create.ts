@@ -2,11 +2,11 @@ import { Component, inject, signal, afterNextRender } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
-import { ProductStore } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product.store';
 import { CategoryService } from '@core/services/category/category';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { AuthService } from '@core/auth/services/auth';
-import { firstValueFrom } from 'rxjs'; // For waiting for upload service
+import { firstValueFrom } from 'rxjs';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
 import { CreateProductDto, CreateProductSpecifications, CreateProductAsset } from '@core/models/product/create-product.dto';
@@ -74,7 +74,6 @@ export class ProductCreate {
     isSubmitting = signal(false);
     isLoadingCategories = signal(true);
 
-    // Error messages for non-form fields
     keywordsError = signal<string | null>(null);
     imagesError = signal<string | null>(null);
 
@@ -208,7 +207,6 @@ export class ProductCreate {
                 updatedImages[i] = {
                     ...asset,
                     url: response.url
-                    // We could also update metadata with info from response if needed
                 };
 
                 // Remove from pending map

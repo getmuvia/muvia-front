@@ -1,8 +1,10 @@
 // Core Models - Barrel Export
-export { Category } from './category/category';
-export { Product } from './product/product';
-export type { ProductAsset, ProductSpecifications, Seller } from './product/product';
-export { ProductFormData, INITIAL_PRODUCT_FORM } from './product/product-form.model';
+export type { Category } from './category/category';
+export type { Product, ProductAsset, ProductSpecifications, ProductSeller, ProductCategory, ProductDimensions, AssetMetadata } from './product/product';
+export type { ProductFormData } from './product/product-form.model';
+export { INITIAL_PRODUCT_FORM } from './product/product-form.model';
 export type { CreateProductDto, CreateProductAsset, CreateProductSpecifications } from './product/create-product.dto';
-export { ApiError, getErrorMessage } from './errors/api-error.model';
-export type { VendorProfile, VendorResponse, UpdateVendorProfilePayload, SocialLink, BusinessHours, DaySchedule } from './user/vendor-profile';
+export type { ApiError } from './errors/api-error.model';
+export { getErrorMessage } from './errors/api-error.model';
+export type { VendorProfile, VendorResponse, UpdateVendorProfilePayload, SocialLink, BusinessHours, BusinessHoursItem } from './user/vendor-profile';
+

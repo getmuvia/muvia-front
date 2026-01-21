@@ -1,6 +1,7 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ProductStore, PaginatedResponse } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product.store';
+import { PaginatedResponse } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
 import { Product } from '@core/models/product/product';
 import { Category } from '@core/models/category/category';
