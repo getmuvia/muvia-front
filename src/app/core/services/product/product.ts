@@ -10,6 +10,8 @@ import { CreateProductDto } from '@core/models/product/create-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/features/with-request-status';
 import { withPagination } from '@core/store/features/with-pagination';
+import { withEntitySelection } from '@core/store/features/with-selection';
+import { STORE_CONFIG } from '@core/store/store.config';
 
 export interface PaginationParams {
   page?: number;
@@ -30,12 +32,10 @@ export interface PaginatedResponse<T> {
 
 interface ProductState {
   products: Product[];
-  selectedProduct: Product | null;
 }
 
 const initialState: ProductState = {
   products: [],
-  selectedProduct: null,
 };
 
 export const ProductStore = signalStore(
@@ -43,6 +43,7 @@ export const ProductStore = signalStore(
   withState(initialState),
   withRequestStatus(),
   withPagination(),
+  withEntitySelection<Product>(),
 
   withMethods((store, http = inject(HttpClient)) => {
     const apiUrl = API_ENDPOINTS.PRODUCTS.BASE;
@@ -103,8 +104,8 @@ export const ProductStore = signalStore(
           switchMap((params) => {
             const queryParams = new HttpParams()
               .set('search', params.search)
-              .set('page', (params.page || 1).toString())
-              .set('limit', (params.limit || 15).toString());
+              .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
+              .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString());
 
             return http.get<PaginatedResponse<Product>>(apiUrl, { params: queryParams }).pipe(
               tapResponse({
@@ -125,14 +126,17 @@ export const ProductStore = signalStore(
       // 4. OBTENER POR ID (Lectura individual)
       getProductById: rxMethod<string>(
         pipe(
-          tap(() => patchState(store, { selectedProduct: null, ...setLoading() })),
+          tap(() => {
+            store.clearSelection();
+            patchState(store, setLoading());
+          }),
           switchMap((id) =>
             http.get<Product>(`${apiUrl}/${id}`).pipe(
               tapResponse({
-                next: (product) => patchState(store, {
-                  selectedProduct: product,
-                  ...setLoaded()
-                }),
+                next: (product) => {
+                  store.selectEntity(product);
+                  patchState(store, setLoaded());
+                },
                 error: (err: any) => patchState(store, setError('Producto no encontrado')),
               })
             )
@@ -144,8 +148,8 @@ export const ProductStore = signalStore(
       // Mantenemos este método para consultas independientes (ej. productos similares)
       getAllProducts: (params: SearchParams = { search: '' }) => {
         let queryParams = new HttpParams()
-          .set('page', (params.page || 1).toString())
-          .set('limit', (params.limit || 10).toString());
+          .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
+          .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString());
 
         if (params.search) {
           queryParams = queryParams.set('search', params.search);

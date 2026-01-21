@@ -15,7 +15,7 @@ export class ProductDetail implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly productStore = inject(ProductStore);
 
-  product = this.productStore.selectedProduct;
+  product = this.productStore.selectedEntity;
   isLoading = this.productStore['isLoading'];
   error = this.productStore['error'];
   similarProducts = signal<Product[]>([]);
@@ -23,7 +23,7 @@ export class ProductDetail implements OnInit {
   constructor() {
     effect(() => {
       const product = this.product();
-      
+
       if (product) {
         untracked(() => this.loadSimilarProducts(product.categoryId, product.id));
       }
