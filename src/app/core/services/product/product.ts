@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
@@ -8,6 +8,7 @@ import { pipe, tap, switchMap, exhaustMap } from 'rxjs';
 import { Product } from '@core/models/product/product';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
+import { getErrorMessage } from '@core/models/errors/api-error.model';
 import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/features/with-request-status';
 import { withPagination } from '@core/store/features/with-pagination';
 import { withEntitySelection } from '@core/store/features/with-selection';
@@ -72,7 +73,7 @@ export const ProductStore = signalStore(
                   products,
                   ...setLoaded()
                 }),
-                error: (err: any) => patchState(store, setError(err?.message || 'Error al cargar productos')),
+                error: (error: HttpErrorResponse) => patchState(store, setError(getErrorMessage(error, 'Error al cargar productos'))),
               })
             )
           )
@@ -101,8 +102,8 @@ export const ProductStore = signalStore(
                   patchState(store, setLoaded());
                   if (onSuccess) onSuccess();
                 },
-                error: (err: any) => {
-                  const errorMsg = err?.error?.message || 'No se pudo crear el producto';
+                error: (error: HttpErrorResponse) => {
+                  const errorMsg = getErrorMessage(error, 'No se pudo crear el producto');
                   patchState(store, setError(errorMsg));
                   if (onError) onError(errorMsg);
                 },
@@ -144,7 +145,7 @@ export const ProductStore = signalStore(
                   }));
                   store.setPagination(response);
                 },
-                error: (err: any) => patchState(store, setError('Error en la búsqueda')),
+                error: (error: HttpErrorResponse) => patchState(store, setError(getErrorMessage(error, 'Error en la búsqueda'))),
               })
             );
           })
@@ -169,7 +170,7 @@ export const ProductStore = signalStore(
                   store.selectEntity(product);
                   patchState(store, setLoaded());
                 },
-                error: (err: any) => patchState(store, setError('Producto no encontrado')),
+                error: (error: HttpErrorResponse) => patchState(store, setError(getErrorMessage(error, 'Producto no encontrado'))),
               })
             )
           )

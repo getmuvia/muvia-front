@@ -1,4 +1,5 @@
 import { Component, inject, signal, afterNextRender, computed } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { SellerCoverBanner } from './components/seller-cover-banner/seller-cover-banner';
 import { SellerProfileHeader } from './components/seller-profile-header/seller-profile-header';
 import { SellerSidebar } from './components/seller-sidebar/seller-sidebar';
@@ -113,14 +114,14 @@ export class SellerProfile {
             this.isModalOpen.set(false);
             this.isSaving.set(false);
           },
-          error: (err) => {
-            console.error('Error updating profile:', err);
+          error: (error: HttpErrorResponse) => {
+            console.error('Error updating profile:', error);
             this.isSaving.set(false);
           }
         });
       },
-      error: (err) => {
-        console.error('Error uploading file:', err);
+      error: (error: HttpErrorResponse) => {
+        console.error('Error uploading file:', error);
         this.isSaving.set(false);
       }
     });
@@ -134,8 +135,8 @@ export class SellerProfile {
         this.isSidebarModalOpen.set(false);
         this.isSaving.set(false);
       },
-      error: (err) => {
-        console.error('Error updating sidebar info:', err);
+      error: (error: HttpErrorResponse) => {
+        console.error('Error updating sidebar info:', error);
         this.isSaving.set(false);
       }
     });

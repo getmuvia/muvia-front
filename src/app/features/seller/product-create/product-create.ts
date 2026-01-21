@@ -1,4 +1,5 @@
 import { Component, inject, signal, afterNextRender } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { ProductStore } from '@core/services/product/product';
@@ -90,8 +91,8 @@ export class ProductCreate {
                 this.categories.set(categories);
                 this.isLoadingCategories.set(false);
             },
-            error: (err) => {
-                console.error('Error loading categories:', err);
+            error: (error: HttpErrorResponse) => {
+                console.error('Error loading categories:', error);
                 this.isLoadingCategories.set(false);
             }
         });

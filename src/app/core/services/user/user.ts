@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
@@ -37,7 +37,7 @@ export class UserService {
     loadVendorProfile(userId: string): void {
 
         this.getVendorProfile(userId).subscribe({
-            error: (err) => console.error('Background profile refresh failed', err)
+            error: (error: HttpErrorResponse) => console.error('Background profile refresh failed', error)
         });
     }
 

@@ -1,4 +1,5 @@
 import { Component, inject, signal, OnInit, effect, untracked } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductStore } from '@core/services/product/product';
 import { Product } from '@core/models/product/product';
@@ -47,8 +48,8 @@ export class ProductDetail implements OnInit {
         const filtered = response.data.filter(p => p.id !== excludeId).slice(0, 4);
         this.similarProducts.set(filtered);
       },
-      error: (err) => {
-        console.error('Error loading similar products:', err);
+      error: (error: HttpErrorResponse) => {
+        console.error('Error loading similar products:', error);
       }
     });
   }

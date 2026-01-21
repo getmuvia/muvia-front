@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore, PaginatedResponse } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
 import { Product } from '@core/models/product/product';
@@ -39,8 +40,8 @@ export class ProductList implements OnInit {
       next: (categories) => {
         this.categories.set(categories);
       },
-      error: (err) => {
-        console.error('Error loading categories:', err);
+      error: (error: HttpErrorResponse) => {
+        console.error('Error loading categories:', error);
       }
     });
   }
