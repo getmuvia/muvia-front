@@ -3,21 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
-import { AuthService } from '@core/auth/services/auth';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
-    private http = inject(HttpClient);
-    private auth = inject(AuthService);
+    private readonly http = inject(HttpClient);
 
     readonly vendorProfile = signal<VendorProfile | null>(null);
 
     updateProfile(data: UpdateVendorProfilePayload): Observable<VendorResponse> {
-        const token = this.auth.getAccessToken();
-        const headers = { Authorization: `Bearer ${token}` };
-        return this.http.patch<VendorResponse>(API_ENDPOINTS.USERS.ME, data, { headers }).pipe(
+        return this.http.patch<VendorResponse>(API_ENDPOINTS.USERS.ME, data).pipe(
             tap(updatedUser => {
 
                 if (updatedUser.vendorProfile) {

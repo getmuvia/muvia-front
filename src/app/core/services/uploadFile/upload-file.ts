@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { map, Observable, switchMap } from 'rxjs';
-import { AuthService } from '@core/auth/services/auth';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 export interface UploadResponse {
@@ -14,17 +13,9 @@ export interface UploadResponse {
 })
 export class UploadFileService {
   private readonly http = inject(HttpClient);
-  private readonly auth = inject(AuthService);
 
   private readonly apiUrl = API_ENDPOINTS.FILES.UPLOAD;
   private readonly storageFirebaseUrl = API_ENDPOINTS.STORAGE.GOOGLE_CLOUD_BASE_URL;
-
-  private getAuthHeaders(): HttpHeaders {
-    const token = this.auth.getAccessToken();
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
 
   /**
    * Upload a file to the server.
@@ -40,9 +31,7 @@ export class UploadFileService {
 
     const requestUrl = `${this.apiUrl}?folder=${folder}`;
 
-    return this.http.post<UploadResponse>(requestUrl, body, {
-      headers: this.getAuthHeaders()
-    }).pipe(
+    return this.http.post<UploadResponse>(requestUrl, body).pipe(
       switchMap(response => {
 
         return this.http.put(response.url, file, {
