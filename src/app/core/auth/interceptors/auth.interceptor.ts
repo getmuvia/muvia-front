@@ -3,8 +3,8 @@ import { inject, Injector, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
-import { Auth } from '../services/auth';
-import { AuthStorage } from '../services/storage';
+import { AuthService } from '../services/auth';
+import { AuthStorageService } from '../services/storage';
 
 /**
  * Interceptor that handles 401 Unauthorized errors and attaches the Bearer token.
@@ -16,7 +16,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const platformId = inject(PLATFORM_ID);
     const router = inject(Router);
     const injector = inject(Injector);
-    const storage = inject(AuthStorage);
+    const storage = inject(AuthStorageService);
 
     const token = storage.getToken();
     if (token) {
@@ -30,7 +30,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
             if (error.status === 401 && isPlatformBrowser(platformId)) {
-                const authService = injector.get(Auth);
+                const authService = injector.get(AuthService);
                 authService.logout();
                 router.navigate(['/auth/login']);
             }

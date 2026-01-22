@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import {
   Field,
   form,
@@ -9,16 +8,16 @@ import {
   submit,
   validate,
 } from '@angular/forms/signals';
-import { Auth } from '@core/auth/services/auth';
+import { AuthService } from '@core/auth/services/auth';
 import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, RouterLink, Field],
+  imports: [RouterLink, Field],
   templateUrl: './login.html',
 })
 export class Login {
-  private authService = inject(Auth);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   loginModel = signal<LoginData>({

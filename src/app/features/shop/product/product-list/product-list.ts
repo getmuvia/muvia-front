@@ -1,6 +1,10 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { ProductStore, PaginatedResponse } from '@core/services/product/product';
+import { Component, inject, signal, computed, OnInit, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ProductStore } from '@core/services/product/product.store';
+import { PaginatedResponse } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
+import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
 import { Category } from '@core/models/category/category';
 import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
@@ -13,6 +17,8 @@ import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components
   providers: [ProductStore]
 })
 export class ProductList implements OnInit {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly logger = inject(LoggerService);
   readonly store = inject(ProductStore);
   private readonly categoryService = inject(CategoryService);
 
@@ -35,12 +41,14 @@ export class ProductList implements OnInit {
   }
 
   loadCategories(): void {
-    this.categoryService.getCategories().subscribe({
+    this.categoryService.getCategories().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (categories) => {
         this.categories.set(categories);
       },
-      error: (err) => {
-        console.error('Error loading categories:', err);
+      error: (error: HttpErrorResponse) => {
+        this.logger.error('Failed to load categories', error, 'ProductList');
       }
     });
   }
@@ -65,7 +73,6 @@ export class ProductList implements OnInit {
 
   onFilterToggle(): void {
     // TODO: Implement filter panel toggle
-    console.log('Filter toggle clicked');
   }
 
   onRemoveFilter(filter: string): void {

@@ -35,7 +35,7 @@
                 <app-keywords-section [keywords]="keywords()" (keywordsChange)="onKeywordsChange($event)">
                 </app-keywords-section>
                 @if (keywordsError()) {
-                <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-2">
+                <p class="text-sm text-error font-medium flex items-center gap-1 mt-2">
                     <span class="material-symbols-outlined text-sm">error</span>
                     <span>{{ keywordsError() }}</span>
                 </p>
@@ -52,7 +52,7 @@
                 (fileSelected)="onFileSelected($event)">
             </app-image-gallery-upload>
             @if (imagesError()) {
-            <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-2">
+            <p class="text-sm text-error font-medium flex items-center gap-1 mt-2">
                 <span class="material-symbols-outlined text-sm">error</span>
                 <span>{{ imagesError() }}</span>
             </p>

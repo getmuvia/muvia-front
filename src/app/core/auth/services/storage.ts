@@ -8,7 +8,7 @@ const USER_KEY = 'auth_user';
 @Injectable({
     providedIn: 'root'
 })
-export class AuthStorage {
+export class AuthStorageService {
     private readonly platformId = inject(PLATFORM_ID);
 
     /**

@@ -1,11 +1,14 @@
-import { Component, inject, signal, afterNextRender } from '@angular/core';
+import { Component, inject, signal, afterNextRender, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
-import { ProductStore } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product.store';
 import { CategoryService } from '@core/services/category/category';
-import { UploadFile } from '@core/services/uploadFile/upload-file';
-import { Auth } from '@core/auth/services/auth';
-import { firstValueFrom } from 'rxjs'; // For waiting for upload service
+import { UploadFileService } from '@core/services/uploadFile/upload-file';
+import { LoggerService } from '@core/services/logger/logger';
+import { AuthService } from '@core/auth/services/auth';
+import { firstValueFrom } from 'rxjs';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
 import { CreateProductDto, CreateProductSpecifications, CreateProductAsset } from '@core/models/product/create-product.dto';
@@ -25,11 +28,13 @@ import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryU
     providers: [ProductStore]
 })
 export class ProductCreate {
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly logger = inject(LoggerService);
     private readonly router = inject(Router);
     private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
-    private readonly uploadService = inject(UploadFile);
-    private readonly auth = inject(Auth);
+    private readonly uploadService = inject(UploadFileService);
+    private readonly auth = inject(AuthService);
 
     pendingUploads = new Map<string, File>();
 
@@ -73,7 +78,6 @@ export class ProductCreate {
     isSubmitting = signal(false);
     isLoadingCategories = signal(true);
 
-    // Error messages for non-form fields
     keywordsError = signal<string | null>(null);
     imagesError = signal<string | null>(null);
 
@@ -85,13 +89,15 @@ export class ProductCreate {
 
     private loadCategories(): void {
         this.isLoadingCategories.set(true);
-        this.categoryService.getCategories().subscribe({
+        this.categoryService.getCategories().pipe(
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
             next: (categories) => {
                 this.categories.set(categories);
                 this.isLoadingCategories.set(false);
             },
-            error: (err) => {
-                console.error('Error loading categories:', err);
+            error: (error: HttpErrorResponse) => {
+                this.logger.error('Failed to load categories', error, 'ProductCreate');
                 this.isLoadingCategories.set(false);
             }
         });
@@ -152,7 +158,7 @@ export class ProductCreate {
     }
 
     onSaveDraft(): void {
-        console.log('Saving draft...', this.buildProductDto());
+        // TODO: Implement draft saving functionality
     }
 
     private async submitProduct(): Promise<void> {
@@ -166,20 +172,19 @@ export class ProductCreate {
                 this.productStore.createProduct({
                     dto,
                     onSuccess: () => {
-                        console.log('Product created successfully');
                         this.isSubmitting.set(false);
                         this.router.navigate(['/seller/profile']);
                         resolve();
                     },
                     onError: (err) => {
-                        console.error('Error creating product:', err);
+                        this.logger.error('Failed to create product', err, 'ProductCreate');
                         this.isSubmitting.set(false);
                         resolve();
                     }
                 });
             });
         } catch (error) {
-            console.error('Error uploading files:', error);
+            this.logger.error('Failed to upload files', error, 'ProductCreate');
             this.isSubmitting.set(false);
         }
     }
@@ -207,7 +212,6 @@ export class ProductCreate {
                 updatedImages[i] = {
                     ...asset,
                     url: response.url
-                    // We could also update metadata with info from response if needed
                 };
 
                 // Remove from pending map

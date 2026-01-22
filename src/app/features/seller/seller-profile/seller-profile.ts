@@ -1,4 +1,6 @@
-import { Component, inject, signal, afterNextRender, computed } from '@angular/core';
+import { Component, inject, signal, afterNextRender, computed, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 import { SellerCoverBanner } from './components/seller-cover-banner/seller-cover-banner';
 import { SellerProfileHeader } from './components/seller-profile-header/seller-profile-header';
 import { SellerSidebar } from './components/seller-sidebar/seller-sidebar';
@@ -7,11 +9,11 @@ import { SellerProductGrid } from './components/seller-product-grid/seller-produ
 import { SellerPagination } from './components/seller-pagination/seller-pagination';
 import { ImageEditorModal } from '@shared/components/modals/image-editor-modal/image-editor-modal';
 import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/sidebar-edit-modal';
-import { Product } from '@core/models/product/product';
-import { ProductStore } from '@core/services/product/product';
+import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
-import { UploadFile } from '@core/services/uploadFile/upload-file';
-import { Auth } from '@core/auth/services/auth';
+import { UploadFileService } from '@core/services/uploadFile/upload-file';
+import { LoggerService } from '@core/services/logger/logger';
+import { AuthService } from '@core/auth/services/auth';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 
 @Component({
@@ -32,10 +34,12 @@ import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
   providers: [ProductStore]
 })
 export class SellerProfile {
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly logger = inject(LoggerService);
   readonly productStore = inject(ProductStore);
   private readonly userService = inject(UserService);
-  private readonly uploadFileService = inject(UploadFile);
-  private readonly auth = inject(Auth);
+  private readonly uploadFileService = inject(UploadFileService);
+  private readonly auth = inject(AuthService);
 
   coverImageUrl = computed(() => this.userService.vendorProfile()?.coverImage || '');
   avatarUrl = computed(() => this.userService.vendorProfile()?.logoUrl || '');
@@ -100,7 +104,9 @@ export class SellerProfile {
     this.isSaving.set(true);
 
     // 1. Upload File
-    this.uploadFileService.uploadFile(file, `users/${userId}`).subscribe({
+    this.uploadFileService.uploadFile(file, `users/${userId}`).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: (response) => {
         const url = response.url;
 
@@ -108,19 +114,21 @@ export class SellerProfile {
         const updateData = { [field]: url };
         const payload = { vendorProfile: updateData };
 
-        this.userService.updateProfile(payload).subscribe({
+        this.userService.updateProfile(payload).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe({
           next: () => {
             this.isModalOpen.set(false);
             this.isSaving.set(false);
           },
-          error: (err) => {
-            console.error('Error updating profile:', err);
+          error: (error: HttpErrorResponse) => {
+            this.logger.error('Failed to update profile', error, 'SellerProfile');
             this.isSaving.set(false);
           }
         });
       },
-      error: (err) => {
-        console.error('Error uploading file:', err);
+      error: (error: HttpErrorResponse) => {
+        this.logger.error('Failed to upload file', error, 'SellerProfile');
         this.isSaving.set(false);
       }
     });
@@ -129,32 +137,34 @@ export class SellerProfile {
   onSaveSidebarInfo(data: any) {
     this.isSaving.set(true);
     const payload = { vendorProfile: data };
-    this.userService.updateProfile(payload).subscribe({
+    this.userService.updateProfile(payload).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       next: () => {
         this.isSidebarModalOpen.set(false);
         this.isSaving.set(false);
       },
-      error: (err) => {
-        console.error('Error updating sidebar info:', err);
+      error: (error: HttpErrorResponse) => {
+        this.logger.error('Failed to update sidebar info', error, 'SellerProfile');
         this.isSaving.set(false);
       }
     });
   }
 
   onFollow(): void {
-    console.log('Follow clicked');
+    // TODO: Implement follow functionality
   }
 
   onContact(): void {
-    console.log('Contact clicked');
+    // TODO: Implement contact functionality
   }
 
   onFilterChange(filterId: string): void {
-    console.log('Filter changed:', filterId);
+    // TODO: Implement filter change
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    console.log('Page changed:', page);
+    // TODO: Re-fetch products for new page
   }
 }

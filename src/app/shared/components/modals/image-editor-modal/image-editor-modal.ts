@@ -1,10 +1,8 @@
 import { Component, input, output, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-image-editor-modal',
     standalone: true,
-    imports: [CommonModule],
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="onBackdropClick($event)">
@@ -78,15 +76,7 @@ import { CommonModule } from '@angular/common';
       </div>
     }
   `,
-    styles: [`
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(10px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .animate-fade-in-up {
-        animation: fadeInUp 0.2s ease-out forwards;
-    }
-  `]
+    styles: []
 })
 export class ImageEditorModal {
     isOpen = input<boolean>(false);

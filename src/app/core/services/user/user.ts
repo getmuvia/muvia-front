@@ -1,23 +1,21 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
-import { Auth } from '@core/auth/services/auth';
+import { LoggerService } from '../logger/logger';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
-    private http = inject(HttpClient);
-    private auth = inject(Auth);
+    private readonly http = inject(HttpClient);
+    private readonly logger = inject(LoggerService);
 
     readonly vendorProfile = signal<VendorProfile | null>(null);
 
     updateProfile(data: UpdateVendorProfilePayload): Observable<VendorResponse> {
-        const token = this.auth.getAccessToken();
-        const headers = { Authorization: `Bearer ${token}` };
-        return this.http.patch<VendorResponse>(API_ENDPOINTS.USERS.ME, data, { headers }).pipe(
+        return this.http.patch<VendorResponse>(API_ENDPOINTS.USERS.ME, data).pipe(
             tap(updatedUser => {
 
                 if (updatedUser.vendorProfile) {
@@ -39,9 +37,10 @@ export class UserService {
      * Stale-While-Revalidate strategy for loading profile
      */
     loadVendorProfile(userId: string): void {
-
         this.getVendorProfile(userId).subscribe({
-            error: (err) => console.error('Background profile refresh failed', err)
+            error: (error: HttpErrorResponse) => {
+                this.logger.error('Background profile refresh failed', error, 'UserService');
+            }
         });
     }
 
@@ -49,4 +48,5 @@ export class UserService {
         return this.http.get<VendorProfile>(API_ENDPOINTS.USERS.ME);
     }
 }
+
 
