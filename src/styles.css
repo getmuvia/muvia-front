@@ -4,15 +4,31 @@
 
 /* Custom Tailwind Theme Configuration */
 @theme {
+  /* Brand Colors */
   --color-primary: #8B5A2B;
   --color-secondary: #c9a45c;
-  --color-background-light: #f8f8f8;
-  --color-text-light: #2d2d2d;
 
+  /* Text Colors */
+  --color-text-light: #2d2d2d;
+  --color-text-main: #1f2937;
+  --color-text-secondary: #6b7280;
+
+  /* Surface Colors */
+  --color-background-light: #f8f8f8;
+  --color-surface-element: #f4f4f4;
+  --color-surface-light: #f9fafb;
+
+  /* Border Colors */
+  --color-border-color: #e5e7eb;
+
+  /* State Colors */
+  --color-error: #ef4444;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+
+  /* Typography */
   --font-headline: "Cormorant Garamond", serif;
   --font-body: "Montserrat", sans-serif;
-
-  --color-surface-element: #f4f4f4;
 }
 
 /* Material Symbols Configuration */
@@ -22,4 +38,76 @@
     'wght' 400,
     'GRAD' 0,
     'opsz' 24;
+}
+
+/* ================================================
+   Centralized Animation Keyframes
+   ================================================ */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ================================================
+   Animation Utility Classes
+   ================================================ */
+
+@layer utilities {
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out forwards;
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.2s ease-out forwards;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .animate-scale-up {
+    animation: scaleUp 0.2s ease-out;
+  }
 }

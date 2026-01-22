@@ -36,15 +36,7 @@ import { ToastService, Toast } from '@core/services/toast/toast';
       }
     </div>
   `,
-  styles: [`
-    @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
-      to { transform: translateX(0); opacity: 1; }
-    }
-    .animate-slide-in {
-      animation: slideIn 0.3s ease-out forwards;
-    }
-  `]
+  styles: []
 })
 export class ToastContainer {
   readonly toastService = inject(ToastService);

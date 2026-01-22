@@ -20,7 +20,7 @@
 
 <!-- Error Message -->
 @if (error()) {
-<div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm mb-6">
+<div class="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-lg text-sm mb-6">
     {{ error() }}
 </div>
 }
@@ -38,7 +38,7 @@
                 id="business-name" placeholder="Ej. Studio Decor" type="text" />
         </div>
         @if (isFieldInvalid('businessName')) {
-        <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+        <p class="text-sm text-error font-medium flex items-center gap-1 mt-1 pl-1">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of registerForm.businessName().errors(); track $index) {
             <span>{{ error.message }}</span>
@@ -58,7 +58,7 @@
                 id="email" placeholder="nombre@ejemplo.com" type="text" />
         </div>
         @if (isFieldInvalid('email')) {
-        <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+        <p class="text-sm text-error font-medium flex items-center gap-1 mt-1 pl-1">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of registerForm.email().errors(); track $index) {
             <span>{{ error.message }}</span>
@@ -84,7 +84,7 @@
             </div>
         </div>
         @if (isFieldInvalid('password')) {
-        <p class="text-sm text-red-500 font-medium flex items-center gap-1 mt-1 pl-1">
+        <p class="text-sm text-error font-medium flex items-center gap-1 mt-1 pl-1">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of registerForm.password().errors(); track $index) {
             <span>{{ error.message }}</span>

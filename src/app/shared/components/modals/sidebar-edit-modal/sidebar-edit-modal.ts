@@ -109,15 +109,7 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
       </div>
     }
   `,
-    styles: [`
-    @keyframes fadeInUp {
-        from { opacity: 0; transform: translateY(10px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .animate-fade-in-up {
-        animation: fadeInUp 0.2s ease-out forwards;
-    }
-  `]
+    styles: []
 })
 export class SidebarEditModal {
     isOpen = input<boolean>(false);
