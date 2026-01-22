@@ -12,6 +12,7 @@ import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/s
 import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
+import { LoggerService } from '@core/services/logger/logger';
 import { AuthService } from '@core/auth/services/auth';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 
@@ -34,6 +35,7 @@ import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 })
 export class SellerProfile {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly logger = inject(LoggerService);
   readonly productStore = inject(ProductStore);
   private readonly userService = inject(UserService);
   private readonly uploadFileService = inject(UploadFileService);
@@ -120,13 +122,13 @@ export class SellerProfile {
             this.isSaving.set(false);
           },
           error: (error: HttpErrorResponse) => {
-            console.error('Error updating profile:', error);
+            this.logger.error('Failed to update profile', error, 'SellerProfile');
             this.isSaving.set(false);
           }
         });
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error uploading file:', error);
+        this.logger.error('Failed to upload file', error, 'SellerProfile');
         this.isSaving.set(false);
       }
     });
@@ -143,26 +145,26 @@ export class SellerProfile {
         this.isSaving.set(false);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error updating sidebar info:', error);
+        this.logger.error('Failed to update sidebar info', error, 'SellerProfile');
         this.isSaving.set(false);
       }
     });
   }
 
   onFollow(): void {
-    console.log('Follow clicked');
+    // TODO: Implement follow functionality
   }
 
   onContact(): void {
-    console.log('Contact clicked');
+    // TODO: Implement contact functionality
   }
 
   onFilterChange(filterId: string): void {
-    console.log('Filter changed:', filterId);
+    // TODO: Implement filter change
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    console.log('Page changed:', page);
+    // TODO: Re-fetch products for new page
   }
 }

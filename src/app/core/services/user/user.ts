@@ -3,12 +3,14 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
+import { LoggerService } from '../logger/logger';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
     private readonly http = inject(HttpClient);
+    private readonly logger = inject(LoggerService);
 
     readonly vendorProfile = signal<VendorProfile | null>(null);
 
@@ -35,9 +37,10 @@ export class UserService {
      * Stale-While-Revalidate strategy for loading profile
      */
     loadVendorProfile(userId: string): void {
-
         this.getVendorProfile(userId).subscribe({
-            error: (error: HttpErrorResponse) => console.error('Background profile refresh failed', error)
+            error: (error: HttpErrorResponse) => {
+                this.logger.error('Background profile refresh failed', error, 'UserService');
+            }
         });
     }
 
@@ -45,4 +48,5 @@ export class UserService {
         return this.http.get<VendorProfile>(API_ENDPOINTS.USERS.ME);
     }
 }
+
 

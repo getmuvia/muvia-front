@@ -6,6 +6,7 @@ import { form, required, minLength, submit, validate } from '@angular/forms/sign
 import { ProductStore } from '@core/services/product/product.store';
 import { CategoryService } from '@core/services/category/category';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
+import { LoggerService } from '@core/services/logger/logger';
 import { AuthService } from '@core/auth/services/auth';
 import { firstValueFrom } from 'rxjs';
 import { Category } from '@core/models/category/category';
@@ -28,6 +29,7 @@ import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryU
 })
 export class ProductCreate {
     private readonly destroyRef = inject(DestroyRef);
+    private readonly logger = inject(LoggerService);
     private readonly router = inject(Router);
     private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
@@ -95,7 +97,7 @@ export class ProductCreate {
                 this.isLoadingCategories.set(false);
             },
             error: (error: HttpErrorResponse) => {
-                console.error('Error loading categories:', error);
+                this.logger.error('Failed to load categories', error, 'ProductCreate');
                 this.isLoadingCategories.set(false);
             }
         });
@@ -156,7 +158,7 @@ export class ProductCreate {
     }
 
     onSaveDraft(): void {
-        console.log('Saving draft...', this.buildProductDto());
+        // TODO: Implement draft saving functionality
     }
 
     private async submitProduct(): Promise<void> {
@@ -170,20 +172,19 @@ export class ProductCreate {
                 this.productStore.createProduct({
                     dto,
                     onSuccess: () => {
-                        console.log('Product created successfully');
                         this.isSubmitting.set(false);
                         this.router.navigate(['/seller/profile']);
                         resolve();
                     },
                     onError: (err) => {
-                        console.error('Error creating product:', err);
+                        this.logger.error('Failed to create product', err, 'ProductCreate');
                         this.isSubmitting.set(false);
                         resolve();
                     }
                 });
             });
         } catch (error) {
-            console.error('Error uploading files:', error);
+            this.logger.error('Failed to upload files', error, 'ProductCreate');
             this.isSubmitting.set(false);
         }
     }

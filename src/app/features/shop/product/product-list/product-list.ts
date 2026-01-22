@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore } from '@core/services/product/product.store';
 import { PaginatedResponse } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
+import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
 import { Category } from '@core/models/category/category';
 import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
@@ -17,6 +18,7 @@ import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components
 })
 export class ProductList implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly logger = inject(LoggerService);
   readonly store = inject(ProductStore);
   private readonly categoryService = inject(CategoryService);
 
@@ -46,7 +48,7 @@ export class ProductList implements OnInit {
         this.categories.set(categories);
       },
       error: (error: HttpErrorResponse) => {
-        console.error('Error loading categories:', error);
+        this.logger.error('Failed to load categories', error, 'ProductList');
       }
     });
   }
@@ -71,7 +73,6 @@ export class ProductList implements OnInit {
 
   onFilterToggle(): void {
     // TODO: Implement filter panel toggle
-    console.log('Filter toggle clicked');
   }
 
   onRemoveFilter(filter: string): void {
