@@ -57,7 +57,7 @@ export class ProductList implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(params => {
       const query = params.get('search');
-      
+
       if (query) {
         this.searchProducts(query);
       } else {
@@ -98,6 +98,12 @@ export class ProductList implements OnInit {
     });
   }
 
+  /**
+   * Initiates product search.
+   * Switches between "Smart Search" (Hybrid) and normal SQL search based on query length.
+   * 
+   * @param query Search term from URL or input
+   */
   searchProducts(query: string): void {
     this.searchQuery.set(query);
 
@@ -113,6 +119,10 @@ export class ProductList implements OnInit {
     }
   }
 
+  /**
+   * Executes AI-powered hybrid search.
+   * @param query Search term (must be >= 2 chars)
+   */
   private performHybridSearch(query: string): void {
     this.hybridLoading.set(true);
     this.hybridError.set(null);

@@ -53,7 +53,6 @@ export class SmartSearchModal {
     private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
     constructor() {
-        // Auto-focus input when modal opens
         effect(() => {
             const input = this.searchInput();
             if (input) {
@@ -62,6 +61,10 @@ export class SmartSearchModal {
         });
     }
 
+    /**
+     * Handles keydown events for keyboard navigation (Arrows) and selection (Enter).
+     * @param event Keyboard event
+     */
     @HostListener('document:keydown', ['$event'])
     handleKeyboard(event: KeyboardEvent): void {
         switch (event.key) {
@@ -86,30 +89,37 @@ export class SmartSearchModal {
         }
     }
 
+    /**
+     * Handles input changes with a 600ms debounce to avoid excessive API calls.
+     * Triggers the hybrid search if query length >= 2 chars.
+     * @param event Input event
+     */
     onSearchInput(event: Event): void {
         const input = event.target as HTMLInputElement;
         const value = input.value.trim();
         this.query.set(value);
         this.selectedIndex.set(-1);
 
-        // Clear previous timeout
         if (this.searchTimeout) {
             clearTimeout(this.searchTimeout);
         }
 
-        // Don't search if query is too short
         if (value.length < 2) {
             this.results.set([]);
             this.error.set(null);
             return;
         }
 
-        // Debounce search
         this.searchTimeout = setTimeout(() => {
             this.performSearch(value);
         }, 600);
     }
 
+    /**
+     * Executes the hybrid search via the service.
+     * Updates results or sets error state depending on the response.
+     * @param query Search term
+     */
     performSearch(query: string): void {
         this.isLoading.set(true);
         this.error.set(null);
@@ -140,12 +150,20 @@ export class SmartSearchModal {
         this.selectedIndex.set(newIndex);
     }
 
+    /**
+     * Navigates to the full product list with the current query.
+     * Closes the modal AFTER navigation starts to prevent race conditions.
+     */
     submitSearch(): void {
         this.router.navigate(['/products'], {
             queryParams: { search: this.query() }
         }).then(() => this.onClose());
     }
 
+    /**
+     * Navigates to a specific product detail page.
+     * @param result Selected hybrid search result
+     */
     selectResult(result: HybridSearchResult): void {
         this.router.navigate(['/products', result.id]).then(() => this.onClose());
     }
@@ -158,15 +176,5 @@ export class SmartSearchModal {
 
     onClose(): void {
         this.close.emit();
-    }
-
-    /** Get badge color based on match type */
-    getMatchTypeBadge(type: string): string {
-        switch (type) {
-            case 'semantic': return 'bg-purple-100 text-purple-700';
-            case 'hybrid': return 'bg-blue-100 text-blue-700';
-            case 'lexical': return 'bg-green-100 text-green-700';
-            default: return 'bg-gray-100 text-gray-700';
-        }
     }
 }

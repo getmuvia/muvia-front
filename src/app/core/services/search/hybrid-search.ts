@@ -24,9 +24,11 @@ export class HybridSearchService {
     private readonly http = inject(HttpClient);
 
     /**
-     * Perform a hybrid search for products.
-     * @param query - Search query text
-     * @param limit - Maximum number of results (default: 20)
+     * Performs a hybrid search (Semantic + Lexical) using Vertex AI.
+     * 
+     * @param query - The user's search term.
+     * @param limit - Max number of results (defaults to Product List limit).
+     * @returns Observable with search results including relevance probability.
      */
     search(query: string, limit: number = HYBRID_SEARCH_LIMITS.PRODUCT_LIST): Observable<HybridSearchResponse> {
         const payload: HybridSearchRequest = { query, limit };

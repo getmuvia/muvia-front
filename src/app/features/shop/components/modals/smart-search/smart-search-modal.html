@@ -1,28 +1,27 @@
 <!-- Smart Search Modal Overlay -->
-<div class="modal-backdrop fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] bg-black/50 backdrop-blur-sm animate-fade-in"
+<div class="modal-backdrop fixed inset-0 z-[100] flex items-start justify-center pt-[12vh] bg-black/60 backdrop-blur-sm animate-fade-in"
     (click)="onBackdropClick($event)">
 
     <!-- Modal Container -->
-    <div class="w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
+    <div class="w-full max-w-xl mx-4 bg-white shadow-2xl overflow-hidden animate-fade-in-up">
 
         <!-- Search Input Section -->
-        <div class="relative border-b border-gray-100">
-            <span
-                class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-2xl text-text-light/40">
+        <div class="relative border-b border-border-color">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-xl text-text-light/30">
                 search
             </span>
             <input #searchInput type="text" [value]="query()" (input)="onSearchInput($event)"
-                placeholder="Buscar productos... ej: mesa de madera, sofá moderno"
-                class="w-full h-16 pl-14 pr-14 text-lg text-text-light placeholder-text-light/40 outline-none font-body" />
+                placeholder="Buscar productos..."
+                class="w-full h-14 pl-12 pr-12 text-base text-text-light placeholder-text-light/40 outline-none font-body bg-transparent" />
 
             @if (isLoading()) {
             <span
-                class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-2xl text-primary animate-spin">
+                class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-xl text-primary animate-spin">
                 progress_activity
             </span>
             } @else {
             <span
-                class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-xl text-text-light/30 cursor-pointer hover:text-text-light/60 transition-colors"
+                class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-lg text-text-light/30 cursor-pointer hover:text-text-light transition-colors"
                 (click)="onClose()">
                 close
             </span>
@@ -30,75 +29,72 @@
         </div>
 
         <!-- Results Section -->
-        <div class="max-h-[60vh] overflow-y-auto">
+        <div class="max-h-[50vh] overflow-y-auto">
 
             @if (error()) {
             <!-- Error State -->
-            <div class="flex flex-col items-center justify-center py-12 px-4">
-                <span class="material-symbols-outlined text-4xl text-red-400 mb-3">error</span>
-                <p class="text-text-light/70 font-body text-center">{{ error() }}</p>
+            <div class="flex flex-col items-center justify-center py-10 px-4">
+                <span class="material-symbols-outlined text-3xl text-error mb-2">error</span>
+                <p class="text-text-light/70 font-body text-sm text-center">{{ error() }}</p>
             </div>
             } @else if (hasResults()) {
             <!-- Results List -->
-            <ul class="divide-y divide-gray-50">
+            <ul>
                 @for (result of results(); track result.id; let i = $index) {
-                <li class="cursor-pointer transition-colors"
-                    [class]="selectedIndex() === i ? 'bg-primary/5' : 'hover:bg-gray-50'" (click)="selectResult(result)"
-                    (mouseenter)="selectedIndex.set(i)">
+                <li class="cursor-pointer transition-colors border-b border-border-color last:border-b-0"
+                    [class]="selectedIndex() === i ? 'bg-surface-element' : 'hover:bg-surface-light'"
+                    (click)="selectResult(result)" (mouseenter)="selectedIndex.set(i)">
 
-                    <div class="flex items-center gap-4 p-4">
+                    <div class="flex items-center gap-3 p-3">
                         <!-- Product Image -->
                         @if (result.imageUrl) {
-                        <div class="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                        <div class="relative w-12 h-12 overflow-hidden bg-surface-element flex-shrink-0">
                             <img [ngSrc]="result.imageUrl" [alt]="result.title" fill class="object-cover" />
                         </div>
                         } @else {
-                        <div class="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                            <span class="material-symbols-outlined text-2xl text-gray-300">image</span>
+                        <div class="w-12 h-12 bg-surface-element flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-xl text-text-light/20">image</span>
                         </div>
                         }
 
                         <!-- Product Info -->
                         <div class="flex-1 min-w-0">
-                            <div class="flex items-center gap-2 mb-1">
-                                <h4 class="font-body font-bold text-text-light truncate">
-                                    {{ result.title }}
-                                </h4>
-                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full flex-shrink-0"
-                                    [class]="getMatchTypeBadge(result.matchType)">
-                                    {{ result.matchType }}
-                                </span>
-                            </div>
-                            <p class="text-sm text-text-light/60 font-body line-clamp-1">
+                            <h4 class="font-body font-medium text-sm text-text-light truncate">
+                                {{ result.title }}
+                            </h4>
+                            <p class="text-xs text-text-secondary font-body truncate mt-0.5">
                                 {{ result.description }}
                             </p>
                         </div>
 
                         <!-- Price -->
                         <div class="flex-shrink-0 text-right">
-                            <p class="font-body font-bold text-primary">
+                            <p class="font-body font-bold text-sm text-primary">
                                 {{ result.price | currency:'USD':'symbol':'1.2-2' }}
-                            </p>
-                            <p class="text-xs text-text-light/40 font-body">
-                                {{ (result.score * 100).toFixed(0) }}% relevancia
                             </p>
                         </div>
                     </div>
                 </li>
                 }
             </ul>
+
+            <!-- View All Results Footer -->
+            @if (results().length > 0) {
+            <button (click)="submitSearch()"
+                class="w-full py-3 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/5 transition-colors border-t border-border-color font-body">
+                Ver todos los resultados
+            </button>
+            }
             } @else if (showEmptyState()) {
             <!-- Empty State -->
-            <div class="flex flex-col items-center justify-center py-12 px-4">
-                <span class="material-symbols-outlined text-4xl text-text-light/20 mb-3">search_off</span>
-                <p class="text-text-light/70 font-body text-center">
+            <div class="flex flex-col items-center justify-center py-10 px-4">
+                <span class="material-symbols-outlined text-3xl text-text-light/20 mb-2">search_off</span>
+                <p class="text-text-light/70 font-body text-sm text-center">
                     No encontramos productos para "{{ query() }}"
-                </p>
-                <p class="text-sm text-text-light/40 font-body mt-1">
-                    Intenta con otros términos
                 </p>
             </div>
             }
         </div>
+
     </div>
 </div>
