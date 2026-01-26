@@ -1,12 +1,14 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, HostListener } from '@angular/core';
 import { RouterLink, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
 import { NgClass } from '@angular/common';
+import { SmartSearchModal } from '@features/shop/components/modals/smart-search/smart-search-modal';
+
 
 @Component({
   selector: 'app-shop-navbar',
-  imports: [RouterLink, NgClass],
+  imports: [RouterLink, NgClass, SmartSearchModal],
   templateUrl: './shop-navbar.html',
   styleUrl: './shop-navbar.css',
 })
@@ -19,6 +21,16 @@ export class ShopNavbar implements OnInit {
   currentUser = this.authService.currentUser;
 
   isTransparent = signal<boolean>(false);
+  isSearchOpen = signal<boolean>(false);
+
+  /** Listen for Ctrl+K / Cmd+K to open search */
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardShortcut(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+      event.preventDefault();
+      this.openSearch();
+    }
+  }
 
   ngOnInit(): void {
     this.checkRoute();
@@ -28,6 +40,14 @@ export class ShopNavbar implements OnInit {
     ).subscribe(() => {
       this.checkRoute();
     });
+  }
+
+  openSearch(): void {
+    this.isSearchOpen.set(true);
+  }
+
+  closeSearch(): void {
+    this.isSearchOpen.set(false);
   }
 
   logout(): void {

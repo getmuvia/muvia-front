@@ -28,6 +28,9 @@
       ],
       "@core/interceptors/*": [
         "src/app/core/interceptors/*"
+      ],
+      "@features/*": [
+        "src/app/features/*"
       ]
     },
     "strict": true,

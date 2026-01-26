@@ -7,4 +7,5 @@ export type { CreateProductDto, CreateProductAsset, CreateProductSpecifications 
 export type { ApiError } from './errors/api-error.model';
 export { getErrorMessage } from './errors/api-error.model';
 export type { VendorProfile, VendorResponse, UpdateVendorProfilePayload, SocialLink, BusinessHours, BusinessHoursItem } from './user/vendor-profile';
+export type { HybridSearchRequest, HybridSearchResult, HybridSearchResponse, MatchType } from './search/hybrid-search.model';
 

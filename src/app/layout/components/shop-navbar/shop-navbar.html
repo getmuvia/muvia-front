@@ -17,11 +17,6 @@
                 </div>
             </div>
             <div class="hidden md:flex items-center gap-9">
-                <!-- Links: White on Home, Earth on Inner. Hover effect only on Home (to primary/earth) if Bg doesn't change?
-                     User said: Home -> Transparent/White, Hover -> Earth Color (BG?). 
-                     Logic: If Home: Text White.
-                     If Inner: Text Earth. 
-                -->
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-sm font-medium transition-colors" href="#">Novedades</a>
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
@@ -33,9 +28,10 @@
             </div>
             <div class="flex flex-1 justify-end items-center gap-2">
                 <!-- Search Button -->
-                <button
+                <button (click)="openSearch()"
                     [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors">
+                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors"
+                    title="Buscar (Ctrl+K)">
                     <span class="material-symbols-outlined">search</span>
                 </button>
 
@@ -69,3 +65,8 @@
         </div>
     </div>
 </header>
+
+<!-- Smart Search Modal -->
+@if (isSearchOpen()) {
+<app-smart-search-modal (close)="closeSearch()" />
+}

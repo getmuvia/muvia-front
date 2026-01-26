@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full min-h-screen">
     <!-- Page Header -->
-    <app-page-header [productCount]="store.total()" />
+    <app-page-header [productCount]="displayTotal()" />
 
     <!-- Main content area with flex-grow to push footer down -->
     <main class="flex-grow max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full bg-white">
@@ -8,15 +8,17 @@
         <app-filter-bar [categories]="categories()" [activeFilters]="activeFilters()" [selectedSort]="selectedSort()"
             [viewMode]="viewMode()" (filterToggle)="onFilterToggle()" (removeFilter)="onRemoveFilter($event)"
             (sortChange)="onSortChange($event)" (viewModeChange)="onViewModeChange($event)"
-            (searchChange)="searchProducts($event)" />
+            (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()" (clearSearch)="onClearSearch()" />
 
         <!-- Product Grid -->
         <div class="mt-8">
-            <app-product-grid [products]="store.products()"
-                [isLoading]="store.isLoading() && store.products().length === 0" [viewMode]="viewMode()" />
+            <app-product-grid [products]="displayProducts()"
+                [isLoading]="displayLoading() && displayProducts().length === 0" [viewMode]="viewMode()" />
         </div>
 
-        <!-- Load More Button -->
+        <!-- Load More Button (only for normal search) -->
+        @if (!useSmartSearch()) {
         <app-load-more-button [isLoading]="isLoadingMore()" [hasMore]="store.hasNextPage()" (loadMore)="loadMore()" />
+        }
     </main>
 </div>

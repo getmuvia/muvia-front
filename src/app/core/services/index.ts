@@ -10,4 +10,5 @@ export type { UploadResponse } from './uploadFile/upload-file';
 export { UserService } from './user/user';
 export { LoggerService } from './logger/logger';
 export type { LogLevel, LogEntry } from './logger/logger';
+export { HybridSearchService, HYBRID_SEARCH_LIMITS } from './search/hybrid-search';
 
