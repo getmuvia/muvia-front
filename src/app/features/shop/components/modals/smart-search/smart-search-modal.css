@@ -1,0 +1,49 @@
+/* Smart Search Modal Animations */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.25s ease-out;
+}
+
+/* Scrollbar styling */
+.max-h-\[60vh\]::-webkit-scrollbar {
+    width: 6px;
+}
+
+.max-h-\[60vh\]::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.max-h-\[60vh\]::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.max-h-\[60vh\]::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+}

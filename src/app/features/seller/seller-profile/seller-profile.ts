@@ -1,20 +1,15 @@
 import { Component, inject, signal, afterNextRender, computed, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { SellerCoverBanner } from './components/seller-cover-banner/seller-cover-banner';
-import { SellerProfileHeader } from './components/seller-profile-header/seller-profile-header';
-import { SellerSidebar } from './components/seller-sidebar/seller-sidebar';
-import { SellerFilterChips } from './components/seller-filter-chips/seller-filter-chips';
-import { SellerProductGrid } from './components/seller-product-grid/seller-product-grid';
-import { SellerPagination } from './components/seller-pagination/seller-pagination';
-import { ImageEditorModal } from '@shared/components/modals/image-editor-modal/image-editor-modal';
-import { SidebarEditModal } from '@shared/components/modals/sidebar-edit-modal/sidebar-edit-modal';
 import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { LoggerService } from '@core/services/logger/logger';
 import { AuthService } from '@core/auth/services/auth';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
+import { ImageEditorModal } from '../components/modals/image-editor-modal/image-editor-modal';
+import { SidebarEditModal } from '../components/modals/sidebar-edit-modal/sidebar-edit-modal';
+import { SellerCoverBanner, SellerProfileHeader, SellerSidebar, SellerFilterChips, SellerProductGrid, SellerPagination } from './components';
 
 @Component({
   selector: 'app-seller-profile',

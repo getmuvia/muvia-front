@@ -24,5 +24,8 @@ export const API_ENDPOINTS = {
     USERS: {
         ME: `${BASE}/users/me`,
         VENDOR: `${BASE}/users/vendor`,
+    },
+    AI: {
+        HYBRID_SEARCH: `${BASE}/ai/hybrid`,
     }
 } as const;

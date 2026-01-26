@@ -23,8 +23,13 @@ export class FilterBar {
     sortChange = output<string>();
     viewModeChange = output<'grid' | 'list'>();
     searchChange = output<string>();
+    /** Input for the current active search query to display as a chip */
+    activeSearch = input<string>('');
+    /** Emitted when the user clears the search chip */
+    clearSearch = output<void>();
 
     searchQuery = signal<string>('');
+
     private searchTimeout: ReturnType<typeof setTimeout> | null = null;
 
     sortOptions: SortOption[] = [
@@ -44,7 +49,7 @@ export class FilterBar {
         }
         this.searchTimeout = setTimeout(() => {
             this.searchChange.emit(input.value);
-        }, 400);
+        }, 700);
     }
 
     onSearchSubmit(event: Event): void {
@@ -70,5 +75,10 @@ export class FilterBar {
 
     onFilterToggle(): void {
         this.filterToggle.emit();
+    }
+
+    onClearSearch(): void {
+        this.searchQuery.set('');
+        this.clearSearch.emit();
     }
 }

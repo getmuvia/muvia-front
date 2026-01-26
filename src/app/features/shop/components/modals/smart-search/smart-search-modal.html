@@ -1,0 +1,104 @@
+<!-- Smart Search Modal Overlay -->
+<div class="modal-backdrop fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] bg-black/50 backdrop-blur-sm animate-fade-in"
+    (click)="onBackdropClick($event)">
+
+    <!-- Modal Container -->
+    <div class="w-full max-w-2xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden animate-slide-up">
+
+        <!-- Search Input Section -->
+        <div class="relative border-b border-gray-100">
+            <span
+                class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-2xl text-text-light/40">
+                search
+            </span>
+            <input #searchInput type="text" [value]="query()" (input)="onSearchInput($event)"
+                placeholder="Buscar productos... ej: mesa de madera, sofá moderno"
+                class="w-full h-16 pl-14 pr-14 text-lg text-text-light placeholder-text-light/40 outline-none font-body" />
+
+            @if (isLoading()) {
+            <span
+                class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-2xl text-primary animate-spin">
+                progress_activity
+            </span>
+            } @else {
+            <span
+                class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-xl text-text-light/30 cursor-pointer hover:text-text-light/60 transition-colors"
+                (click)="onClose()">
+                close
+            </span>
+            }
+        </div>
+
+        <!-- Results Section -->
+        <div class="max-h-[60vh] overflow-y-auto">
+
+            @if (error()) {
+            <!-- Error State -->
+            <div class="flex flex-col items-center justify-center py-12 px-4">
+                <span class="material-symbols-outlined text-4xl text-red-400 mb-3">error</span>
+                <p class="text-text-light/70 font-body text-center">{{ error() }}</p>
+            </div>
+            } @else if (hasResults()) {
+            <!-- Results List -->
+            <ul class="divide-y divide-gray-50">
+                @for (result of results(); track result.id; let i = $index) {
+                <li class="cursor-pointer transition-colors"
+                    [class]="selectedIndex() === i ? 'bg-primary/5' : 'hover:bg-gray-50'" (click)="selectResult(result)"
+                    (mouseenter)="selectedIndex.set(i)">
+
+                    <div class="flex items-center gap-4 p-4">
+                        <!-- Product Image -->
+                        @if (result.imageUrl) {
+                        <div class="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                            <img [ngSrc]="result.imageUrl" [alt]="result.title" fill class="object-cover" />
+                        </div>
+                        } @else {
+                        <div class="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-2xl text-gray-300">image</span>
+                        </div>
+                        }
+
+                        <!-- Product Info -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h4 class="font-body font-bold text-text-light truncate">
+                                    {{ result.title }}
+                                </h4>
+                                <span class="px-2 py-0.5 text-[10px] font-bold uppercase rounded-full flex-shrink-0"
+                                    [class]="getMatchTypeBadge(result.matchType)">
+                                    {{ result.matchType }}
+                                </span>
+                            </div>
+                            <p class="text-sm text-text-light/60 font-body line-clamp-1">
+                                {{ result.description }}
+                            </p>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="flex-shrink-0 text-right">
+                            <p class="font-body font-bold text-primary">
+                                {{ result.price | currency:'USD':'symbol':'1.2-2' }}
+                            </p>
+                            <p class="text-xs text-text-light/40 font-body">
+                                {{ (result.score * 100).toFixed(0) }}% relevancia
+                            </p>
+                        </div>
+                    </div>
+                </li>
+                }
+            </ul>
+            } @else if (showEmptyState()) {
+            <!-- Empty State -->
+            <div class="flex flex-col items-center justify-center py-12 px-4">
+                <span class="material-symbols-outlined text-4xl text-text-light/20 mb-3">search_off</span>
+                <p class="text-text-light/70 font-body text-center">
+                    No encontramos productos para "{{ query() }}"
+                </p>
+                <p class="text-sm text-text-light/40 font-body mt-1">
+                    Intenta con otros términos
+                </p>
+            </div>
+            }
+        </div>
+    </div>
+</div>
