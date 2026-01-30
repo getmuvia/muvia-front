@@ -25,6 +25,10 @@ export const routes: Routes = [
                 loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
             },
             {
+                path: 'virtual-staging',
+                loadChildren: () => import('./features/virtual-staging/virtual-staging.routes').then(m => m.VIRTUAL_STAGING_ROUTES)
+            },
+            {
                 path: '',
                 redirectTo: 'home',
                 pathMatch: 'full'

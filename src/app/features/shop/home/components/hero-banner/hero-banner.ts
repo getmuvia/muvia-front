@@ -1,9 +1,11 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 
+import { RouterLink } from '@angular/router';
+
 @Component({
   selector: 'app-hero-banner',
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, RouterLink],
   templateUrl: './hero-banner.html',
   styleUrl: './hero-banner.css',
 })

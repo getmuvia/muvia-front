@@ -27,5 +27,6 @@ export const API_ENDPOINTS = {
     },
     AI: {
         HYBRID_SEARCH: `${BASE}/ai/hybrid`,
+        VIRTUAL_STAGING: `${BASE}/ai/virtual-staging`,
     }
 } as const;
