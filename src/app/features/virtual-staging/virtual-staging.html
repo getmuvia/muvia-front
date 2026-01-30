@@ -1,0 +1,70 @@
+<div
+    class="landing-container min-h-screen flex flex-col items-center justify-center p-4 bg-[var(--color-background-light)]">
+
+    <!-- Hero Section -->
+    <div class="text-center mb-12 animate-fade-in-up">
+        <h1 class="headline text-4xl md:text-6xl mb-4 text-[var(--color-primary)]">
+            Diseña tu espacio con IA
+        </h1>
+        <p class="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto font-body">
+            Sube una foto de tu habitación y descubre cómo nuestros productos pueden transformar tu hogar en segundos.
+        </p>
+    </div>
+
+    <!-- Upload Area -->
+    <div class="upload-area w-full max-w-xl h-64 md:h-80 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center transition-all duration-300 cursor-pointer relative overflow-hidden group"
+        [class.border-[var(--color-primary)]]="dragActive()" [class.bg-[var(--color-surface-light)]]="dragActive()"
+        [class.border-[var(--color-border-color)]]="!dragActive()" (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+
+        <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*"
+            (change)="onFileSelected($event)" [disabled]="isUploading()">
+
+        @if (isUploading()) {
+        <div class="flex flex-col items-center animate-pulse">
+            <span class="material-symbols-outlined text-5xl mb-4 text-[var(--color-secondary)] spin">
+                autorenew
+            </span>
+            <p class="text-[var(--color-text-main)] font-medium">Subiendo imagen...</p>
+        </div>
+        } @else {
+        <div class="flex flex-col items-center transform group-hover:scale-105 transition-transform duration-300">
+            <div
+                class="w-16 h-16 rounded-full bg-[var(--color-surface-element)] flex items-center justify-center mb-4 text-[var(--color-primary)]">
+                <span class="material-symbols-outlined text-3xl">add_a_photo</span>
+            </div>
+            <h3 class="text-xl font-semibold text-[var(--color-text-main)] mb-2">
+                Sube tu foto aquí
+            </h3>
+            <p class="text-[var(--color-text-secondary)] text-sm">
+                o arrastra y suelta (JPG, PNG)
+            </p>
+        </div>
+        }
+    </div>
+
+    <!-- Features / Trust indicators -->
+    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-4xl animate-fade-in delay-200">
+        <div class="feature-item">
+            <span class="material-symbols-outlined text-4xl text-[var(--color-secondary)] mb-2">
+                auto_fix_high
+            </span>
+            <h4 class="font-bold text-[var(--color-text-main)]">IA Avanzada</h4>
+            <p class="text-sm text-[var(--color-text-secondary)]">Ideas de decoración personalizadas al instante.</p>
+        </div>
+        <div class="feature-item">
+            <span class="material-symbols-outlined text-4xl text-[var(--color-secondary)] mb-2">
+                chair
+            </span>
+            <h4 class="font-bold text-[var(--color-text-main)]">Catálogo Real</h4>
+            <p class="text-sm text-[var(--color-text-secondary)]">Visualiza productos que puedes comprar.</p>
+        </div>
+        <div class="feature-item">
+            <span class="material-symbols-outlined text-4xl text-[var(--color-secondary)] mb-2">
+                photo_camera
+            </span>
+            <h4 class="font-bold text-[var(--color-text-main)]">Fácil de Usar</h4>
+            <p class="text-sm text-[var(--color-text-secondary)]">Solo toma una foto y nosotros hacemos el resto.</p>
+        </div>
+    </div>
+</div>

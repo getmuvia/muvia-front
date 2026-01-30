@@ -1,0 +1,21 @@
+.headline {
+    font-family: var(--font-headline);
+}
+
+.font-body {
+    font-family: var(--font-body);
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

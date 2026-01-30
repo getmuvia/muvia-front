@@ -1,0 +1,79 @@
+<div class="result-container min-h-screen bg-[var(--color-background-light)] pb-20">
+
+    @if (isLoading()) {
+    <div class="h-screen flex flex-col items-center justify-center p-8 text-center animate-fade-in">
+        <div
+            class="w-16 h-16 border-4 border-[var(--color-surface-light)] border-t-[var(--color-primary)] rounded-full spin mb-6">
+        </div>
+        <h2 class="text-2xl font-headline text-[var(--color-text-main)] mb-2">Diseñando tu espacio...</h2>
+        <p class="text-[var(--color-text-secondary)] animate-pulse">Nuestra IA está seleccionando los mejores muebles
+            para ti.</p>
+    </div>
+    } @else {
+    <!-- Main Result Area -->
+    <div class="relative w-full h-[60vh] md:h-[70vh] bg-black overflow-hidden group">
+
+        <!-- Comparison Slider -->
+        <div class="absolute inset-0 w-full h-full">
+            <!-- After Image (Background) -->
+            <img [src]="result()?.decoratedUrl" alt="Decorated Room"
+                class="absolute inset-0 w-full h-full object-cover">
+
+            <!-- Before Image (Overlay) -->
+            <div class="absolute inset-0 h-full overflow-hidden transition-all duration-75 ease-out"
+                [style.width.%]="sliderPosition()">
+                <img [src]="result()?.originalUrl" alt="Original Room"
+                    class="absolute top-0 left-0 w-[100vw] h-full object-cover max-w-none">
+            </div>
+
+            <!-- Slider Handle -->
+            <div class="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize hover:bg-[var(--color-secondary)] transition-colors shadow-2xl z-20"
+                [style.left.%]="sliderPosition()">
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[var(--color-text-main)]">
+                    <span class="material-symbols-outlined text-xl">code</span>
+                </div>
+            </div>
+
+            <!-- Slider Input (Invisible) -->
+            <input type="range" min="0" max="100" [value]="sliderPosition()" (input)="onSliderChange($event)"
+                class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30 m-0 p-0">
+        </div>
+
+        <!-- Labels -->
+        <div
+            class="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm z-10 pointer-events-none">
+            Original
+        </div>
+        <div
+            class="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm z-10 pointer-events-none">
+            Decorado
+        </div>
+    </div>
+
+    <!-- Shop the Look Section -->
+    <div class="container mx-auto px-4 -mt-10 relative z-10">
+        <h3 class="text-2xl font-headline text-white mb-6 drop-shadow-md">Productos en este diseño</h3>
+
+        <div class="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
+            @for (product of result()?.products; track product.id) {
+            <div
+                class="min-w-[200px] md:min-w-[260px] bg-white rounded-xl shadow-lg overflow-hidden snap-center hover:scale-105 transition-transform duration-300">
+                <div class="h-40 md:h-48 bg-[var(--color-surface-light)] relative">
+                    <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4">
+                    <h4 class="font-body font-semibold text-[var(--color-text-main)] truncate">{{ product.name }}</h4>
+                    <p class="text-[var(--color-secondary)] font-bold mt-1">{{ formatPrice(product.price) }}</p>
+                    <button
+                        class="w-full mt-3 bg-[var(--color-primary)] text-white py-2 rounded-lg text-sm hover:bg-[var(--color-primary)]/90 transition-colors flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-sm">shopping_bag</span>
+                        Ver Producto
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+    }
+</div>

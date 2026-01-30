@@ -4,3 +4,10 @@
     opacity: 1;
     margin-left: 4px;
 }
+
+/* Generic nav expand button */
+.nav-expand-btn:hover .nav-expand-text {
+    max-width: 140px;
+    opacity: 1;
+    margin-left: 4px;
+}
