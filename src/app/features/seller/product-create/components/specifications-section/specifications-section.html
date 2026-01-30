@@ -31,7 +31,7 @@
             </div>
             @if (isFieldInvalid(dimensionWidthField()) || isFieldInvalid(dimensionHeightField()) ||
             isFieldInvalid(dimensionDepthField())) {
-            <p class="text-sm text-red-500 font-medium flex items-center gap-1">
+            <p class="text-sm text-error font-medium flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">error</span>
                 <span>Las dimensiones son requeridas</span>
             </p>
@@ -45,7 +45,7 @@
                 class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
                 placeholder="Ej. 15 kg" type="text" />
             @if (isFieldInvalid(weightField())) {
-            <p class="text-sm text-red-500 font-medium flex items-center gap-1">
+            <p class="text-sm text-error font-medium flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(weightField()); track $index) {
                 <span>{{ error.message }}</span>
@@ -61,7 +61,7 @@
                 class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
                 placeholder="Ej. Roble macizo, Vidrio templado" type="text" />
             @if (isFieldInvalid(materialField())) {
-            <p class="text-sm text-red-500 font-medium flex items-center gap-1">
+            <p class="text-sm text-error font-medium flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(materialField()); track $index) {
                 <span>{{ error.message }}</span>
@@ -77,7 +77,7 @@
                 class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
                 placeholder="Ej. Negro mate, Blanco perla" type="text" />
             @if (isFieldInvalid(colorField())) {
-            <p class="text-sm text-red-500 font-medium flex items-center gap-1">
+            <p class="text-sm text-error font-medium flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(colorField()); track $index) {
                 <span>{{ error.message }}</span>

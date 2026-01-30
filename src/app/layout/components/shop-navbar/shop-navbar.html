@@ -1,21 +1,24 @@
-<header [ngClass]="isTransparent() ? 'absolute top-0 bg-transparent' : 'relative bg-transparent shadow-sm'"
-    class="z-50 w-full">
+<header [ngClass]="{
+    'absolute top-0 bg-transparent': isTransparent() && !isMobileMenuOpen(),
+    'relative bg-transparent shadow-sm': !isTransparent() && !isMobileMenuOpen(),
+    'fixed top-0 left-0 right-0 bg-background-light': isMobileMenuOpen()
+}" class="z-50 w-full">
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between whitespace-nowrap h-16">
-            <div class="flex items-center gap-8">
-                <!-- Logo: White on Home, Earth on Inner -->
-                <div [ngClass]="isTransparent() ? 'text-white' : 'text-primary'"
-                    class="flex items-center gap-3 transition-colors">
-                    <div class="size-6">
-                        <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
-                            </path>
-                        </svg>
-                    </div>
-                    <h2 class="text-base font-bold tracking-[-0.015em] mr-9">DecoHome</h2>
+            <!-- Logo -->
+            <div class="flex items-center gap-3 transition-colors">
+                <div [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'text-white' : 'text-primary'" class="size-6">
+                    <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
+                        </path>
+                    </svg>
                 </div>
+                <h2 [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'text-white' : 'text-text-light'" 
+                    class="text-base font-bold tracking-[-0.015em]">DecoHome</h2>
             </div>
+
+            <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-9">
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-sm font-medium transition-colors" href="#">Novedades</a>
@@ -26,51 +29,63 @@
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-sm font-medium transition-colors" href="/products">Products</a>
             </div>
-            <div class="flex flex-1 justify-end items-center gap-2">
-                <!-- Virtual Staging Button -->
-                <a routerLink="/virtual-staging"
-                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
-                    class="nav-expand-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
-                    <span class="material-symbols-outlined">view_in_ar</span>
-                    <span
-                        class="nav-expand-text max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out whitespace-nowrap">IA
-                        Decorator</span>
-                </a>
 
-                <!-- Search Button -->
-                <button (click)="openSearch()"
-                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
-                    class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors"
-                    title="Buscar (Ctrl+K)">
-                    <span class="material-symbols-outlined">search</span>
-                </button>
-
-                @if (isAuthenticated()) {
-                <!-- Usuario autenticado -->
-                <div class="user-menu flex items-center gap-2">
-                    <a routerLink="/seller"
-                        [ngClass]="isTransparent() ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-primary/10 text-primary'"
-                        class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-medium leading-normal px-3 transition-all duration-300">
-                        <span class="material-symbols-outlined text-xl">person</span>
-                        <span class="max-w-[120px] truncate">{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
+            <!-- Right Side Actions -->
+            <div class="flex items-center gap-2">
+                <!-- Desktop Only: Virtual Staging, Search, Auth -->
+                <div class="hidden md:flex items-center gap-2">
+                    <!-- Virtual Staging Button -->
+                    <a routerLink="/virtual-staging"
+                        [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
+                        class="nav-expand-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
+                        <span class="material-symbols-outlined">view_in_ar</span>
+                        <span
+                            class="nav-expand-text max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out whitespace-nowrap">IA
+                            Decorator</span>
                     </a>
-                    <button (click)="logout()"
-                        [ngClass]="isTransparent() ? 'text-white hover:bg-red-500/20' : 'text-primary hover:bg-red-500/10'"
-                        class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent transition-all duration-300"
-                        title="Cerrar sesión">
-                        <span class="material-symbols-outlined text-xl">logout</span>
+
+                    <!-- Search Button -->
+                    <button (click)="openSearch()"
+                        [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
+                        class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal min-w-0 px-2.5 transition-colors"
+                        title="Buscar (Ctrl+K)">
+                        <span class="material-symbols-outlined">search</span>
                     </button>
+
+                    @if (isAuthenticated()) {
+                    <!-- Usuario autenticado -->
+                    <div class="user-menu flex items-center gap-2">
+                        <a routerLink="/seller"
+                            [ngClass]="isTransparent() ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-primary/10 text-primary'"
+                            class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-medium leading-normal px-3 transition-all duration-300">
+                            <span class="material-symbols-outlined text-xl">person</span>
+                            <span class="max-w-[120px] truncate">{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
+                        </a>
+                        <button (click)="logout()"
+                            [ngClass]="isTransparent() ? 'text-white hover:bg-red-500/20' : 'text-primary hover:bg-red-500/10'"
+                            class="flex cursor-pointer items-center justify-center rounded-lg h-10 w-10 bg-transparent transition-all duration-300"
+                            title="Cerrar sesión">
+                            <span class="material-symbols-outlined text-xl">logout</span>
+                        </button>
+                    </div>
+                    } @else {
+                    <!-- Login Button -->
+                    <a routerLink="/auth/login"
+                        [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
+                        class="login-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
+                        <span class="material-symbols-outlined">login</span>
+                        <span
+                            class="login-text max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out whitespace-nowrap">Login</span>
+                    </a>
+                    }
                 </div>
-                } @else {
-                <!-- Login Button -->
-                <a routerLink="/auth/login"
-                    [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
-                    class="login-btn flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-transparent gap-2 text-sm font-bold leading-normal px-2.5 transition-all duration-300 ease-in-out">
-                    <span class="material-symbols-outlined">login</span>
-                    <span
-                        class="login-text max-w-0 overflow-hidden opacity-0 transition-all duration-300 ease-in-out whitespace-nowrap">Login</span>
-                </a>
-                }
+
+                <!-- Mobile Menu Button (Right side) -->
+                <button (click)="toggleMobileMenu()"
+                    [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'text-white hover:bg-white/10' : 'text-text-light hover:bg-black/5'"
+                    class="md:hidden flex items-center justify-center h-10 w-10 rounded-lg transition-colors">
+                    <span class="material-symbols-outlined">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
+                </button>
             </div>
         </div>
     </div>
@@ -79,4 +94,65 @@
 <!-- Smart Search Modal -->
 @if (isSearchOpen()) {
 <app-smart-search-modal (close)="closeSearch()" />
+}
+
+<!-- Mobile Menu Overlay -->
+@if (isMobileMenuOpen()) {
+<div class="fixed inset-0 z-40 bg-black/30 md:hidden" (click)="closeMobileMenu()"></div>
+<div class="mobile-menu fixed top-16 left-0 right-0 z-50 md:hidden bg-background-light">
+    <nav class="flex flex-col py-2">
+        <!-- Search in mobile -->
+        <button (click)="openSearch(); closeMobileMenu()"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">search</span>
+            <span>Buscar</span>
+        </button>
+        <a (click)="closeMobileMenu()" href="#"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">new_releases</span>
+            <span>Novedades</span>
+        </a>
+        <a (click)="closeMobileMenu()" href="#"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">category</span>
+            <span>Categorías</span>
+        </a>
+        <a (click)="closeMobileMenu()" href="#"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">storefront</span>
+            <span>Marcas</span>
+        </a>
+        <a (click)="closeMobileMenu()" href="/products"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">inventory_2</span>
+            <span>Products</span>
+        </a>
+        <div class="my-2 mx-6 border-t border-black/10"></div>
+        <a (click)="closeMobileMenu()" routerLink="/virtual-staging"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">view_in_ar</span>
+            <span>IA Decorator</span>
+        </a>
+        @if (isAuthenticated()) {
+        <div class="my-2 mx-6 border-t border-black/10"></div>
+        <a (click)="closeMobileMenu()" routerLink="/seller"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">person</span>
+            <span>{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
+        </a>
+        <button (click)="logout(); closeMobileMenu()"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">logout</span>
+            <span>Cerrar Sesión</span>
+        </button>
+        } @else {
+        <div class="my-2 mx-6 border-t border-black/10"></div>
+        <a (click)="closeMobileMenu()" routerLink="/auth/login"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <span class="material-symbols-outlined text-xl text-primary">login</span>
+            <span>Iniciar Sesión</span>
+        </a>
+        }
+    </nav>
+</div>
 }

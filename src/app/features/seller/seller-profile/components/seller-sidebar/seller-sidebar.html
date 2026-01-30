@@ -44,7 +44,7 @@
                         <div class="flex justify-between items-center text-sm font-body">
                             <span class="text-text-light/80 w-24">{{ day.label }}</span>
                             @if (businessHours()[day.key]?.isClosed) {
-                            <span class="text-red-500/80 font-medium font-body">Cerrado</span>
+                            <span class="text-error/80 font-medium font-body">Cerrado</span>
                             } @else {
                             <span class="text-text-light/60">
                                 {{ businessHours()[day.key]?.open || '--' }} - {{ businessHours()[day.key]?.close ||

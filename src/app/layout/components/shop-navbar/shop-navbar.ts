@@ -22,6 +22,7 @@ export class ShopNavbar implements OnInit {
 
   isTransparent = signal<boolean>(false);
   isSearchOpen = signal<boolean>(false);
+  isMobileMenuOpen = signal<boolean>(false);
 
   /** Listen for Ctrl+K / Cmd+K to open search */
   @HostListener('document:keydown', ['$event'])
@@ -48,6 +49,14 @@ export class ShopNavbar implements OnInit {
 
   closeSearch(): void {
     this.isSearchOpen.set(false);
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update(v => !v);
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
   }
 
   logout(): void {

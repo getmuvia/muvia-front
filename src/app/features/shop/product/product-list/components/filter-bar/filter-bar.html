@@ -1,5 +1,5 @@
 <div
-    class="flex flex-wrap items-center justify-between gap-4 sticky top-16 z-30 py-4 bg-white/95 backdrop-blur-sm transition-all border-b border-text-light/10">
+    class="flex flex-wrap items-center justify-between gap-4 sticky top-16 z-30 py-4 bg-background-light/95 backdrop-blur-sm transition-all border-b border-text-light/10">
     <!-- Left side: Filter button, Search and active filters -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
         <button (click)="onFilterToggle()"
@@ -26,12 +26,12 @@
         <!-- Search Chip -->
         @if (activeSearch()) {
         <button (click)="onClearSearch()"
-            class="h-9 px-3 bg-white border border-text-light/20 text-text-light text-xs font-bold uppercase tracking-wider font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-2 rounded-sm group max-w-[200px] sm:max-w-[300px]"
+            class="h-9 px-3 bg-surface-element border border-text-light/20 text-text-light text-xs font-bold uppercase tracking-wider font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-2 rounded-sm group max-w-[200px] sm:max-w-[300px]"
             title="Limpiar búsqueda">
             <span class="opacity-50 whitespace-nowrap hidden sm:inline">Búsqueda:</span>
             <span class="truncate">{{ activeSearch() }}</span>
             <span
-                class="material-symbols-outlined text-base opacity-40 group-hover:opacity-100 group-hover:text-red-500 transition-all">close</span>
+                class="material-symbols-outlined text-base opacity-40 group-hover:opacity-100 group-hover:text-error transition-all">close</span>
         </button>
         }
 
@@ -69,12 +69,12 @@
         <!-- View mode toggle -->
         <div class="flex bg-surface-element p-1">
             <button (click)="onToggleViewMode('grid')" [class]="viewMode() === 'grid' 
-                    ? 'p-1.5 bg-white shadow-sm text-primary transition-all' 
+                    ? 'p-1.5 bg-surface-light shadow-sm text-primary transition-all' 
                     : 'p-1.5 text-text-light/40 hover:text-primary transition-colors'">
                 <span class="material-symbols-outlined text-xl">grid_view</span>
             </button>
             <button (click)="onToggleViewMode('list')" [class]="viewMode() === 'list' 
-                    ? 'p-1.5 bg-white shadow-sm text-primary transition-all' 
+                    ? 'p-1.5 bg-surface-light shadow-sm text-primary transition-all' 
                     : 'p-1.5 text-text-light/40 hover:text-primary transition-colors'">
                 <span class="material-symbols-outlined text-xl">view_list</span>
             </button>
