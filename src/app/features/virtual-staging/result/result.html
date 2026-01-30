@@ -16,13 +16,13 @@
         <!-- Comparison Slider -->
         <div class="absolute inset-0 w-full h-full">
             <!-- After Image (Background) -->
-            <img [src]="result()?.decoratedUrl" alt="Decorated Room"
+            <img [src]="result()?.stagedImageUrl" alt="Decorated Room"
                 class="absolute inset-0 w-full h-full object-cover">
 
             <!-- Before Image (Overlay) -->
             <div class="absolute inset-0 h-full overflow-hidden transition-all duration-75 ease-out"
                 [style.width.%]="sliderPosition()">
-                <img [src]="result()?.originalUrl" alt="Original Room"
+                <img [src]="originalImageUrl()" alt="Original Room"
                     class="absolute top-0 left-0 w-[100vw] h-full object-cover max-w-none">
             </div>
 
@@ -52,26 +52,15 @@
     </div>
 
     <!-- Shop the Look Section -->
-    <div class="container mx-auto px-4 -mt-10 relative z-10">
-        <h3 class="text-2xl font-headline text-white mb-6 drop-shadow-md">Productos en este diseño</h3>
+    <div class="container mx-auto px-4 mt-8 relative z-10">
+        <h3 class="text-2xl font-headline text-[var(--color-text-main)] mb-6 drop-shadow-sm">Productos en este diseño
+        </h3>
 
         <div class="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
-            @for (product of result()?.products; track product.id) {
-            <div
-                class="min-w-[200px] md:min-w-[260px] bg-white rounded-xl shadow-lg overflow-hidden snap-center hover:scale-105 transition-transform duration-300">
-                <div class="h-40 md:h-48 bg-[var(--color-surface-light)] relative">
-                    <img [src]="product.imageUrl" [alt]="product.name" class="w-full h-full object-cover">
-                </div>
-                <div class="p-4">
-                    <h4 class="font-body font-semibold text-[var(--color-text-main)] truncate">{{ product.name }}</h4>
-                    <p class="text-[var(--color-secondary)] font-bold mt-1">{{ formatPrice(product.price) }}</p>
-                    <button
-                        class="w-full mt-3 bg-[var(--color-primary)] text-white py-2 rounded-lg text-sm hover:bg-[var(--color-primary)]/90 transition-colors flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-sm">shopping_bag</span>
-                        Ver Producto
-                    </button>
-                </div>
-            </div>
+            @for (product of result()?.suggestedProducts; track product.id) {
+            <app-product-card [product]="mapToProduct(product)"
+                class="min-w-[200px] md:min-w-[260px] snap-center block">
+            </app-product-card>
             }
         </div>
     </div>

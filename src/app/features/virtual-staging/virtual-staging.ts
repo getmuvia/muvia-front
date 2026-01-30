@@ -54,13 +54,13 @@ export class VirtualStaging {
 
         this.isUploading.set(true);
 
-        this.stagingService.uploadAndStage(file).subscribe({
+        this.stagingService.analyzeRoom(file).subscribe({
             next: (response) => {
-                this.logger.info('File uploaded successfully', 'VirtualStaging');
-                this.router.navigate(['/virtual-staging/result'], { queryParams: { key: response.key } });
+                this.logger.info('Room analyzed successfully', 'VirtualStaging');
+                this.router.navigate(['/virtual-staging/result']);
             },
             error: (error) => {
-                this.logger.error('Upload failed', error, 'VirtualStaging');
+                this.logger.error('Analysis failed', error, 'VirtualStaging');
                 this.isUploading.set(false);
             }
         });

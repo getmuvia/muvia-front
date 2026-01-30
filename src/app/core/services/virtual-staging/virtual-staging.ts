@@ -1,68 +1,54 @@
-import { Injectable, inject } from '@angular/core';
-import { Observable, of, delay } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, switchMap, tap } from 'rxjs';
 import { UploadFileService } from '../uploadFile/upload-file';
-
-export interface StagingResult {
-    originalUrl: string;
-    decoratedUrl: string;
-    products: SuggestedProduct[];
-}
-
-export interface SuggestedProduct {
-    id: string;
-    name: string;
-    price: number;
-    imageUrl: string;
-}
+import { VirtualStagingRequest, VirtualStagingResponse } from '../../models/ai/virtual-staging.models';
+import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 @Injectable({
     providedIn: 'root'
 })
 export class VirtualStagingService {
+    private readonly http = inject(HttpClient);
     private readonly uploadService = inject(UploadFileService);
 
-    // Mock data for development
-    private readonly MOCK_RESULT: StagingResult = {
-        originalUrl: 'assets/mock/original-room.jpg',
-        decoratedUrl: 'https://storage.googleapis.com/itera-484104.firebasestorage.app/products/mock-decorated.jpg',
-        products: [
-            {
-                id: '1',
-                name: 'Sillón Nórdico',
-                price: 1299,
-                imageUrl: 'https://storage.googleapis.com/itera-484104.firebasestorage.app/products/chair.jpg'
-            },
-            {
-                id: '2',
-                name: 'Lámpara de Pie',
-                price: 450,
-                imageUrl: 'https://storage.googleapis.com/itera-484104.firebasestorage.app/products/lamp.jpg'
-            },
-            {
-                id: '3',
-                name: 'Mesa de Centro',
-                price: 890,
-                imageUrl: 'https://storage.googleapis.com/itera-484104.firebasestorage.app/products/table.jpg'
-            }
-        ]
-    };
+    private readonly _currentResult = signal<VirtualStagingResponse | null>(null);
+    readonly currentResult = this._currentResult.asReadonly();
+
+    private readonly _originalImageUrl = signal<string | null>(null);
+    readonly originalImageUrl = this._originalImageUrl.asReadonly();
 
     /**
-     * Uploads an image and triggers the staging process.
-     * @param file The file to upload
+     * Uploads the room image and triggers the AI analysis.
+     * @param file The room image file
      */
-    uploadAndStage(file: File): Observable<{ key: string, url: string }> {
-        return this.uploadService.uploadFile(file, 'virtual-staging/uploads');
+    analyzeRoom(file: File): Observable<VirtualStagingResponse> {
+        const uploadFolder = 'virtual-staging/uploads';
+
+        return this.uploadService.uploadFile(file, uploadFolder).pipe(
+            tap(uploadResponse => {
+                this._originalImageUrl.set(uploadResponse.url);
+            }),
+            switchMap(uploadResponse => {
+                const requestBody: VirtualStagingRequest = {
+                    imageKey: uploadResponse.key,
+                    preferredStyle: 'modern',
+                    maxProducts: 3
+                };
+
+                return this.http.post<VirtualStagingResponse>(`${API_ENDPOINTS.AI.VIRTUAL_STAGING}`, requestBody);
+            }),
+            tap(response => {
+                this._currentResult.set(response);
+            })
+        );
     }
 
     /**
-     * Gets the staging result.
-     * @param key The key returned from upload
+     * Clears the current state.
      */
-    getStagingResult(key: string): Observable<StagingResult> {
-        return of({
-            ...this.MOCK_RESULT,
-            originalUrl: `https://storage.googleapis.com/itera-484104.firebasestorage.app/${key}`
-        }).pipe(delay(3000));
+    clearState(): void {
+        this._currentResult.set(null);
+        this._originalImageUrl.set(null);
     }
 }
