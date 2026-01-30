@@ -17,6 +17,7 @@ export class SellerHeader implements OnInit {
 
   currentUser = this.authService.currentUser;
   isTransparent = signal<boolean>(false);
+  isMobileMenuOpen = signal<boolean>(false);
 
   ngOnInit(): void {
     this.checkRoute();
@@ -31,6 +32,14 @@ export class SellerHeader implements OnInit {
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/home']);
+  }
+
+  toggleMobileMenu(): void {
+    this.isMobileMenuOpen.update(v => !v);
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileMenuOpen.set(false);
   }
 
   private checkRoute(): void {
