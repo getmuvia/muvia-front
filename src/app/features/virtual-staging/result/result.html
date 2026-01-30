@@ -10,25 +10,25 @@
             para ti.</p>
     </div>
     } @else {
-    <!-- Main Result Area -->
-    <div class="relative w-full h-[60vh] md:h-[70vh] bg-black overflow-hidden group">
 
-        <!-- Comparison Slider -->
-        <div class="absolute inset-0 w-full h-full">
-            <!-- After Image (Background) -->
+    <!-- Comparison Container -->
+    <div class="w-full max-w-[1600px] mx-auto p-2 md:p-4">
+        <!-- Fixed size container - both images will fit within this exact same box -->
+        <div class="relative w-full bg-[var(--color-background-light)] overflow-hidden" style="height: 75vh;">
+
+            <!-- Generated Image (Background) -->
             <img [src]="result()?.stagedImageUrl" alt="Decorated Room"
-                class="absolute inset-0 w-full h-full object-cover">
+                class="absolute inset-0 w-full h-full object-contain">
 
-            <!-- Before Image (Overlay) -->
-            <div class="absolute inset-0 h-full overflow-hidden transition-all duration-75 ease-out"
-                [style.width.%]="sliderPosition()">
+            <!-- Original Image (Overlay with Clip Path) - SAME size container -->
+            <div class="absolute inset-0 w-full h-full bg-[var(--color-background-light)] transition-all duration-75 ease-out"
+                [style.clip-path]="'polygon(0 0, ' + sliderPosition() + '% 0, ' + sliderPosition() + '% 100%, 0 100%)'">
                 <img [src]="originalImageUrl()" alt="Original Room"
-                    class="absolute top-0 left-0 w-[100vw] h-full object-cover max-w-none">
+                    class="absolute inset-0 w-full h-full object-contain">
             </div>
 
             <!-- Slider Handle -->
-            <div class="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize hover:bg-[var(--color-secondary)] transition-colors shadow-2xl z-20"
-                [style.left.%]="sliderPosition()">
+            <div class="absolute top-0 bottom-0 w-0 cursor-ew-resize z-20" [style.left.%]="sliderPosition()">
                 <div
                     class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-[var(--color-text-main)]">
                     <span class="material-symbols-outlined text-xl">code</span>
@@ -38,16 +38,23 @@
             <!-- Slider Input (Invisible) -->
             <input type="range" min="0" max="100" [value]="sliderPosition()" (input)="onSliderChange($event)"
                 class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30 m-0 p-0">
-        </div>
 
-        <!-- Labels -->
-        <div
-            class="absolute top-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm z-10 pointer-events-none">
-            Original
-        </div>
-        <div
-            class="absolute top-4 right-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm z-10 pointer-events-none">
-            Decorado
+            <!-- Labels -->
+            <div
+                class="absolute top-3 left-3 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm z-10 pointer-events-none">
+                Original
+            </div>
+            <div
+                class="absolute top-3 right-3 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm z-10 pointer-events-none">
+                Decorado
+            </div>
+
+            <!-- Download Button -->
+            <button (click)="downloadImage()"
+                class="absolute bottom-3 right-3 z-40 bg-white/80 backdrop-blur-md text-gray-700 hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 rounded-full p-2 shadow-md"
+                title="Descargar imagen">
+                <span class="material-symbols-outlined text-lg">download</span>
+            </button>
         </div>
     </div>
 

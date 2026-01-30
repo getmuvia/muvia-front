@@ -70,4 +70,29 @@ export class Result implements OnInit {
             createdAt: new Date().toISOString()
         } as Product;
     }
+
+    async downloadImage(): Promise<void> {
+        const imageUrl = this.result()?.stagedImageUrl;
+        if (!imageUrl) return;
+
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `iter-ai-staging-${new Date().getTime()}.png`;
+            document.body.appendChild(a);
+
+            a.click();
+
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Error downloading image:', error);
+            window.open(imageUrl, '_blank');
+        }
+    }
 }
