@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, effect } from '@angular/core';
 
 @Component({
     selector: 'app-image-editor-modal',
@@ -91,6 +91,14 @@ export class ImageEditorModal {
 
     previewUrl = signal<string>('');
     selectedFile = signal<File | null>(null);
+
+    constructor() {
+        effect(() => {
+            if (!this.isOpen()) {
+                this.reset();
+            }
+        });
+    }
 
     onFileSelected(event: Event) {
         const input = event.target as HTMLInputElement;

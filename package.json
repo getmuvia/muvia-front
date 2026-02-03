@@ -35,6 +35,7 @@
     "@google/model-viewer": "^4.1.0",
     "@ngrx/operators": "^21.0.1",
     "@ngrx/signals": "^21.0.1",
+    "browser-image-compression": "^2.0.2",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
