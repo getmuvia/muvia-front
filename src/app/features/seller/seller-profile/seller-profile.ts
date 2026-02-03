@@ -6,6 +6,7 @@ import { UserService } from '@core/services/user/user';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { LoggerService } from '@core/services/logger/logger';
 import { AuthService } from '@core/auth/services/auth';
+import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 import { ImageEditorModal } from '../components/modals/image-editor-modal/image-editor-modal';
 import { SidebarEditModal } from '../components/modals/sidebar-edit-modal/sidebar-edit-modal';
@@ -35,6 +36,7 @@ export class SellerProfile {
   private readonly userService = inject(UserService);
   private readonly uploadFileService = inject(UploadFileService);
   private readonly auth = inject(AuthService);
+  private readonly imageOptimizer = inject(ImageOptimizerService);
 
   coverImageUrl = computed(() => this.userService.vendorProfile()?.coverImage || '');
   avatarUrl = computed(() => this.userService.vendorProfile()?.logoUrl || '');
@@ -90,16 +92,25 @@ export class SellerProfile {
     this.isModalOpen.set(true);
   }
 
-  onSaveImage(file: File) {
+  async onSaveImage(file: File) {
     const field = this.activeField();
     const userId = this.auth.currentUser()?.id;
-
     if (!field || !userId) return;
 
     this.isSaving.set(true);
 
+    // 0. Optimize Image
+    let fileToUpload = file;
+    if (file.type.startsWith('image/')) {
+      try {
+        fileToUpload = await this.imageOptimizer.compressImage(file);
+      } catch (error) {
+        this.logger.error('Failed to optimize image', error, 'SellerProfile');
+      }
+    }
+
     // 1. Upload File
-    this.uploadFileService.uploadFile(file, `users/${userId}`).pipe(
+    this.uploadFileService.uploadFile(fileToUpload, `users/${userId}`).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
       next: (response) => {

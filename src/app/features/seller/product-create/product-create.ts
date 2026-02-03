@@ -8,6 +8,7 @@ import { CategoryService } from '@core/services/category/category';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { LoggerService } from '@core/services/logger/logger';
 import { AuthService } from '@core/auth/services/auth';
+import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
 import { firstValueFrom } from 'rxjs';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
@@ -35,6 +36,7 @@ export class ProductCreate {
     private readonly categoryService = inject(CategoryService);
     private readonly uploadService = inject(UploadFileService);
     private readonly auth = inject(AuthService);
+    private readonly imageOptimizer = inject(ImageOptimizerService);
 
     pendingUploads = new Map<string, File>();
 
@@ -129,8 +131,18 @@ export class ProductCreate {
         this.model3dUsdzAsset.set(asset);
     }
 
-    onFileSelected(event: { url: string; file: File }): void {
-        this.pendingUploads.set(event.url, event.file);
+    async onFileSelected(event: { url: string; file: File }): Promise<void> {
+        let fileToUpload = event.file;
+
+        if (fileToUpload.type.startsWith('image/')) {
+            try {
+                fileToUpload = await this.imageOptimizer.compressImage(fileToUpload);
+            } catch (error) {
+                this.logger.error('Failed to optimize image', error, 'ProductCreate');
+            }
+        }
+
+        this.pendingUploads.set(event.url, fileToUpload);
     }
 
     onSubmit(event: Event): void {
