@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { Product } from '@core/models/product/product';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
+import { UpdateProductDto } from '@core/models/product/update-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { STORE_CONFIG } from '@core/store/store.config';
 
@@ -68,6 +69,13 @@ export class ProductService {
    */
   getProductById(id: string): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  }
+
+  /**
+   * Update an existing product.
+   */
+  updateProduct(id: string, dto: UpdateProductDto): Observable<Product> {
+    return this.http.patch<Product>(`${this.apiUrl}/${id}`, dto);
   }
 }
 

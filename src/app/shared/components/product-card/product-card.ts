@@ -12,6 +12,7 @@ import { Product } from '@core/models/product/product';
 export class ProductCard {
   product = input.required<Product>();
   priority = input<boolean>(false);
+  showEditButton = input<boolean>(false);
 
   /** Get the primary image URL from assets */
   imageUrl = computed(() => {

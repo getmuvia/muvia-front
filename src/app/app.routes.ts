@@ -49,6 +49,10 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/seller/product-create/product-create').then(m => m.ProductCreate),
             },
             {
+                path: 'products/:id/edit',
+                loadComponent: () => import('./features/seller/product-create/product-create').then(m => m.ProductCreate),
+            },
+            {
                 path: '',
                 redirectTo: 'profile',
                 pathMatch: 'full'

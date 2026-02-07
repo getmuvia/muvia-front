@@ -1,8 +1,7 @@
-import { Component, inject, signal, afterNextRender, DestroyRef } from '@angular/core';
+import { Component, inject, signal, afterNextRender, DestroyRef, effect, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { form, required, minLength, submit, validate } from '@angular/forms/signals';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ProductStore } from '@core/services/product/product.store';
 import { CategoryService } from '@core/services/category/category';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
@@ -11,19 +10,25 @@ import { AuthService } from '@core/auth/services/auth';
 import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
 import { firstValueFrom } from 'rxjs';
 import { Category } from '@core/models/category/category';
-import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
-import { CreateProductDto, CreateProductSpecifications, CreateProductAsset } from '@core/models/product/create-product.dto';
-import { BasicInfoSection, SpecificationsSection, KeywordsSection, ImageGalleryUpload, Model3dUpload } from './components';
+import { Product, ProductAsset } from '@core/models/product/product';
+import { ProductFormData } from '@core/models/product/product-form.model';
+import { CreateProductDto, CreateProductAsset } from '@core/models/product/create-product.dto';
+import { UpdateProductDto } from '@core/models/product/update-product.dto';
+import { ProductForm } from './components';
+import {
+    mapProductToFormData,
+    buildCreateDto,
+    buildUpdateDto,
+    extractImageAssets,
+    extract3dAsset,
+    checkAssetsChanged,
+    buildAssetsForUpdate,
+    combineAssets
+} from './utils';
 
 @Component({
     selector: 'app-product-create',
-    imports: [
-        BasicInfoSection,
-        SpecificationsSection,
-        KeywordsSection,
-        ImageGalleryUpload,
-        Model3dUpload
-    ],
+    imports: [ProductForm],
     templateUrl: './product-create.html',
     styleUrl: './product-create.css',
     providers: [ProductStore]
@@ -32,61 +37,70 @@ export class ProductCreate {
     private readonly destroyRef = inject(DestroyRef);
     private readonly logger = inject(LoggerService);
     private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
     private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
     private readonly uploadService = inject(UploadFileService);
     private readonly auth = inject(AuthService);
     private readonly imageOptimizer = inject(ImageOptimizerService);
 
-    pendingUploads = new Map<string, File>();
+    // Edit mode state
+    productId = signal<string | null>(null);
+    isEditMode = computed(() => !!this.productId());
+    isLoadingProduct = signal(false);
 
-    productModel = signal<ProductFormData>(INITIAL_PRODUCT_FORM);
-
-    productForm = form(this.productModel, (path) => {
-        required(path.title, { message: 'El título es requerido' });
-        minLength(path.title, 3, { message: 'El título debe tener al menos 3 caracteres' });
-
-        required(path.description, { message: 'La descripción es requerida' });
-        minLength(path.description, 10, { message: 'La descripción debe tener al menos 10 caracteres' });
-
-        required(path.price, { message: 'El precio es requerido' });
-        validate(path.price, ({ value }) => {
-            if (value() !== undefined && value() <= 0) {
-                return { message: 'El precio debe ser mayor a 0', kind: 'error' };
-            }
-            return null;
-        });
-
-        required(path.stock, { message: 'El stock es requerido' });
-
-        required(path.categoryId, { message: 'Selecciona una categoría' });
-
-        // Specifications validations
-        required(path.weight, { message: 'El peso es requerido' });
-        required(path.material, { message: 'El material es requerido' });
-        required(path.color, { message: 'El color es requerido' });
-
-        // Dimensions validations
-        required(path.dimensionWidth, { message: 'El ancho es requerido' });
-        required(path.dimensionHeight, { message: 'El alto es requerido' });
-        required(path.dimensionDepth, { message: 'El largo es requerido' });
-    });
-
+    // Form data (passed to child)
+    formData = signal<ProductFormData | null>(null);
     categories = signal<Category[]>([]);
+    isLoadingCategories = signal(true);
+    isSubmitting = signal(false);
+
+    // Asset state
     keywords = signal<string[]>([]);
     imageAssets = signal<CreateProductAsset[]>([]);
     model3dGlbAsset = signal<CreateProductAsset | null>(null);
     model3dUsdzAsset = signal<CreateProductAsset | null>(null);
-    isSubmitting = signal(false);
-    isLoadingCategories = signal(true);
+    originalAssets = signal<ProductAsset[]>([]);
+    pendingUploads = new Map<string, File>();
 
-    keywordsError = signal<string | null>(null);
-    imagesError = signal<string | null>(null);
+    // Asset change detection
+    hasAssetsChanged = computed(() => checkAssetsChanged(
+        this.originalAssets(),
+        this.imageAssets(),
+        this.pendingUploads.size
+    ));
 
     constructor() {
         afterNextRender(() => {
             this.loadCategories();
+            this.checkEditMode();
         });
+
+        effect(() => {
+            const product = this.productStore.selectedEntity();
+            if (product && this.isEditMode()) {
+                this.populateFromProduct(product);
+            }
+        });
+    }
+
+    private checkEditMode(): void {
+        const id = this.route.snapshot.paramMap.get('id');
+        if (id) {
+            this.productId.set(id);
+            this.isLoadingProduct.set(true);
+            this.productStore.getProductById(id);
+        }
+    }
+
+    private populateFromProduct(product: Product): void {
+        this.formData.set(mapProductToFormData(product));
+        this.keywords.set(product.keywords || []);
+        this.originalAssets.set([...product.assets]);
+        this.imageAssets.set(extractImageAssets(product));
+        this.model3dGlbAsset.set(extract3dAsset(product, 'glb'));
+        this.model3dUsdzAsset.set(extract3dAsset(product, 'usdz'));
+        this.isLoadingProduct.set(false);
     }
 
     private loadCategories(): void {
@@ -105,29 +119,20 @@ export class ProductCreate {
         });
     }
 
-    isFieldInvalid(fieldName: keyof ProductFormData): boolean {
-        const fieldSignal = this.productForm[fieldName];
-        if (!fieldSignal) return false;
-
-        const field = fieldSignal();
-        return field && field.touched() && field.errors().length > 0;
-    }
-
+    // Event handlers from child form
     onKeywordsChange(keywords: string[]): void {
         this.keywords.set(keywords);
-        this.keywordsError.set(null);
     }
 
     onImagesChange(assets: CreateProductAsset[]): void {
         this.imageAssets.set(assets);
-        this.imagesError.set(null);
     }
 
-    onModel3dGlbChange(asset: CreateProductAsset | null): void {
+    onGlbAssetChange(asset: CreateProductAsset | null): void {
         this.model3dGlbAsset.set(asset);
     }
 
-    onModel3dUsdzChange(asset: CreateProductAsset | null): void {
+    onUsdzAssetChange(asset: CreateProductAsset | null): void {
         this.model3dUsdzAsset.set(asset);
     }
 
@@ -145,60 +150,52 @@ export class ProductCreate {
         this.pendingUploads.set(event.url, fileToUpload);
     }
 
-    onSubmit(event: Event): void {
-        event.preventDefault();
-
-        let hasErrors = false;
-
-        if (this.keywords().length === 0) {
-            this.keywordsError.set('Agrega al menos una palabra clave');
-            hasErrors = true;
-        }
-
-        if (this.imageAssets().length === 0) {
-            this.imagesError.set('Agrega al menos una imagen');
-            hasErrors = true;
-        }
-
-        if (hasErrors) {
-            return;
-        }
-
-        submit(this.productForm, async () => {
-            await this.submitProduct();
-        });
-    }
-
-    onSaveDraft(): void {
-        // TODO: Implement draft saving functionality
-    }
-
-    private async submitProduct(): Promise<void> {
+    async onFormSubmit(formValue: ProductFormData): Promise<void> {
         this.isSubmitting.set(true);
 
         try {
             await this.uploadPendingFiles();
-            const dto = this.buildProductDto();
+            const dto = this.buildProductDto(formValue);
 
-            return new Promise((resolve) => {
-                this.productStore.createProduct({
-                    dto,
+            if (this.isEditMode()) {
+                this.productStore.updateProduct({
+                    id: this.productId()!,
+                    dto: dto as UpdateProductDto,
                     onSuccess: () => {
                         this.isSubmitting.set(false);
                         this.router.navigate(['/seller/profile']);
-                        resolve();
+                    },
+                    onError: (err) => {
+                        this.logger.error('Failed to update product', err, 'ProductCreate');
+                        this.isSubmitting.set(false);
+                    }
+                });
+            } else {
+                this.productStore.createProduct({
+                    dto: dto as CreateProductDto,
+                    onSuccess: () => {
+                        this.isSubmitting.set(false);
+                        this.router.navigate(['/seller/profile']);
                     },
                     onError: (err) => {
                         this.logger.error('Failed to create product', err, 'ProductCreate');
                         this.isSubmitting.set(false);
-                        resolve();
                     }
                 });
-            });
+            }
         } catch (error) {
             this.logger.error('Failed to upload files', error, 'ProductCreate');
             this.isSubmitting.set(false);
         }
+    }
+
+    onSaveDraft(formValue: ProductFormData): void {
+        // TODO: Implement draft saving
+        this.logger.info('Draft saved', formValue, 'ProductCreate');
+    }
+
+    onCancel(): void {
+        this.router.navigate(['/seller/profile']);
     }
 
     private async uploadPendingFiles(): Promise<void> {
@@ -217,88 +214,52 @@ export class ProductCreate {
             const file = this.pendingUploads.get(asset.url);
 
             if (file) {
-                // Upload file
                 const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
-
-                // Update asset URL
-                updatedImages[i] = {
-                    ...asset,
-                    url: response.url
-                };
-
-                // Remove from pending map
+                updatedImages[i] = { ...asset, url: response.url };
                 this.pendingUploads.delete(asset.url);
             }
         }
         this.imageAssets.set(updatedImages);
 
-        // Upload 3D GLB model if exists
-        const glbModel = this.model3dGlbAsset();
-        if (glbModel) {
-            const file = this.pendingUploads.get(glbModel.url);
-            if (file) {
-                const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
-                this.model3dGlbAsset.set({
-                    ...glbModel,
-                    url: response.url
-                });
-                this.pendingUploads.delete(glbModel.url);
-            }
-        }
-
-        // Upload 3D USDZ model if exists
-        const usdzModel = this.model3dUsdzAsset();
-        if (usdzModel) {
-            const file = this.pendingUploads.get(usdzModel.url);
-            if (file) {
-                const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
-                this.model3dUsdzAsset.set({
-                    ...usdzModel,
-                    url: response.url
-                });
-                this.pendingUploads.delete(usdzModel.url);
-            }
-        }
+        // Upload 3D models
+        await this.upload3dModel('glb', uploadFolder);
+        await this.upload3dModel('usdz', uploadFolder);
     }
 
-    private buildProductDto(): CreateProductDto {
-        const formValue = this.productForm().value();
+    private async upload3dModel(format: 'glb' | 'usdz', uploadFolder: string): Promise<void> {
+        const assetSignal = format === 'glb' ? this.model3dGlbAsset : this.model3dUsdzAsset;
+        const model = assetSignal();
 
-        const specs: CreateProductSpecifications = {
-            weight: formValue.weight,
-            material: formValue.material,
-            color: formValue.color,
-            dimensions: {
-                width: formValue.dimensionWidth,
-                height: formValue.dimensionHeight,
-                depth: formValue.dimensionDepth,
-                unit: formValue.dimensionUnit
-            }
-        };
+        if (!model) return;
 
-        const allAssets: CreateProductAsset[] = [...this.imageAssets()];
-        const glbModel = this.model3dGlbAsset();
-        if (glbModel) {
-            allAssets.push(glbModel);
-        }
-        const usdzModel = this.model3dUsdzAsset();
-        if (usdzModel) {
-            allAssets.push(usdzModel);
-        }
+        const file = this.pendingUploads.get(model.url);
+        if (!file) return;
 
-        return {
-            title: formValue.title,
-            description: formValue.description,
-            price: formValue.price,
-            stock: formValue.stock,
-            categoryId: formValue.categoryId,
-            specifications: specs,
-            keywords: this.keywords(),
-            assets: allAssets
-        };
+        const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
+        assetSignal.set({ ...model, url: response.url });
+        this.pendingUploads.delete(model.url);
     }
 
-    onCancel(): void {
-        this.router.navigate(['/seller/profile']);
+    private buildProductDto(formValue: ProductFormData): CreateProductDto | UpdateProductDto {
+        const allAssets = combineAssets(
+            this.imageAssets(),
+            this.model3dGlbAsset(),
+            this.model3dUsdzAsset()
+        );
+
+        if (!this.isEditMode()) {
+            return buildCreateDto(formValue, this.keywords(), allAssets);
+        }
+
+        const updateAssets = this.hasAssetsChanged()
+            ? buildAssetsForUpdate(
+                this.imageAssets(),
+                this.model3dGlbAsset(),
+                this.model3dUsdzAsset(),
+                this.originalAssets()
+            )
+            : undefined;
+
+        return buildUpdateDto(formValue, this.keywords(), updateAssets);
     }
 }

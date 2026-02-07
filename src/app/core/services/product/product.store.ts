@@ -7,6 +7,7 @@ import { pipe, tap, switchMap, exhaustMap } from 'rxjs';
 
 import { Product } from '@core/models/product/product';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
+import { UpdateProductDto } from '@core/models/product/update-product.dto';
 import { getErrorMessage } from '@core/models/errors/api-error.model';
 import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/features/with-request-status';
 import { withPagination } from '@core/store/features/with-pagination';
@@ -161,6 +162,43 @@ export const ProductStore = signalStore(
             getAllProducts: (params: SearchParams = { search: '' }) => {
                 return productService.searchProducts(params);
             },
+
+            /**
+             * Updates an existing product.
+             * - Optimistically updates the product in the store on success.
+             * - Accepts callbacks for custom UI handling.
+             */
+            updateProduct: rxMethod<{
+                id: string;
+                dto: UpdateProductDto;
+                onSuccess?: () => void;
+                onError?: (message: string) => void;
+            }>(
+                pipe(
+                    tap(() => patchState(store, setLoading())),
+                    exhaustMap(({ id, dto, onSuccess, onError }) =>
+                        productService.updateProduct(id, dto).pipe(
+                            tapResponse({
+                                next: (updatedProduct) => {
+                                    patchState(store, (state) => ({
+                                        products: state.products.map(p =>
+                                            p.id === id ? updatedProduct : p
+                                        ),
+                                    }));
+                                    store.selectEntity(updatedProduct);
+                                    patchState(store, setLoaded());
+                                    if (onSuccess) onSuccess();
+                                },
+                                error: (error: HttpErrorResponse) => {
+                                    const errorMsg = getErrorMessage(error, 'No se pudo actualizar el producto');
+                                    patchState(store, setError(errorMsg));
+                                    if (onError) onError(errorMsg);
+                                },
+                            })
+                        )
+                    )
+                )
+            ),
         };
     })
 );
