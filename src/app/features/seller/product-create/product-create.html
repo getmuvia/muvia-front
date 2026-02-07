@@ -4,10 +4,11 @@
         <!-- Page Header -->
         <div class="flex flex-col gap-4 mb-8">
             <h1 class="text-3xl md:text-4xl font-headline font-light text-text-light tracking-tight">
-                Nuevo Producto
+                {{ isEditMode() ? 'Editar Producto' : 'Nuevo Producto' }}
             </h1>
             <p class="text-text-light/60 font-body font-light">
-                Completa los detalles para añadir una nueva pieza a tu colección.
+                {{ isEditMode() ? 'Modifica los detalles de tu producto.' : 'Completa los detalles para añadir una nueva
+                pieza a tu colección.' }}
             </p>
         </div>
 
@@ -70,9 +71,9 @@
             <button type="submit" (click)="onSubmit($event)" [disabled]="isSubmitting()"
                 class="w-full bg-primary hover:bg-primary/90 text-white font-body font-bold py-4 uppercase tracking-widest text-sm transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                 @if (isSubmitting()) {
-                <span>Publicando...</span>
+                <span>{{ isEditMode() ? 'Guardando...' : 'Publicando...' }}</span>
                 } @else {
-                <span>Publicar Producto</span>
+                <span>{{ isEditMode() ? 'Guardar Cambios' : 'Publicar Producto' }}</span>
                 }
             </button>
             <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
