@@ -1,59 +1,122 @@
-# IteraFront
+# Itera Front
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.2.
+Guía rápida y clara para levantar el frontend en local.
 
-## Development server
+## 1) Prerrequisito obligatorio: backend corriendo
 
-To start a local development server, run:
+Antes de iniciar este proyecto, **el backend debe estar activo**.
 
-```bash
-ng serve
-```
+Este frontend consume endpoints como:
+- `auth`
+- `products`
+- `categories`
+- `users`
+- `ai/hybrid`
+- `ai/virtual-staging`
+- `files/upload-url`
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Si el backend no está arriba, verás errores de red (`401/404/500` o `ERR_CONNECTION_REFUSED`) en el frontend.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 2) Requisitos locales
 
-```bash
-ng generate component component-name
-```
+- Node.js LTS (recomendado 20+)
+- npm (el proyecto usa npm)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+Verifica versiones:
 
 ```bash
-ng build
+node -v
+npm -v
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+---
 
-## Running unit tests
+## 3) Instalar dependencias
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+En la raíz del proyecto (`itera-front`):
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 4) Configurar URLs en `environment`
+
+Este paso es clave. El proyecto usa dos URLs:
+
+- `apiUrl`: URL base del backend
+- `storageUrl`: URL base pública para archivos en storage (Google Cloud Storage)
+
+### Archivo principal
+
+Edita:
+
+`src/environments/environment.ts`
+
+Ejemplo:
+
+```ts
+export const environment = {
+	production: false,
+	apiUrl: 'http://localhost:3000',
+	storageUrl: 'https://storage.googleapis.com/TU_BUCKET_O_BASE_URL'
+};
+```
+
+### Sobre `environment-back.ts`
+
+En este proyecto también existe `src/environments/environment-back.ts` (normalmente ignorado por git). Si se usa en el flujo local, conviene mantenerlo con los mismos valores para evitar inconsistencias.
+
+---
+
+## 5) Ejecutar frontend
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Luego abre:
 
-## Additional Resources
+`http://localhost:4200/`
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Angular recarga automáticamente al guardar cambios.
+
+---
+
+## 6) Comandos útiles
+
+- Ejecutar tests:
+
+```bash
+npm test
+```
+
+- Build de producción:
+
+```bash
+npm run build
+```
+
+---
+
+## 7) ¿`storageUrl` se usa de verdad?
+
+Sí. No es opcional para flujos con carga de archivos:
+
+- Se usa para construir la URL final pública del archivo subido.
+- Impacta funcionalidades como subida de imágenes/modelos y Virtual Staging.
+
+Si `storageUrl` no está bien configurado, se puede completar la subida de archivos, pero fallará la visualización de imágenes/recursos en frontend.
+
+---
+
+## 8) Checklist rápida (orden recomendado)
+
+1. Levantar backend.
+2. Configurar `apiUrl` y `storageUrl` en `environment`.
+3. Ejecutar `npm install`.
+4. Ejecutar `npm start`.
+5. Probar login/listado de productos/subida de archivos.
