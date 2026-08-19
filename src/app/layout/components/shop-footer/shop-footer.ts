@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
   selector: 'app-shop-footer',
   imports: [],
   templateUrl: './shop-footer.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './shop-footer.css',
 })
 export class ShopFooter {

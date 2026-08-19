@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
@@ -8,6 +8,7 @@ import { LoggerService } from '@core/services/logger/logger';
     selector: 'app-virtual-staging',
     imports: [CommonModule],
     templateUrl: './virtual-staging.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './virtual-staging.css'
 })
 export class VirtualStaging {

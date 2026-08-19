@@ -1,7 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
-  Field,
+  FormField,
   form,
   minLength,
   required,
@@ -13,7 +13,8 @@ import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, Field],
+  imports: [RouterLink, FormField],
+  changeDetection: ChangeDetectionStrategy.Eager,
   templateUrl: './login.html',
 })
 export class Login {

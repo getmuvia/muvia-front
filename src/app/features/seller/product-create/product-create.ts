@@ -1,4 +1,4 @@
-import { Component, inject, signal, afterNextRender, DestroyRef, effect, computed } from '@angular/core';
+import { Component, inject, signal, afterNextRender, DestroyRef, effect, computed, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -31,6 +31,7 @@ import {
     imports: [ProductForm],
     templateUrl: './product-create.html',
     styleUrl: './product-create.css',
+    changeDetection: ChangeDetectionStrategy.Eager,
     providers: [ProductStore]
 })
 export class ProductCreate {

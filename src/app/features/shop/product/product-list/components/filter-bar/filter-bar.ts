@@ -1,4 +1,4 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Category } from '@core/models/category/category';
 
 export interface SortOption {
@@ -10,6 +10,7 @@ export interface SortOption {
     selector: 'app-filter-bar',
     imports: [],
     templateUrl: './filter-bar.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './filter-bar.css',
 })
 export class FilterBar {

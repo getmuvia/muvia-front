@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, HostListener } from '@angular/core';
+import { Component, inject, signal, OnInit, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
@@ -10,6 +10,7 @@ import { SmartSearchModal } from '@features/shop/components/modals/smart-search/
   selector: 'app-shop-navbar',
   imports: [RouterLink, NgClass, SmartSearchModal],
   templateUrl: './shop-navbar.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './shop-navbar.css',
 })
 export class ShopNavbar implements OnInit {

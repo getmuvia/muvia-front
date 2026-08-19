@@ -1,10 +1,11 @@
-import { Component, input, output, signal, computed } from '@angular/core';
+import { Component, input, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
     selector: 'app-image-gallery-upload',
     imports: [],
     templateUrl: './image-gallery-upload.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './image-gallery-upload.css',
 })
 export class ImageGalleryUpload {

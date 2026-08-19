@@ -1,4 +1,4 @@
-import { Component, input, output, signal, effect, inject } from '@angular/core';
+import { Component, input, output, signal, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
 
@@ -109,6 +109,7 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
       </div>
     }
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styles: []
 })
 export class SidebarEditModal {

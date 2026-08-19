@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, input, output } from '@angular/core';
+import { Component, inject, signal, effect, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
@@ -23,6 +23,7 @@ import { Model3dUpload } from '../model-3d-upload/model-3d-upload';
         Model3dUpload
     ],
     templateUrl: './product-form.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './product-form.css'
 })
 export class ProductForm {

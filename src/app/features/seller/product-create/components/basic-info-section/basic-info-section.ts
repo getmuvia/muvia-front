@@ -1,11 +1,12 @@
-import { Component, input } from '@angular/core';
-import { Field, FieldTree } from '@angular/forms/signals';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { FormField, FieldTree } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 
 @Component({
     selector: 'app-basic-info-section',
-    imports: [Field],
+    imports: [FormField],
     templateUrl: './basic-info-section.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './basic-info-section.css',
 })
 export class BasicInfoSection {

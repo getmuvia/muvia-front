@@ -1,4 +1,4 @@
-import { Component, input, signal, computed, CUSTOM_ELEMENTS_SCHEMA, inject, PLATFORM_ID, afterNextRender } from '@angular/core';
+import { Component, input, signal, computed, CUSTOM_ELEMENTS_SCHEMA, inject, PLATFORM_ID, afterNextRender, ChangeDetectionStrategy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ProductAsset } from '@core/models/product/product';
 
@@ -7,6 +7,7 @@ import { ProductAsset } from '@core/models/product/product';
     imports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     templateUrl: './image-gallery.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './image-gallery.css',
 })
 export class ImageGallery {

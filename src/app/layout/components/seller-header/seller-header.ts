@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { NgClass } from '@angular/common';
   selector: 'app-seller-header',
   imports: [RouterLink, NgClass],
   templateUrl: './seller-header.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './seller-header.css',
 })
 export class SellerHeader implements OnInit {

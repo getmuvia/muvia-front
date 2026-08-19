@@ -1,9 +1,10 @@
-import { Component, input } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-empty-state',
     standalone: true,
     imports: [],
+    changeDetection: ChangeDetectionStrategy.Eager,
     template: `
     <div class="flex flex-col items-center justify-center py-24 text-center">
         <span class="material-symbols-outlined text-6xl text-text-light/20 mb-4">{{ icon() }}</span>

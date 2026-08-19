@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 
 import { RouterLink } from '@angular/router';
 
@@ -7,6 +7,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-hero-banner',
   imports: [NgOptimizedImage, RouterLink],
   templateUrl: './hero-banner.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './hero-banner.css',
 })
 export class HeroBanner {

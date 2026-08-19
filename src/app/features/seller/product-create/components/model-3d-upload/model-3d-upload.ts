@@ -1,10 +1,11 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
     selector: 'app-model-3d-upload',
     imports: [],
     templateUrl: './model-3d-upload.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './model-3d-upload.css',
 })
 export class Model3dUpload {

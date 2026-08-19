@@ -1,4 +1,4 @@
-import { Component, inject, signal, afterNextRender, computed, DestroyRef } from '@angular/core';
+import { Component, inject, signal, afterNextRender, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore } from '@core/services/product/product.store';
@@ -27,6 +27,7 @@ import { SellerCoverBanner, SellerProfileHeader, SellerSidebar, SellerFilterChip
   ],
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ProductStore]
 })
 export class SellerProfile {

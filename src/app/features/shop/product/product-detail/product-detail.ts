@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, effect, untracked, DestroyRef } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, untracked, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -12,6 +12,7 @@ import { ImageGallery, ProductInfo, ProductTabs, SimilarProducts } from './compo
   imports: [RouterLink, ImageGallery, ProductInfo, ProductTabs, SimilarProducts],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ProductStore]
 })
 export class ProductDetail implements OnInit {

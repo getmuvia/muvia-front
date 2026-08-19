@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
@@ -10,6 +10,7 @@ import { Product } from '@core/models/product/product';
     selector: 'app-result',
     imports: [CommonModule, ProductCard],
     templateUrl: './result.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './result.css'
 })
 export class Result implements OnInit {
