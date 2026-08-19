@@ -3,6 +3,7 @@ import { inject, Injector, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
+import { environment } from '@environments/environment';
 import { AuthService } from '../services/auth';
 import { AuthStorageService } from '../services/storage';
 
@@ -19,7 +20,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const storage = inject(AuthStorageService);
 
     const token = storage.getToken();
-    if (token) {
+    const apiUrl = environment.apiUrl.replace(/\/+$/, '');
+    const isApiRequest = req.url === apiUrl || req.url.startsWith(`${apiUrl}/`);
+
+    if (token && isApiRequest) {
         req = req.clone({
             setHeaders: {
                 Authorization: `Bearer ${token}`
