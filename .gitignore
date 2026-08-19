@@ -45,6 +45,7 @@ Thumbs.db
 # Others
 
 .angular
+.firebase/
 .vscode/
 
 src/environments/environment-back.ts

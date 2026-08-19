@@ -1,4 +1,4 @@
-# Itera Front
+# Muvia Front
 
 Guía rápida y clara para levantar el frontend en local.
 
@@ -21,7 +21,7 @@ Si el backend no está arriba, verás errores de red (`401/404/500` o `ERR_CONNE
 
 ## 2) Requisitos locales
 
-- Node.js LTS (recomendado 20+)
+- Node.js 22
 - npm (el proyecto usa npm)
 
 Verifica versiones:
@@ -35,7 +35,7 @@ npm -v
 
 ## 3) Instalar dependencias
 
-En la raíz del proyecto (`itera-front`):
+En la raíz de `muvia-front`:
 
 ```bash
 npm install
@@ -50,11 +50,11 @@ Este paso es clave. El proyecto usa dos URLs:
 - `apiUrl`: URL base del backend
 - `storageUrl`: URL base pública para archivos en storage (Google Cloud Storage)
 
-### Archivo principal
+### Desarrollo local
 
-Edita:
+`npm start` usa automáticamente:
 
-`src/environments/environment.ts`
+`src/environments/environment.development.ts`
 
 Ejemplo:
 
@@ -62,13 +62,14 @@ Ejemplo:
 export const environment = {
 	production: false,
 	apiUrl: 'http://localhost:3000',
-	storageUrl: 'https://storage.googleapis.com/TU_BUCKET_O_BASE_URL'
+	storageUrl: 'https://storage.googleapis.com/getmuvia-app-muvia-assets'
 };
 ```
 
-### Sobre `environment-back.ts`
+### Producción
 
-En este proyecto también existe `src/environments/environment-back.ts` (normalmente ignorado por git). Si se usa en el flujo local, conviene mantenerlo con los mismos valores para evitar inconsistencias.
+`npm run build` usa `src/environments/environment.ts`, configurado con el
+backend de Cloud Run y el bucket administrados por `muvia-infra`.
 
 ---
 
@@ -120,3 +121,29 @@ Si `storageUrl` no está bien configurado, se puede completar la subida de archi
 3. Ejecutar `npm install`.
 4. Ejecutar `npm start`.
 5. Probar login/listado de productos/subida de archivos.
+
+---
+
+## 9) CI/CD y Firebase Hosting
+
+El frontend se publica como sitio estático en Firebase Hosting:
+
+- los pull requests hacia `develop` instalan dependencias, compilan y auditan;
+- los pushes a `develop` publican el bundle de navegador;
+- GitHub se autentica en Google Cloud mediante OIDC, sin claves JSON;
+- el sitio live es `https://getmuvia-app.web.app`.
+
+La infraestructura de Firebase, CORS, IAM y Workload Identity vive en
+`muvia-infra`. Después de aplicar Terraform, copia este output al GitHub
+Environment `demo` de `getmuvia/muvia-front`:
+
+```bash
+terraform output -json frontend_github_actions_variables
+```
+
+El output contiene las variables:
+
+- `GCP_PROJECT_ID`
+- `FIREBASE_HOSTING_SITE`
+- `GCP_WORKLOAD_IDENTITY_PROVIDER`
+- `GCP_DEPLOY_SERVICE_ACCOUNT`

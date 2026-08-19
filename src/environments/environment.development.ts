@@ -1,5 +1,5 @@
 export const environment = {
-    production: true,
-    apiUrl: 'https://muvia-back-493927875504.us-central1.run.app',
+    production: false,
+    apiUrl: 'http://localhost:3000',
     storageUrl: 'https://storage.googleapis.com/getmuvia-app-muvia-assets'
 };
