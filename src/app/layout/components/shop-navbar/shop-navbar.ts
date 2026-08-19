@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, HostListener, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
@@ -20,6 +20,7 @@ export class ShopNavbar implements OnInit {
 
   isAuthenticated = this.authService.isAuthenticated;
   currentUser = this.authService.currentUser;
+  accountRoute = computed(() => this.authService.getPostAuthRoute());
 
   isTransparent = signal<boolean>(false);
   isSearchOpen = signal<boolean>(false);

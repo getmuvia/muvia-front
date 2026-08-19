@@ -2,6 +2,7 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { USER_ROLES } from '../models/auth.models';
 
 /**
  * Guard that protects routes requiring authentication.
@@ -49,6 +50,27 @@ export const guestGuard: CanActivateFn = () => {
         return true;
     }
 
-    // Redirect to home page
-    return router.createUrlTree(['/home']);
+    return router.parseUrl(authService.getPostAuthRoute());
+};
+
+/**
+ * Guard that restricts seller pages to vendor accounts.
+ */
+export const vendorGuard: CanActivateFn = () => {
+    const platformId = inject(PLATFORM_ID);
+    const authService = inject(AuthService);
+    const router = inject(Router);
+
+    if (!isPlatformBrowser(platformId)) {
+        return true;
+    }
+
+    const user = authService.currentUser();
+    if (!user) {
+        return router.createUrlTree(['/auth/login']);
+    }
+
+    return user.role === USER_ROLES.VENDOR
+        ? true
+        : router.createUrlTree(['/home']);
 };
