@@ -1,4 +1,4 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '@core/models/product/product';
@@ -7,6 +7,7 @@ import { Product } from '@core/models/product/product';
   selector: 'app-product-card',
   imports: [CurrencyPipe, NgOptimizedImage, RouterLink],
   templateUrl: './product-card.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './product-card.css',
 })
 export class ProductCard {

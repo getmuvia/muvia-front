@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 
 export interface FilterChip {
     id: string;
@@ -10,6 +10,7 @@ export interface FilterChip {
     selector: 'app-seller-filter-chips',
     imports: [],
     templateUrl: './seller-filter-chips.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './seller-filter-chips.css',
 })
 export class SellerFilterChips {

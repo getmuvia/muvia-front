@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
 import { SocialLink } from '@core/models/user/vendor-profile';
 
@@ -6,6 +6,7 @@ import { SocialLink } from '@core/models/user/vendor-profile';
     selector: 'app-seller-sidebar',
     imports: [EditTriggerButton],
     templateUrl: './seller-sidebar.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './seller-sidebar.css',
 })
 export class SellerSidebar {

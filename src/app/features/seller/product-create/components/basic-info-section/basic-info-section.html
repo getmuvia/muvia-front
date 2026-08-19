@@ -11,7 +11,7 @@
                 <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
                     Título del Producto
                 </label>
-                <input [field]="titleField()"
+                <input [formField]="titleField()"
                     class="w-full bg-transparent border-0 border-b border-text-light/20 focus:border-secondary focus:ring-0 px-0 py-3 text-lg text-text-light placeholder-text-light/40 transition-colors font-body"
                     placeholder="Ej. Lámpara de Pie Minimalista" type="text" />
                 @if (isFieldInvalid(titleField())) {
@@ -29,7 +29,7 @@
                 <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
                     Descripción
                 </label>
-                <textarea [field]="descriptionField()"
+                <textarea [formField]="descriptionField()"
                     class="w-full bg-surface-element border border-text-light/20 focus:border-secondary focus:ring-0 p-4 text-base text-text-light placeholder-text-light/40 resize-none font-body"
                     placeholder="Describe la historia, inspiración y detalles de tu pieza..." rows="4"></textarea>
                 @if (isFieldInvalid(descriptionField())) {
@@ -51,7 +51,7 @@
                     </label>
                     <div class="relative">
                         <span class="absolute left-0 top-1/2 -translate-y-1/2 text-text-light/40">$</span>
-                        <input [field]="priceField()"
+                        <input [formField]="priceField()"
                             class="w-full bg-transparent border-0 border-b border-text-light/20 focus:border-secondary focus:ring-0 pl-6 pr-0 py-3 text-lg text-text-light placeholder-text-light/40 font-body"
                             placeholder="0.00" type="number" />
                     </div>
@@ -70,7 +70,7 @@
                     <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
                         Stock
                     </label>
-                    <input [field]="stockField()"
+                    <input [formField]="stockField()"
                         class="w-full bg-transparent border-0 border-b border-text-light/20 focus:border-secondary focus:ring-0 px-0 py-3 text-lg text-text-light placeholder-text-light/40 font-body"
                         placeholder="1" type="number" />
                     @if (isFieldInvalid(stockField())) {
@@ -88,7 +88,7 @@
                     <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
                         Categoría
                     </label>
-                    <select [field]="categoryIdField()"
+                    <select [formField]="categoryIdField()"
                         class="w-full bg-transparent border-0 border-b border-text-light/20 focus:border-secondary focus:ring-0 px-0 py-3 text-lg text-text-light font-body">
                         <option value="" disabled>Selecciona una categoría</option>
                         @for (category of categories(); track category.id) {

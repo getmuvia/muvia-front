@@ -1,9 +1,10 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-seller-pagination',
     imports: [],
     templateUrl: './seller-pagination.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './seller-pagination.css',
 })
 export class SellerPagination {

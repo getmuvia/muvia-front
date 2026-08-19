@@ -1,9 +1,10 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-keywords-section',
     imports: [],
     templateUrl: './keywords-section.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './keywords-section.css',
 })
 export class KeywordsSection {

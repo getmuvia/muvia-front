@@ -33,7 +33,7 @@
             Nombre del Negocio
         </label>
         <div class="mt-2">
-            <input [field]="registerForm.businessName"
+            <input [formField]="registerForm.businessName"
                 class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white"
                 id="business-name" placeholder="Ej. Studio Decor" type="text" />
         </div>
@@ -53,7 +53,7 @@
             Email
         </label>
         <div class="mt-2">
-            <input [field]="registerForm.email" autocomplete="email"
+            <input [formField]="registerForm.email" autocomplete="email"
                 class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white"
                 id="email" placeholder="nombre@ejemplo.com" type="text" />
         </div>
@@ -73,7 +73,7 @@
             Contraseña
         </label>
         <div class="relative mt-2">
-            <input [field]="registerForm.password" autocomplete="new-password"
+            <input [formField]="registerForm.password" autocomplete="new-password"
                 class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white pr-10"
                 id="password" placeholder="••••••••" [type]="showPassword() ? 'text' : 'password'" />
             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -99,7 +99,7 @@
             Descripción
         </label>
         <div class="mt-2">
-            <textarea [field]="registerForm.description"
+            <textarea [formField]="registerForm.description"
                 class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white resize-none"
                 id="description" placeholder="Describe brevemente tu estilo o productos..." rows="3"></textarea>
         </div>

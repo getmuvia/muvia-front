@@ -17,7 +17,7 @@
         <div class="relative w-full bg-[var(--color-background-light)] overflow-hidden" style="height: 75vh;">
 
             <!-- Generated Image (Background) -->
-            <img [src]="result()?.stagedImageUrl" alt="Decorated Room"
+            <img [src]="$safeNavigationMigration(result()?.stagedImageUrl)" alt="Decorated Room"
                 class="absolute inset-0 w-full h-full object-contain">
 
             <!-- Original Image (Overlay with Clip Path) - SAME size container -->

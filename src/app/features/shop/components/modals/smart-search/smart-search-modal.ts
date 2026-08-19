@@ -1,14 +1,15 @@
 import {
-    Component,
-    inject,
-    signal,
-    computed,
-    output,
-    effect,
-    ElementRef,
-    viewChild,
-    HostListener,
-    DestroyRef
+  Component,
+  inject,
+  signal,
+  computed,
+  output,
+  effect,
+  ElementRef,
+  viewChild,
+  HostListener,
+  DestroyRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -22,6 +23,7 @@ import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
     selector: 'app-smart-search-modal',
     imports: [NgOptimizedImage, CurrencyPipe],
     templateUrl: './smart-search-modal.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrl: './smart-search-modal.css',
 })
 export class SmartSearchModal {

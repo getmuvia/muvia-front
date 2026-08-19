@@ -1,4 +1,4 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import { Component, input, output, signal, effect, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-image-editor-modal',
@@ -76,6 +76,7 @@ import { Component, input, output, signal, effect } from '@angular/core';
       </div>
     }
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     styles: []
 })
 export class ImageEditorModal {

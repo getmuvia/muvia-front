@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, DestroyRef } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore } from '@core/services/product/product.store';
@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports: [PageHeader, FilterBar, ProductGrid, LoadMoreButton],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   providers: [ProductStore]
 })
 export class ProductList implements OnInit {
