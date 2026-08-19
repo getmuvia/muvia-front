@@ -9,7 +9,11 @@ import {
     validate,
 } from '@angular/forms/signals';
 import { AuthService } from '@core/auth/services/auth';
-import { RegisterData } from '@core/auth/models/auth.models';
+import {
+    RegisterData,
+    USER_ROLES,
+    VendorRegisterFormData,
+} from '@core/auth/models/auth.models';
 
 @Component({
     selector: 'app-register',
@@ -21,7 +25,7 @@ export class Register {
     private authService = inject(AuthService);
     private router = inject(Router);
 
-    registerModel = signal<RegisterData>({
+    registerModel = signal<VendorRegisterFormData>({
         businessName: '',
         email: '',
         password: '',
@@ -45,7 +49,18 @@ export class Register {
         });
 
         required(path.password, { message: 'La contraseña es requerida' });
-        minLength(path.password, 6, { message: 'La contraseña debe tener al menos 6 caracteres' });
+        minLength(path.password, 8, { message: 'La contraseña debe tener al menos 8 caracteres' });
+        validate(path.password, ({ value }) => {
+            const password = value();
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$/;
+            if (password && !passwordRegex.test(password)) {
+                return {
+                    message: 'Incluye mayúscula, minúscula, número y carácter especial (@$!%*?&)',
+                    kind: 'error',
+                };
+            }
+            return null;
+        });
     });
 
     showPassword = signal(false);
@@ -62,7 +77,7 @@ export class Register {
         this.showPassword.update((v) => !v);
     }
 
-    isFieldInvalid(fieldName: keyof RegisterData): boolean {
+    isFieldInvalid(fieldName: keyof VendorRegisterFormData): boolean {
         const fieldSignal = this.registerForm[fieldName];
         if (!fieldSignal) return false;
 
@@ -75,11 +90,21 @@ export class Register {
 
         submit(this.registerForm, async () => {
 
-            const credentials = this.registerForm().value();
-            const success = await this.authService.register(credentials);
+            const formValue = this.registerForm().value();
+            const description = formValue.description.trim();
+            const registration: RegisterData = {
+                email: formValue.email.trim(),
+                password: formValue.password,
+                role: USER_ROLES.VENDOR,
+                vendorProfile: {
+                    businessName: formValue.businessName.trim(),
+                    ...(description ? { description } : {}),
+                },
+            };
+            const success = await this.authService.register(registration);
 
             if (success) {
-                this.router.navigate(['/auth/login']);
+                this.router.navigateByUrl(this.authService.getPostAuthRoute());
             }
         });
     }

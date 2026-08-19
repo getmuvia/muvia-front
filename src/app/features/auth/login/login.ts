@@ -70,7 +70,7 @@ export class Login {
       const success = await this.authService.login(credentials);
 
       if (success) {
-        this.router.navigate(['/home']);
+        this.router.navigateByUrl(this.authService.getPostAuthRoute());
       }
     });
   }

@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
+import type { User } from '../../auth/models/auth.models';
 import { LoggerService } from '../logger/logger';
 
 @Injectable({
@@ -14,12 +15,12 @@ export class UserService {
 
     readonly vendorProfile = signal<VendorProfile | null>(null);
 
-    updateProfile(data: UpdateVendorProfilePayload): Observable<VendorResponse> {
-        return this.http.patch<VendorResponse>(API_ENDPOINTS.USERS.ME, data).pipe(
+    updateProfile(data: UpdateVendorProfilePayload): Observable<User> {
+        return this.http.patch<User>(API_ENDPOINTS.USERS.ME, data).pipe(
             tap(updatedUser => {
 
                 if (updatedUser.vendorProfile) {
-                    this.vendorProfile.update(current => ({ ...current, ...updatedUser.vendorProfile }));
+                    this.vendorProfile.set(updatedUser.vendorProfile);
                 }
             })
         );
@@ -44,8 +45,8 @@ export class UserService {
         });
     }
 
-    getProfile(): Observable<VendorProfile> {
-        return this.http.get<VendorProfile>(API_ENDPOINTS.USERS.ME);
+    getProfile(): Observable<User> {
+        return this.http.get<User>(API_ENDPOINTS.USERS.ME);
     }
 }
 

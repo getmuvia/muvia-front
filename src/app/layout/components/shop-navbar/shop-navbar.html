@@ -55,11 +55,11 @@
                     @if (isAuthenticated()) {
                     <!-- Usuario autenticado -->
                     <div class="user-menu flex items-center gap-2">
-                        <a routerLink="/seller"
+                        <a [routerLink]="accountRoute()"
                             [ngClass]="isTransparent() ? 'bg-white/10 hover:bg-white/20 text-white' : 'bg-primary/10 text-primary'"
                             class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 gap-2 text-sm font-medium leading-normal px-3 transition-all duration-300">
                             <span class="material-symbols-outlined text-xl">person</span>
-                            <span class="max-w-[120px] truncate">{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
+                            <span class="max-w-[120px] truncate">{{ currentUser()?.vendorProfile?.businessName || currentUser()?.email || 'Mi Cuenta' }}</span>
                         </a>
                         <button (click)="logout()"
                             [ngClass]="isTransparent() ? 'text-white hover:bg-red-500/20' : 'text-primary hover:bg-red-500/10'"
@@ -135,10 +135,10 @@
         </a>
         @if (isAuthenticated()) {
         <div class="my-2 mx-6 border-t border-black/10"></div>
-        <a (click)="closeMobileMenu()" routerLink="/seller"
+        <a (click)="closeMobileMenu()" [routerLink]="accountRoute()"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
             <span class="material-symbols-outlined text-xl text-primary">person</span>
-            <span>{{ currentUser()?.businessName || 'Mi Cuenta' }}</span>
+            <span>{{ currentUser()?.vendorProfile?.businessName || currentUser()?.email || 'Mi Cuenta' }}</span>
         </a>
         <button (click)="logout(); closeMobileMenu()"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">

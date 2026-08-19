@@ -1,7 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { LoginData, RegisterData, AuthResponse } from '../models/auth.models';
+import {
+  AuthResponse,
+  LoginData,
+  RegisterData,
+  USER_ROLES,
+  User,
+} from '../models/auth.models';
 import { AuthStorageService } from './storage';
 import { AuthStateService } from './auth-state';
 import { parseAuthError } from './auth-error';
@@ -88,6 +94,13 @@ export class AuthService {
     return this.storage.getToken();
   }
 
+  /**
+   * Return the landing route appropriate for the authenticated user's role.
+   */
+  getPostAuthRoute(): string {
+    return this.currentUser()?.role === USER_ROLES.VENDOR ? '/seller' : '/home';
+  }
+
   private handleSuccess(response: AuthResponse): void {
     this.state.setUser(response.user);
     this.storage.store(response.accessToken, response.user);
@@ -107,15 +120,17 @@ export class AuthService {
    * Returns true if valid, false (and logs out) if invalid.
    */
   async verifySession(): Promise<boolean> {
-    if (!this.storage.hasSession()) {
+    const token = this.storage.getToken();
+    if (!token) {
       return false;
     }
 
     try {
-      const response = await firstValueFrom(
-        this.http.get<AuthResponse>(API_ENDPOINTS.AUTH.CHECK_STATUS)
+      const user = await firstValueFrom(
+        this.http.get<User>(API_ENDPOINTS.USERS.ME)
       );
-      this.handleSuccess(response);
+      this.state.setUser(user);
+      this.storage.store(token, user);
       return true;
     } catch {
       this.logout();

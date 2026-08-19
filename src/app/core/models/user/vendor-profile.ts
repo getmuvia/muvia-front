@@ -1,3 +1,5 @@
+import type { UserRole } from '../../auth/models/auth.models';
+
 export interface BusinessHours {
     [day: string]: {
         open: string;
@@ -16,7 +18,7 @@ export interface VendorProfile {
     id?: string;
     userId?: string;
     businessName: string;
-    description: string;
+    description: string | null;
     logoUrl: string | null;
     coverImage: string | null;
     aboutMe: string | null;
@@ -45,7 +47,7 @@ export interface UpdateVendorProfilePayload {
 
 export interface VendorResponse {
     id: string;
-    role: string;
+    role: UserRole;
     createdAt: string;
     vendorProfile: VendorProfile;
 }
