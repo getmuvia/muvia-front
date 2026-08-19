@@ -1,26 +1,22 @@
 <header
-    [ngClass]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'border-b border-white/20 bg-white/60 backdrop-blur-xl sticky top-0 shadow-sm'"
+    [ngClass]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'border-b border-border-color bg-background-light/90 backdrop-blur-xl sticky top-0'"
     class="z-50">
     <div class="flex items-center justify-between whitespace-nowrap max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div class="flex items-center gap-4 lg:gap-8">
             <a routerLink="/home" class="flex items-center gap-3 text-text-light">
-                <div class="size-6 text-primary">
-                    <svg fill="currentColor" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M42.4379 44C42.4379 44 36.0744 33.9038 41.1692 24C46.8624 12.9336 42.2078 4 42.2078 4L7.01134 4C7.01134 4 11.6577 12.932 5.96912 23.9969C0.876273 33.9029 7.27094 44 7.27094 44L42.4379 44Z">
-                        </path>
-                    </svg>
+                <div class="flex size-9 items-center justify-center rounded-full border border-primary/30 bg-primary/5 text-primary">
+                    <span class="font-headline text-xl font-bold leading-none">M</span>
                 </div>
-                <h2 class="text-xl font-headline font-bold tracking-[-0.015em]">DecoHome</h2>
+                <h2 class="text-xl font-headline font-semibold tracking-[0.04em]">Muvia</h2>
             </a>
             <label class="hidden lg:flex flex-col min-w-40 h-10 max-w-64">
                 <div class="flex w-full flex-1 items-stretch h-full">
                     <div
-                        class="text-text-light/50 flex border-none bg-text-light/10 items-center justify-center pl-4 border-r-0">
+                        class="text-text-light/50 flex border-none bg-surface-element items-center justify-center pl-4 border-r-0 rounded-l-full">
                         <span class="material-symbols-outlined">search</span>
                     </div>
                     <input
-                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light focus:outline-0 focus:ring-0 border-none bg-text-light/10 focus:border-none h-full placeholder:text-text-light/50 px-4 border-l-0 pl-2 text-base font-body font-normal leading-normal"
+                        class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden text-text-light focus:outline-0 focus:ring-0 border-none bg-surface-element focus:border-none h-full placeholder:text-text-light/50 px-4 border-l-0 pl-2 text-base font-body font-normal leading-normal rounded-r-full"
                         placeholder="Buscar" />
                 </div>
             </label>
@@ -41,7 +37,7 @@
 
             <div class="hidden lg:flex items-center gap-2">
                 <button routerLink="/seller/products/create"
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-4 bg-primary text-white text-sm font-body font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 hover:scale-105 transition-all duration-300">
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-5 rounded-full bg-primary text-white text-sm font-body font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
                     <span class="truncate">Subir</span>
                 </button>
             </div>

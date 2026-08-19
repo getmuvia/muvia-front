@@ -1,7 +1,14 @@
 <div class="flex flex-col gap-8">
 
+    <a routerLink="/home" class="flex items-center justify-center lg:justify-start gap-3 group">
+        <div class="flex size-10 items-center justify-center rounded-full border border-primary/30 bg-primary/5 text-primary">
+            <span class="font-headline text-xl font-bold leading-none">M</span>
+        </div>
+        <span class="font-headline text-xl font-semibold tracking-[0.04em] text-text-main">Muvia</span>
+    </a>
+
     <div class="flex flex-col gap-2 text-center lg:text-left">
-        <h1 class="text-3xl lg:text-4xl font-serif font-bold text-text-main tracking-tight">
+        <h1 class="text-xl lg:text-4xl font-headline font-semibold text-text-main tracking-tight">
             Bienvenido de nuevo
         </h1>
         <p class="text-text-secondary text-base font-normal">
@@ -19,7 +26,7 @@
                 <span class="material-symbols-outlined absolute left-4 text-text-secondary">mail</span>
 
                 <input id="email" type="text" [formField]="loginForm.email"
-                    class="w-full h-12 rounded-lg border border-border-color bg-surface-light text-text-main pl-11 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
+                    class="w-full h-12 rounded-xl border border-border-color bg-surface-light text-text-main pl-11 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
                     placeholder="hola@ejemplo.com" />
             </div>
 
@@ -46,12 +53,12 @@
                 <span class="material-symbols-outlined absolute left-4 text-text-secondary">lock</span>
 
                 <input id="password" [type]="showPassword() ? 'text' : 'password'" [formField]="loginForm.password"
-                    class="w-full h-12 rounded-lg border border-border-color bg-surface-light text-text-main pl-11 pr-11 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
+                    class="w-full h-12 rounded-xl border border-border-color bg-surface-light text-text-main pl-11 pr-11 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
                     placeholder="••••••••" />
 
                 <button type="button" (click)="togglePasswordVisibility()"
                     class="absolute right-3 p-1 rounded-full text-text-secondary hover:text-text-main hover:bg-surface-element transition-colors flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[20px]">
+                    <span class="material-symbols-outlined text-xl">
                         {{ showPassword() ? 'visibility' : 'visibility_off' }}
                     </span>
                 </button>
@@ -68,7 +75,7 @@
         </div>
 
         <button type="submit" [disabled]="isLoading()"
-            class="mt-2 flex w-full h-12 items-center justify-center rounded-lg bg-primary hover:bg-primary/90 active:bg-primary text-white text-base font-bold tracking-wide transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+            class="mt-2 flex w-full h-12 items-center justify-center rounded-full bg-primary hover:bg-primary/90 active:bg-primary text-white text-sm font-bold uppercase tracking-[0.1em] transition-all shadow-sm hover:-translate-y-0.5 hover:shadow-soft disabled:opacity-50 disabled:cursor-not-allowed">
             @if (isLoading()) {
             <span class="animate-spin mr-2">⟳</span>
             }
@@ -85,11 +92,11 @@
 
     <div class="grid grid-cols-2 gap-4">
         <button
-            class="flex h-10 items-center justify-center gap-2 rounded-lg border border-border-color bg-white text-text-main text-sm font-medium hover:bg-surface-light transition-colors">
+            class="flex h-10 items-center justify-center gap-2 rounded-full border border-border-color bg-white text-text-main text-sm font-medium hover:bg-surface-light transition-colors">
             Google
         </button>
         <button
-            class="flex h-10 items-center justify-center gap-2 rounded-lg border border-border-color bg-white text-text-main text-sm font-medium hover:bg-surface-light transition-colors">
+            class="flex h-10 items-center justify-center gap-2 rounded-full border border-border-color bg-white text-text-main text-sm font-medium hover:bg-surface-light transition-colors">
             Facebook
         </button>
     </div>

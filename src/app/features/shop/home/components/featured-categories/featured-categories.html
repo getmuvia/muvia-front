@@ -1,24 +1,24 @@
-<section class="w-full py-10 md:py-16">
+<section class="w-full py-16 md:py-24">
 
     <h2
-        class="text-text-light text-4xl font-headline font-bold leading-tight tracking-[-0.015em] px-4 pb-6 text-center">
+        class="text-text-light text-xl sm:text-4xl font-headline font-semibold leading-tight tracking-[-0.015em] px-4 pb-10 text-center">
         Categorías Destacadas
     </h2>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         @for (cat of categories(); track cat.id) {
 
         <a [routerLink]="cat.link" [queryParams]="cat.queryParams"
-            class="relative group overflow-hidden aspect-[6/7] cursor-pointer block">
+            class="relative group overflow-hidden rounded-2xl aspect-[6/7] cursor-pointer block bg-surface-element shadow-sm">
 
             <img [ngSrc]="cat.image" [alt]="cat.name" fill
-                class="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110" />
+                class="object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
 
-            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.6)_0%,transparent_50%)]"></div>
+            <div class="absolute inset-0 bg-[linear-gradient(to_top,rgba(22,18,15,0.72)_0%,transparent_58%)]"></div>
 
             <div class="absolute inset-0 flex flex-col justify-end p-6">
-                <p class="text-white text-base font-body font-bold leading-tight line-clamp-3">
+                <p class="text-white text-base font-body font-semibold leading-tight line-clamp-3">
                     {{ cat.name }}
                 </p>
             </div>

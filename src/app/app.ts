@@ -10,5 +10,5 @@ import { ToastContainer } from '@shared/components/toast-container/toast-contain
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('itera-front');
+  protected readonly title = signal('Muvia');
 }

@@ -6,10 +6,10 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
     imports: [],
     changeDetection: ChangeDetectionStrategy.Eager,
     template: `
-    <div class="flex flex-col items-center justify-center py-24 text-center">
-        <span class="material-symbols-outlined text-6xl text-text-light/20 mb-4">{{ icon() }}</span>
-        <h3 class="text-xl font-bold text-text-light font-body mb-2">{{ title() }}</h3>
-        <p class="text-text-light/60 font-body text-center max-w-md">
+    <div class="flex flex-col items-center justify-center rounded-3xl border border-border-color bg-surface-light/70 px-6 py-20 text-center">
+        <span class="material-symbols-outlined mb-5 flex size-16 items-center justify-center rounded-full bg-white text-xl text-primary/50 shadow-sm">{{ icon() }}</span>
+        <h3 class="text-xl font-semibold text-text-light font-headline mb-2">{{ title() }}</h3>
+        <p class="text-text-secondary font-body text-center max-w-md">
             {{ description() }}
         </p>
         <ng-content select="button"></ng-content>

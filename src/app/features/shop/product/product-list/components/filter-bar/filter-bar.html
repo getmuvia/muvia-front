@@ -1,21 +1,21 @@
 <div
-    class="flex flex-wrap items-center justify-between gap-4 sticky top-16 z-30 py-4 bg-background-light/95 backdrop-blur-sm transition-all border-b border-text-light/10">
+    class="flex flex-wrap items-center justify-between gap-4 sticky top-16 z-30 py-5 bg-background-light/95 backdrop-blur-sm transition-all border-b border-border-color">
     <!-- Left side: Filter button, Search and active filters -->
     <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
         <button (click)="onFilterToggle()"
-            class="px-4 py-2 bg-primary text-white text-xs font-bold uppercase tracking-wider font-body hover:bg-primary/80 transition-colors flex items-center gap-2">
+            class="px-5 py-2.5 rounded-full bg-secondary text-white text-xs font-bold uppercase tracking-wider font-body hover:bg-secondary/90 shadow-sm transition-colors flex items-center gap-2">
             <span class="material-symbols-outlined text-base">tune</span>
             Filtrar
         </button>
 
         <!-- Search Input -->
         <div class="relative">
-            <form (submit)="onSearchSubmit($event)">
+            <form (submit)="onSearchSubmit($event)" class="relative">
                 <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)"
                     placeholder="Buscar productos..."
-                    class="w-48 md:w-64 h-9 bg-transparent border-b border-text-light/20 focus:border-primary focus:outline-none px-0 py-2 text-sm text-text-light placeholder-text-light/40 font-body transition-colors" />
+                    class="w-48 md:w-64 h-10 rounded-full bg-surface-light border border-border-color focus:border-primary focus:outline-none px-4 pr-10 py-2 text-sm text-text-light placeholder-text-light/40 font-body transition-colors" />
                 <span
-                    class="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 text-text-light/40 text-lg">search</span>
+                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-text-light/40 text-lg">search</span>
             </form>
         </div>
 
@@ -26,7 +26,7 @@
         <!-- Search Chip -->
         @if (activeSearch()) {
         <button (click)="onClearSearch()"
-            class="h-9 px-3 bg-surface-element border border-text-light/20 text-text-light text-xs font-bold uppercase tracking-wider font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-2 rounded-sm group max-w-[200px] sm:max-w-[300px]"
+            class="h-9 px-4 bg-surface-element border border-border-color text-text-light text-xs font-bold uppercase tracking-wider font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-2 rounded-full group max-w-[200px] sm:max-w-[300px]"
             title="Limpiar búsqueda">
             <span class="opacity-50 whitespace-nowrap hidden sm:inline">Búsqueda:</span>
             <span class="truncate">{{ activeSearch() }}</span>
@@ -43,7 +43,7 @@
 
         @for (filter of activeFilters(); track filter) {
         <button (click)="onRemoveFilter(filter)"
-            class="px-3 py-1.5 border border-text-light/20 text-text-light text-xs uppercase font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-1 group">
+            class="px-3 py-1.5 rounded-full border border-border-color text-text-light text-xs uppercase font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-1 group">
             {{ filter }}
             <span class="material-symbols-outlined text-sm text-text-light/50 group-hover:text-primary">close</span>
         </button>
@@ -67,15 +67,15 @@
         </div>
 
         <!-- View mode toggle -->
-        <div class="flex bg-surface-element p-1">
-            <button (click)="onToggleViewMode('grid')" [class]="viewMode() === 'grid' 
-                    ? 'p-1.5 bg-surface-light shadow-sm text-primary transition-all' 
-                    : 'p-1.5 text-text-light/40 hover:text-primary transition-colors'">
+        <div class="flex rounded-full border border-border-color bg-surface-element p-1">
+            <button (click)="onToggleViewMode('grid')" [class]="viewMode() === 'grid'
+                    ? 'p-1.5 rounded-full bg-white shadow-sm text-primary transition-all'
+                    : 'p-1.5 rounded-full text-text-light/40 hover:text-primary transition-colors'">
                 <span class="material-symbols-outlined text-xl">grid_view</span>
             </button>
-            <button (click)="onToggleViewMode('list')" [class]="viewMode() === 'list' 
-                    ? 'p-1.5 bg-surface-light shadow-sm text-primary transition-all' 
-                    : 'p-1.5 text-text-light/40 hover:text-primary transition-colors'">
+            <button (click)="onToggleViewMode('list')" [class]="viewMode() === 'list'
+                    ? 'p-1.5 rounded-full bg-white shadow-sm text-primary transition-all'
+                    : 'p-1.5 rounded-full text-text-light/40 hover:text-primary transition-colors'">
                 <span class="material-symbols-outlined text-xl">view_list</span>
             </button>
         </div>
