@@ -22,8 +22,8 @@ export class Login {
   private router = inject(Router);
 
   loginModel = signal<LoginData>({
-    email: 'vendor@test.com',
-    password: 'Test123!@#',
+    email: 'decor@decor.com',
+    password: 'Decordemo123@',
   });
 
   loginForm = form(this.loginModel, (path) => {

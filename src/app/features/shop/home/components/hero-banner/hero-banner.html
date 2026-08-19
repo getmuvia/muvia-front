@@ -1,24 +1,24 @@
-<section class="relative w-full min-h-screen flex items-center justify-center text-center overflow-hidden">
+<section class="relative isolate w-full min-h-[680px] h-[92vh] flex items-center justify-center text-center overflow-hidden">
 
     <img [ngSrc]="heroImage" alt="Sala de estar elegante con muebles minimalistas" fill priority
-        class="object-cover -z-20" />
+        class="object-cover z-0" />
 
-    <div class="absolute inset-0 bg-gradient-to-b from-black/20 to-black/50 -z-10"></div>
+    <div class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-black/55 via-black/20 to-black/65"></div>
 
-    <div class="relative z-10 flex flex-col gap-4 max-w-3xl p-4 sm:gap-8 animate-fade-in-up">
+    <div class="relative z-20 flex flex-col items-center gap-6 max-w-4xl px-6 animate-fade-in-up">
 
         <h1
-            class="text-white text-4xl font-headline font-bold leading-tight tracking-[-0.033em] sm:text-5xl drop-shadow-lg">
+            class="text-white text-xl sm:text-4xl font-headline font-semibold leading-tight tracking-[-0.025em] drop-shadow-lg">
             Diseña el Espacio de Tus Sueños
         </h1>
 
-        <p class="text-white/90 text-base font-body font-normal leading-normal drop-shadow-md">
+        <p class="max-w-2xl text-white/85 text-base font-body font-normal leading-relaxed drop-shadow-md">
             Descubre piezas únicas para transformar tu hogar con estilo y elegancia.
         </p>
 
-        <div class="pt-4 flex flex-wrap gap-4 justify-center">
+        <div class="pt-2 flex flex-wrap gap-4 justify-center">
             <a routerLink="/products"
-                class="inline-flex items-center justify-center h-12 px-8 rounded-lg bg-white/10 text-white text-base font-medium tracking-wide transition-all duration-300 hover:bg-white/20 cursor-pointer">
+                class="inline-flex items-center justify-center h-12 px-8 rounded-full bg-white text-text-main text-sm font-semibold uppercase tracking-[0.12em] shadow-float transition-all duration-300 hover:-translate-y-0.5 hover:bg-surface-light cursor-pointer">
                 Descubrir Ahora
             </a>
         </div>

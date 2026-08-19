@@ -1,34 +1,103 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import "tailwindcss";
 
-/* Custom Tailwind Theme Configuration */
 @theme {
-  /* Brand Colors */
-  --color-primary: #8B5A2B;
-  --color-secondary: #c9a45c;
+  /* Muvia: forest, clay, sand and ivory */
+  --color-primary: #1f4038;
+  --color-primary-deep: #17342d;
+  --color-primary-soft: #2d5a4e;
+  --color-secondary: #a6533d;
+  --color-accent: #d9b88f;
+  --color-text-light: #202723;
+  --color-text-main: #202723;
+  --color-text-secondary: #646d68;
+  --color-background-light: #fbfaf6;
+  --color-surface-element: #eeeae2;
+  --color-surface-light: #f7f4ed;
+  --color-border-color: #dcd6cb;
+  --color-error: #b42318;
+  --color-success: #2f7d5a;
+  --color-warning: #a15c00;
 
-  /* Text Colors */
-  --color-text-light: #2d2d2d;
-  --color-text-main: #1f2937;
-  --color-text-secondary: #6b7280;
-
-  /* Surface Colors */
-  --color-background-light: #f8f8f8;
-  --color-surface-element: #f4f4f4;
-  --color-surface-light: #f9fafb;
-
-  /* Border Colors */
-  --color-border-color: #e5e7eb;
-
-  /* State Colors */
-  --color-error: #ef4444;
-  --color-success: #22c55e;
-  --color-warning: #f59e0b;
-
-  /* Typography */
   --font-headline: "Cormorant Garamond", serif;
   --font-body: "Montserrat", sans-serif;
+
+  /* Five-size type scale: 12 / 14 / 16 / 24 / 48 */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.6rem;
+  --text-lg: var(--text-base);
+  --text-lg--line-height: var(--text-base--line-height);
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.85rem;
+  --text-2xl: var(--text-xl);
+  --text-2xl--line-height: var(--text-xl--line-height);
+  --text-3xl: var(--text-xl);
+  --text-3xl--line-height: var(--text-xl--line-height);
+  --text-4xl: 3rem;
+  --text-4xl--line-height: 1.05;
+  --text-5xl: var(--text-4xl);
+  --text-5xl--line-height: var(--text-4xl--line-height);
+  --text-6xl: var(--text-4xl);
+  --text-6xl--line-height: var(--text-4xl--line-height);
+
+  --shadow-soft: 0 18px 50px rgb(31 64 56 / 0.1);
+  --shadow-float: 0 24px 70px rgb(20 43 36 / 0.16);
+}
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    min-width: 320px;
+    scroll-behavior: smooth;
+    background: var(--color-background-light);
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--color-background-light);
+    color: var(--color-text-main);
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-headline);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-text-main);
+  }
 }
 
 /* Material Symbols Configuration */
@@ -109,5 +178,16 @@
 
   .animate-scale-up {
     animation: scaleUp 0.2s ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

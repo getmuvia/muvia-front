@@ -3,7 +3,7 @@
     <app-page-header [productCount]="displayTotal()" />
 
     <!-- Main content area with flex-grow to push footer down -->
-    <main class="flex-grow max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full bg-background-light">
+    <main class="flex-grow max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full bg-background-light">
         <!-- Filter Bar -->
         <app-filter-bar [categories]="categories()" [activeFilters]="activeFilters()" [selectedSort]="selectedSort()"
             [viewMode]="viewMode()" (filterToggle)="onFilterToggle()" (removeFilter)="onRemoveFilter($event)"

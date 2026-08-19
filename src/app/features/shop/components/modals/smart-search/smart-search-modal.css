@@ -19,6 +19,6 @@
 
 /* Kbd styling */
 kbd {
-    font-size: 9px;
+    font-size: var(--text-xs);
     line-height: 1;
 }

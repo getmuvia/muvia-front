@@ -1,16 +1,16 @@
 <!-- Header / Logo Area -->
 <div class="flex items-center gap-3 mb-10">
     <a routerLink="/home" class="flex items-center gap-3 cursor-pointer group">
-        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white">
-            <span class="material-symbols-outlined text-2xl">grid_view</span>
+        <div class="flex h-10 w-10 items-center justify-center rounded-full border border-primary/30 bg-primary/5 text-primary">
+            <span class="font-headline text-xl font-bold leading-none">M</span>
         </div>
-        <h2 class="text-text-light text-xl font-bold tracking-tight">DecoMarket</h2>
+        <h2 class="text-text-light text-xl font-headline font-semibold tracking-[0.04em]">Muvia</h2>
     </a>
 </div>
 
 <!-- Page Heading -->
 <div class="mb-8">
-    <h1 class="font-serif text-4xl font-bold tracking-tight text-text-light mb-2">
+    <h1 class="font-headline text-4xl font-semibold tracking-tight text-text-light mb-2">
         Crear cuenta
     </h1>
     <p class="text-base text-text-light/60">
@@ -108,7 +108,7 @@
     <!-- Action Button -->
     <div class="pt-2">
         <button type="submit" [disabled]="isLoading()"
-            class="flex w-full justify-center rounded-lg bg-primary px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
+            class="flex w-full justify-center rounded-full bg-primary px-3 py-3.5 text-sm font-bold leading-6 text-white shadow-sm hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed">
             @if (isLoading()) {
             <span class="animate-spin mr-2">⟳</span>
             }

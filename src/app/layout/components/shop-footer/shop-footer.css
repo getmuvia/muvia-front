@@ -1,0 +1,15 @@
+.muvia-footer h3 {
+    color: rgb(255 255 255 / 0.92);
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+}
+
+.muvia-footer p,
+.muvia-footer a {
+    color: rgb(255 255 255 / 0.65);
+}
+
+.muvia-footer a:hover {
+    color: var(--color-accent);
+}

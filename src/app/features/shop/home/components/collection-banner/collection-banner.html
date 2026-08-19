@@ -1,19 +1,19 @@
-<section class="w-full py-10 md:py-16">
+<section class="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8">
 
-    <div class="relative bg-text-light/5 overflow-hidden w-full">
+    <div class="relative max-w-[1440px] mx-auto bg-surface-element overflow-hidden w-full rounded-3xl shadow-soft">
 
         <!-- Layout para pantallas medianas y grandes: imagen completa con contenido al lado -->
         <div class="hidden md:flex items-stretch">
 
             <!-- Imagen - altura define el contenedor, ancho se adapta -->
-            <div class="shrink-0 max-w-[50%]">
-                <img [src]="promo().image" [alt]="promo().title" class="h-auto w-auto max-h-[500px] object-cover" />
+            <div class="relative w-1/2 min-h-[500px]">
+                <img [src]="promo().image" [alt]="promo().title" class="absolute inset-0 h-full w-full object-cover" />
             </div>
 
             <!-- Contenido - se expande para llenar el espacio restante -->
             <div class="flex-1 p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
 
-                <h2 class="text-4xl font-headline font-bold tracking-tight text-text-light">
+                <h2 class="text-xl lg:text-4xl font-headline font-semibold tracking-tight text-text-light">
                     {{ promo().title }}
                 </h2>
 
@@ -23,7 +23,7 @@
 
                 <div class="mt-6">
                     <a [routerLink]="promo().link" [queryParams]="promo().queryParams"
-                        class="inline-block rounded-lg bg-primary px-5 py-3 text-base font-medium text-white shadow hover:opacity-90 transition-opacity font-body cursor-pointer">
+                        class="inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm hover:-translate-y-0.5 hover:shadow-soft transition-all font-body cursor-pointer">
                         Ver colección
                     </a>
                 </div>
@@ -39,7 +39,7 @@
                     class="w-full h-full object-cover" />
             </div>
             <div class="p-8 text-center flex flex-col gap-4">
-                <h2 class="text-4xl font-headline font-bold tracking-tight text-text-light">
+                <h2 class="text-xl font-headline font-semibold tracking-tight text-text-light">
                     {{ promo().title }}
                 </h2>
                 <p class="text-text-light/80 font-body">
@@ -47,7 +47,7 @@
                 </p>
                 <div class="mt-2">
                     <a [routerLink]="promo().link" [queryParams]="promo().queryParams"
-                        class="inline-block rounded-lg bg-primary px-5 py-3 text-base font-medium text-white shadow hover:opacity-90 transition-opacity font-body cursor-pointer">
+                        class="inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm hover:shadow-soft transition-all font-body cursor-pointer">
                         Ver colección
                     </a>
                 </div>
