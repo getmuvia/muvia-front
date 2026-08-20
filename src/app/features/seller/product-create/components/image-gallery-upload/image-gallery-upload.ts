@@ -1,17 +1,16 @@
-import { Component, input, output, signal, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, output, signal, computed, ChangeDetectionStrategy, model } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
     selector: 'app-image-gallery-upload',
     imports: [],
     templateUrl: './image-gallery-upload.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './image-gallery-upload.css',
 })
 export class ImageGalleryUpload {
-    assets = input<CreateProductAsset[]>([]);
-    assetsChange = output<CreateProductAsset[]>();
-    fileSelected = output<{ url: string; file: File }>();
+    readonly assets = model<CreateProductAsset[]>([]);
+    readonly fileSelected = output<{ url: string; file: File }>();
 
     isDragging = signal(false);
     readonly maxImages = 5;
@@ -54,32 +53,41 @@ export class ImageGalleryUpload {
         const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
         const maxSize = 5 * 1024 * 1024;
 
-        Array.from(files).forEach(file => {
-            if (this.assets().length >= this.maxImages) return;
-            if (!validTypes.includes(file.type) || file.size > maxSize) return;
+        let updated = [...this.assets()];
+        let assignPrimary = isPrimary || !updated.some(asset => asset.isPrimary);
+
+        for (const file of Array.from(files)) {
+            if (updated.length >= this.maxImages) break;
+            if (!validTypes.includes(file.type) || file.size > maxSize) continue;
 
             const url = URL.createObjectURL(file);
-            let updated = [...this.assets()];
-            if (isPrimary) {
+            if (assignPrimary) {
                 updated = updated.map(a => ({ ...a, isPrimary: false }));
             }
 
             updated.push({
                 url,
                 type: 'image',
-                isPrimary: isPrimary && !this.primaryImage(),
+                isPrimary: assignPrimary,
                 metadata: { alt: file.name.replace(/\.[^/.]+$/, '') }
             });
             this.fileSelected.emit({ url, file });
-            this.assetsChange.emit(updated);
-        });
+            assignPrimary = false;
+        }
+
+        this.assets.set(updated);
     }
 
     removeImage(url: string): void {
-        this.assetsChange.emit(this.assets().filter(a => a.url !== url));
+        const remaining = this.assets().filter(a => a.url !== url);
+        if (remaining.length > 0 && !remaining.some(asset => asset.isPrimary)) {
+            remaining[0] = { ...remaining[0], isPrimary: true };
+        }
+        this.assets.set(remaining);
+        URL.revokeObjectURL(url);
     }
 
     setPrimary(url: string): void {
-        this.assetsChange.emit(this.assets().map(a => ({ ...a, isPrimary: a.url === url })));
+        this.assets.set(this.assets().map(a => ({ ...a, isPrimary: a.url === url })));
     }
 }

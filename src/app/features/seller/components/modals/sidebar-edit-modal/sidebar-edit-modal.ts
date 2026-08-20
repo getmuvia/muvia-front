@@ -1,6 +1,12 @@
-import { Component, input, output, signal, effect, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, effect, inject, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
+
+export interface SidebarFormData {
+    aboutMe: string;
+    businessHours: BusinessHours;
+    socialLinks: SocialLink[];
+}
 
 @Component({
     selector: 'app-sidebar-edit-modal',
@@ -109,19 +115,19 @@ import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
       </div>
     }
   `,
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styles: []
 })
 export class SidebarEditModal {
-    isOpen = input<boolean>(false);
-    initialData = input<any>(null);
-    isLoading = input<boolean>(false);
+    readonly isOpen = input(false);
+    readonly initialData = input<SidebarFormData | null>(null);
+    readonly isLoading = input(false);
 
-    save = output<any>();
-    closeModal = output<void>();
+    readonly save = output<SidebarFormData>();
+    readonly closeModal = output<void>();
 
-    fb = inject(FormBuilder);
-    form: FormGroup;
+    private readonly fb = inject(FormBuilder);
+    readonly form: FormGroup;
 
     weekDays = [
         { key: 'monday', label: 'Lunes' },
@@ -149,8 +155,9 @@ export class SidebarEditModal {
         });
 
         effect(() => {
-            if (this.isOpen() && this.initialData()) {
-                this.patchForm(this.initialData());
+            const data = this.initialData();
+            if (this.isOpen() && data) {
+                this.patchForm(data);
             }
         });
     }
@@ -159,7 +166,7 @@ export class SidebarEditModal {
         return this.form.get('socialLinks') as FormArray;
     }
 
-    addSocialLink(data: SocialLink = { name: '', url: '', icon: 'language' }) {
+    addSocialLink(data: SocialLink = { name: '', url: '', icon: 'language' }): void {
         this.socialLinksControls.push(this.fb.group({
             name: [data.name, Validators.required],
             url: [data.url, Validators.required],
@@ -167,12 +174,12 @@ export class SidebarEditModal {
         }));
     }
 
-    removeSocialLink(index: number) {
+    removeSocialLink(index: number): void {
         this.socialLinksControls.removeAt(index);
         this.form.markAsDirty();
     }
 
-    patchForm(data: any) {
+    private patchForm(data: SidebarFormData): void {
         this.form.patchValue({
             aboutMe: data.aboutMe || ''
         })
@@ -193,13 +200,12 @@ export class SidebarEditModal {
         }
     }
 
-    onSubmit() {
+    onSubmit(): void {
         if (this.form.valid) {
-            const formValue = { ...this.form.value };
+            const formValue = this.form.getRawValue() as SidebarFormData;
 
             if (formValue.businessHours) {
-                Object.keys(formValue.businessHours).forEach(key => {
-                    const day = formValue.businessHours[key];
+                Object.values(formValue.businessHours).forEach(day => {
                     if (day.isClosed) {
                         day.open = '00:00';
                         day.close = '00:00';
@@ -211,7 +217,7 @@ export class SidebarEditModal {
         }
     }
 
-    close() {
+    close(): void {
         this.closeModal.emit();
     }
 }

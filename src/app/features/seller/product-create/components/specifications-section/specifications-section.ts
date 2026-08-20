@@ -5,26 +5,27 @@ import { FormField, FieldTree } from '@angular/forms/signals';
     selector: 'app-specifications-section',
     imports: [FormField],
     templateUrl: './specifications-section.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './specifications-section.css',
 })
 export class SpecificationsSection {
-    weightField = input.required<FieldTree<string>>();
-    materialField = input.required<FieldTree<string>>();
-    colorField = input.required<FieldTree<string>>();
+    readonly weightField = input.required<FieldTree<string>>();
+    readonly materialField = input.required<FieldTree<string>>();
+    readonly colorField = input.required<FieldTree<string>>();
 
-    dimensionWidthField = input.required<FieldTree<number>>();
-    dimensionHeightField = input.required<FieldTree<number>>();
-    dimensionDepthField = input.required<FieldTree<number>>();
-    dimensionUnitField = input.required<FieldTree<string>>();
+    readonly dimensionWidthField = input.required<FieldTree<number>>();
+    readonly dimensionHeightField = input.required<FieldTree<number>>();
+    readonly dimensionDepthField = input.required<FieldTree<number>>();
+    readonly dimensionUnitField = input.required<FieldTree<string>>();
 
     isFieldInvalid(field: FieldTree<unknown>): boolean {
-        const f = field as any;
-        return f && f.touched && f.touched() && f.errors && f.errors().length > 0;
+        const state = field();
+        return state.touched() && state.errors().length > 0;
     }
     
     getFieldErrors(field: FieldTree<unknown>): { message: string }[] {
-        const f = field as any;
-        return (f.errors && f.errors()) || [];
+        return field().errors().map(error => ({
+            message: error.message ?? 'Campo inválido'
+        }));
     }
 }

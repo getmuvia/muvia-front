@@ -4,12 +4,12 @@ import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-butto
 @Component({
     selector: 'app-seller-cover-banner',
     imports: [EditTriggerButton],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './seller-cover-banner.html'
 })
 export class SellerCoverBanner {
-    coverImage = input<string | null>(null);
-    edit = output<void>();
+    readonly coverImage = input<string | null>(null);
+    readonly edit = output<void>();
 
     coverImageUrl = computed(() => {
         return this.coverImage();

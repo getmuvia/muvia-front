@@ -1,14 +1,14 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { LoggerService } from '@core/services/logger/logger';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
     selector: 'app-virtual-staging',
-    imports: [CommonModule],
+    imports: [],
     templateUrl: './virtual-staging.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './virtual-staging.css'
 })
 export class VirtualStaging {
@@ -55,15 +55,14 @@ export class VirtualStaging {
 
         this.isUploading.set(true);
 
-        this.stagingService.analyzeRoom(file).subscribe({
-            next: (response) => {
-                this.logger.info('Room analyzed successfully', 'VirtualStaging');
-                this.router.navigate(['/virtual-staging/result']);
-            },
-            error: (error) => {
-                this.logger.error('Analysis failed', error, 'VirtualStaging');
-                this.isUploading.set(false);
-            }
-        });
+        try {
+            await firstValueFrom(this.stagingService.analyzeRoom(file));
+            this.logger.info('Room analyzed successfully', undefined, 'VirtualStaging');
+            await this.router.navigate(['/virtual-staging/result']);
+        } catch (error) {
+            this.logger.error('Analysis failed', error, 'VirtualStaging');
+        } finally {
+            this.isUploading.set(false);
+        }
     }
 }

@@ -1,20 +1,21 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, OnInit, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-seller-header',
-  imports: [RouterLink, NgClass],
+  imports: [RouterLink],
   templateUrl: './seller-header.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './seller-header.css',
 })
 export class SellerHeader implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   currentUser = this.authService.currentUser;
   isTransparent = signal<boolean>(false);
@@ -24,7 +25,8 @@ export class SellerHeader implements OnInit {
     this.checkRoute();
 
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
       this.checkRoute();
     });

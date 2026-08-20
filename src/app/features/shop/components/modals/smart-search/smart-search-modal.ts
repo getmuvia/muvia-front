@@ -4,7 +4,7 @@ import {
   signal,
   computed,
   output,
-  effect,
+  afterNextRender,
   ElementRef,
   viewChild,
   HostListener,
@@ -18,12 +18,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
 import { LoggerService } from '@core/services/logger/logger';
 import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
+import { EMPTY, Subject, catchError, map, of, switchMap, tap, timer } from 'rxjs';
 
 @Component({
     selector: 'app-smart-search-modal',
     imports: [NgOptimizedImage, CurrencyPipe],
     templateUrl: './smart-search-modal.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './smart-search-modal.css',
 })
 export class SmartSearchModal {
@@ -31,11 +32,12 @@ export class SmartSearchModal {
     private readonly router = inject(Router);
     private readonly searchService = inject(HybridSearchService);
     private readonly logger = inject(LoggerService);
+    private readonly searchRequests = new Subject<string>();
 
     readonly searchInput = viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
     /** Event emitted when modal should close */
-    close = output<void>();
+    readonly close = output<void>();
 
     /** Search state */
     query = signal('');
@@ -52,14 +54,36 @@ export class SmartSearchModal {
         this.query().length >= 2 && !this.isLoading() && !this.hasResults() && !this.error()
     );
 
-    private searchTimeout: ReturnType<typeof setTimeout> | null = null;
-
     constructor() {
-        effect(() => {
-            const input = this.searchInput();
-            if (input) {
-                setTimeout(() => input.nativeElement.focus(), 50);
-            }
+        afterNextRender(() => this.searchInput()?.nativeElement.focus());
+
+        this.searchRequests.pipe(
+            tap(query => {
+                this.selectedIndex.set(-1);
+                this.error.set(null);
+
+                if (query.length < 2) {
+                    this.results.set([]);
+                    this.isLoading.set(false);
+                }
+            }),
+            switchMap(query => query.length < 2
+                ? EMPTY
+                : timer(600).pipe(
+                    tap(() => this.isLoading.set(true)),
+                    switchMap(() => this.searchService.search(query, HYBRID_SEARCH_LIMITS.MODAL)),
+                    map(response => response.results),
+                    catchError((error: HttpErrorResponse) => {
+                        this.logger.error('Hybrid search failed', error, 'SmartSearchModal');
+                        this.error.set('Error al buscar. Intenta de nuevo.');
+                        return of([] as HybridSearchResult[]);
+                    })
+                )
+            ),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(results => {
+            this.results.set(results);
+            this.isLoading.set(false);
         });
     }
 
@@ -100,45 +124,7 @@ export class SmartSearchModal {
         const input = event.target as HTMLInputElement;
         const value = input.value.trim();
         this.query.set(value);
-        this.selectedIndex.set(-1);
-
-        if (this.searchTimeout) {
-            clearTimeout(this.searchTimeout);
-        }
-
-        if (value.length < 2) {
-            this.results.set([]);
-            this.error.set(null);
-            return;
-        }
-
-        this.searchTimeout = setTimeout(() => {
-            this.performSearch(value);
-        }, 600);
-    }
-
-    /**
-     * Executes the hybrid search via the service.
-     * Updates results or sets error state depending on the response.
-     * @param query Search term
-     */
-    performSearch(query: string): void {
-        this.isLoading.set(true);
-        this.error.set(null);
-
-        this.searchService.search(query, HYBRID_SEARCH_LIMITS.MODAL).pipe(
-            takeUntilDestroyed(this.destroyRef)
-        ).subscribe({
-            next: (response) => {
-                this.results.set(response.results);
-                this.isLoading.set(false);
-            },
-            error: (err: HttpErrorResponse) => {
-                this.logger.error('Hybrid search failed', err, 'SmartSearchModal');
-                this.error.set('Error al buscar. Intenta de nuevo.');
-                this.isLoading.set(false);
-            }
-        });
+        this.searchRequests.next(value);
     }
 
     private navigateResults(direction: number): void {

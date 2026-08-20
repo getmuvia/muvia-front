@@ -6,7 +6,7 @@ import { Product } from '@core/models/product/product';
   selector: 'app-new-arrivals',
   imports: [ProductCard],
   templateUrl: './new-arrivals.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './new-arrivals.css',
 })
 export class NewArrivals {

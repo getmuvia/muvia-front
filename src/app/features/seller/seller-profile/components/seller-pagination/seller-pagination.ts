@@ -4,14 +4,14 @@ import { Component, input, output, computed, ChangeDetectionStrategy } from '@an
     selector: 'app-seller-pagination',
     imports: [],
     templateUrl: './seller-pagination.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './seller-pagination.css',
 })
 export class SellerPagination {
-    currentPage = input<number>(1);
-    totalPages = input<number>(1);
+    readonly currentPage = input<number>(1);
+    readonly totalPages = input<number>(1);
 
-    pageChange = output<number>();
+    readonly pageChange = output<number>();
 
     visiblePages = computed(() => {
         const current = this.currentPage();

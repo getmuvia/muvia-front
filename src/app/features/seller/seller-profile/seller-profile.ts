@@ -1,6 +1,4 @@
-import { Component, inject, signal, afterNextRender, computed, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject, signal, afterNextRender, computed, ChangeDetectionStrategy } from '@angular/core';
 import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
@@ -9,8 +7,9 @@ import { AuthService } from '@core/auth/services/auth';
 import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 import { ImageEditorModal } from '../components/modals/image-editor-modal/image-editor-modal';
-import { SidebarEditModal } from '../components/modals/sidebar-edit-modal/sidebar-edit-modal';
+import { SidebarEditModal, SidebarFormData } from '../components/modals/sidebar-edit-modal/sidebar-edit-modal';
 import { SellerCoverBanner, SellerProfileHeader, SellerSidebar, SellerFilterChips, SellerProductGrid, SellerPagination } from './components';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-seller-profile',
@@ -27,11 +26,10 @@ import { SellerCoverBanner, SellerProfileHeader, SellerSidebar, SellerFilterChip
   ],
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProductStore]
 })
 export class SellerProfile {
-  private readonly destroyRef = inject(DestroyRef);
   private readonly logger = inject(LoggerService);
   readonly productStore = inject(ProductStore);
   private readonly userService = inject(UserService);
@@ -50,7 +48,7 @@ export class SellerProfile {
   products = this.productStore.products;
 
   isProfileLoading = computed(() => !this.userService.vendorProfile());
-  isProductsLoading = this.productStore['isLoading'];
+  isProductsLoading = this.productStore.isLoading;
 
   currentPage = 1;
   totalPages = 8;
@@ -110,52 +108,31 @@ export class SellerProfile {
       }
     }
 
-    // 1. Upload File
-    this.uploadFileService.uploadFile(fileToUpload, `users/${userId}`).pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (response) => {
-        const url = response.url;
-
-        // 2. Update Profile (Service handles optimistic update)
-        const updateData = { [field]: url };
-        const payload = { vendorProfile: updateData };
-
-        this.userService.updateProfile(payload).pipe(
-          takeUntilDestroyed(this.destroyRef)
-        ).subscribe({
-          next: () => {
-            this.isModalOpen.set(false);
-            this.isSaving.set(false);
-          },
-          error: (error: HttpErrorResponse) => {
-            this.logger.error('Failed to update profile', error, 'SellerProfile');
-            this.isSaving.set(false);
-          }
-        });
-      },
-      error: (error: HttpErrorResponse) => {
-        this.logger.error('Failed to upload file', error, 'SellerProfile');
-        this.isSaving.set(false);
-      }
-    });
+    try {
+      const response = await firstValueFrom(
+        this.uploadFileService.uploadFile(fileToUpload, `users/${userId}`)
+      );
+      const payload = { vendorProfile: { [field]: response.url } };
+      await firstValueFrom(this.userService.updateProfile(payload));
+      this.isModalOpen.set(false);
+    } catch (error) {
+      this.logger.error('Failed to save profile image', error, 'SellerProfile');
+    } finally {
+      this.isSaving.set(false);
+    }
   }
 
-  onSaveSidebarInfo(data: any) {
+  async onSaveSidebarInfo(data: SidebarFormData): Promise<void> {
     this.isSaving.set(true);
     const payload = { vendorProfile: data };
-    this.userService.updateProfile(payload).pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: () => {
-        this.isSidebarModalOpen.set(false);
-        this.isSaving.set(false);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.logger.error('Failed to update sidebar info', error, 'SellerProfile');
-        this.isSaving.set(false);
-      }
-    });
+    try {
+      await firstValueFrom(this.userService.updateProfile(payload));
+      this.isSidebarModalOpen.set(false);
+    } catch (error) {
+      this.logger.error('Failed to update sidebar info', error, 'SellerProfile');
+    } finally {
+      this.isSaving.set(false);
+    }
   }
 
   onFollow(): void {

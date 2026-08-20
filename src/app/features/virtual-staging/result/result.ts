@@ -1,27 +1,30 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, computed, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { VirtualStagingResponse, StagingProduct } from '@core/models/ai/virtual-staging.models';
 import { ProductCard } from '@shared/components/product-card/product-card';
 import { Product } from '@core/models/product/product';
+import { LoggerService } from '@core/services/logger/logger';
 
 @Component({
     selector: 'app-result',
-    imports: [CommonModule, ProductCard],
+    imports: [ProductCard],
     templateUrl: './result.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './result.css'
 })
 export class Result implements OnInit {
-    private readonly route = inject(ActivatedRoute);
     private readonly router = inject(Router);
     private readonly stagingService = inject(VirtualStagingService);
+    private readonly logger = inject(LoggerService);
 
     result = signal<VirtualStagingResponse | null>(null);
     originalImageUrl = this.stagingService.originalImageUrl;
     isLoading = signal(true);
     sliderPosition = signal(50);
+    readonly suggestedProducts = computed(() =>
+        (this.result()?.suggestedProducts ?? []).map(product => this.mapToProduct(product))
+    );
 
     ngOnInit(): void {
         const result = this.stagingService.currentResult();
@@ -40,7 +43,7 @@ export class Result implements OnInit {
         this.sliderPosition.set(Number(input.value));
     }
 
-    mapToProduct(stagingProduct: StagingProduct): Product {
+    private mapToProduct(stagingProduct: StagingProduct): Product {
         return {
             id: stagingProduct.id,
             title: stagingProduct.title,
@@ -69,7 +72,7 @@ export class Result implements OnInit {
             specifications: {},
             keywords: [],
             createdAt: new Date().toISOString()
-        } as Product;
+        };
     }
 
     async downloadImage(): Promise<void> {
@@ -78,13 +81,15 @@ export class Result implements OnInit {
 
         try {
             const response = await fetch(imageUrl);
+            if (!response.ok) throw new Error(`Download failed with status ${response.status}`);
             const blob = await response.blob();
 
             const url = window.URL.createObjectURL(blob);
 
             const a = document.createElement('a');
             a.href = url;
-            a.download = `iter-ai-staging-${new Date().getTime()}.png`;
+            a.download = `muvia-staging-${new Date().getTime()}.png`;
+            a.rel = 'noopener noreferrer';
             document.body.appendChild(a);
 
             a.click();
@@ -92,8 +97,8 @@ export class Result implements OnInit {
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
         } catch (error) {
-            console.error('Error downloading image:', error);
-            window.open(imageUrl, '_blank');
+            this.logger.error('Error downloading image', error, 'VirtualStagingResult');
+            window.open(imageUrl, '_blank', 'noopener,noreferrer');
         }
     }
 }

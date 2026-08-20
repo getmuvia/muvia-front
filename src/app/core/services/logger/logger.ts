@@ -1,4 +1,4 @@
-import { Injectable, inject, isDevMode } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 

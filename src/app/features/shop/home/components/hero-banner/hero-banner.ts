@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
   selector: 'app-hero-banner',
   imports: [NgOptimizedImage, RouterLink],
   templateUrl: './hero-banner.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './hero-banner.css',
 })
 export class HeroBanner {

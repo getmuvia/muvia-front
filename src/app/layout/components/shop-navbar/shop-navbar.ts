@@ -1,4 +1,5 @@
-import { Component, computed, inject, signal, OnInit, HostListener, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, HostListener, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
@@ -10,19 +11,21 @@ import { SmartSearchModal } from '@features/shop/components/modals/smart-search/
   selector: 'app-shop-navbar',
   imports: [RouterLink, NgClass, SmartSearchModal],
   templateUrl: './shop-navbar.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './shop-navbar.css',
 })
 export class ShopNavbar implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
   isAuthenticated = this.authService.isAuthenticated;
   currentUser = this.authService.currentUser;
   accountRoute = computed(() => this.authService.getPostAuthRoute());
 
   isTransparent = signal<boolean>(false);
+  isOverlay = signal<boolean>(false);
   isSearchOpen = signal<boolean>(false);
   isMobileMenuOpen = signal<boolean>(false);
 
@@ -39,7 +42,8 @@ export class ShopNavbar implements OnInit {
     this.checkRoute();
 
     this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd),
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
       this.checkRoute();
     });
@@ -71,7 +75,14 @@ export class ShopNavbar implements OnInit {
       route = route.firstChild;
     }
 
-    const style = route.snapshot.data['headerStyle'];
+    const path = this.router.url.split(/[?#]/, 1)[0];
+    const fallbackStyle = path === '/home' || path === '/products'
+      ? 'transparent'
+      : path.startsWith('/auth/')
+        ? 'overlay'
+        : undefined;
+    const style = route.snapshot.data['headerStyle'] ?? fallbackStyle;
     this.isTransparent.set(style === 'transparent');
+    this.isOverlay.set(style === 'overlay');
   }
 }

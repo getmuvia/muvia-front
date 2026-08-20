@@ -6,26 +6,27 @@ import { Category } from '@core/models/category/category';
     selector: 'app-basic-info-section',
     imports: [FormField],
     templateUrl: './basic-info-section.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './basic-info-section.css',
 })
 export class BasicInfoSection {
-    titleField = input.required<FieldTree<string>>();
-    descriptionField = input.required<FieldTree<string>>();
-    priceField = input.required<FieldTree<number>>();
-    stockField = input.required<FieldTree<number>>();
-    categoryIdField = input.required<FieldTree<string>>();
+    readonly titleField = input.required<FieldTree<string>>();
+    readonly descriptionField = input.required<FieldTree<string>>();
+    readonly priceField = input.required<FieldTree<number>>();
+    readonly stockField = input.required<FieldTree<number>>();
+    readonly categoryIdField = input.required<FieldTree<string>>();
 
-    categories = input<Category[]>([]);
-    isLoadingCategories = input(false);
+    readonly categories = input<Category[]>([]);
+    readonly isLoadingCategories = input(false);
 
     isFieldInvalid(field: FieldTree<unknown>): boolean {
-        const f = field as any;
-        return f && f.touched && f.touched() && f.errors && f.errors().length > 0;
+        const state = field();
+        return state.touched() && state.errors().length > 0;
     }
 
     getFieldErrors(field: FieldTree<unknown>): { message: string }[] {
-        const f = field as any;
-        return (f.errors && f.errors()) || [];
+        return field().errors().map(error => ({
+            message: error.message ?? 'Campo inválido'
+        }));
     }
 }

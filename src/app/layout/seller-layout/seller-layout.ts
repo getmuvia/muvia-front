@@ -7,7 +7,7 @@ import { ShopFooter } from '../components/shop-footer/shop-footer';
   selector: 'app-seller-layout',
   imports: [RouterOutlet, SellerHeader, ShopFooter],
   templateUrl: './seller-layout.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './seller-layout.css',
 })
 export class SellerLayout { }

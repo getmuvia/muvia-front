@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, Subscription, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
 import type { User } from '../../auth/models/auth.models';
@@ -12,15 +12,17 @@ import { LoggerService } from '../logger/logger';
 export class UserService {
     private readonly http = inject(HttpClient);
     private readonly logger = inject(LoggerService);
+    private vendorProfileRequest: Subscription | null = null;
 
-    readonly vendorProfile = signal<VendorProfile | null>(null);
+    private readonly _vendorProfile = signal<VendorProfile | null>(null);
+    readonly vendorProfile = this._vendorProfile.asReadonly();
 
     updateProfile(data: UpdateVendorProfilePayload): Observable<User> {
         return this.http.patch<User>(API_ENDPOINTS.USERS.ME, data).pipe(
             tap(updatedUser => {
 
                 if (updatedUser.vendorProfile) {
-                    this.vendorProfile.set(updatedUser.vendorProfile);
+                    this._vendorProfile.set(updatedUser.vendorProfile);
                 }
             })
         );
@@ -29,7 +31,7 @@ export class UserService {
     getVendorProfile(userId: string): Observable<VendorResponse> {
         return this.http.get<VendorResponse>(`${API_ENDPOINTS.USERS.VENDOR}/${userId}`).pipe(
             tap(response => {
-                this.vendorProfile.set(response.vendorProfile);
+                this._vendorProfile.set(response.vendorProfile);
             })
         );
     }
@@ -38,15 +40,26 @@ export class UserService {
      * Stale-While-Revalidate strategy for loading profile
      */
     loadVendorProfile(userId: string): void {
-        this.getVendorProfile(userId).subscribe({
+        this.vendorProfileRequest?.unsubscribe();
+        this.vendorProfileRequest = this.getVendorProfile(userId).subscribe({
+            complete: () => {
+                this.vendorProfileRequest = null;
+            },
             error: (error: HttpErrorResponse) => {
                 this.logger.error('Background profile refresh failed', error, 'UserService');
+                this.vendorProfileRequest = null;
             }
         });
     }
 
     getProfile(): Observable<User> {
         return this.http.get<User>(API_ENDPOINTS.USERS.ME);
+    }
+
+    clearProfile(): void {
+        this.vendorProfileRequest?.unsubscribe();
+        this.vendorProfileRequest = null;
+        this._vendorProfile.set(null);
     }
 }
 

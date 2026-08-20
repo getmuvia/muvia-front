@@ -3,7 +3,7 @@ import { Component, input, computed, ChangeDetectionStrategy } from '@angular/co
 @Component({
   selector: 'app-skeleton',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div 
       [className]="computedClasses()"
@@ -13,10 +13,10 @@ import { Component, input, computed, ChangeDetectionStrategy } from '@angular/co
   `
 })
 export class Skeleton {
-  width = input<string>('100%');
-  height = input<string>('1rem');
-  shape = input<'rect' | 'circle'>('rect');
-  className = input<string>('');
+  readonly width = input<string>('100%');
+  readonly height = input<string>('1rem');
+  readonly shape = input<'rect' | 'circle'>('rect');
+  readonly className = input<string>('');
 
   computedClasses = computed(() => {
     const baseClasses = 'animate-pulse bg-text-light/10';

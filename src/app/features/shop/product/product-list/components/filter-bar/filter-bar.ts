@@ -1,5 +1,7 @@
-import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Category } from '@core/models/category/category';
+import { Subject, map, of, switchMap, timer } from 'rxjs';
 
 export interface SortOption {
     value: string;
@@ -10,28 +12,27 @@ export interface SortOption {
     selector: 'app-filter-bar',
     imports: [],
     templateUrl: './filter-bar.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './filter-bar.css',
 })
 export class FilterBar {
-    categories = input<Category[]>([]);
-    activeFilters = input<string[]>([]);
-    selectedSort = input<string>('featured');
-    viewMode = input<'grid' | 'list'>('grid');
+    readonly categories = input<Category[]>([]);
+    readonly activeFilters = input<string[]>([]);
+    readonly selectedSort = input<string>('featured');
+    readonly viewMode = input<'grid' | 'list'>('grid');
 
-    filterToggle = output<void>();
-    removeFilter = output<string>();
-    sortChange = output<string>();
-    viewModeChange = output<'grid' | 'list'>();
-    searchChange = output<string>();
+    readonly filterToggle = output<void>();
+    readonly removeFilter = output<string>();
+    readonly sortChange = output<string>();
+    readonly viewModeChange = output<'grid' | 'list'>();
+    readonly searchChange = output<string>();
     /** Input for the current active search query to display as a chip */
-    activeSearch = input<string>('');
+    readonly activeSearch = input<string>('');
     /** Emitted when the user clears the search chip */
-    clearSearch = output<void>();
+    readonly clearSearch = output<void>();
 
-    searchQuery = signal<string>('');
-
-    private searchTimeout: ReturnType<typeof setTimeout> | null = null;
+    readonly searchQuery = linkedSignal(() => this.activeSearch());
+    private readonly searchRequests = new Subject<{ query: string; immediate: boolean }>();
 
     sortOptions: SortOption[] = [
         { value: 'featured', label: 'Destacados' },
@@ -40,25 +41,26 @@ export class FilterBar {
         { value: 'newest', label: 'Nuevos' },
     ];
 
+    constructor() {
+        this.searchRequests.pipe(
+            switchMap(({ query, immediate }) => immediate
+                ? of(query)
+                : timer(700).pipe(map(() => query))
+            ),
+            takeUntilDestroyed()
+        ).subscribe(query => this.searchChange.emit(query));
+    }
+
     onSearchInput(event: Event): void {
         const input = event.target as HTMLInputElement;
         this.searchQuery.set(input.value);
 
-        // Debounce: wait 400ms after user stops typing
-        if (this.searchTimeout) {
-            clearTimeout(this.searchTimeout);
-        }
-        this.searchTimeout = setTimeout(() => {
-            this.searchChange.emit(input.value);
-        }, 700);
+        this.searchRequests.next({ query: input.value, immediate: false });
     }
 
     onSearchSubmit(event: Event): void {
         event.preventDefault();
-        if (this.searchTimeout) {
-            clearTimeout(this.searchTimeout);
-        }
-        this.searchChange.emit(this.searchQuery());
+        this.searchRequests.next({ query: this.searchQuery(), immediate: true });
     }
 
     onSortChange(event: Event): void {

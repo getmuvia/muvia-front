@@ -9,11 +9,11 @@ import { EmptyState } from '@shared/components/empty-state/empty-state';
     selector: 'app-product-grid',
     imports: [ProductCard, Skeleton, EmptyState],
     templateUrl: './product-grid.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-grid.css',
 })
 export class ProductGrid {
-    products = input<Product[]>([]);
-    isLoading = input<boolean>(false);
-    viewMode = input<'grid' | 'list'>('grid');
+    readonly products = input<Product[]>([]);
+    readonly isLoading = input<boolean>(false);
+    readonly viewMode = input<'grid' | 'list'>('grid');
 }

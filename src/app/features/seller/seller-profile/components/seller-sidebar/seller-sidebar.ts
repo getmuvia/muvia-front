@@ -1,20 +1,20 @@
 import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
-import { SocialLink } from '@core/models/user/vendor-profile';
+import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
 
 @Component({
     selector: 'app-seller-sidebar',
     imports: [EditTriggerButton],
     templateUrl: './seller-sidebar.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './seller-sidebar.css',
 })
 export class SellerSidebar {
-    aboutText = input<string>('');
-    businessHours = input<any>({});
-    socialLinks = input<SocialLink[]>([]);
+    readonly aboutText = input('');
+    readonly businessHours = input<BusinessHours>({});
+    readonly socialLinks = input<SocialLink[]>([]);
 
-    editInfo = output<void>();
+    readonly editInfo = output<void>();
 
     weekDays = [
         { key: 'monday', label: 'Lunes' },

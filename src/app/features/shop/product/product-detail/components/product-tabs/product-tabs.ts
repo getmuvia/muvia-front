@@ -7,11 +7,11 @@ type TabType = 'description' | 'details' | 'shipping';
     selector: 'app-product-tabs',
     imports: [],
     templateUrl: './product-tabs.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-tabs.css',
 })
 export class ProductTabs {
-    product = input.required<Product>();
+    readonly product = input.required<Product>();
 
     activeTab = signal<TabType>('description');
 

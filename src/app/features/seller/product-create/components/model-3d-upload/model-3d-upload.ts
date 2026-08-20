@@ -1,23 +1,20 @@
-import { Component, input, output, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, output, signal, ChangeDetectionStrategy, model } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
     selector: 'app-model-3d-upload',
     imports: [],
     templateUrl: './model-3d-upload.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './model-3d-upload.css',
 })
 export class Model3dUpload {
     // Separate inputs for GLB and USDZ
-    glbAsset = input<CreateProductAsset | null>(null);
-    usdzAsset = input<CreateProductAsset | null>(null);
+    readonly glbAsset = model<CreateProductAsset | null>(null);
+    readonly usdzAsset = model<CreateProductAsset | null>(null);
 
-    // Separate outputs for each format
-    glbAssetChange = output<CreateProductAsset | null>();
-    usdzAssetChange = output<CreateProductAsset | null>();
-    glbFileSelected = output<{ url: string; file: File }>();
-    usdzFileSelected = output<{ url: string; file: File }>();
+    readonly glbFileSelected = output<{ url: string; file: File }>();
+    readonly usdzFileSelected = output<{ url: string; file: File }>();
 
     isDraggingGlb = signal(false);
     isDraggingUsdz = signal(false);
@@ -53,8 +50,10 @@ export class Model3dUpload {
         const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
         if (!['.glb', '.gltf'].includes(ext)) return;
 
+        const previousUrl = this.glbAsset()?.url;
+        if (previousUrl?.startsWith('blob:')) URL.revokeObjectURL(previousUrl);
         const url = URL.createObjectURL(file);
-        this.glbAssetChange.emit({
+        this.glbAsset.set({
             url,
             type: 'model_3d',
             isPrimary: false,
@@ -64,7 +63,9 @@ export class Model3dUpload {
     }
 
     removeGlbModel(): void {
-        this.glbAssetChange.emit(null);
+        const url = this.glbAsset()?.url;
+        this.glbAsset.set(null);
+        if (url) URL.revokeObjectURL(url);
     }
 
     // USDZ handlers
@@ -98,8 +99,10 @@ export class Model3dUpload {
         const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
         if (ext !== '.usdz') return;
 
+        const previousUrl = this.usdzAsset()?.url;
+        if (previousUrl?.startsWith('blob:')) URL.revokeObjectURL(previousUrl);
         const url = URL.createObjectURL(file);
-        this.usdzAssetChange.emit({
+        this.usdzAsset.set({
             url,
             type: 'model_3d',
             isPrimary: false,
@@ -109,6 +112,8 @@ export class Model3dUpload {
     }
 
     removeUsdzModel(): void {
-        this.usdzAssetChange.emit(null);
+        const url = this.usdzAsset()?.url;
+        this.usdzAsset.set(null);
+        if (url) URL.revokeObjectURL(url);
     }
 }

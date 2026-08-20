@@ -2,16 +2,16 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
   {
-    path: 'seller',
-    renderMode: RenderMode.Prerender
+    path: 'seller/**',
+    renderMode: RenderMode.Client
   },
   {
     path: 'products/:id',
-    renderMode: RenderMode.Server
+    renderMode: RenderMode.Client
   },
   {
-    path: 'seller/products/:id/edit',
-    renderMode: RenderMode.Server
+    path: 'virtual-staging/result',
+    renderMode: RenderMode.Client
   },
   {
     path: '**',
