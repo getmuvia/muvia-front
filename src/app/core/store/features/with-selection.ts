@@ -6,10 +6,13 @@ export interface EntitySelectionState<T> {
     selectedId: string | number | null;
 }
 
-const initialSelectionState: EntitySelectionState<any> = {
-    selectedEntity: null,
-    selectedId: null,
-};
+export interface IdentifiableEntity {
+    id?: string | number;
+}
+
+function initialSelectionState<T>(): EntitySelectionState<T> {
+    return { selectedEntity: null, selectedId: null };
+}
 
 /**
  * SignalStore Feature for managing single entity selection.
@@ -17,12 +20,12 @@ const initialSelectionState: EntitySelectionState<any> = {
  * Adds computed: `hasSelection`.
  * Adds methods: `selectEntity`, `selectId`, `clearSelection`.
  */
-export function withEntitySelection<T>() {
+export function withEntitySelection<T extends IdentifiableEntity>() {
     return signalStoreFeature(
-        withState<EntitySelectionState<T>>(initialSelectionState),
+        withState<EntitySelectionState<T>>(initialSelectionState<T>()),
 
         withComputed(({ selectedEntity, selectedId }) => ({
-            hasSelection: computed(() => !!selectedEntity() || !!selectedId()),
+            hasSelection: computed(() => selectedEntity() !== null || selectedId() !== null),
         })),
         
         withMethods((store) => ({
@@ -31,7 +34,7 @@ export function withEntitySelection<T>() {
             selectEntity(entity: T) {
                 patchState(store, {
                     selectedEntity: entity,
-                    selectedId: (entity as any)?.id || null
+                    selectedId: entity.id ?? null
                 } as Partial<EntitySelectionState<T>>);
             },
 
@@ -42,7 +45,7 @@ export function withEntitySelection<T>() {
 
             /** Clears the current selection */
             clearSelection() {
-                patchState(store, initialSelectionState);
+                patchState(store, initialSelectionState<T>());
             }
         }))
     );

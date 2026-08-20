@@ -6,6 +6,7 @@ import {
     minLength,
     required,
     submit,
+    email,
     validate,
 } from '@angular/forms/signals';
 import { AuthService } from '@core/auth/services/auth';
@@ -18,12 +19,12 @@ import {
 @Component({
     selector: 'app-register',
     imports: [RouterLink, FormField],
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './register.html',
 })
 export class Register {
-    private authService = inject(AuthService);
-    private router = inject(Router);
+    private readonly authService = inject(AuthService);
+    private readonly router = inject(Router);
 
     registerModel = signal<VendorRegisterFormData>({
         businessName: '',
@@ -37,16 +38,7 @@ export class Register {
         minLength(path.businessName, 2, { message: 'El nombre del negocio debe tener al menos 2 caracteres' });
 
         required(path.email, { message: 'El correo electrónico es requerido' });
-        validate(path.email, ({ value }) => {
-            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-            if (value() && !emailRegex.test(value())) {
-                return {
-                    message: 'Ingresa un correo electrónico válido',
-                    kind: 'error',
-                };
-            }
-            return null;
-        });
+        email(path.email, { message: 'Ingresa un correo electrónico válido' });
 
         required(path.password, { message: 'La contraseña es requerida' });
         minLength(path.password, 8, { message: 'La contraseña debe tener al menos 8 caracteres' });
@@ -85,7 +77,7 @@ export class Register {
         return field && field.touched() && field.errors().length > 0;
     }
 
-    onSubmit(event: Event) {
+    onSubmit(event: Event): void {
         event.preventDefault();
 
         submit(this.registerForm, async () => {

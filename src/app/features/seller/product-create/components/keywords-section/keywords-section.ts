@@ -4,12 +4,12 @@ import { Component, input, output, signal, ChangeDetectionStrategy } from '@angu
     selector: 'app-keywords-section',
     imports: [],
     templateUrl: './keywords-section.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './keywords-section.css',
 })
 export class KeywordsSection {
-    keywords = input<string[]>([]);
-    keywordsChange = output<string[]>();
+    readonly keywords = input<string[]>([]);
+    readonly keywordsChange = output<string[]>();
 
     newKeyword = signal('');
 

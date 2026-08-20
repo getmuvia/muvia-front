@@ -5,18 +5,18 @@ import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-butto
     selector: 'app-seller-profile-header',
     imports: [EditTriggerButton],
     templateUrl: './seller-profile-header.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './seller-profile-header.css',
 })
 export class SellerProfileHeader {
-    avatarUrl = input<string>('');
-    sellerName = input<string>('');
-    description = input<string>('');
-    hasCoverImage = input<boolean>(false);
+    readonly avatarUrl = input<string>('');
+    readonly sellerName = input<string>('');
+    readonly description = input<string>('');
+    readonly hasCoverImage = input<boolean>(false);
 
-    editAvatar = output<void>();
-    follow = output<void>();
-    contact = output<void>();
+    readonly editAvatar = output<void>();
+    readonly follow = output<void>();
+    readonly contact = output<void>();
 
     onFollow(): void {
         this.follow.emit();

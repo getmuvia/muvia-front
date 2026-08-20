@@ -4,14 +4,14 @@ import { Component, input, output, ChangeDetectionStrategy } from '@angular/core
     selector: 'app-load-more-button',
     imports: [],
     templateUrl: './load-more-button.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './load-more-button.css',
 })
 export class LoadMoreButton {
-    isLoading = input<boolean>(false);
-    hasMore = input<boolean>(true);
+    readonly isLoading = input<boolean>(false);
+    readonly hasMore = input<boolean>(true);
 
-    loadMore = output<void>();
+    readonly loadMore = output<void>();
 
     onLoadMore(): void {
         if (!this.isLoading() && this.hasMore()) {

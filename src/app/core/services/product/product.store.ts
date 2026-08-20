@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
@@ -13,7 +13,7 @@ import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/
 import { withPagination } from '@core/store/features/with-pagination';
 import { withEntitySelection } from '@core/store/features/with-selection';
 import { STORE_CONFIG } from '@core/store/store.config';
-import { ProductService, SearchParams, PaginatedResponse } from './product';
+import { ProductService, SearchParams } from './product';
 
 interface ProductState {
     products: Product[];

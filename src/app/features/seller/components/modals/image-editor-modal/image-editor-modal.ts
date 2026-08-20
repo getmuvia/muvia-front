@@ -76,19 +76,19 @@ import { Component, input, output, signal, effect, ChangeDetectionStrategy } fro
       </div>
     }
   `,
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styles: []
 })
 export class ImageEditorModal {
-    isOpen = input<boolean>(false);
-    title = input<string>('Editar Imagen');
-    currentImageUrl = input<string>('');
-    mode = input<'cover' | 'avatar'>('cover');
+    readonly isOpen = input<boolean>(false);
+    readonly title = input<string>('Editar Imagen');
+    readonly currentImageUrl = input<string>('');
+    readonly mode = input<'cover' | 'avatar'>('cover');
 
-    isLoading = input<boolean>(false);
+    readonly isLoading = input<boolean>(false);
 
-    save = output<File>();
-    cancel = output<void>();
+    readonly save = output<File>();
+    readonly cancel = output<void>();
 
     previewUrl = signal<string>('');
     selectedFile = signal<File | null>(null);

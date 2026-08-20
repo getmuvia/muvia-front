@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, linkedSignal, input, output, ChangeDetectionStrategy } from '@angular/core';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
@@ -23,34 +23,36 @@ import { Model3dUpload } from '../model-3d-upload/model-3d-upload';
         Model3dUpload
     ],
     templateUrl: './product-form.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-form.css'
 })
 export class ProductForm {
 
     // Signal Inputs
-    initialData = input<ProductFormData | null>(null);
-    categories = input<Category[]>([]);
-    isLoadingCategories = input(true);
-    imageAssets = input<CreateProductAsset[]>([]);
-    model3dGlbAsset = input<CreateProductAsset | null>(null);
-    model3dUsdzAsset = input<CreateProductAsset | null>(null);
-    keywords = input<string[]>([]);
-    isSubmitting = input(false);
-    isEditMode = input(false);
+    readonly initialData = input<ProductFormData | null>(null);
+    readonly categories = input<Category[]>([]);
+    readonly isLoadingCategories = input(true);
+    readonly imageAssets = input<CreateProductAsset[]>([]);
+    readonly model3dGlbAsset = input<CreateProductAsset | null>(null);
+    readonly model3dUsdzAsset = input<CreateProductAsset | null>(null);
+    readonly keywords = input<string[]>([]);
+    readonly isSubmitting = input(false);
+    readonly isEditMode = input(false);
 
     // Signal Outputs
-    formSubmit = output<ProductFormData>();
-    formCancel = output<void>();
-    keywordsChange = output<string[]>();
-    imagesChange = output<CreateProductAsset[]>();
-    glbAssetChange = output<CreateProductAsset | null>();
-    usdzAssetChange = output<CreateProductAsset | null>();
-    fileSelected = output<{ url: string; file: File }>();
-    saveDraft = output<ProductFormData>();
+    readonly formSubmit = output<ProductFormData>();
+    readonly formCancel = output<void>();
+    readonly keywordsChange = output<string[]>();
+    readonly imagesChange = output<CreateProductAsset[]>();
+    readonly glbAssetChange = output<CreateProductAsset | null>();
+    readonly usdzAssetChange = output<CreateProductAsset | null>();
+    readonly fileSelected = output<{ url: string; file: File }>();
+    readonly saveDraft = output<ProductFormData>();
 
     // Local form state
-    productModel = signal<ProductFormData>(INITIAL_PRODUCT_FORM);
+    readonly productModel = linkedSignal<ProductFormData>(() =>
+        this.initialData() ?? { ...INITIAL_PRODUCT_FORM }
+    );
 
     productForm = form(this.productModel, (path) => {
         required(path.title, { message: 'El título es requerido' });
@@ -82,16 +84,6 @@ export class ProductForm {
     // Validation error signals
     keywordsError = signal<string | null>(null);
     imagesError = signal<string | null>(null);
-
-    constructor() {
-        // Sync initial data when it changes
-        effect(() => {
-            const data = this.initialData();
-            if (data) {
-                this.productModel.set(data);
-            }
-        });
-    }
 
     isFieldInvalid(fieldName: keyof ProductFormData): boolean {
         const fieldSignal = this.productForm[fieldName];

@@ -9,6 +9,7 @@ import { Product } from '@core/models/product/product';
 import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
 import { Category } from '@core/models/category/category';
 import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
+import { EMPTY, Subject, catchError, map, of, switchMap, tap } from 'rxjs';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -17,7 +18,7 @@ import { ActivatedRoute, Router } from '@angular/router';
   imports: [PageHeader, FilterBar, ProductGrid, LoadMoreButton],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProductStore]
 })
 export class ProductList implements OnInit {
@@ -28,6 +29,7 @@ export class ProductList implements OnInit {
   readonly store = inject(ProductStore);
   private readonly categoryService = inject(CategoryService);
   private readonly hybridSearchService = inject(HybridSearchService);
+  private readonly hybridSearchRequests = new Subject<string>();
 
   isLoadingMore = computed(() => this.store.isLoading() && this.store.products().length > 0);
 
@@ -53,6 +55,37 @@ export class ProductList implements OnInit {
   selectedSort = signal<string>('featured');
   viewMode = signal<'grid' | 'list'>('grid');
 
+  constructor() {
+    this.hybridSearchRequests.pipe(
+      tap(query => {
+        if (query.length < 2) {
+          this.hybridLoading.set(false);
+          this.hybridError.set(null);
+          this.hybridResults.set([]);
+          return;
+        }
+
+        this.hybridLoading.set(true);
+        this.hybridError.set(null);
+      }),
+      switchMap(query => query.length < 2
+        ? EMPTY
+        : this.hybridSearchService.search(query, HYBRID_SEARCH_LIMITS.PRODUCT_LIST).pipe(
+          map(response => response.results.map(result => this.mapToProduct(result))),
+          catchError((error: HttpErrorResponse) => {
+            this.logger.error('Hybrid search failed', error, 'ProductList');
+            this.hybridError.set('Error en la búsqueda inteligente');
+            return of([] as Product[]);
+          })
+        )
+      ),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(products => {
+      this.hybridResults.set(products);
+      this.hybridLoading.set(false);
+    });
+  }
+
   ngOnInit(): void {
     this.route.queryParamMap.pipe(
       takeUntilDestroyed(this.destroyRef)
@@ -65,8 +98,7 @@ export class ProductList implements OnInit {
         const currentQuery = this.searchQuery();
 
         if (currentQuery) {
-          this.store.searchProducts({ page: 1, search: '' });
-          this.searchQuery.set('');
+          this.searchProducts('');
         } else if (this.store.products().length === 0) {
           this.store.searchProducts({ page: 1, search: '' });
         }
@@ -112,6 +144,7 @@ export class ProductList implements OnInit {
       this.useSmartSearch.set(true);
       this.performHybridSearch(query);
     } else {
+      this.hybridSearchRequests.next(query);
       this.useSmartSearch.set(false);
       this.store.searchProducts({
         page: 1,
@@ -125,23 +158,7 @@ export class ProductList implements OnInit {
    * @param query Search term (must be >= 2 chars)
    */
   private performHybridSearch(query: string): void {
-    this.hybridLoading.set(true);
-    this.hybridError.set(null);
-
-    this.hybridSearchService.search(query, HYBRID_SEARCH_LIMITS.PRODUCT_LIST).pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (response) => {
-        const products = response.results.map(result => this.mapToProduct(result));
-        this.hybridResults.set(products);
-        this.hybridLoading.set(false);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.logger.error('Hybrid search failed', error, 'ProductList');
-        this.hybridError.set('Error en la búsqueda inteligente');
-        this.hybridLoading.set(false);
-      }
-    });
+    this.hybridSearchRequests.next(query);
   }
 
   /** Map HybridSearchResult to Product format for display */
@@ -195,6 +212,7 @@ export class ProductList implements OnInit {
   }
 
   onClearSearch(): void {
+    this.hybridSearchRequests.next('');
     this.searchQuery.set('');
     this.useSmartSearch.set(false);
 

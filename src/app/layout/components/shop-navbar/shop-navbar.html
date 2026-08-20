@@ -1,19 +1,22 @@
-<header [ngClass]="{
-    'absolute top-0 bg-transparent': isTransparent() && !isMobileMenuOpen(),
-    'relative bg-background-light/95 border-b border-border-color backdrop-blur-xl': !isTransparent() && !isMobileMenuOpen(),
-    'fixed top-0 left-0 right-0 bg-background-light/95 border-b border-border-color backdrop-blur-xl': isMobileMenuOpen()
-}" class="z-50 w-full transition-colors duration-300">
+<header [ngClass]="isMobileMenuOpen()
+    ? 'fixed top-0 left-0 right-0 bg-background-light/95 border-b border-border-color backdrop-blur-xl'
+    : isTransparent()
+        ? 'absolute top-0 bg-transparent'
+        : isOverlay()
+            ? 'absolute top-0 bg-background-light/85 border-b border-border-color/80 backdrop-blur-xl shadow-sm'
+            : 'relative bg-background-light/95 border-b border-border-color backdrop-blur-xl'"
+    class="z-50 w-full transition-colors duration-300">
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between whitespace-nowrap h-20">
             <!-- Logo -->
-            <div class="flex items-center gap-3 transition-colors">
+            <a routerLink="/home" class="flex items-center gap-3 transition-colors" aria-label="Ir al inicio de Muvia">
                 <div [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'text-white border-white/40 bg-black/10' : 'text-primary border-primary/30 bg-primary/5'"
                     class="flex size-9 items-center justify-center rounded-full border backdrop-blur-sm">
                     <span class="font-headline text-xl font-bold leading-none">M</span>
                 </div>
                 <h2 [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'text-white' : 'text-text-light'" 
                     class="text-xl font-headline font-semibold tracking-[0.04em]">Muvia</h2>
-            </div>
+            </a>
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center gap-8">
@@ -119,7 +122,7 @@
             <span class="material-symbols-outlined text-xl text-primary">storefront</span>
             <span>Marcas</span>
         </a>
-        <a (click)="closeMobileMenu()" href="/products"
+        <a (click)="closeMobileMenu()" routerLink="/products"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
             <span class="material-symbols-outlined text-xl text-primary">inventory_2</span>
             <span>Productos</span>

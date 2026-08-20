@@ -1,19 +1,9 @@
-<!-- Header / Logo Area -->
-<div class="flex items-center gap-3 mb-10">
-    <a routerLink="/home" class="flex items-center gap-3 cursor-pointer group">
-        <div class="flex h-10 w-10 items-center justify-center rounded-full border border-primary/30 bg-primary/5 text-primary">
-            <span class="font-headline text-xl font-bold leading-none">M</span>
-        </div>
-        <h2 class="text-text-light text-xl font-headline font-semibold tracking-[0.04em]">Muvia</h2>
-    </a>
-</div>
-
 <!-- Page Heading -->
-<div class="mb-8">
+<div class="mb-7 text-center lg:text-left">
     <h1 class="font-headline text-4xl font-semibold tracking-tight text-text-light mb-2">
         Crear cuenta
     </h1>
-    <p class="text-base text-text-light/60">
+    <p class="text-base text-text-secondary">
         Únete a nuestra comunidad y muestra tus objetos al mundo.
     </p>
 </div>
@@ -26,15 +16,15 @@
 }
 
 <!-- Form -->
-<form (submit)="onSubmit($event)" novalidate class="space-y-6">
+<form (submit)="onSubmit($event)" novalidate class="space-y-5">
     <!-- Business Name Field -->
     <div>
-        <label class="block text-sm font-medium leading-6 text-text-light" for="business-name">
+        <label class="block text-sm font-medium leading-6 text-text-main" for="business-name">
             Nombre del Negocio
         </label>
         <div class="mt-2">
             <input [formField]="registerForm.businessName"
-                class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white"
+                class="block h-12 w-full rounded-xl border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="business-name" placeholder="Ej. Studio Decor" type="text" />
         </div>
         @if (isFieldInvalid('businessName')) {
@@ -49,12 +39,12 @@
 
     <!-- Email Field -->
     <div>
-        <label class="block text-sm font-medium leading-6 text-text-light" for="email">
+        <label class="block text-sm font-medium leading-6 text-text-main" for="email">
             Email
         </label>
         <div class="mt-2">
             <input [formField]="registerForm.email" autocomplete="email"
-                class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white"
+                class="block h-12 w-full rounded-xl border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="email" placeholder="nombre@ejemplo.com" type="text" />
         </div>
         @if (isFieldInvalid('email')) {
@@ -69,16 +59,16 @@
 
     <!-- Password Field -->
     <div>
-        <label class="block text-sm font-medium leading-6 text-text-light" for="password">
+        <label class="block text-sm font-medium leading-6 text-text-main" for="password">
             Contraseña
         </label>
         <div class="relative mt-2">
             <input [formField]="registerForm.password" autocomplete="new-password"
-                class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white pr-10"
+                class="block h-12 w-full rounded-xl border border-border-color bg-surface-light px-4 pr-11 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="password" placeholder="••••••••" [type]="showPassword() ? 'text' : 'password'" />
             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                 <span (click)="togglePasswordVisibility()"
-                    class="material-symbols-outlined text-text-light/60 cursor-pointer text-xl hover:text-primary transition-colors">
+                    class="material-symbols-outlined text-text-secondary cursor-pointer text-xl hover:text-primary transition-colors">
                     {{ showPassword() ? 'visibility' : 'visibility_off' }}
                 </span>
             </div>
@@ -95,12 +85,12 @@
 
     <!-- Description Field (Textarea) -->
     <div>
-        <label class="block text-sm font-medium leading-6 text-text-light" for="description">
+        <label class="block text-sm font-medium leading-6 text-text-main" for="description">
             Descripción
         </label>
         <div class="mt-2">
             <textarea [formField]="registerForm.description"
-                class="block w-full rounded-lg border-0 py-3 px-4 text-text-light shadow-sm ring-1 ring-inset ring-text-light/15 placeholder:text-text-light/60 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-sm sm:leading-6 bg-white resize-none"
+                class="block w-full resize-none rounded-xl border border-border-color bg-surface-light px-4 py-3 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="description" placeholder="Describe brevemente tu estilo o productos..." rows="3"></textarea>
         </div>
     </div>
@@ -118,17 +108,17 @@
 </form>
 
 <!-- Footer Links -->
-<div class="mt-8">
+<div class="mt-7">
     <div class="relative">
         <div aria-hidden="true" class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-text-light/15"></div>
         </div>
         <div class="relative flex justify-center text-sm font-medium leading-6">
-            <span class="bg-background-light px-6 text-text-light/60">O</span>
+            <span class="bg-background-light px-6 text-text-secondary">O</span>
         </div>
     </div>
     <div class="mt-6 text-center">
-        <p class="text-sm text-text-light/60">
+        <p class="text-sm text-text-secondary">
             ¿Ya tienes una cuenta?
             <a routerLink="/auth/login" class="font-bold text-primary hover:text-primary/80 transition-colors ml-1">
                 Inicia sesión
@@ -138,7 +128,7 @@
 </div>
 
 <!-- Terms -->
-<p class="mt-10 text-center text-xs text-text-light/60">
+<p class="mt-7 text-center text-xs text-text-secondary">
     Al registrarte, aceptas nuestros <a class="underline hover:text-primary" href="#">Términos de
         Servicio</a> y <a class="underline hover:text-primary" href="#">Política de Privacidad</a>.
 </p>

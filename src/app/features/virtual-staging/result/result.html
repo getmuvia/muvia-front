@@ -17,7 +17,7 @@
         <div class="relative w-full bg-[var(--color-background-light)] overflow-hidden" style="height: 75vh;">
 
             <!-- Generated Image (Background) -->
-            <img [src]="$safeNavigationMigration(result()?.stagedImageUrl)" alt="Decorated Room"
+            <img [src]="result()?.stagedImageUrl ?? ''" alt="Habitación decorada"
                 class="absolute inset-0 w-full h-full object-contain">
 
             <!-- Original Image (Overlay with Clip Path) - SAME size container -->
@@ -64,8 +64,8 @@
         </h3>
 
         <div class="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
-            @for (product of result()?.suggestedProducts; track product.id) {
-            <app-product-card [product]="mapToProduct(product)"
+            @for (product of suggestedProducts(); track product.id) {
+            <app-product-card [product]="product"
                 class="min-w-[200px] md:min-w-[260px] snap-center block">
             </app-product-card>
             }

@@ -8,7 +8,7 @@ import { CollectionBanner } from './components/collection-banner/collection-bann
   selector: 'app-home',
   imports: [HeroBanner, FeaturedCategories, NewArrivals, CollectionBanner],
   templateUrl: './home.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './home.css',
 })
 export class Home {

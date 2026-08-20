@@ -6,13 +6,13 @@ import { CurrencyPipe } from '@angular/common';
     selector: 'app-product-info',
     imports: [CurrencyPipe],
     templateUrl: './product-info.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-info.css',
 })
 export class ProductInfo {
-    product = input.required<Product>();
+    readonly product = input.required<Product>();
 
-    contactSeller = output<void>();
+    readonly contactSeller = output<void>();
 
     get priceNumber(): number {
         return parseFloat(this.product().price) || 0;

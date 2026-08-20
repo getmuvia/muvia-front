@@ -1,5 +1,5 @@
 import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
-import { ToastService, Toast } from '@core/services/toast/toast';
+import { ToastService } from '@core/services/toast/toast';
 
 @Component({
   selector: 'app-toast-container',
@@ -36,7 +36,7 @@ import { ToastService, Toast } from '@core/services/toast/toast';
       }
     </div>
   `,
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styles: []
 })
 export class ToastContainer {

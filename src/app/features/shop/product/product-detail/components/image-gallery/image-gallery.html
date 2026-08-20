@@ -63,7 +63,7 @@
 
     <!-- Model Viewer (only if loaded) -->
     @if (modelViewerLoaded()) {
-    <model-viewer [attr.src]="glbAsset()?.url" [attr.ios-src]="usdzAsset()?.url" alt="Modelo 3D del producto"
+    <model-viewer #modelViewer [attr.src]="glbAsset()?.url" [attr.ios-src]="usdzAsset()?.url" alt="Modelo 3D del producto"
         camera-controls auto-rotate ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="1"
         style="width: 100%; height: 100%; max-width: 90vw; max-height: 90vh;">
 

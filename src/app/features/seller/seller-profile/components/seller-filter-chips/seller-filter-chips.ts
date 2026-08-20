@@ -10,19 +10,19 @@ export interface FilterChip {
     selector: 'app-seller-filter-chips',
     imports: [],
     templateUrl: './seller-filter-chips.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './seller-filter-chips.css',
 })
 export class SellerFilterChips {
-    chips = input<FilterChip[]>([
+    readonly chips = input<FilterChip[]>([
         { id: 'all', label: 'Todos' },
         { id: 'price', label: 'Precio: Bajo a Alto', hasDropdown: true },
         { id: 'popularity', label: 'Popularidad', hasDropdown: true },
         { id: 'newest', label: 'Novedades', hasDropdown: true },
     ]);
-    activeChipId = input<string>('all');
+    readonly activeChipId = input<string>('all');
 
-    chipSelected = output<string>();
+    readonly chipSelected = output<string>();
 
     onChipClick(chipId: string): void {
         this.chipSelected.emit(chipId);

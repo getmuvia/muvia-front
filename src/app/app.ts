@@ -1,4 +1,4 @@
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastContainer } from '@shared/components/toast-container/toast-container.component';
 
@@ -6,9 +6,7 @@ import { ToastContainer } from '@shared/components/toast-container/toast-contain
   selector: 'app-root',
   imports: [RouterOutlet, ToastContainer],
   templateUrl: './app.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('Muvia');
-}
+export class App {}

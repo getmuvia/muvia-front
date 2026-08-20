@@ -21,7 +21,7 @@ export function extractImageAssets(product: Product): CreateProductAsset[] {
  */
 export function extract3dAsset(product: Product, format: 'glb' | 'usdz'): CreateProductAsset | null {
     const asset = product.assets.find(
-        a => a.type === 'model_3d' && a.metadata?.['format'] === format
+        a => a.type === 'model_3d' && matchesModelFormat(a.metadata?.['format'], format)
     );
 
     if (!asset) return null;
@@ -39,16 +39,19 @@ export function extract3dAsset(product: Product, format: 'glb' | 'usdz'): Create
  */
 export function checkAssetsChanged(
     originalAssets: ProductAsset[],
-    currentImages: CreateProductAsset[],
+    currentAssets: CreateProductAsset[],
     pendingUploadsCount: number
 ): boolean {
     if (pendingUploadsCount > 0) return true;
+    if (originalAssets.length !== currentAssets.length) return true;
 
-    const originalImages = originalAssets.filter(a => a.type === 'image');
-    if (originalImages.length !== currentImages.length) return true;
-
-    const currentUrls = new Set(currentImages.map(a => a.url));
-    return !originalImages.every(a => currentUrls.has(a.url));
+    return originalAssets.some(original => {
+        const current = currentAssets.find(asset => asset.url === original.url);
+        return !current
+            || current.type !== original.type
+            || current.isPrimary !== original.isPrimary
+            || current.metadata?.['format'] !== original.metadata?.['format'];
+    });
 }
 
 /**
@@ -77,7 +80,7 @@ export function buildAssetsForUpdate(
     // Map GLB model
     if (glbAsset) {
         const originalGlb = originalAssets.find(
-            o => o.type === 'model_3d' && o.metadata?.['format'] === 'glb'
+            o => o.type === 'model_3d' && matchesModelFormat(o.metadata?.['format'], 'glb')
         );
         assets.push({
             id: originalGlb?.id,
@@ -117,4 +120,10 @@ export function combineAssets(
     if (glbAsset) assets.push(glbAsset);
     if (usdzAsset) assets.push(usdzAsset);
     return assets;
+}
+
+function matchesModelFormat(value: unknown, expected: 'glb' | 'usdz'): boolean {
+    return expected === 'glb'
+        ? value === 'glb' || value === 'gltf'
+        : value === 'usdz';
 }

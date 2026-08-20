@@ -4,13 +4,13 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
     selector: 'app-page-header',
     imports: [],
     templateUrl: './page-header.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './page-header.css',
 })
 export class PageHeader {
-    subtitle = input<string>('Catálogo 2024');
-    title = input<string>('Colección');
-    titleBold = input<string>('Completa');
-    description = input<string>('Diseño contemporáneo para la vida moderna. Encuentra la pieza perfecta que define tu estilo único.');
-    productCount = input<number>(0);
+    readonly subtitle = input<string>('Catálogo Muvia');
+    readonly title = input<string>('Colección');
+    readonly titleBold = input<string>('Completa');
+    readonly description = input<string>('Diseño contemporáneo para la vida moderna. Encuentra la pieza perfecta que define tu estilo único.');
+    readonly productCount = input<number>(0);
 }

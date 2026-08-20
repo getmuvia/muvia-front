@@ -1,7 +1,7 @@
-import { Component, inject, signal, afterNextRender, DestroyRef, effect, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, input, afterNextRender, DestroyRef, effect, computed, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { ProductStore } from '@core/services/product/product.store';
 import { CategoryService } from '@core/services/category/category';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
@@ -31,14 +31,13 @@ import {
     imports: [ProductForm],
     templateUrl: './product-create.html',
     styleUrl: './product-create.css',
-    changeDetection: ChangeDetectionStrategy.Eager,
+    changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [ProductStore]
 })
 export class ProductCreate {
     private readonly destroyRef = inject(DestroyRef);
     private readonly logger = inject(LoggerService);
     private readonly router = inject(Router);
-    private readonly route = inject(ActivatedRoute);
     private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
     private readonly uploadService = inject(UploadFileService);
@@ -46,8 +45,8 @@ export class ProductCreate {
     private readonly imageOptimizer = inject(ImageOptimizerService);
 
     // Edit mode state
-    productId = signal<string | null>(null);
-    isEditMode = computed(() => !!this.productId());
+    readonly id = input<string | null>(null);
+    isEditMode = computed(() => !!this.id());
     isLoadingProduct = signal(false);
 
     // Form data (passed to child)
@@ -62,19 +61,30 @@ export class ProductCreate {
     model3dGlbAsset = signal<CreateProductAsset | null>(null);
     model3dUsdzAsset = signal<CreateProductAsset | null>(null);
     originalAssets = signal<ProductAsset[]>([]);
-    pendingUploads = new Map<string, File>();
+    readonly pendingUploads = signal<ReadonlyMap<string, File>>(new Map());
 
     // Asset change detection
     hasAssetsChanged = computed(() => checkAssetsChanged(
         this.originalAssets(),
-        this.imageAssets(),
-        this.pendingUploads.size
+        combineAssets(
+            this.imageAssets(),
+            this.model3dGlbAsset(),
+            this.model3dUsdzAsset()
+        ),
+        this.pendingUploads().size
     ));
 
     constructor() {
         afterNextRender(() => {
             this.loadCategories();
-            this.checkEditMode();
+        });
+
+        effect(() => {
+            const id = this.id();
+            if (id) {
+                this.isLoadingProduct.set(true);
+                this.productStore.getProductById(id);
+            }
         });
 
         effect(() => {
@@ -83,15 +93,6 @@ export class ProductCreate {
                 this.populateFromProduct(product);
             }
         });
-    }
-
-    private checkEditMode(): void {
-        const id = this.route.snapshot.paramMap.get('id');
-        if (id) {
-            this.productId.set(id);
-            this.isLoadingProduct.set(true);
-            this.productStore.getProductById(id);
-        }
     }
 
     private populateFromProduct(product: Product): void {
@@ -126,14 +127,26 @@ export class ProductCreate {
     }
 
     onImagesChange(assets: CreateProductAsset[]): void {
+        const activeUrls = new Set(assets.map(asset => asset.url));
+        for (const url of this.pendingUploads().keys()) {
+            if (!activeUrls.has(url)
+                && url !== this.model3dGlbAsset()?.url
+                && url !== this.model3dUsdzAsset()?.url) {
+                this.removePendingUpload(url);
+            }
+        }
         this.imageAssets.set(assets);
     }
 
     onGlbAssetChange(asset: CreateProductAsset | null): void {
+        const previousUrl = this.model3dGlbAsset()?.url;
+        if (previousUrl && previousUrl !== asset?.url) this.removePendingUpload(previousUrl);
         this.model3dGlbAsset.set(asset);
     }
 
     onUsdzAssetChange(asset: CreateProductAsset | null): void {
+        const previousUrl = this.model3dUsdzAsset()?.url;
+        if (previousUrl && previousUrl !== asset?.url) this.removePendingUpload(previousUrl);
         this.model3dUsdzAsset.set(asset);
     }
 
@@ -148,7 +161,11 @@ export class ProductCreate {
             }
         }
 
-        this.pendingUploads.set(event.url, fileToUpload);
+        this.pendingUploads.update(pending => {
+            const updated = new Map(pending);
+            updated.set(event.url, fileToUpload);
+            return updated;
+        });
     }
 
     async onFormSubmit(formValue: ProductFormData): Promise<void> {
@@ -160,7 +177,7 @@ export class ProductCreate {
 
             if (this.isEditMode()) {
                 this.productStore.updateProduct({
-                    id: this.productId()!,
+                    id: this.id()!,
                     dto: dto as UpdateProductDto,
                     onSuccess: () => {
                         this.isSubmitting.set(false);
@@ -212,12 +229,13 @@ export class ProductCreate {
 
         for (let i = 0; i < updatedImages.length; i++) {
             const asset = updatedImages[i];
-            const file = this.pendingUploads.get(asset.url);
+            const file = this.pendingUploads().get(asset.url);
 
             if (file) {
                 const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
                 updatedImages[i] = { ...asset, url: response.url };
-                this.pendingUploads.delete(asset.url);
+                this.removePendingUpload(asset.url);
+                URL.revokeObjectURL(asset.url);
             }
         }
         this.imageAssets.set(updatedImages);
@@ -233,12 +251,22 @@ export class ProductCreate {
 
         if (!model) return;
 
-        const file = this.pendingUploads.get(model.url);
+        const file = this.pendingUploads().get(model.url);
         if (!file) return;
 
         const response = await firstValueFrom(this.uploadService.uploadFile(file, uploadFolder));
         assetSignal.set({ ...model, url: response.url });
-        this.pendingUploads.delete(model.url);
+        this.removePendingUpload(model.url);
+        URL.revokeObjectURL(model.url);
+    }
+
+    private removePendingUpload(url: string): void {
+        this.pendingUploads.update(pending => {
+            if (!pending.has(url)) return pending;
+            const updated = new Map(pending);
+            updated.delete(url);
+            return updated;
+        });
     }
 
     private buildProductDto(formValue: ProductFormData): CreateProductDto | UpdateProductDto {

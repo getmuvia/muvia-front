@@ -12,6 +12,7 @@ import { AuthStorageService } from './storage';
 import { AuthStateService } from './auth-state';
 import { parseAuthError } from './auth-error';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
+import { UserService } from '@core/services/user/user';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,7 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly storage = inject(AuthStorageService);
   private readonly state = inject(AuthStateService);
+  private readonly userService = inject(UserService);
 
   readonly currentUser = this.state.currentUser;
   readonly isAuthenticated = this.state.isAuthenticated;
@@ -77,6 +79,7 @@ export class AuthService {
    */
   logout(): void {
     this.state.reset();
+    this.userService.clearProfile();
     this.storage.clear();
   }
 

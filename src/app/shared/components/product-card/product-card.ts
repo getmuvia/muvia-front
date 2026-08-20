@@ -7,13 +7,13 @@ import { Product } from '@core/models/product/product';
   selector: 'app-product-card',
   imports: [CurrencyPipe, NgOptimizedImage, RouterLink],
   templateUrl: './product-card.html',
-  changeDetection: ChangeDetectionStrategy.Eager,
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-card.css',
 })
 export class ProductCard {
-  product = input.required<Product>();
-  priority = input<boolean>(false);
-  showEditButton = input<boolean>(false);
+  readonly product = input.required<Product>();
+  readonly priority = input<boolean>(false);
+  readonly showEditButton = input<boolean>(false);
 
   /** Get the primary image URL from assets */
   imageUrl = computed(() => {
