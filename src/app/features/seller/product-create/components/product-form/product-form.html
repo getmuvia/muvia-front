@@ -1,85 +1,179 @@
-<div class="flex flex-col md:flex-row gap-8 items-start">
-    <!-- Left Column: Form -->
-    <div class="flex-1 w-full space-y-8">
-        <!-- Page Header -->
-        <div class="flex flex-col gap-4 mb-8">
-            <h1 class="text-3xl md:text-4xl font-headline font-light text-text-light tracking-tight">
-                {{ isEditMode() ? 'Editar Producto' : 'Nuevo Producto' }}
-            </h1>
-            <p class="text-text-light/60 font-body font-light">
-                {{ isEditMode() ? 'Modifica los detalles de tu producto.' : 'Completa los detalles para añadir una nueva
-                pieza a tu colección.' }}
-            </p>
-        </div>
-
-        <form (submit)="onSubmit($event)" novalidate>
-            <!-- Basic Info Section -->
-            <div class="mb-8">
-                <app-basic-info-section [titleField]="productForm.title" [descriptionField]="productForm.description"
-                    [priceField]="productForm.price" [stockField]="productForm.stock"
-                    [categoryIdField]="productForm.categoryId" [categories]="categories()"
-                    [isLoadingCategories]="isLoadingCategories()">
-                </app-basic-info-section>
-            </div>
-
-            <!-- Specifications Section -->
-            <div class="mb-8">
-                <app-specifications-section [weightField]="productForm.weight" [materialField]="productForm.material"
-                    [colorField]="productForm.color" [dimensionWidthField]="productForm.dimensionWidth"
-                    [dimensionHeightField]="productForm.dimensionHeight"
-                    [dimensionDepthField]="productForm.dimensionDepth" [dimensionUnitField]="productForm.dimensionUnit">
-                </app-specifications-section>
-            </div>
-
-            <!-- Keywords Section -->
-            <div class="mb-8">
-                <app-keywords-section [keywords]="keywords()" (keywordsChange)="onKeywordsChange($event)">
-                </app-keywords-section>
-                @if (keywordsError()) {
-                <p class="text-sm text-error font-medium flex items-center gap-1 mt-2">
-                    <span class="material-symbols-outlined text-sm">error</span>
-                    <span>{{ keywordsError() }}</span>
+<div class="product-form-shell mx-auto w-full max-w-5xl">
+    <header class="mb-8 border-b border-border-color pb-6">
+        <p class="mb-3 text-xs font-body font-bold uppercase tracking-[0.18em] text-secondary">
+            Catálogo del vendedor
+        </p>
+        <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div class="max-w-2xl">
+                <h1 class="font-headline text-3xl font-light tracking-tight text-text-light md:text-4xl">
+                    {{ isEditMode() ? 'Editar producto' : 'Crear nuevo producto' }}
+                </h1>
+                <p class="mt-3 font-body text-sm leading-6 text-text-light/60 md:text-base">
+                    {{ isEditMode()
+                    ? 'Actualiza la información de la pieza por secciones.'
+                    : 'Completa cada sección para añadir una nueva pieza a tu colección.' }}
                 </p>
-                }
             </div>
-        </form>
-    </div>
 
-    <!-- Right Column: Media Upload & Actions -->
-    <aside class="w-full md:w-96 space-y-8 md:sticky md:top-24">
-        <!-- Image Gallery Upload -->
-        <div>
-            <app-image-gallery-upload [assets]="imageAssets()" (assetsChange)="onImagesChange($event)"
-                (fileSelected)="onFileSelected($event)">
-            </app-image-gallery-upload>
-            @if (imagesError()) {
-            <p class="text-sm text-error font-medium flex items-center gap-1 mt-2">
-                <span class="material-symbols-outlined text-sm">error</span>
-                <span>{{ imagesError() }}</span>
-            </p>
-            }
+            <div class="w-full md:w-56" aria-label="Progreso del formulario">
+                <div class="mb-2 flex items-center justify-between font-body text-xs text-text-light/60">
+                    <span>Progreso</span>
+                    <span>{{ completedSectionCount() }} de 4</span>
+                </div>
+                <div class="h-1.5 overflow-hidden rounded-full bg-surface-element">
+                    <div class="h-full rounded-full bg-primary transition-[width] duration-300"
+                        [style.width.%]="completionPercentage()"></div>
+                </div>
+            </div>
         </div>
+    </header>
 
-        <!-- 3D Model Upload -->
-        <app-model-3d-upload [glbAsset]="model3dGlbAsset()" [usdzAsset]="model3dUsdzAsset()"
-            (glbAssetChange)="onGlbAssetChange($event)" (usdzAssetChange)="onUsdzAssetChange($event)"
-            (glbFileSelected)="onFileSelected($event)" (usdzFileSelected)="onFileSelected($event)">
-        </app-model-3d-upload>
+    <form (submit)="onSubmit($event)" novalidate>
+        <div class="space-y-3">
+            <section class="form-panel" [class.form-panel--open]="isSectionOpen('basic')">
+                <button type="button" class="form-panel__trigger" (click)="toggleSection('basic')"
+                    [attr.aria-expanded]="isSectionOpen('basic')" aria-controls="product-basic-panel">
+                    <span class="form-panel__number">01</span>
+                    <span class="min-w-0 flex-1 text-left">
+                        <span class="form-panel__title">Información básica</span>
+                        <span class="form-panel__description">Nombre, descripción, precio, stock y categoría</span>
+                    </span>
+                    <span class="form-panel__status" [class.form-panel__status--complete]="basicInfoComplete()">
+                        {{ basicInfoComplete() ? 'Completo' : 'Pendiente' }}
+                    </span>
+                    <span class="material-symbols-outlined form-panel__chevron"
+                        [class.form-panel__chevron--open]="isSectionOpen('basic')">expand_more</span>
+                </button>
 
-        <!-- Action Buttons -->
-        <div class="flex flex-col gap-3 pt-4">
-            <button type="submit" (click)="onSubmit($event)" [disabled]="isSubmitting()"
-                class="w-full bg-primary hover:bg-primary/90 text-white font-body font-bold py-4 uppercase tracking-widest text-sm transition-all hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
-                @if (isSubmitting()) {
-                <span>{{ isEditMode() ? 'Guardando...' : 'Publicando...' }}</span>
-                } @else {
-                <span>{{ isEditMode() ? 'Guardar Cambios' : 'Publicar Producto' }}</span>
+                @if (isSectionOpen('basic')) {
+                <div id="product-basic-panel" class="form-panel__content">
+                    <app-basic-info-section [titleField]="productForm.title"
+                        [descriptionField]="productForm.description" [priceField]="productForm.price"
+                        [stockField]="productForm.stock" [categoryIdField]="productForm.categoryId"
+                        [categories]="categories()" [isLoadingCategories]="isLoadingCategories()">
+                    </app-basic-info-section>
+                </div>
                 }
-            </button>
-            <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
-                class="w-full bg-transparent border border-text-light/20 text-text-light/70 font-body font-bold py-3 uppercase tracking-widest text-xs hover:bg-surface-element transition-colors disabled:opacity-50">
-                Guardar Borrador
-            </button>
+            </section>
+
+            <section class="form-panel" [class.form-panel--open]="isSectionOpen('specifications')">
+                <button type="button" class="form-panel__trigger" (click)="toggleSection('specifications')"
+                    [attr.aria-expanded]="isSectionOpen('specifications')"
+                    aria-controls="product-specifications-panel">
+                    <span class="form-panel__number">02</span>
+                    <span class="min-w-0 flex-1 text-left">
+                        <span class="form-panel__title">Especificaciones</span>
+                        <span class="form-panel__description">Dimensiones, peso, material y color</span>
+                    </span>
+                    <span class="form-panel__status"
+                        [class.form-panel__status--complete]="specificationsComplete()">
+                        {{ specificationsComplete() ? 'Completo' : 'Pendiente' }}
+                    </span>
+                    <span class="material-symbols-outlined form-panel__chevron"
+                        [class.form-panel__chevron--open]="isSectionOpen('specifications')">expand_more</span>
+                </button>
+
+                @if (isSectionOpen('specifications')) {
+                <div id="product-specifications-panel" class="form-panel__content">
+                    <app-specifications-section [weightField]="productForm.weight"
+                        [materialField]="productForm.material" [colorField]="productForm.color"
+                        [dimensionWidthField]="productForm.dimensionWidth"
+                        [dimensionHeightField]="productForm.dimensionHeight"
+                        [dimensionDepthField]="productForm.dimensionDepth"
+                        [dimensionUnitField]="productForm.dimensionUnit">
+                    </app-specifications-section>
+                </div>
+                }
+            </section>
+
+            <section class="form-panel" [class.form-panel--open]="isSectionOpen('keywords')">
+                <button type="button" class="form-panel__trigger" (click)="toggleSection('keywords')"
+                    [attr.aria-expanded]="isSectionOpen('keywords')" aria-controls="product-keywords-panel">
+                    <span class="form-panel__number">03</span>
+                    <span class="min-w-0 flex-1 text-left">
+                        <span class="form-panel__title">Palabras clave</span>
+                        <span class="form-panel__description">Términos que ayudan a encontrar el producto</span>
+                    </span>
+                    <span class="form-panel__status" [class.form-panel__status--complete]="keywordsComplete()">
+                        {{ keywordsComplete() ? keywords().length + ' agregadas' : 'Pendiente' }}
+                    </span>
+                    <span class="material-symbols-outlined form-panel__chevron"
+                        [class.form-panel__chevron--open]="isSectionOpen('keywords')">expand_more</span>
+                </button>
+
+                @if (isSectionOpen('keywords')) {
+                <div id="product-keywords-panel" class="form-panel__content">
+                    <app-keywords-section [keywords]="keywords()" (keywordsChange)="onKeywordsChange($event)">
+                    </app-keywords-section>
+                    @if (keywordsError()) {
+                    <p class="mt-3 flex items-center gap-1 text-sm font-medium text-error">
+                        <span class="material-symbols-outlined text-sm">error</span>
+                        <span>{{ keywordsError() }}</span>
+                    </p>
+                    }
+                </div>
+                }
+            </section>
+
+            <section class="form-panel" [class.form-panel--open]="isSectionOpen('media')">
+                <button type="button" class="form-panel__trigger" (click)="toggleSection('media')"
+                    [attr.aria-expanded]="isSectionOpen('media')" aria-controls="product-media-panel">
+                    <span class="form-panel__number">04</span>
+                    <span class="min-w-0 flex-1 text-left">
+                        <span class="form-panel__title">Imágenes y modelos 3D</span>
+                        <span class="form-panel__description">Galería del producto y recursos para realidad aumentada</span>
+                    </span>
+                    <span class="form-panel__status" [class.form-panel__status--complete]="mediaComplete()">
+                        {{ mediaComplete() ? imageAssets().length + ' imágenes' : 'Pendiente' }}
+                    </span>
+                    <span class="material-symbols-outlined form-panel__chevron"
+                        [class.form-panel__chevron--open]="isSectionOpen('media')">expand_more</span>
+                </button>
+
+                @if (isSectionOpen('media')) {
+                <div id="product-media-panel" class="form-panel__content">
+                    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2">
+                        <div>
+                            <app-image-gallery-upload [assets]="imageAssets()"
+                                (assetsChange)="onImagesChange($event)" (fileSelected)="onFileSelected($event)">
+                            </app-image-gallery-upload>
+                            @if (imagesError()) {
+                            <p class="mt-3 flex items-center gap-1 text-sm font-medium text-error">
+                                <span class="material-symbols-outlined text-sm">error</span>
+                                <span>{{ imagesError() }}</span>
+                            </p>
+                            }
+                        </div>
+
+                        <app-model-3d-upload [glbAsset]="model3dGlbAsset()" [usdzAsset]="model3dUsdzAsset()"
+                            (glbAssetChange)="onGlbAssetChange($event)"
+                            (usdzAssetChange)="onUsdzAssetChange($event)" (glbFileSelected)="onFileSelected($event)"
+                            (usdzFileSelected)="onFileSelected($event)">
+                        </app-model-3d-upload>
+                    </div>
+                </div>
+                }
+            </section>
         </div>
-    </aside>
+
+        <div class="mt-6 flex flex-col-reverse gap-3 border-t border-border-color pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <button type="button" (click)="onCancel()" [disabled]="isSubmitting()"
+                class="px-5 py-3 font-body text-sm font-semibold text-text-light/60 transition-colors hover:text-text-light disabled:cursor-not-allowed disabled:opacity-50">
+                Cancelar
+            </button>
+
+            <div class="flex flex-col-reverse gap-3 sm:flex-row">
+                <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
+                    class="border border-border-color bg-transparent px-6 py-3 font-body text-xs font-bold uppercase tracking-widest text-text-light/70 transition-colors hover:border-primary/40 hover:bg-surface-light disabled:opacity-50">
+                    Guardar borrador
+                </button>
+                <button type="submit" [disabled]="isSubmitting()"
+                    class="bg-primary px-8 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-primary-deep hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50">
+                    {{ isSubmitting()
+                    ? (isEditMode() ? 'Guardando...' : 'Publicando...')
+                    : (isEditMode() ? 'Guardar cambios' : 'Publicar producto') }}
+                </button>
+            </div>
+        </div>
+    </form>
 </div>
