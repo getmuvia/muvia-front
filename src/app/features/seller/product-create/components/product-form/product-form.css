@@ -2,21 +2,45 @@
     display: block;
 }
 
+.product-form-header::after {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 5rem;
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--color-secondary);
+    content: '';
+}
+
+.product-form-eyebrow::before {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: var(--color-accent);
+    box-shadow: 0 0 0 5px rgb(217 164 65 / 0.13);
+    content: '';
+}
+
+.progress-bar {
+    background: var(--color-primary);
+}
+
 .form-panel {
     overflow: hidden;
     border: 1px solid var(--color-border-color);
-    background: rgba(255, 255, 255, 0.62);
-    transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+    border-radius: 0.75rem;
+    background: #fff;
+    transition: border-color 180ms ease;
 }
 
 .form-panel:hover {
-    border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border-color));
+    border-color: color-mix(in srgb, var(--color-primary) 38%, var(--color-border-color));
 }
 
 .form-panel--open {
-    border-color: color-mix(in srgb, var(--color-primary) 42%, var(--color-border-color));
-    background: rgba(255, 255, 255, 0.82);
-    box-shadow: 0 16px 45px rgba(31, 64, 56, 0.08);
+    border-color: var(--color-primary);
+    background: #fff;
 }
 
 .form-panel__trigger {
@@ -24,27 +48,30 @@
     width: 100%;
     align-items: center;
     gap: 1rem;
-    padding: 1.25rem 1.5rem;
+    padding: 1.35rem 1.5rem;
     color: var(--color-text-light);
 }
 
 .form-panel__number {
     display: inline-flex;
-    width: 2rem;
-    height: 2rem;
+    width: 2.2rem;
+    height: 2.2rem;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
+    border: 1px solid rgb(169 71 47 / 0.14);
     border-radius: 9999px;
-    background: var(--color-surface-element);
+    background: rgb(217 164 65 / 0.16);
     font-family: var(--font-body);
     font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.08em;
-    color: color-mix(in srgb, var(--color-text-light) 58%, transparent);
+    color: var(--color-secondary);
+    transition: color 180ms ease, background 180ms ease;
 }
 
 .form-panel--open .form-panel__number {
+    border-color: transparent;
     background: var(--color-primary);
     color: white;
 }
@@ -67,40 +94,43 @@
     text-overflow: ellipsis;
     font-family: var(--font-body);
     font-size: 0.75rem;
-    color: color-mix(in srgb, var(--color-text-light) 55%, transparent);
+    color: var(--color-text-secondary);
 }
 
 .form-panel__status {
     flex: 0 0 auto;
+    border: 1px solid rgb(169 71 47 / 0.12);
     border-radius: 9999px;
-    background: var(--color-surface-element);
-    padding: 0.35rem 0.65rem;
+    background: rgb(217 164 65 / 0.14);
+    padding: 0.4rem 0.7rem;
     font-family: var(--font-body);
     font-size: 0.625rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--color-text-light) 55%, transparent);
+    color: var(--color-secondary);
 }
 
 .form-panel__status--complete {
-    background: color-mix(in srgb, var(--color-success) 12%, white);
+    border-color: rgb(36 117 83 / 0.13);
+    background: rgb(36 117 83 / 0.1);
     color: var(--color-success);
 }
 
 .form-panel__chevron {
     flex: 0 0 auto;
-    color: color-mix(in srgb, var(--color-text-light) 46%, transparent);
+    color: var(--color-primary-soft);
     transition: transform 180ms ease, color 180ms ease;
 }
 
 .form-panel__chevron--open {
     transform: rotate(180deg);
-    color: var(--color-primary);
+    color: var(--color-secondary);
 }
 
 .form-panel__content {
-    border-top: 1px solid var(--color-border-color);
+    border-top: 1px solid color-mix(in srgb, var(--color-border-color) 72%, transparent);
+    background: #fff;
     padding: 1.5rem;
     animation: reveal-panel 180ms ease-out;
 }
@@ -131,10 +161,12 @@
     .form-panel__status {
         display: none;
     }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
     .form-panel,
+    .form-panel__number,
     .form-panel__chevron,
     .form-panel__content {
         animation: none;

@@ -1,15 +1,15 @@
 <header
-    [class]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'border-b border-border-color bg-background-light/90 backdrop-blur-xl sticky top-0'"
-    class="z-50">
+    [class]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'seller-header--solid sticky top-0'"
+    class="seller-header z-50">
     <div class="flex items-center justify-between whitespace-nowrap max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <div class="flex items-center gap-4 lg:gap-8">
             <a routerLink="/home" class="flex items-center gap-3 text-text-light">
-                <div class="flex size-9 items-center justify-center rounded-full border border-primary/30 bg-primary/5 text-primary">
+                <div class="seller-logo-mark flex size-9 items-center justify-center rounded-full text-primary">
                     <span class="font-headline text-xl font-bold leading-none">M</span>
                 </div>
                 <h2 class="text-xl font-headline font-semibold tracking-[0.04em]">Muvia</h2>
             </a>
-            <label class="hidden lg:flex flex-col min-w-40 h-10 max-w-64">
+            <label class="seller-search hidden lg:flex flex-col min-w-40 h-10 max-w-64">
                 <div class="flex w-full flex-1 items-stretch h-full">
                     <div
                         class="text-text-light/50 flex border-none bg-surface-element items-center justify-center pl-4 border-r-0 rounded-l-full">
@@ -25,26 +25,26 @@
         <!-- Desktop Actions -->
         <div class="flex flex-1 justify-end items-center gap-4 sm:gap-6">
             <div class="hidden lg:flex items-center gap-6">
-                <a class="text-text-light/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                <a class="seller-nav-link text-sm font-body font-medium leading-normal transition-colors"
                     routerLink="/home">Home</a>
-                <a class="text-text-light/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                <a class="seller-nav-link text-sm font-body font-medium leading-normal transition-colors"
                     href="#">Categorías</a>
-                <a class="text-text-light/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                <a class="seller-nav-link text-sm font-body font-medium leading-normal transition-colors"
                     href="#">Inspiración</a>
-                <a class="text-text-light/70 hover:text-primary text-sm font-body font-medium leading-normal transition-colors"
+                <a class="seller-nav-link text-sm font-body font-medium leading-normal transition-colors"
                     href="#">Magazine</a>
             </div>
 
             <div class="hidden lg:flex items-center gap-2">
                 <button routerLink="/seller/products/create"
-                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-5 rounded-full bg-primary text-white text-sm font-body font-bold leading-normal tracking-[0.015em] hover:bg-primary/90 hover:-translate-y-0.5 transition-all duration-300 shadow-sm">
+                    class="seller-upload-button flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden h-10 px-5 rounded-full text-white text-sm font-body font-bold leading-normal tracking-[0.015em] hover:-translate-y-0.5 transition-all duration-300">
                     <span class="truncate">Subir</span>
                 </button>
             </div>
 
             <div class="hidden lg:flex user-menu items-center gap-2">
                 <button (click)="logout()"
-                    class="flex cursor-pointer items-center justify-center h-10 w-10 bg-transparent hover:bg-red-500/20 text-text-light transition-all duration-300"
+                    class="flex cursor-pointer items-center justify-center h-10 w-10 rounded-full bg-transparent hover:bg-secondary/10 hover:text-secondary text-text-light transition-all duration-300"
                     title="Cerrar sesión">
                     <span class="material-symbols-outlined text-xl">logout</span>
                 </button>

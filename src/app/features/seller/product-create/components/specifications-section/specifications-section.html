@@ -6,18 +6,18 @@
             </label>
             <div class="flex gap-2 items-center">
                 <input [formField]="dimensionWidthField()"
-                    class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                    class="w-full rounded-lg border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
                     placeholder="Ancho" type="number" />
                 <span class="text-text-light/40">×</span>
                 <input [formField]="dimensionDepthField()"
-                    class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                    class="w-full rounded-lg border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
                     placeholder="Largo" type="number" />
                 <span class="text-text-light/40">×</span>
                 <input [formField]="dimensionHeightField()"
-                    class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                    class="w-full rounded-lg border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
                     placeholder="Alto" type="number" />
                 <select [formField]="dimensionUnitField()"
-                    class="bg-surface-element border-none p-3 text-sm text-text-light font-body">
+                    class="rounded-lg border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body">
                     <option value="cm">cm</option>
                     <option value="m">m</option>
                     <option value="in">in</option>
@@ -36,7 +36,7 @@
         <div class="space-y-2">
             <label class="text-xs text-text-light/60 uppercase font-body">Peso</label>
             <input [formField]="weightField()"
-                class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                class="w-full rounded-lg border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
                 placeholder="Ej. 15 kg" type="text" />
             @if (isFieldInvalid(weightField())) {
             <p class="text-sm text-error font-medium flex items-center gap-1">
@@ -52,7 +52,7 @@
         <div class="space-y-2">
             <label class="text-xs text-text-light/60 uppercase font-body">Material Principal</label>
             <input [formField]="materialField()"
-                class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                class="w-full rounded-lg border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
                 placeholder="Ej. Roble macizo, Vidrio templado" type="text" />
             @if (isFieldInvalid(materialField())) {
             <p class="text-sm text-error font-medium flex items-center gap-1">
@@ -68,7 +68,7 @@
         <div class="space-y-2">
             <label class="text-xs text-text-light/60 uppercase font-body">Color Predominante</label>
             <input [formField]="colorField()"
-                class="w-full bg-surface-element border-none p-3 text-sm text-text-light font-body"
+                class="w-full rounded-lg border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
                 placeholder="Ej. Negro mate, Blanco perla" type="text" />
             @if (isFieldInvalid(colorField())) {
             <p class="text-sm text-error font-medium flex items-center gap-1">

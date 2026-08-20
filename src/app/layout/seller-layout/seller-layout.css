@@ -1,0 +1,9 @@
+:host {
+    display: block;
+    min-height: 100vh;
+    background: #fff;
+}
+
+.seller-main {
+    position: relative;
+}

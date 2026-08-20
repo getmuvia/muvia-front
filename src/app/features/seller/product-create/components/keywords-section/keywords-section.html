@@ -3,9 +3,9 @@
             Etiquetas (Keywords)
         </label>
         <div
-            class="flex flex-wrap gap-2 p-4 bg-surface-element min-h-[80px] items-start border border-dashed border-text-light/20">
+            class="flex min-h-[80px] flex-wrap items-start gap-2 rounded-lg border border-border-color bg-white p-4 transition-colors focus-within:border-primary">
             @for (keyword of keywords(); track keyword) {
-            <span class="bg-primary text-white text-xs px-3 py-1 flex items-center gap-1 font-body">
+            <span class="flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs text-white font-body">
                 {{ keyword }}
                 <button type="button" (click)="removeKeyword(keyword)" class="hover:text-secondary transition-colors">
                     <span class="material-symbols-outlined text-sm">close</span>

@@ -1,6 +1,6 @@
 <div class="product-form-shell mx-auto w-full max-w-5xl">
-    <header class="mb-8 border-b border-border-color pb-6">
-        <p class="mb-3 text-xs font-body font-bold uppercase tracking-[0.18em] text-secondary">
+    <header class="product-form-header relative mb-8 border-b border-border-color/80 pb-7">
+        <p class="product-form-eyebrow mb-3 inline-flex items-center gap-2 text-xs font-body font-bold uppercase tracking-[0.18em] text-secondary">
             Catálogo del vendedor
         </p>
         <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
@@ -15,13 +15,13 @@
                 </p>
             </div>
 
-            <div class="w-full md:w-56" aria-label="Progreso del formulario">
+            <div class="w-full md:w-60" aria-label="Progreso del formulario">
                 <div class="mb-2 flex items-center justify-between font-body text-xs text-text-light/60">
                     <span>Progreso</span>
                     <span>{{ completedSectionCount() }} de 4</span>
                 </div>
-                <div class="h-1.5 overflow-hidden rounded-full bg-surface-element">
-                    <div class="h-full rounded-full bg-primary transition-[width] duration-300"
+                <div class="h-1.5 overflow-hidden rounded-full bg-surface-element/80">
+                    <div class="progress-bar h-full rounded-full transition-[width] duration-300"
                         [style.width.%]="completionPercentage()"></div>
                 </div>
             </div>
@@ -158,17 +158,17 @@
 
         <div class="mt-6 flex flex-col-reverse gap-3 border-t border-border-color pt-6 sm:flex-row sm:items-center sm:justify-between">
             <button type="button" (click)="onCancel()" [disabled]="isSubmitting()"
-                class="px-5 py-3 font-body text-sm font-semibold text-text-light/60 transition-colors hover:text-text-light disabled:cursor-not-allowed disabled:opacity-50">
+                class="rounded-full px-5 py-3 font-body text-sm font-semibold text-text-secondary transition-colors hover:bg-secondary/10 hover:text-secondary disabled:cursor-not-allowed disabled:opacity-50">
                 Cancelar
             </button>
 
             <div class="flex flex-col-reverse gap-3 sm:flex-row">
                 <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
-                    class="border border-border-color bg-transparent px-6 py-3 font-body text-xs font-bold uppercase tracking-widest text-text-light/70 transition-colors hover:border-primary/40 hover:bg-surface-light disabled:opacity-50">
+                    class="rounded-full border border-primary/30 bg-surface-light px-6 py-3 font-body text-xs font-bold uppercase tracking-widest text-primary transition-all hover:-translate-y-px hover:border-primary-soft hover:bg-primary/5 disabled:opacity-50">
                     Guardar borrador
                 </button>
                 <button type="submit" [disabled]="isSubmitting()"
-                    class="bg-primary px-8 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-all hover:bg-primary-deep hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50">
+                    class="rounded-full border border-primary bg-primary px-8 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-all hover:-translate-y-px hover:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-50">
                     {{ isSubmitting()
                     ? (isEditMode() ? 'Guardando...' : 'Publicando...')
                     : (isEditMode() ? 'Guardar cambios' : 'Publicar producto') }}
