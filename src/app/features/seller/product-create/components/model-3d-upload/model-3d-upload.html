@@ -8,8 +8,8 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- GLB/GLTF Upload (Web Viewer) -->
-        <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
-            [class.border-secondary]="isDraggingGlb()" [class.border-text-light/20]="!isDraggingGlb()"
+        <div class="relative w-full aspect-video flex flex-col items-center justify-center rounded-xl border border-dashed bg-surface-element/40 transition-all cursor-pointer group"
+            [class.border-secondary]="isDraggingGlb()" [class.border-border-color]="!isDraggingGlb()"
             (dragover)="onDragOverGlb($event)" (dragleave)="onDragLeaveGlb()" (drop)="onDropGlb($event)"
             (click)="glbFileInput.click()">
 
@@ -45,8 +45,8 @@
         </div>
 
         <!-- USDZ Upload (iOS AR) -->
-        <div class="relative w-full aspect-video flex flex-col items-center justify-center border transition-all cursor-pointer group bg-gradient-to-br from-gray-50 to-gray-100"
-            [class.border-secondary]="isDraggingUsdz()" [class.border-text-light/20]="!isDraggingUsdz()"
+        <div class="relative w-full aspect-video flex flex-col items-center justify-center rounded-xl border border-dashed bg-surface-element/40 transition-all cursor-pointer group"
+            [class.border-secondary]="isDraggingUsdz()" [class.border-border-color]="!isDraggingUsdz()"
             (dragover)="onDragOverUsdz($event)" (dragleave)="onDragLeaveUsdz()" (drop)="onDropUsdz($event)"
             (click)="usdzFileInput.click()">
 

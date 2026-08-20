@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  /* Muvia: forest, clay, sand and ivory */
-  --color-primary: #1f4038;
-  --color-primary-deep: #17342d;
-  --color-primary-soft: #2d5a4e;
-  --color-secondary: #a6533d;
-  --color-accent: #d9b88f;
-  --color-text-light: #202723;
-  --color-text-main: #202723;
-  --color-text-secondary: #646d68;
-  --color-background-light: #fbfaf6;
-  --color-surface-element: #eeeae2;
-  --color-surface-light: #f7f4ed;
-  --color-border-color: #dcd6cb;
+  /* Muvia: forest, copper, white and neutral gray */
+  --color-primary: #17483b;
+  --color-primary-deep: #0d3028;
+  --color-primary-soft: #2b6a57;
+  --color-secondary: #a9472f;
+  --color-accent: #c8962e;
+  --color-text-light: #16231e;
+  --color-text-main: #16231e;
+  --color-text-secondary: #5f6b65;
+  --color-background-light: #ffffff;
+  --color-surface-element: #f2f2f0;
+  --color-surface-light: #ffffff;
+  --color-border-color: #deded9;
   --color-error: #b42318;
-  --color-success: #2f7d5a;
+  --color-success: #247553;
   --color-warning: #a15c00;
 
   --font-headline: "Cormorant Garamond", serif;
@@ -43,8 +43,8 @@
   --text-6xl: var(--text-4xl);
   --text-6xl--line-height: var(--text-4xl--line-height);
 
-  --shadow-soft: 0 18px 50px rgb(31 64 56 / 0.1);
-  --shadow-float: 0 24px 70px rgb(20 43 36 / 0.16);
+  --shadow-soft: 0 16px 42px rgb(22 35 30 / 0.08);
+  --shadow-float: 0 24px 64px rgb(22 35 30 / 0.14);
 }
 
 @layer base {

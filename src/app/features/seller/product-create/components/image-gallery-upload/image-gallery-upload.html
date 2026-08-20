@@ -8,8 +8,8 @@
 
     <div class="grid grid-cols-2 gap-4 mb-4">
         <!-- Primary Image Slot -->
-        <div class="col-span-2 aspect-[4/3] flex flex-col items-center justify-center border-2 border-dashed transition-colors cursor-pointer group relative overflow-hidden"
-            [class.border-secondary]="isDragging()" [class.border-text-light/20]="!isDragging()"
+        <div class="col-span-2 aspect-[4/3] flex flex-col items-center justify-center rounded-xl border border-dashed bg-surface-element/40 transition-colors cursor-pointer group relative overflow-hidden"
+            [class.border-secondary]="isDragging()" [class.border-border-color]="!isDragging()"
             (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event, true)"
             (click)="primaryInput.click()">
 
@@ -42,7 +42,7 @@
 
         <!-- Secondary Image Slots -->
         @for (asset of secondaryImages(); track asset.url) {
-        <div class="aspect-square relative overflow-hidden border border-text-light/20 group cursor-pointer"
+        <div class="aspect-square relative overflow-hidden rounded-lg border border-border-color group cursor-pointer"
             (click)="setPrimary(asset.url)">
             <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
             <div
@@ -62,7 +62,7 @@
 
         <!-- Empty slots for remaining -->
         @for (i of emptySlots(); track i) {
-        <div class="aspect-square bg-surface-element flex items-center justify-center border border-text-light/20 cursor-pointer hover:bg-surface-element transition-colors"
+        <div class="aspect-square bg-surface-element/60 flex items-center justify-center rounded-lg border border-border-color cursor-pointer hover:bg-surface-element transition-colors"
             (click)="secondaryInput.click()">
             <span class="material-symbols-outlined text-text-light/40">add</span>
         </div>

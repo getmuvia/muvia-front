@@ -1,3 +1,57 @@
+.seller-header--solid {
+    width: 100%;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border-color) 78%, transparent);
+    background: rgb(255 255 255 / 0.96);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.seller-logo-mark {
+    border: 1px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-border-color));
+    background: #fff;
+}
+
+.seller-search {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-border-color) 78%, transparent);
+    border-radius: 9999px;
+}
+
+.seller-nav-link {
+    position: relative;
+    color: color-mix(in srgb, var(--color-text-light) 72%, transparent);
+}
+
+.seller-nav-link::after {
+    position: absolute;
+    right: 0;
+    bottom: -0.45rem;
+    left: 0;
+    height: 2px;
+    border-radius: 9999px;
+    background: var(--color-secondary);
+    content: '';
+    transform: scaleX(0);
+    transition: transform 180ms ease;
+}
+
+.seller-nav-link:hover {
+    color: var(--color-primary);
+}
+
+.seller-nav-link:hover::after {
+    transform: scaleX(1);
+}
+
+.seller-upload-button {
+    border: 1px solid var(--color-primary);
+    background: var(--color-primary);
+}
+
+.seller-upload-button:hover {
+    background: var(--color-primary-deep);
+}
+
 /* Mobile menu animation */
 .mobile-menu {
     animation: slideDown 0.2s ease-out;
