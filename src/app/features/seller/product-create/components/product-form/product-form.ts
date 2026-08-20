@@ -1,4 +1,4 @@
-import { Component, signal, linkedSignal, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, linkedSignal, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
 import { form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
@@ -8,6 +8,8 @@ import { SpecificationsSection } from '../specifications-section/specifications-
 import { KeywordsSection } from '../keywords-section/keywords-section';
 import { ImageGalleryUpload } from '../image-gallery-upload/image-gallery-upload';
 import { Model3dUpload } from '../model-3d-upload/model-3d-upload';
+
+type ProductFormSection = 'basic' | 'specifications' | 'keywords' | 'media';
 
 /**
  * Standalone form component for product creation/editing.
@@ -49,10 +51,41 @@ export class ProductForm {
     readonly fileSelected = output<{ url: string; file: File }>();
     readonly saveDraft = output<ProductFormData>();
 
+    readonly openSection = signal<ProductFormSection | null>('basic');
+
     // Local form state
     readonly productModel = linkedSignal<ProductFormData>(() =>
         this.initialData() ?? { ...INITIAL_PRODUCT_FORM }
     );
+
+    readonly basicInfoComplete = computed(() => {
+        const product = this.productModel();
+        return product.title.trim().length >= 3
+            && product.description.trim().length >= 10
+            && product.price > 0
+            && product.stock >= 0
+            && product.categoryId.length > 0;
+    });
+
+    readonly specificationsComplete = computed(() => {
+        const product = this.productModel();
+        return product.weight.trim().length > 0
+            && product.material.trim().length > 0
+            && product.color.trim().length > 0
+            && product.dimensionWidth > 0
+            && product.dimensionHeight > 0
+            && product.dimensionDepth > 0;
+    });
+
+    readonly keywordsComplete = computed(() => this.keywords().length > 0);
+    readonly mediaComplete = computed(() => this.imageAssets().length > 0);
+    readonly completedSectionCount = computed(() => [
+        this.basicInfoComplete(),
+        this.specificationsComplete(),
+        this.keywordsComplete(),
+        this.mediaComplete()
+    ].filter(Boolean).length);
+    readonly completionPercentage = computed(() => this.completedSectionCount() * 25);
 
     productForm = form(this.productModel, (path) => {
         required(path.title, { message: 'El título es requerido' });
@@ -84,6 +117,14 @@ export class ProductForm {
     // Validation error signals
     keywordsError = signal<string | null>(null);
     imagesError = signal<string | null>(null);
+
+    isSectionOpen(section: ProductFormSection): boolean {
+        return this.openSection() === section;
+    }
+
+    toggleSection(section: ProductFormSection): void {
+        this.openSection.update(current => current === section ? null : section);
+    }
 
     isFieldInvalid(fieldName: keyof ProductFormData): boolean {
         const fieldSignal = this.productForm[fieldName];
@@ -131,6 +172,7 @@ export class ProductForm {
         }
 
         if (hasErrors) {
+            this.openSection.set(this.keywordsError() ? 'keywords' : 'media');
             return;
         }
 
