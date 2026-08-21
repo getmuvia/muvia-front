@@ -61,7 +61,12 @@ export class ProductService {
       queryParams = queryParams.set('search', params.search);
     }
 
-    return this.http.get<PaginatedResponse<Product>>(this.apiUrl, { params: queryParams });
+    return this.http.get<PaginatedResponse<Product>>(this.apiUrl, {
+      params: queryParams,
+      // Product data changes independently from the statically deployed frontend.
+      // Do not hydrate the catalog from a response captured during prerendering.
+      transferCache: false,
+    });
   }
 
   /**
