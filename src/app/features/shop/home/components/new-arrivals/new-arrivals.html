@@ -7,12 +7,18 @@
     <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
+            @if (isLoading()) {
+            @for (item of [1, 2, 3, 4]; track item) {
+            <div class="h-80 animate-pulse rounded-2xl bg-text-light/10" aria-hidden="true"></div>
+            }
+            } @else {
             @for (product of products(); track product.id) {
             <app-product-card [product]="product" />
             } @empty {
             <p class="col-span-full text-center text-text-light/60 py-16">
                 No hay novedades por el momento.
             </p>
+            }
             }
 
         </div>

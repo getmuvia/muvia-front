@@ -75,6 +75,13 @@
         </button>
     </form>
 
+    @if (error()) {
+    <p role="alert" class="flex items-center gap-2 rounded-xl bg-error/10 px-4 py-3 text-sm font-medium text-error">
+        <span class="material-symbols-outlined text-lg">error</span>
+        <span>{{ error() }}</span>
+    </p>
+    }
+
     <div class="relative flex py-2 items-center">
         <div class="flex-grow border-t border-border-color"></div>
         <span class="flex-shrink-0 mx-4 text-text-secondary text-xs uppercase tracking-wider font-medium">o
