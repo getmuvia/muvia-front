@@ -3,14 +3,19 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { tap } from 'rxjs';
 import { ToastService } from '@core/services/toast/toast';
+import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     const toastService = inject(ToastService);
     const platformId = inject(PLATFORM_ID);
+    const isAuthenticationRequest =
+        req.url === API_ENDPOINTS.AUTH.LOGIN || req.url === API_ENDPOINTS.AUTH.REGISTER;
 
     return next(req).pipe(
         tap({
             error: (error: HttpErrorResponse) => {
+                if (isAuthenticationRequest) return;
+
                 let errorMessage = 'An unexpected error occurred';
 
                 if (isPlatformBrowser(platformId) && error.error instanceof ErrorEvent) {

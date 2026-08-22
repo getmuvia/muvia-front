@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { NewArrivals } from './new-arrivals';
+import { ProductService } from '@core/services/product/product';
 
 describe('NewArrivals', () => {
   let component: NewArrivals;
@@ -8,7 +10,16 @@ describe('NewArrivals', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NewArrivals]
+      imports: [NewArrivals],
+      providers: [
+        {
+          provide: ProductService,
+          useValue: {
+            searchProducts: () =>
+              of({ data: [], total: 0, page: 1, limit: 4, totalPages: 0 }),
+          },
+        },
+      ],
     })
     .compileComponents();
 

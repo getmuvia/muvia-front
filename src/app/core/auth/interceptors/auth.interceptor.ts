@@ -22,8 +22,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const token = storage.getToken();
     const apiUrl = environment.apiUrl.replace(/\/+$/, '');
     const isApiRequest = req.url === apiUrl || req.url.startsWith(`${apiUrl}/`);
+    const isAuthenticationRequest =
+        req.url === `${apiUrl}/auth/login` || req.url === `${apiUrl}/auth/register`;
 
-    if (token && isApiRequest) {
+    if (token && isApiRequest && !isAuthenticationRequest) {
         req = req.clone({
             setHeaders: {
                 Authorization: `Bearer ${token}`
@@ -33,7 +35,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(req).pipe(
         catchError((error: HttpErrorResponse) => {
-            if (error.status === 401 && isPlatformBrowser(platformId)) {
+            const shouldInvalidateSession =
+                error.status === 401 &&
+                !!token &&
+                isApiRequest &&
+                !isAuthenticationRequest &&
+                isPlatformBrowser(platformId);
+
+            if (shouldInvalidateSession) {
                 const authService = injector.get(AuthService);
                 authService.logout();
                 router.navigate(['/auth/login']);
