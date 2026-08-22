@@ -2,6 +2,7 @@
   "hosting": {
     "site": "getmuvia-app",
     "public": "dist/itera-front/browser",
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
