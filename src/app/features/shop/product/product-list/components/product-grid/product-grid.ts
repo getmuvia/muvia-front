@@ -15,5 +15,4 @@ import { EmptyState } from '@shared/components/empty-state/empty-state';
 export class ProductGrid {
     readonly products = input<Product[]>([]);
     readonly isLoading = input<boolean>(false);
-    readonly viewMode = input<'grid' | 'list'>('grid');
 }

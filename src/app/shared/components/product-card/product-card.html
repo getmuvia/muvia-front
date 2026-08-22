@@ -1,11 +1,11 @@
 <a [routerLink]="['/products', product().id]"
-    class="flex flex-col gap-4 group p-3 sm:p-4 rounded-2xl cursor-pointer no-underline transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-soft">
+    class="group flex cursor-pointer flex-col gap-4 rounded-2xl p-3 no-underline sm:p-4">
 
     @if (imageUrl()) {
     <div class="relative overflow-hidden rounded-xl aspect-[4/5] bg-surface-element">
 
         <img [ngSrc]="imageUrl()" [alt]="altText()" fill [priority]="priority()"
-            class="object-cover transition-transform duration-500 ease-out group-hover:scale-105" />
+            class="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]" />
 
         <div class="absolute top-2 right-2 flex items-center gap-1 z-10">
             @if (showEditButton()) {

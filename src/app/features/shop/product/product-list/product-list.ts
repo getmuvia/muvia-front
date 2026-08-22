@@ -3,11 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore } from '@core/services/product/product.store';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
-import { CategoryService } from '@core/services/category/category';
 import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
 import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
-import { Category } from '@core/models/category/category';
 import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
 import { EMPTY, Subject, catchError, map, of, switchMap, tap } from 'rxjs';
 
@@ -27,7 +25,6 @@ export class ProductList implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly store = inject(ProductStore);
-  private readonly categoryService = inject(CategoryService);
   private readonly hybridSearchService = inject(HybridSearchService);
   private readonly hybridSearchRequests = new Subject<string>();
 
@@ -46,14 +43,7 @@ export class ProductList implements OnInit {
   displayLoading = computed(() =>
     this.useSmartSearch() ? this.hybridLoading() : this.store.isLoading()
   );
-  displayTotal = computed(() =>
-    this.useSmartSearch() ? this.hybridResults().length : this.store.total()
-  );
-
-  categories = signal<Category[]>([]);
-  activeFilters = signal<string[]>([]);
   selectedSort = signal<string>('featured');
-  viewMode = signal<'grid' | 'list'>('grid');
 
   constructor() {
     this.hybridSearchRequests.pipe(
@@ -102,21 +92,6 @@ export class ProductList implements OnInit {
         } else if (this.store.products().length === 0) {
           this.store.searchProducts({ page: 1, search: '' });
         }
-      }
-    });
-
-    this.loadCategories();
-  }
-
-  loadCategories(): void {
-    this.categoryService.getCategories().pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
-      next: (categories) => {
-        this.categories.set(categories);
-      },
-      error: (error: HttpErrorResponse) => {
-        this.logger.error('Failed to load categories', error, 'ProductList');
       }
     });
   }
@@ -193,22 +168,9 @@ export class ProductList implements OnInit {
     };
   }
 
-  onFilterToggle(): void {
-    // TODO: Implement filter panel toggle
-  }
-
-  onRemoveFilter(filter: string): void {
-    this.activeFilters.update(filters => filters.filter(f => f !== filter));
-    // TODO: Reload products with updated filters
-  }
-
   onSortChange(sort: string): void {
     this.selectedSort.set(sort);
     // TODO: Reload products with new sort
-  }
-
-  onViewModeChange(mode: 'grid' | 'list'): void {
-    this.viewMode.set(mode);
   }
 
   onClearSearch(): void {

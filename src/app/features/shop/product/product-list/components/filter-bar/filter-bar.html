@@ -1,28 +1,20 @@
-<div
-    class="flex flex-wrap items-center justify-between gap-4 sticky top-16 z-30 py-5 bg-background-light/95 backdrop-blur-sm transition-all border-b border-border-color">
-    <!-- Left side: Filter button, Search and active filters -->
-    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
-        <button (click)="onFilterToggle()"
-            class="px-5 py-2.5 rounded-full bg-secondary text-white text-xs font-bold uppercase tracking-wider font-body hover:bg-secondary/90 shadow-sm transition-colors flex items-center gap-2">
-            <span class="material-symbols-outlined text-base">tune</span>
-            Filtrar
-        </button>
-
+<div class="sticky top-16 z-30 flex flex-col gap-3 border-b border-border-color bg-background-light/95 py-4 backdrop-blur-md transition-all sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5">
+    <!-- Search and active query -->
+    <div class="flex min-w-0 flex-1 flex-wrap items-center gap-3">
         <!-- Search Input -->
-        <div class="relative">
-            <form (submit)="onSearchSubmit($event)" class="relative">
+        <div class="w-full sm:max-w-sm">
+            <form (submit)="onSearchSubmit($event)" class="relative w-full">
+                <label for="product-search" class="sr-only">Buscar productos</label>
                 <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)"
-                    placeholder="Buscar productos..."
-                    class="w-48 md:w-64 h-10 rounded-full bg-surface-light border border-border-color focus:border-primary focus:outline-none px-4 pr-10 py-2 text-sm text-text-light placeholder-text-light/40 font-body transition-colors" />
-                <span
-                    class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-text-light/40 text-lg">search</span>
+                    id="product-search" placeholder="Buscar productos..."
+                    class="h-11 w-full rounded-full border border-border-color bg-surface-light px-4 py-2 pl-5 pr-11 text-sm text-text-light shadow-sm transition-all placeholder:text-text-light/40 hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
+                <button type="submit" aria-label="Buscar" title="Buscar"
+                    class="absolute right-1.5 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-light/50 transition-colors hover:bg-surface-element hover:text-primary">
+                    <span class="material-symbols-outlined text-lg">search</span>
+                </button>
             </form>
         </div>
 
-
-
-
-        <!-- Search Chip -->
         <!-- Search Chip -->
         @if (activeSearch()) {
         <button (click)="onClearSearch()"
@@ -34,50 +26,23 @@
                 class="material-symbols-outlined text-base opacity-40 group-hover:opacity-100 group-hover:text-error transition-all">close</span>
         </button>
         }
-
-        @if (activeFilters().length > 0 || activeSearch()) {
-        <div class="h-6 w-px bg-text-light/20 mx-2"></div>
-        }
-
-        @if (activeFilters().length > 0) {
-
-        @for (filter of activeFilters(); track filter) {
-        <button (click)="onRemoveFilter(filter)"
-            class="px-3 py-1.5 rounded-full border border-border-color text-text-light text-xs uppercase font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-1 group">
-            {{ filter }}
-            <span class="material-symbols-outlined text-sm text-text-light/50 group-hover:text-primary">close</span>
-        </button>
-        }
-        }
     </div>
 
-    <!-- Right side: Sort and view mode -->
-    <div class="flex items-center gap-6">
+    <!-- Sort control -->
+    <div class="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
         <!-- Sort dropdown -->
-        <div class="flex items-center gap-3 group cursor-pointer relative">
-            <span class="text-xs font-bold uppercase text-text-light/50 font-body">Ordenar:</span>
-            <select [value]="selectedSort()" (change)="onSortChange($event)"
-                class="bg-transparent border-none text-sm font-bold text-text-light p-0 pr-8 focus:ring-0 cursor-pointer uppercase tracking-wide appearance-none font-body">
+        <label for="product-sort" class="text-xs font-bold uppercase tracking-wide text-text-light/50 font-body">
+            Ordenar por
+        </label>
+        <div class="group relative">
+            <select id="product-sort" [value]="selectedSort()" (change)="onSortChange($event)"
+                class="h-11 cursor-pointer appearance-none rounded-full border border-border-color bg-surface-light py-2 pl-4 pr-10 text-sm font-semibold text-text-light shadow-sm transition-colors hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 font-body">
                 @for (option of sortOptions; track option.value) {
                 <option [value]="option.value">{{ option.label }}</option>
                 }
             </select>
             <span
-                class="material-symbols-outlined absolute right-0 pointer-events-none text-text-light text-sm">expand_more</span>
-        </div>
-
-        <!-- View mode toggle -->
-        <div class="flex rounded-full border border-border-color bg-surface-element p-1">
-            <button (click)="onToggleViewMode('grid')" [class]="viewMode() === 'grid'
-                    ? 'p-1.5 rounded-full bg-white shadow-sm text-primary transition-all'
-                    : 'p-1.5 rounded-full text-text-light/40 hover:text-primary transition-colors'">
-                <span class="material-symbols-outlined text-xl">grid_view</span>
-            </button>
-            <button (click)="onToggleViewMode('list')" [class]="viewMode() === 'list'
-                    ? 'p-1.5 rounded-full bg-white shadow-sm text-primary transition-all'
-                    : 'p-1.5 rounded-full text-text-light/40 hover:text-primary transition-colors'">
-                <span class="material-symbols-outlined text-xl">view_list</span>
-            </button>
+                class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-base text-text-light/60 transition-colors group-hover:text-primary">expand_more</span>
         </div>
     </div>
 </div>
