@@ -78,7 +78,6 @@ jobs:
       id-token: write
     env:
       PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
-      HOSTING_SITE: ${{ vars.FIREBASE_HOSTING_SITE }}
 
     steps:
       - name: Checkout repository
@@ -115,38 +114,47 @@ jobs:
 
           hosting_dir="dist/itera-front/browser"
           expected_main="$(basename "$(find "${hosting_dir}" -maxdepth 1 -type f -name 'main-*.js' -print -quit)")"
-          site_url="https://${HOSTING_SITE}.web.app"
-          release_query="release=${GITHUB_SHA}"
+          hosting_site="$(node --print "require('./firebase.json').hosting.site")"
+          site_url="https://${hosting_site}.web.app"
           routes=(home products auth/login seller)
 
-          for attempt in {1..12}; do
+          test -n "${expected_main}"
+          test -n "${hosting_site}"
+
+          echo "Verifying ${expected_main} on ${site_url}."
+
+          for attempt in {1..36}; do
             release_is_healthy=true
 
             for route in "${routes[@]}"; do
               route_slug="${route//\//-}"
               headers_file="${RUNNER_TEMP}/${route_slug}.headers"
               body_file="${RUNNER_TEMP}/${route_slug}.html"
+              request_url="${site_url}/${route}?release=${GITHUB_SHA}&attempt=${attempt}"
 
               if ! curl \
                 --fail \
                 --silent \
                 --show-error \
-                --header 'Cache-Control: no-cache' \
+                --header 'Cache-Control: no-cache, no-store, max-age=0' \
+                --header 'Pragma: no-cache' \
                 --dump-header "${headers_file}" \
                 --output "${body_file}" \
-                "${site_url}/${route}?${release_query}"; then
+                "${request_url}"; then
+                echo "Attempt ${attempt}: route /${route} could not be fetched." >&2
                 release_is_healthy=false
                 break
               fi
 
               if ! grep --fixed-strings --quiet "${expected_main}" "${body_file}"; then
-                echo "Route /${route} is not serving ${expected_main}." >&2
+                served_main="$(grep --only-matching --extended-regexp 'main-[A-Za-z0-9_-]+\.js' "${body_file}" | head -n 1 || true)"
+                echo "Attempt ${attempt}: route /${route} is serving ${served_main:-no main bundle}, expected ${expected_main}." >&2
                 release_is_healthy=false
                 break
               fi
 
               if ! grep --ignore-case --quiet '^cache-control:.*no-store' "${headers_file}"; then
-                echo "Route /${route} is missing the no-store cache policy." >&2
+                echo "Attempt ${attempt}: route /${route} is missing the no-store cache policy." >&2
                 release_is_healthy=false
                 break
               fi
