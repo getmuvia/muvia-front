@@ -15,12 +15,10 @@
 } @else if (products().length === 0) {
 <!-- Empty state -->
 <app-empty-state title="No hay productos"
-    description="No encontramos productos que coincidan con tu búsqueda. Intenta con otros filtros." />
+    description="No encontramos productos que coincidan con tu búsqueda. Intenta con otros términos." />
 } @else {
 <!-- Product grid -->
-<div [class]="viewMode() === 'grid' 
-        ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-12 gap-x-8' 
-        : 'flex flex-col gap-4'">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-12 gap-x-8">
     @for (product of products(); track product.id) {
     <app-product-card [product]="product" />
     }

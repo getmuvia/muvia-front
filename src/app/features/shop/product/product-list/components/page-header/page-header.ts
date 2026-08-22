@@ -12,5 +12,4 @@ export class PageHeader {
     readonly title = input<string>('Colección');
     readonly titleBold = input<string>('Completa');
     readonly description = input<string>('Diseño contemporáneo para la vida moderna. Encuentra la pieza perfecta que define tu estilo único.');
-    readonly productCount = input<number>(0);
 }

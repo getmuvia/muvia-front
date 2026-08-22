@@ -1,19 +1,18 @@
 <div class="flex flex-col w-full min-h-screen">
     <!-- Page Header -->
-    <app-page-header [productCount]="displayTotal()" />
+    <app-page-header />
 
     <!-- Main content area with flex-grow to push footer down -->
     <main class="flex-grow max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full bg-background-light">
-        <!-- Filter Bar -->
-        <app-filter-bar [categories]="categories()" [activeFilters]="activeFilters()" [selectedSort]="selectedSort()"
-            [viewMode]="viewMode()" (filterToggle)="onFilterToggle()" (removeFilter)="onRemoveFilter($event)"
-            (sortChange)="onSortChange($event)" (viewModeChange)="onViewModeChange($event)"
-            (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()" (clearSearch)="onClearSearch()" />
+        <!-- Search and sort controls -->
+        <app-filter-bar [selectedSort]="selectedSort()" (sortChange)="onSortChange($event)"
+            (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()"
+            (clearSearch)="onClearSearch()" />
 
         <!-- Product Grid -->
         <div class="mt-8">
             <app-product-grid [products]="displayProducts()"
-                [isLoading]="displayLoading() && displayProducts().length === 0" [viewMode]="viewMode()" />
+                [isLoading]="displayLoading() && displayProducts().length === 0" />
         </div>
 
         <!-- Load More Button (only for normal search) -->

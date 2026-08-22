@@ -1,7 +1,7 @@
 <!-- Page Header Section with layered brand color for navbar visibility -->
 <section class="catalog-hero relative w-full pt-28 pb-14">
     <div class="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row justify-between items-end gap-8 border-b border-white/15 pb-9">
+        <div class="border-b border-white/15 pb-9">
             <div class="max-w-3xl">
                 <span class="text-accent font-bold text-xs uppercase tracking-[0.2em] mb-3 block font-body">
                     {{ subtitle() }}
@@ -12,16 +12,6 @@
                 <p class="text-white/80 text-base md:text-lg font-body font-light leading-relaxed max-w-xl">
                     {{ description() }}
                 </p>
-            </div>
-            <div class="hidden md:flex items-center rounded-full border border-white/15 bg-white/10 px-6 py-3 backdrop-blur-sm">
-                <div class="text-right">
-                    <span class="block text-3xl font-bold text-white font-body">
-                        {{ productCount() }}
-                    </span>
-                    <span class="text-xs uppercase tracking-widest text-white/70 font-body">
-                        Productos
-                    </span>
-                </div>
             </div>
         </div>
     </div>
