@@ -18,7 +18,7 @@
                 <span class="material-symbols-outlined absolute left-4 text-text-secondary">mail</span>
 
                 <input id="email" type="text" [formField]="loginForm.email"
-                    class="w-full h-12 rounded-xl border border-border-color bg-surface-light text-text-main pl-11 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
+                    class="w-full h-12 rounded-control border border-border-color bg-surface-light text-text-main pl-11 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
                     placeholder="hola@ejemplo.com" />
             </div>
 
@@ -45,7 +45,7 @@
                 <span class="material-symbols-outlined absolute left-4 text-text-secondary">lock</span>
 
                 <input id="password" [type]="showPassword() ? 'text' : 'password'" [formField]="loginForm.password"
-                    class="w-full h-12 rounded-xl border border-border-color bg-surface-light text-text-main pl-11 pr-11 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
+                    class="w-full h-12 rounded-control border border-border-color bg-surface-light text-text-main pl-11 pr-11 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
                     placeholder="••••••••" />
 
                 <button type="button" (click)="togglePasswordVisibility()"

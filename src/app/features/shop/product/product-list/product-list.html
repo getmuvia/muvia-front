@@ -3,7 +3,7 @@
     <app-page-header />
 
     <!-- Main content area with flex-grow to push footer down -->
-    <main class="flex-grow max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full bg-background-light">
+    <main class="muvia-wide-container w-full flex-grow bg-background-light py-10 lg:py-14">
         <!-- Search and sort controls -->
         <app-filter-bar [selectedSort]="selectedSort()" (sortChange)="onSortChange($event)"
             (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()"

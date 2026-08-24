@@ -9,13 +9,14 @@ import {
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { ProductCard } from '@shared/components/product-card/product-card';
 import { Product } from '@core/models/product/product';
 import { ProductService } from '@core/services/product/product';
 
 @Component({
   selector: 'app-new-arrivals',
-  imports: [ProductCard],
+  imports: [ProductCard, RouterLink],
   templateUrl: './new-arrivals.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './new-arrivals.css',

@@ -24,7 +24,7 @@
         </label>
         <div class="mt-2">
             <input [formField]="registerForm.businessName"
-                class="block h-12 w-full rounded-xl border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
+                class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="business-name" placeholder="Ej. Studio Decor" type="text" />
         </div>
         @if (isFieldInvalid('businessName')) {
@@ -44,7 +44,7 @@
         </label>
         <div class="mt-2">
             <input [formField]="registerForm.email" autocomplete="email"
-                class="block h-12 w-full rounded-xl border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
+                class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="email" placeholder="nombre@ejemplo.com" type="text" />
         </div>
         @if (isFieldInvalid('email')) {
@@ -64,7 +64,7 @@
         </label>
         <div class="relative mt-2">
             <input [formField]="registerForm.password" autocomplete="new-password"
-                class="block h-12 w-full rounded-xl border border-border-color bg-surface-light px-4 pr-11 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
+                class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 pr-11 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="password" placeholder="••••••••" [type]="showPassword() ? 'text' : 'password'" />
             <div class="absolute inset-y-0 right-0 flex items-center pr-3">
                 <span (click)="togglePasswordVisibility()"
@@ -90,7 +90,7 @@
         </label>
         <div class="mt-2">
             <textarea [formField]="registerForm.description"
-                class="block w-full resize-none rounded-xl border border-border-color bg-surface-light px-4 py-3 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
+                class="block w-full resize-none rounded-control border border-border-color bg-surface-light px-4 py-3 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
                 id="description" placeholder="Describe brevemente tu estilo o productos..." rows="3"></textarea>
         </div>
     </div>

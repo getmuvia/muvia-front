@@ -1,58 +1,28 @@
-<section class="w-full py-16 md:py-24 px-4 sm:px-6 lg:px-8">
-
-    <div class="relative max-w-[1440px] mx-auto bg-surface-element overflow-hidden w-full rounded-3xl shadow-soft">
-
-        <!-- Layout para pantallas medianas y grandes: imagen completa con contenido al lado -->
-        <div class="hidden md:flex items-stretch">
-
-            <!-- Imagen - altura define el contenedor, ancho se adapta -->
-            <div class="relative w-1/2 min-h-[500px]">
-                <img [src]="promo().image" [alt]="promo().title" class="absolute inset-0 h-full w-full object-cover" />
-            </div>
-
-            <!-- Contenido - se expande para llenar el espacio restante -->
-            <div class="flex-1 p-8 lg:p-12 xl:p-16 flex flex-col justify-center">
-
-                <h2 class="text-xl lg:text-4xl font-headline font-semibold tracking-tight text-text-light">
-                    {{ promo().title }}
-                </h2>
-
-                <p class="mt-4 text-text-light/80 font-body">
-                    {{ promo().description }}
-                </p>
-
-                <div class="mt-6">
-                    <a [routerLink]="promo().link" [queryParams]="promo().queryParams"
-                        class="inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm hover:-translate-y-0.5 hover:shadow-soft transition-all font-body cursor-pointer">
-                        Ver colección
-                    </a>
-                </div>
-
-            </div>
-
+<section id="colecciones" class="w-full scroll-mt-20 bg-primary-deep text-white">
+    <div class="muvia-wide-container grid px-0 md:min-h-[620px] md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] xl:min-h-[720px]">
+        <div class="relative aspect-square overflow-hidden bg-[#ded3c1] md:aspect-auto md:min-h-[620px] xl:min-h-[720px]">
+            <img [ngSrc]="promo().image" [alt]="promo().title" fill sizes="(min-width: 768px) 58vw, 100vw"
+                class="object-contain object-center transition-transform duration-700 hover:scale-[1.015]" />
         </div>
 
-        <!-- Layout para móvil: apilado verticalmente -->
-        <div class="md:hidden">
-            <div class="relative w-full aspect-square">
-                <img [ngSrc]="promo().image" [alt]="promo().title" width="600" height="600"
-                    class="w-full h-full object-cover" />
-            </div>
-            <div class="p-8 text-center flex flex-col gap-4">
-                <h2 class="text-xl font-headline font-semibold tracking-tight text-text-light">
+        <div class="flex items-center px-6 py-16 sm:px-10 md:px-14 lg:px-20 xl:px-28 2xl:px-32">
+            <div class="max-w-2xl">
+                <p class="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent">Edición de temporada</p>
+                <h2 class="font-headline text-[clamp(2.5rem,4vw,5rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-white">
                     {{ promo().title }}
                 </h2>
-                <p class="text-text-light/80 font-body">
+
+                <p class="mt-6 max-w-xl font-body text-base leading-7 text-white/72 lg:text-lg">
                     {{ promo().description }}
                 </p>
-                <div class="mt-2">
+
+                <div class="mt-9">
                     <a [routerLink]="promo().link" [queryParams]="promo().queryParams"
-                        class="inline-flex rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.1em] text-white shadow-sm hover:shadow-soft transition-all font-body cursor-pointer">
+                        class="inline-flex h-12 items-center justify-center rounded-full bg-white px-7 text-xs font-bold uppercase tracking-[0.14em] text-primary transition-all hover:-translate-y-0.5 hover:bg-surface-element">
                         Ver colección
                     </a>
                 </div>
             </div>
         </div>
-
     </div>
 </section>

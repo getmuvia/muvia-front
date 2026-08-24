@@ -1,15 +1,23 @@
-<section class="w-full py-16 md:py-24 bg-surface-light">
-    <h2
-        class="text-text-light text-xl sm:text-4xl font-headline font-semibold leading-tight tracking-[-0.015em] px-4 pb-10 text-center">
-        Novedades
-    </h2>
+<section id="novedades" class="w-full scroll-mt-20 bg-surface-element py-20 lg:py-28">
+    <div class="muvia-wide-container mb-10 flex items-end justify-between gap-6">
+        <div>
+            <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-secondary">Recién incorporado</p>
+            <h2 class="text-text-light text-xl sm:text-4xl font-headline font-semibold leading-tight tracking-[-0.025em]">
+                Novedades
+            </h2>
+        </div>
+        <a routerLink="/products"
+            class="hidden border-b border-primary/30 pb-1 text-xs font-bold uppercase tracking-[0.14em] text-primary transition-colors hover:border-primary sm:block">
+            Ver todo
+        </a>
+    </div>
 
-    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="muvia-wide-container">
+        <div class="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5">
 
             @if (isLoading()) {
-            @for (item of [1, 2, 3, 4]; track item) {
-            <div class="h-80 animate-pulse rounded-2xl bg-text-light/10" aria-hidden="true"></div>
+            @for (item of [1, 2, 3, 4, 5]; track item) {
+            <div class="h-80 animate-pulse rounded-editorial bg-text-light/10" aria-hidden="true"></div>
             }
             } @else {
             @for (product of products(); track product.id) {
