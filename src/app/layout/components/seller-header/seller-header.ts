@@ -1,12 +1,12 @@
 import { Component, inject, signal, OnInit, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-seller-header',
-  imports: [RouterLink],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './seller-header.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './seller-header.css',

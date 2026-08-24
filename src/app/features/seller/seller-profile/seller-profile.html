@@ -1,9 +1,11 @@
 @if (isProfileLoading()) {
 <!-- Cover Skeleton -->
-<app-skeleton height="16rem" className="w-full mb-8 rounded-none md:rounded-b-3xl"></app-skeleton>
+<div class="seller-profile-shell">
+    <app-skeleton height="16rem" className="w-full mb-8 rounded-control"></app-skeleton>
+</div>
 
 <!-- Header Skeleton -->
-<div class="px-4 md:px-8 max-w-7xl mx-auto -mt-20 relative z-10 flex flex-col md:flex-row items-end gap-6 mb-8">
+<div class="seller-profile-shell relative z-10 -mt-20 mb-8 flex flex-col items-end gap-6 px-4 md:flex-row md:px-8">
     <app-skeleton shape="circle" width="160px" height="160px"
         className="border-4 border-border-color shadow-lg"></app-skeleton>
     <div class="flex-1 w-full pb-4 space-y-3">
@@ -15,12 +17,14 @@
     </div>
 </div>
 } @else {
-<app-seller-cover-banner [coverImage]="coverImageUrl()" (edit)="openEditModal('cover')"></app-seller-cover-banner>
+<div class="seller-profile-shell seller-profile-hero overflow-hidden rounded-control bg-white">
+    <app-seller-cover-banner [coverImage]="coverImageUrl()" (edit)="openEditModal('cover')"></app-seller-cover-banner>
 
-<app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
-    [hasCoverImage]="!!coverImageUrl()" (follow)="onFollow()" (contact)="onContact()"
-    (editAvatar)="openEditModal('avatar')">
-</app-seller-profile-header>
+    <app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
+        [hasCoverImage]="!!coverImageUrl()" (follow)="onFollow()" (contact)="onContact()"
+        (editAvatar)="openEditModal('avatar')">
+    </app-seller-profile-header>
+</div>
 }
 
 <app-image-editor-modal [isOpen]="isModalOpen()" [title]="modalTitle()" [isLoading]="isSaving()"
@@ -28,11 +32,11 @@
     (cancel)="isModalOpen.set(false)">
 </app-image-editor-modal>
 
-<div class="flex flex-col lg:flex-row gap-8 mt-8 px-4 md:px-8 max-w-7xl mx-auto">
+<div class="seller-profile-shell mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
     @if (isProfileLoading()) {
     <!-- Sidebar Skeleton -->
     <div class="w-full lg:w-80 space-y-6">
-        <div class="p-6 bg-surface-element rounded-2xl shadow-sm space-y-4">
+        <div class="space-y-4 rounded-panel bg-surface-element p-6">
             <app-skeleton width="50%" height="1.5rem"></app-skeleton>
             <div class="space-y-2">
                 <app-skeleton width="100%" height="1rem"></app-skeleton>
@@ -40,7 +44,7 @@
                 <app-skeleton width="95%" height="1rem"></app-skeleton>
             </div>
         </div>
-        <div class="p-6 bg-surface-element rounded-2xl shadow-sm space-y-4">
+        <div class="space-y-4 rounded-panel bg-surface-element p-6">
             <app-skeleton width="50%" height="1.5rem"></app-skeleton>
             <div class="space-y-2">
                 <app-skeleton width="100%" height="2rem"></app-skeleton>
@@ -53,16 +57,16 @@
     </app-seller-sidebar>
     }
 
-    <div class="flex-1">
+    <section id="productos" class="seller-products min-w-0 flex-1" aria-label="Productos del vendedor">
         <!-- Filter is static or could be skeletoned too, but buttons are fine -->
         <app-seller-filter-chips (chipSelected)="onFilterChange($event)">
         </app-seller-filter-chips>
 
         @if (isProductsLoading()) {
         <!-- Product Grid Skeleton -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-            @for (item of [1,2,3,4,5,6]; track item) {
-            <div class="bg-surface-element rounded-2xl overflow-hidden shadow-sm">
+        <div class="seller-product-grid-skeleton mt-6 grid gap-6">
+            @for (item of [1,2,3,4,5,6,7,8]; track item) {
+            <div class="overflow-hidden rounded-editorial bg-surface-element">
                 <app-skeleton height="16rem" className="w-full rounded-none"></app-skeleton>
                 <div class="p-4 space-y-2">
                     <app-skeleton width="70%" height="1.25rem"></app-skeleton>
@@ -82,7 +86,7 @@
             (pageChange)="onPageChange($event)">
         </app-seller-pagination>
         }
-    </div>
+    </section>
 </div>
 
 <app-sidebar-edit-modal [isOpen]="isSidebarModalOpen()" [initialData]="sidebarData()" [isLoading]="isSaving()"

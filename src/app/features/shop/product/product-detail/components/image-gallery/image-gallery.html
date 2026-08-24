@@ -35,7 +35,7 @@
         @for (asset of imageAssets(); track asset.id; let i = $index) {
         <div class="flex flex-col">
             <button (click)="selectImage(i)"
-                class="w-full bg-center bg-no-repeat aspect-square bg-cover cursor-pointer transition-opacity" [class]="selectedIndex() === i 
+                class="w-full bg-center bg-no-repeat aspect-square bg-cover cursor-pointer transition-opacity" [class]="selectedIndex() === i
                     ? 'border-2 border-primary' 
                     : 'border-2 border-transparent hover:border-text-light/20 hover:opacity-80'"
                 [style.background-image]="'url(' + asset.url + ')'" [attr.aria-label]="'Ver imagen ' + (i + 1)">

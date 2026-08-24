@@ -6,7 +6,7 @@
             ? 'absolute top-0 bg-background-light/85 border-b border-border-color/80 backdrop-blur-xl shadow-sm'
             : 'relative bg-background-light/95 border-b border-border-color backdrop-blur-xl'"
     class="z-50 w-full transition-colors duration-300">
-    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-10 2xl:px-12">
         <div
             class="grid h-20 grid-cols-[1fr_auto] items-center whitespace-nowrap lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
             <!-- Logo -->
@@ -23,13 +23,13 @@
             <!-- Desktop Navigation -->
             <nav class="hidden items-center gap-5 justify-self-center lg:flex xl:gap-8" aria-label="Navegación principal">
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
-                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" href="#">Novedades</a>
+                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" routerLink="/home" fragment="novedades">Novedades</a>
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
-                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" href="#">Categorías</a>
+                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" routerLink="/home" fragment="categorias">Categorías</a>
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
-                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" href="#">Marcas</a>
+                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" routerLink="/home" fragment="colecciones">Colecciones</a>
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
-                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" href="/products">Productos</a>
+                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" routerLink="/products">Productos</a>
             </nav>
 
             <!-- Right Side Actions -->
@@ -109,20 +109,20 @@
             <span class="material-symbols-outlined text-xl text-primary">search</span>
             <span>Buscar</span>
         </button>
-        <a (click)="closeMobileMenu()" href="#"
+        <a (click)="closeMobileMenu()" routerLink="/home" fragment="novedades"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
             <span class="material-symbols-outlined text-xl text-primary">new_releases</span>
             <span>Novedades</span>
         </a>
-        <a (click)="closeMobileMenu()" href="#"
+        <a (click)="closeMobileMenu()" routerLink="/home" fragment="categorias"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
             <span class="material-symbols-outlined text-xl text-primary">category</span>
             <span>Categorías</span>
         </a>
-        <a (click)="closeMobileMenu()" href="#"
+        <a (click)="closeMobileMenu()" routerLink="/home" fragment="colecciones"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
             <span class="material-symbols-outlined text-xl text-primary">storefront</span>
-            <span>Marcas</span>
+            <span>Colecciones</span>
         </a>
         <a (click)="closeMobileMenu()" routerLink="/products"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">

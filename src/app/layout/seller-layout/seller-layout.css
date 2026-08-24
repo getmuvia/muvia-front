@@ -1,9 +1,17 @@
 :host {
-    display: block;
+    display: flex;
     min-height: 100vh;
-    background: #fff;
+    min-height: 100dvh;
+    flex-direction: column;
+    background: color-mix(in srgb, var(--color-surface-light) 94%, var(--color-primary) 6%);
 }
 
 .seller-main {
+    flex: 1 0 auto;
     position: relative;
+}
+
+app-shop-footer {
+    display: block;
+    flex: 0 0 auto;
 }

@@ -45,6 +45,12 @@
 
   --shadow-soft: 0 16px 42px rgb(22 35 30 / 0.08);
   --shadow-float: 0 24px 64px rgb(22 35 30 / 0.14);
+
+  /* Radius hierarchy: editorial / controls / functional panels / dialogs */
+  --radius-editorial: 0.125rem;
+  --radius-control: 0.5rem;
+  --radius-panel: 0.75rem;
+  --radius-dialog: 1rem;
 }
 
 @layer base {
@@ -97,6 +103,20 @@
   ::selection {
     background: var(--color-accent);
     color: var(--color-text-main);
+  }
+}
+
+@layer components {
+  .muvia-wide-container {
+    width: min(100%, 112.5rem);
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 3vw, 3rem);
+  }
+
+  .muvia-content-container {
+    width: min(100%, 100rem);
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 3vw, 3rem);
   }
 }
 

@@ -1,8 +1,8 @@
 <a [routerLink]="['/products', product().id]"
-    class="group flex cursor-pointer flex-col gap-4 rounded-2xl p-3 no-underline sm:p-4">
+    class="group flex cursor-pointer flex-col gap-4 no-underline">
 
     @if (imageUrl()) {
-    <div class="relative overflow-hidden rounded-xl aspect-[4/5] bg-surface-element">
+    <div class="relative overflow-hidden rounded-editorial aspect-[4/5] bg-surface-element">
 
         <img [ngSrc]="imageUrl()" [alt]="altText()" fill [priority]="priority()"
             class="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]" />
@@ -24,7 +24,7 @@
     </div>
     }
 
-    <div class="flex flex-col items-start gap-1">
+    <div class="flex flex-col items-start gap-1 px-0.5">
         <p class="text-sm text-text-light/70 font-body">
             {{ product().category.name }}
         </p>

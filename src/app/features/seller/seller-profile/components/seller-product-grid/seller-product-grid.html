@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+<div class="seller-product-grid mt-6 grid gap-6">
     @for (product of products(); track product.id; let i = $index) {
     <app-product-card [product]="product" [priority]="i === 0" [showEditButton]="true"></app-product-card>
     } @empty {

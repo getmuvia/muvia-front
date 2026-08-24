@@ -1,6 +1,6 @@
 @if (isLoading()) {
 <!-- Loading skeleton -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-12 gap-x-8">
+<div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
     @for (i of [1,2,3,4,5,6,7,8]; track i) {
     <div class="flex flex-col gap-3">
         <app-skeleton height="auto" className="aspect-[2/3]" />
@@ -18,7 +18,7 @@
     description="No encontramos productos que coincidan con tu búsqueda. Intenta con otros términos." />
 } @else {
 <!-- Product grid -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-12 gap-x-8">
+<div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
     @for (product of products(); track product.id) {
     <app-product-card [product]="product" />
     }

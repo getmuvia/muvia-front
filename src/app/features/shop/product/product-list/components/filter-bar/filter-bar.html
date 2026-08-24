@@ -7,7 +7,7 @@
                 <label for="product-search" class="sr-only">Buscar productos</label>
                 <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)"
                     id="product-search" placeholder="Buscar productos..."
-                    class="h-11 w-full rounded-full border border-border-color bg-surface-light px-4 py-2 pl-5 pr-11 text-sm text-text-light shadow-sm transition-all placeholder:text-text-light/40 hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
+                    class="h-11 w-full rounded-control border border-border-color bg-surface-light px-4 py-2 pl-5 pr-11 text-sm text-text-light transition-all placeholder:text-text-light/40 hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
                 <button type="submit" aria-label="Buscar" title="Buscar"
                     class="absolute right-1.5 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-light/50 transition-colors hover:bg-surface-element hover:text-primary">
                     <span class="material-symbols-outlined text-lg">search</span>
@@ -36,7 +36,7 @@
         </label>
         <div class="group relative">
             <select id="product-sort" [value]="selectedSort()" (change)="onSortChange($event)"
-                class="h-11 cursor-pointer appearance-none rounded-full border border-border-color bg-surface-light py-2 pl-4 pr-10 text-sm font-semibold text-text-light shadow-sm transition-colors hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 font-body">
+                class="h-11 cursor-pointer appearance-none rounded-control border border-border-color bg-surface-light py-2 pl-4 pr-10 text-sm font-semibold text-text-light transition-colors hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 font-body">
                 @for (option of sortOptions; track option.value) {
                 <option [value]="option.value">{{ option.label }}</option>
                 }
