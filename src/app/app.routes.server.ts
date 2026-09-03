@@ -10,7 +10,7 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Client
   },
   {
-    path: 'virtual-staging/result',
+    path: 'virtual-staging/**',
     renderMode: RenderMode.Client
   },
   {

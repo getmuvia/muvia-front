@@ -8,7 +8,13 @@ export interface VirtualStagingResponse {
     analysis: StagingAnalysis;
     suggestedProducts: StagingProduct[];
     stagedImageUrl: string;
+    quota: VirtualStagingQuota;
     metadata: StagingMetadata;
+}
+
+export interface VirtualStagingQuota {
+    limit: number;
+    remaining: number;
 }
 
 export interface StagingAnalysis {

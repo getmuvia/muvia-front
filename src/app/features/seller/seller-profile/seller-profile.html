@@ -21,8 +21,7 @@
     <app-seller-cover-banner [coverImage]="coverImageUrl()" (edit)="openEditModal('cover')"></app-seller-cover-banner>
 
     <app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
-        [hasCoverImage]="!!coverImageUrl()" (follow)="onFollow()" (contact)="onContact()"
-        (editAvatar)="openEditModal('avatar')">
+        [hasCoverImage]="!!coverImageUrl()" (editAvatar)="openEditModal('avatar')">
     </app-seller-profile-header>
 </div>
 }
@@ -58,10 +57,6 @@
     }
 
     <section id="productos" class="seller-products min-w-0 flex-1" aria-label="Productos del vendedor">
-        <!-- Filter is static or could be skeletoned too, but buttons are fine -->
-        <app-seller-filter-chips (chipSelected)="onFilterChange($event)">
-        </app-seller-filter-chips>
-
         @if (isProductsLoading()) {
         <!-- Product Grid Skeleton -->
         <div class="seller-product-grid-skeleton mt-6 grid gap-6">
@@ -82,9 +77,6 @@
         } @else {
         <app-seller-product-grid [products]="products()"></app-seller-product-grid>
 
-        <app-seller-pagination [currentPage]="currentPage" [totalPages]="totalPages"
-            (pageChange)="onPageChange($event)">
-        </app-seller-pagination>
         }
     </section>
 </div>

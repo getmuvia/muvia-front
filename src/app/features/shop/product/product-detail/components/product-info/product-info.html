@@ -6,28 +6,39 @@
             <p class="text-text-light/60 mt-2 text-lg font-body">{{ product().category.name }}</p>
         </div>
         <div class="flex gap-2">
-            <button class="text-text-light/50 cursor-pointer hover:text-primary transition-colors" title="Compartir">
+            <button type="button" (click)="shareProduct()"
+                class="text-text-light/50 cursor-pointer hover:text-primary transition-colors"
+                title="Compartir producto" aria-label="Compartir producto">
                 <span class="material-symbols-outlined">share</span>
             </button>
         </div>
     </div>
 
     <!-- Price -->
-    <p class="text-primary text-3xl font-bold mt-6 font-body">{{ priceNumber | currency:'USD':'symbol':'1.2-2' }}</p>
+    <p class="text-primary text-3xl font-bold mt-6 font-body">Bs {{ priceNumber | number:'1.2-2' }}</p>
+
+    <div class="mt-4 flex flex-wrap items-center gap-2">
+        <span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
+            Catálogo demo
+        </span>
+        <span class="text-xs text-text-light/55">Precio y disponibilidad ilustrativos</span>
+    </div>
 
     <!-- Seller Info -->
-    @if (product().seller) {
     <div class="mt-4 flex items-center gap-2 text-text-light/60 font-body">
         <span class="material-symbols-outlined text-lg text-primary">storefront</span>
-        <span class="text-sm">Vendido por <strong class="text-text-light">{{ product().seller?.name }}</strong></span>
+        <span class="text-sm">Producto del catálogo de demostración de Muvia</span>
     </div>
-    }
 
     <!-- Contact Button -->
     <div class="mt-8 flex flex-col gap-4">
-        <button (click)="onContactSeller()"
+        <a [href]="contactHref"
             class="w-full flex items-center justify-center h-14 px-6 bg-primary text-white text-lg font-bold hover:bg-primary/90 transition-colors uppercase tracking-wide font-body">
-            Contactar al Vendedor
-        </button>
+            Solicitar información a Muvia · Piloto
+        </a>
     </div>
+
+    @if (shareFeedback()) {
+    <p class="text-xs text-text-light/55" aria-live="polite">{{ shareFeedback() }}</p>
+    }
 </div>

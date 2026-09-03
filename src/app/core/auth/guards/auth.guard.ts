@@ -11,7 +11,7 @@ import { USER_ROLES } from '../models/auth.models';
  * During SSR, allows navigation since localStorage is not available.
  * The actual validation happens after hydration on the client.
  */
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (_route, state) => {
     const platformId = inject(PLATFORM_ID);
     const authService = inject(AuthService);
     const router = inject(Router);
@@ -25,8 +25,9 @@ export const authGuard: CanActivateFn = () => {
         return true;
     }
 
-    // Redirect to login page
-    return router.createUrlTree(['/auth/login']);
+    return router.createUrlTree(['/auth/login'], {
+        queryParams: { returnUrl: state.url },
+    });
 };
 
 /**

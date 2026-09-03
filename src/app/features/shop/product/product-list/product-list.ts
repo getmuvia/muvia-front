@@ -43,7 +43,6 @@ export class ProductList implements OnInit {
   displayLoading = computed(() =>
     this.useSmartSearch() ? this.hybridLoading() : this.store.isLoading()
   );
-  selectedSort = signal<string>('featured');
 
   constructor() {
     this.hybridSearchRequests.pipe(
@@ -166,11 +165,6 @@ export class ProductList implements OnInit {
         level: 0
       }
     };
-  }
-
-  onSortChange(sort: string): void {
-    this.selectedSort.set(sort);
-    // TODO: Reload products with new sort
   }
 
   onClearSearch(): void {

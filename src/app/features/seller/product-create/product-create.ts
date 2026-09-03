@@ -207,11 +207,6 @@ export class ProductCreate {
         }
     }
 
-    onSaveDraft(formValue: ProductFormData): void {
-        // TODO: Implement draft saving
-        this.logger.info('Draft saved', formValue, 'ProductCreate');
-    }
-
     onCancel(): void {
         this.router.navigate(['/seller/profile']);
     }

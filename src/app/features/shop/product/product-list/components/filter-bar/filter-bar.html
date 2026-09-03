@@ -1,4 +1,4 @@
-<div class="sticky top-16 z-30 flex flex-col gap-3 border-b border-border-color bg-background-light/95 py-4 backdrop-blur-md transition-all sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:py-5">
+<div class="sticky top-16 z-30 flex flex-col gap-3 border-b border-border-color bg-background-light/95 py-4 backdrop-blur-md transition-all sm:py-5">
     <!-- Search and active query -->
     <div class="flex min-w-0 flex-1 flex-wrap items-center gap-3">
         <!-- Search Input -->
@@ -28,21 +28,4 @@
         }
     </div>
 
-    <!-- Sort control -->
-    <div class="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
-        <!-- Sort dropdown -->
-        <label for="product-sort" class="text-xs font-bold uppercase tracking-wide text-text-light/50 font-body">
-            Ordenar por
-        </label>
-        <div class="group relative">
-            <select id="product-sort" [value]="selectedSort()" (change)="onSortChange($event)"
-                class="h-11 cursor-pointer appearance-none rounded-control border border-border-color bg-surface-light py-2 pl-4 pr-10 text-sm font-semibold text-text-light transition-colors hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 font-body">
-                @for (option of sortOptions; track option.value) {
-                <option [value]="option.value">{{ option.label }}</option>
-                }
-            </select>
-            <span
-                class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-base text-text-light/60 transition-colors group-hover:text-primary">expand_more</span>
-        </div>
-    </div>
 </div>

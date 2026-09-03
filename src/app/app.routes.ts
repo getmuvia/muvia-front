@@ -26,6 +26,7 @@ export const routes: Routes = [
             },
             {
                 path: 'virtual-staging',
+                canActivate: [authGuard],
                 loadChildren: () => import('./features/virtual-staging/virtual-staging.routes').then(m => m.VIRTUAL_STAGING_ROUTES)
             },
             {

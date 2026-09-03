@@ -8,7 +8,7 @@ import { ImageOptimizerService } from '@core/services/image-optimizer/image-opti
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 import { ImageEditorModal } from '../components/modals/image-editor-modal/image-editor-modal';
 import { SidebarEditModal, SidebarFormData } from '../components/modals/sidebar-edit-modal/sidebar-edit-modal';
-import { SellerCoverBanner, SellerProfileHeader, SellerSidebar, SellerFilterChips, SellerProductGrid, SellerPagination } from './components';
+import { SellerCoverBanner, SellerProfileHeader, SellerSidebar, SellerProductGrid } from './components';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -17,9 +17,7 @@ import { firstValueFrom } from 'rxjs';
     SellerCoverBanner,
     SellerProfileHeader,
     SellerSidebar,
-    SellerFilterChips,
     SellerProductGrid,
-    SellerPagination,
     ImageEditorModal,
     SidebarEditModal,
     Skeleton
@@ -49,9 +47,6 @@ export class SellerProfile {
 
   isProfileLoading = computed(() => !this.userService.vendorProfile());
   isProductsLoading = this.productStore.isLoading;
-
-  currentPage = 1;
-  totalPages = 8;
 
   isModalOpen = signal(false);
   modalTitle = signal('');
@@ -135,20 +130,4 @@ export class SellerProfile {
     }
   }
 
-  onFollow(): void {
-    // TODO: Implement follow functionality
-  }
-
-  onContact(): void {
-    // TODO: Implement contact functionality
-  }
-
-  onFilterChange(filterId: string): void {
-    // TODO: Implement filter change
-  }
-
-  onPageChange(page: number): void {
-    this.currentPage = page;
-    // TODO: Re-fetch products for new page
-  }
 }

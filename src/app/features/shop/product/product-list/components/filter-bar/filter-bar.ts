@@ -2,11 +2,6 @@ import { Component, input, output, linkedSignal, ChangeDetectionStrategy } from 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, map, of, switchMap, timer } from 'rxjs';
 
-export interface SortOption {
-    value: string;
-    label: string;
-}
-
 @Component({
     selector: 'app-filter-bar',
     imports: [],
@@ -15,9 +10,6 @@ export interface SortOption {
     styleUrl: './filter-bar.css',
 })
 export class FilterBar {
-    readonly selectedSort = input<string>('featured');
-
-    readonly sortChange = output<string>();
     readonly searchChange = output<string>();
     /** Input for the current active search query to display as a chip */
     readonly activeSearch = input<string>('');
@@ -26,13 +18,6 @@ export class FilterBar {
 
     readonly searchQuery = linkedSignal(() => this.activeSearch());
     private readonly searchRequests = new Subject<{ query: string; immediate: boolean }>();
-
-    sortOptions: SortOption[] = [
-        { value: 'featured', label: 'Destacados' },
-        { value: 'price_asc', label: 'Precio: Bajo a Alto' },
-        { value: 'price_desc', label: 'Precio: Alto a Bajo' },
-        { value: 'newest', label: 'Nuevos' },
-    ];
 
     constructor() {
         this.searchRequests.pipe(
@@ -54,11 +39,6 @@ export class FilterBar {
     onSearchSubmit(event: Event): void {
         event.preventDefault();
         this.searchRequests.next({ query: this.searchQuery(), immediate: true });
-    }
-
-    onSortChange(event: Event): void {
-        const select = event.target as HTMLSelectElement;
-        this.sortChange.emit(select.value);
     }
 
     onClearSearch(): void {
