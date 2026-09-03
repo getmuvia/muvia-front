@@ -102,9 +102,54 @@
                     </div>
                 </div>
 
+                @if (selectionMessage()) {
+                <p class="mb-4 rounded-control border border-amber-200 bg-amber-50 p-3 text-sm font-medium text-amber-800"
+                    role="status">
+                    {{ selectionMessage() }}
+                </p>
+                }
+
+                @if (selectedProductDetails(); as selectedProduct) {
+                <div class="mb-4 flex items-center gap-3 rounded-panel border-2 border-[var(--color-primary)] bg-primary/5 p-3">
+                    <img [src]="productImage(selectedProduct) ?? ''" [alt]="selectedProduct.title"
+                        class="size-20 shrink-0 rounded-control object-cover">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-[0.65rem] font-bold uppercase tracking-wider text-[var(--color-primary)]">
+                            Producto seleccionado
+                        </p>
+                        <p class="mt-1 truncate text-sm font-bold text-[var(--color-text-main)]">
+                            {{ selectedProduct.title }}
+                        </p>
+                        <p class="mt-1 text-sm font-semibold text-[var(--color-primary)]">Bs {{ selectedProduct.price }}</p>
+                    </div>
+                    <button type="button" (click)="changeProduct()" [disabled]="isGenerating()"
+                        class="shrink-0 rounded-full border border-primary/25 px-3 py-2 text-xs font-bold text-primary transition-colors hover:border-primary hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+                        Cambiar
+                    </button>
+                </div>
+                }
+
+                <div class="relative mb-3">
+                    <label for="staging-product-search" class="sr-only">Buscar productos</label>
+                    <span
+                        class="material-symbols-outlined pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xl text-[var(--color-text-secondary)]">
+                        search
+                    </span>
+                    <input id="staging-product-search" type="search" [value]="searchQuery()"
+                        (input)="onSearchInput($event)" placeholder="Buscar por nombre o descripción"
+                        [disabled]="isGenerating()"
+                        class="h-12 w-full rounded-full border border-[var(--color-border-color)] bg-white pl-12 pr-12 text-sm text-[var(--color-text-main)] outline-none transition focus:border-[var(--color-primary)] focus:ring-4 focus:ring-primary/10">
+                    @if (searchQuery()) {
+                    <button type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda" [disabled]="isGenerating()"
+                        class="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-element)] hover:text-[var(--color-text-main)]">
+                        <span class="material-symbols-outlined text-lg">close</span>
+                    </button>
+                    }
+                </div>
+
                 @if (isCatalogLoading()) {
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3" aria-label="Cargando productos">
-                    @for (placeholder of [1, 2, 3]; track placeholder) {
+                    @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
                     <div
                         class="animate-pulse overflow-hidden rounded-panel border border-[var(--color-border-color)] bg-white">
                         <div class="aspect-square bg-[var(--color-surface-element)]"></div>
@@ -116,9 +161,19 @@
                     }
                 </div>
                 } @else if (catalogErrorMessage()) {
-                <div class="rounded-panel border border-red-200 bg-red-50 p-6 text-center text-sm font-medium text-red-700"
-                    role="alert">
+                <div class="rounded-panel border border-[var(--color-border-color)] bg-white p-6 text-center text-sm font-medium text-[var(--color-text-secondary)]"
+                    role="status">
                     {{ catalogErrorMessage() }}
+                </div>
+                } @else {
+                @if (products().length === 0) {
+                <div class="rounded-panel border border-[var(--color-border-color)] bg-white p-6 text-center text-sm font-medium text-[var(--color-text-secondary)]"
+                    role="status">
+                    @if (searchQuery().trim()) {
+                    No encontramos productos con imágenes para esta búsqueda.
+                    } @else {
+                    No hay productos con imágenes disponibles en esta página.
+                    }
                 </div>
                 } @else {
                 <div class="grid max-h-[32rem] grid-cols-2 gap-4 overflow-y-auto pr-1 sm:grid-cols-3" role="radiogroup"
@@ -129,7 +184,7 @@
                         [class.border-[var(--color-primary)]]="selectedProductId() === product.id"
                         [class.border-[var(--color-border-color)]]="selectedProductId() !== product.id"
                         [attr.aria-checked]="selectedProductId() === product.id" [disabled]="isGenerating()"
-                        (click)="selectProduct(product.id)">
+                        (click)="selectProduct(product)">
                         <div class="relative aspect-square overflow-hidden bg-[var(--color-surface-element)]">
                             <img [src]="productImage(product) ?? ''" [alt]="product.title"
                                 class="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
@@ -145,6 +200,24 @@
                             <p class="line-clamp-2 text-sm font-bold text-[var(--color-text-main)]">{{ product.title }}</p>
                             <p class="mt-1 text-sm font-semibold text-[var(--color-primary)]">Bs {{ product.price }}</p>
                         </div>
+                    </button>
+                    }
+                </div>
+                }
+
+                <div class="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
+                    <p class="text-xs text-[var(--color-text-secondary)]" aria-live="polite">
+                        Mostrando {{ products().length }} de {{ catalogTotal() }} productos
+                    </p>
+                    @if (hasMoreProducts()) {
+                    <button type="button" (click)="loadMoreProducts()" [disabled]="isLoadingMore()"
+                        class="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-primary/25 px-5 py-2 text-xs font-bold uppercase tracking-wide text-primary transition-colors hover:border-primary hover:bg-primary/5 disabled:cursor-wait disabled:opacity-60">
+                        @if (isLoadingMore()) {
+                        <span class="material-symbols-outlined spin text-lg" aria-hidden="true">autorenew</span>
+                        Cargando...
+                        } @else {
+                        Cargar más productos
+                        }
                     </button>
                     }
                 </div>

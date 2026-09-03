@@ -30,10 +30,17 @@
         <span class="text-sm">Producto del catálogo de demostración de Muvia</span>
     </div>
 
-    <!-- Contact Button -->
+    <!-- Product actions -->
     <div class="mt-8 flex flex-col gap-4">
+        @if (canVisualizeProduct()) {
+        <a [routerLink]="['/virtual-staging']" [queryParams]="{ productId: product().id }"
+            class="flex h-14 w-full items-center justify-center gap-2 bg-primary px-6 text-lg font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary/90 font-body">
+            <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+            Visualizar en mi espacio
+        </a>
+        }
         <a [href]="contactHref"
-            class="w-full flex items-center justify-center h-14 px-6 bg-primary text-white text-lg font-bold hover:bg-primary/90 transition-colors uppercase tracking-wide font-body">
+            class="flex h-12 w-full items-center justify-center border border-primary/30 px-6 text-sm font-bold uppercase tracking-wide text-primary transition-colors hover:border-primary hover:bg-primary/5 font-body">
             Solicitar información a Muvia · Piloto
         </a>
     </div>

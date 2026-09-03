@@ -1,6 +1,7 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    DestroyRef,
     OnDestroy,
     OnInit,
     computed,
@@ -8,12 +9,15 @@ import {
     signal,
 } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { LoggerService } from '@core/services/logger/logger';
 import { ProductService } from '@core/services/product/product';
 import { Product } from '@core/models/product/product';
-import { firstValueFrom } from 'rxjs';
+import { debounceTime, distinctUntilChanged, firstValueFrom, Subject } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+const PRODUCT_PAGE_SIZE = 12;
 
 @Component({
     selector: 'app-virtual-staging',
@@ -26,19 +30,31 @@ export class VirtualStaging implements OnInit, OnDestroy {
     private readonly stagingService = inject(VirtualStagingService);
     private readonly productService = inject(ProductService);
     private readonly router = inject(Router);
+    private readonly route = inject(ActivatedRoute);
     private readonly logger = inject(LoggerService);
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly searchRequests = new Subject<string>();
+    private catalogRequestId = 0;
 
     isGenerating = signal(false);
     isQuotaLoading = signal(true);
     isCatalogLoading = signal(true);
+    isLoadingMore = signal(false);
     dragActive = signal(false);
     errorMessage = signal<string | null>(null);
     catalogErrorMessage = signal<string | null>(null);
+    selectionMessage = signal<string | null>(null);
     products = signal<Product[]>([]);
     selectedFile = signal<File | null>(null);
     selectedProductId = signal<string | null>(null);
+    selectedProductDetails = signal<Product | null>(null);
     previewUrl = signal<string | null>(null);
+    searchQuery = signal('');
+    catalogPage = signal(1);
+    catalogTotal = signal(0);
+    catalogTotalPages = signal(0);
     readonly quota = this.stagingService.quota;
+    readonly hasMoreProducts = computed(() => this.catalogPage() < this.catalogTotalPages());
     readonly canGenerate = computed(() => {
         const quota = this.quota();
         return !!this.selectedFile()
@@ -48,8 +64,25 @@ export class VirtualStaging implements OnInit, OnDestroy {
             && !this.isGenerating();
     });
 
+    constructor() {
+        this.searchRequests.pipe(
+            debounceTime(300),
+            distinctUntilChanged(),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe(() => {
+            void this.loadProducts(1, false);
+        });
+    }
+
     async ngOnInit(): Promise<void> {
-        await Promise.all([this.loadQuota(), this.loadProducts()]);
+        const requestedProductId = this.route.snapshot.queryParamMap.get('productId');
+        const tasks: Promise<void>[] = [this.loadQuota(), this.loadProducts(1, false)];
+
+        if (requestedProductId) {
+            tasks.push(this.loadSelectedProduct(requestedProductId));
+        }
+
+        await Promise.all(tasks);
     }
 
     ngOnDestroy(): void {
@@ -93,15 +126,54 @@ export class VirtualStaging implements OnInit, OnDestroy {
         }
     }
 
-    selectProduct(productId: string): void {
+    selectProduct(product: Product): void {
         if (!this.isGenerating()) {
-            this.selectedProductId.set(productId);
+            this.selectedProductId.set(product.id);
+            this.selectedProductDetails.set(product);
+            this.selectionMessage.set(null);
             this.errorMessage.set(null);
+            void this.updateSelectedProductQueryParam(product.id);
         }
     }
 
+    changeProduct(): void {
+        if (this.isGenerating()) return;
+
+        this.selectedProductId.set(null);
+        this.selectedProductDetails.set(null);
+        this.selectionMessage.set(null);
+        void this.updateSelectedProductQueryParam(null);
+    }
+
+    onSearchInput(event: Event): void {
+        const query = (event.target as HTMLInputElement).value;
+        const previousQuery = this.searchQuery().trim();
+        this.searchQuery.set(query);
+
+        const normalizedQuery = query.trim();
+        if (normalizedQuery === previousQuery) return;
+
+        this.prepareCatalogSearch(normalizedQuery);
+    }
+
+    clearSearch(): void {
+        if (!this.searchQuery()) return;
+
+        this.searchQuery.set('');
+        this.prepareCatalogSearch('');
+    }
+
+    async loadMoreProducts(): Promise<void> {
+        if (this.isCatalogLoading() || this.isLoadingMore() || !this.hasMoreProducts()) return;
+
+        await this.loadProducts(this.catalogPage() + 1, true);
+    }
+
     productImage(product: Product): string | null {
-        const imageAssets = (product.assets ?? []).filter(asset => asset.type === 'image' && !!asset.url);
+        const imageAssets = (product.assets ?? []).filter(asset =>
+            asset.type === 'image'
+            && (asset.url.startsWith('https://') || asset.url.startsWith('http://'))
+        );
         return imageAssets.find(asset => asset.isPrimary)?.url ?? imageAssets[0]?.url ?? null;
     }
 
@@ -157,25 +229,92 @@ export class VirtualStaging implements OnInit, OnDestroy {
         }
     }
 
-    private async loadProducts(): Promise<void> {
+    private async loadProducts(page: number, append: boolean): Promise<void> {
+        const requestId = ++this.catalogRequestId;
+
+        if (append) {
+            this.isLoadingMore.set(true);
+        } else {
+            this.isCatalogLoading.set(true);
+            this.catalogErrorMessage.set(null);
+        }
+
         try {
             const response = await firstValueFrom(this.productService.searchProducts({
-                search: '',
-                page: 1,
-                limit: 24,
+                search: this.searchQuery().trim(),
+                page,
+                limit: PRODUCT_PAGE_SIZE,
             }));
-            const productsWithImages = response.data.filter(product => !!this.productImage(product));
-            this.products.set(productsWithImages);
 
-            if (productsWithImages.length === 0) {
-                this.catalogErrorMessage.set('No hay productos con imágenes disponibles para generar una visualización.');
-            }
+            if (requestId !== this.catalogRequestId) return;
+
+            const productsWithImages = response.data.filter(product => !!this.productImage(product));
+            const nextProducts = append
+                ? this.mergeProducts(this.products(), productsWithImages)
+                : productsWithImages;
+
+            this.products.set(nextProducts);
+            this.catalogPage.set(response.page);
+            this.catalogTotal.set(response.total);
+            this.catalogTotalPages.set(response.totalPages);
         } catch (error) {
+            if (requestId !== this.catalogRequestId) return;
+
             this.logger.error('Could not load products', error, 'VirtualStaging');
-            this.catalogErrorMessage.set('No pudimos cargar los productos. Inténtalo nuevamente.');
+            if (!append) {
+                this.products.set([]);
+                this.catalogErrorMessage.set('No pudimos cargar los productos. Inténtalo nuevamente.');
+            } else {
+                this.errorMessage.set('No pudimos cargar más productos. Inténtalo nuevamente.');
+            }
         } finally {
-            this.isCatalogLoading.set(false);
+            if (requestId === this.catalogRequestId) {
+                this.isCatalogLoading.set(false);
+                this.isLoadingMore.set(false);
+            }
         }
+    }
+
+    private async loadSelectedProduct(productId: string): Promise<void> {
+        try {
+            const product = await firstValueFrom(this.productService.getProductById(productId));
+
+            if (!this.productImage(product)) {
+                this.selectionMessage.set('El producto seleccionado no tiene una imagen disponible. Elige otro producto.');
+                await this.updateSelectedProductQueryParam(null);
+                return;
+            }
+
+            this.selectedProductId.set(product.id);
+            this.selectedProductDetails.set(product);
+        } catch (error) {
+            this.logger.warn('Could not preload selected product', error, 'VirtualStaging');
+            this.selectionMessage.set('El producto del enlace ya no está disponible. Elige otro producto.');
+            await this.updateSelectedProductQueryParam(null);
+        }
+    }
+
+    private prepareCatalogSearch(query: string): void {
+        this.catalogRequestId++;
+        this.isCatalogLoading.set(true);
+        this.isLoadingMore.set(false);
+        this.catalogErrorMessage.set(null);
+        this.searchRequests.next(query);
+    }
+
+    private updateSelectedProductQueryParam(productId: string | null): Promise<boolean> {
+        return this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { productId },
+            queryParamsHandling: 'merge',
+            replaceUrl: true,
+        });
+    }
+
+    private mergeProducts(currentProducts: Product[], newProducts: Product[]): Product[] {
+        const productsById = new Map(currentProducts.map(product => [product.id, product]));
+        newProducts.forEach(product => productsById.set(product.id, product));
+        return Array.from(productsById.values());
     }
 
     private async refreshQuota(): Promise<void> {
