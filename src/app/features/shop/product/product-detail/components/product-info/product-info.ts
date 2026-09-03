@@ -1,10 +1,11 @@
-import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { Product } from '@core/models/product/product';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-product-info',
-    imports: [DecimalPipe],
+    imports: [DecimalPipe, RouterLink],
     templateUrl: './product-info.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-info.css',
@@ -12,6 +13,12 @@ import { DecimalPipe } from '@angular/common';
 export class ProductInfo {
     readonly product = input.required<Product>();
     readonly shareFeedback = signal('');
+    readonly canVisualizeProduct = computed(() =>
+        this.product().assets?.some(asset =>
+            asset.type === 'image'
+            && (asset.url.startsWith('https://') || asset.url.startsWith('http://'))
+        ) ?? false
+    );
 
     get priceNumber(): number {
         return parseFloat(this.product().price) || 0;
