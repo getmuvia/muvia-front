@@ -1,96 +1,202 @@
-<div
-    class="landing-container min-h-screen flex flex-col items-center justify-center p-4 bg-[var(--color-background-light)]">
-
-    <!-- Hero Section -->
-    <div class="text-center mb-12 animate-fade-in-up">
-        <h1 class="headline text-4xl md:text-6xl mb-4 text-[var(--color-primary)]">
-            Diseña tu espacio con IA
-        </h1>
-        <p class="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto font-body">
-            Sube una foto de tu habitación y descubre cómo nuestros productos pueden transformar tu hogar en segundos.
-        </p>
-        <p class="mt-4 text-sm font-medium text-[var(--color-text-secondary)]" aria-live="polite">
-            @if (isQuotaLoading()) {
-            Consultando generaciones disponibles...
-            } @else if (quota(); as currentQuota) {
-            {{ currentQuota.remaining }} de {{ currentQuota.limit }} generaciones disponibles hoy
-            }
-        </p>
-    </div>
-
-    <!-- Upload Area -->
-    <div class="upload-area w-full max-w-xl h-64 md:h-80 border-2 border-dashed rounded-panel flex flex-col items-center justify-center transition-all duration-300 cursor-pointer relative overflow-hidden group"
-        [class.border-[var(--color-primary)]]="dragActive()" [class.bg-[var(--color-surface-light)]]="dragActive()"
-        [class.border-[var(--color-border-color)]]="!dragActive()" (dragover)="onDragOver($event)"
-        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
-
-        <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*"
-            (change)="onFileSelected($event)"
-            [disabled]="isUploading() || isQuotaLoading() || quota()?.remaining === 0">
-
-        @if (isUploading()) {
-        <div class="flex flex-col items-center animate-pulse">
-            <span class="material-symbols-outlined text-5xl mb-4 text-[var(--color-secondary)] spin">
-                autorenew
-            </span>
-            <p class="text-[var(--color-text-main)] font-medium">Subiendo imagen...</p>
-        </div>
-        } @else if (quota()?.remaining === 0) {
-        <div class="flex flex-col items-center text-center px-6">
-            <span class="material-symbols-outlined text-5xl mb-4 text-[var(--color-text-secondary)]">
-                hourglass_top
-            </span>
-            <h3 class="text-xl font-semibold text-[var(--color-text-main)] mb-2">
-                Límite diario alcanzado
-            </h3>
-            <p class="text-[var(--color-text-secondary)] text-sm">
-                Mañana volverás a tener 10 generaciones disponibles.
+<div class="min-h-screen bg-[var(--color-background-light)] px-4 py-12 md:py-16">
+    <div class="mx-auto flex w-full max-w-6xl flex-col items-center">
+        <div class="mb-10 text-center animate-fade-in-up">
+            <h1 class="headline mb-4 text-4xl text-[var(--color-primary)] md:text-6xl">
+                Diseña tu espacio con IA
+            </h1>
+            <p class="font-body mx-auto max-w-2xl text-lg text-[var(--color-text-secondary)] md:text-xl">
+                Sube una foto de tu habitación y elige el producto que quieres visualizar en ella.
+            </p>
+            <p class="mt-4 text-sm font-medium text-[var(--color-text-secondary)]" aria-live="polite">
+                @if (isQuotaLoading()) {
+                Consultando generaciones disponibles...
+                } @else if (quota(); as currentQuota) {
+                {{ currentQuota.remaining }} de {{ currentQuota.limit }} generaciones disponibles hoy
+                }
             </p>
         </div>
-        } @else {
-        <div class="flex flex-col items-center transform group-hover:scale-105 transition-transform duration-300">
-            <div
-                class="w-16 h-16 rounded-full bg-[var(--color-surface-element)] flex items-center justify-center mb-4 text-[var(--color-primary)]">
-                <span class="material-symbols-outlined text-3xl">add_a_photo</span>
-            </div>
-            <h3 class="text-xl font-semibold text-[var(--color-text-main)] mb-2">
-                Sube tu foto aquí
-            </h3>
-            <p class="text-[var(--color-text-secondary)] text-sm">
-                o arrastra y suelta (JPG, PNG)
-            </p>
+
+        <div class="grid w-full gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)]">
+            <section aria-labelledby="room-photo-title">
+                <div class="mb-4 flex items-center gap-3">
+                    <span
+                        class="flex size-8 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
+                        1
+                    </span>
+                    <div>
+                        <h2 id="room-photo-title" class="text-xl font-bold text-[var(--color-text-main)]">
+                            Elige tu habitación
+                        </h2>
+                        <p class="text-sm text-[var(--color-text-secondary)]">JPG o PNG</p>
+                    </div>
+                </div>
+
+                <div
+                    class="upload-area group relative flex h-72 w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-panel border-2 border-dashed transition-all duration-300 md:h-96"
+                    [class.border-[var(--color-primary)]]="dragActive() || !!selectedFile()"
+                    [class.bg-[var(--color-surface-light)]]="dragActive()"
+                    [class.border-[var(--color-border-color)]]="!dragActive() && !selectedFile()"
+                    (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
+
+                    <input type="file" accept="image/*" aria-label="Seleccionar fotografía de la habitación"
+                        class="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
+                        (change)="onFileSelected($event)"
+                        [disabled]="isGenerating() || isQuotaLoading() || quota()?.remaining === 0">
+
+                    @if (quota()?.remaining === 0) {
+                    <div class="flex flex-col items-center px-6 text-center">
+                        <span class="material-symbols-outlined mb-4 text-5xl text-[var(--color-text-secondary)]">
+                            hourglass_top
+                        </span>
+                        <h3 class="mb-2 text-xl font-semibold text-[var(--color-text-main)]">
+                            Límite diario alcanzado
+                        </h3>
+                        <p class="text-sm text-[var(--color-text-secondary)]">
+                            Mañana volverás a tener 10 generaciones disponibles.
+                        </p>
+                    </div>
+                    } @else if (previewUrl(); as roomPreview) {
+                    <img [src]="roomPreview" alt="Vista previa de la habitación seleccionada"
+                        class="absolute inset-0 h-full w-full object-cover">
+                    <div
+                        class="absolute inset-x-0 bottom-0 z-10 bg-black/65 px-4 py-3 text-center text-sm font-semibold text-white backdrop-blur-sm">
+                        Cambiar fotografía
+                    </div>
+                    } @else {
+                    <div
+                        class="flex flex-col items-center px-6 text-center transition-transform duration-300 group-hover:scale-105">
+                        <div
+                            class="mb-4 flex size-16 items-center justify-center rounded-full bg-[var(--color-surface-element)] text-[var(--color-primary)]">
+                            <span class="material-symbols-outlined text-3xl">add_a_photo</span>
+                        </div>
+                        <h3 class="mb-2 text-xl font-semibold text-[var(--color-text-main)]">
+                            Sube tu foto aquí
+                        </h3>
+                        <p class="text-sm text-[var(--color-text-secondary)]">
+                            o arrastra y suelta
+                        </p>
+                    </div>
+                    }
+                </div>
+
+                @if (selectedFile(); as roomFile) {
+                <p class="mt-3 truncate text-sm text-[var(--color-text-secondary)]">
+                    Fotografía: <span class="font-semibold text-[var(--color-text-main)]">{{ roomFile.name }}</span>
+                </p>
+                }
+            </section>
+
+            <section aria-labelledby="product-selection-title">
+                <div class="mb-4 flex items-center gap-3">
+                    <span
+                        class="flex size-8 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white">
+                        2
+                    </span>
+                    <div>
+                        <h2 id="product-selection-title" class="text-xl font-bold text-[var(--color-text-main)]">
+                            Elige un producto
+                        </h2>
+                        <p class="text-sm text-[var(--color-text-secondary)]">
+                            La IA usará únicamente el producto que selecciones.
+                        </p>
+                    </div>
+                </div>
+
+                @if (isCatalogLoading()) {
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3" aria-label="Cargando productos">
+                    @for (placeholder of [1, 2, 3]; track placeholder) {
+                    <div
+                        class="animate-pulse overflow-hidden rounded-panel border border-[var(--color-border-color)] bg-white">
+                        <div class="aspect-square bg-[var(--color-surface-element)]"></div>
+                        <div class="space-y-2 p-4">
+                            <div class="h-4 rounded bg-[var(--color-surface-element)]"></div>
+                            <div class="h-3 w-1/2 rounded bg-[var(--color-surface-element)]"></div>
+                        </div>
+                    </div>
+                    }
+                </div>
+                } @else if (catalogErrorMessage()) {
+                <div class="rounded-panel border border-red-200 bg-red-50 p-6 text-center text-sm font-medium text-red-700"
+                    role="alert">
+                    {{ catalogErrorMessage() }}
+                </div>
+                } @else {
+                <div class="grid max-h-[32rem] grid-cols-2 gap-4 overflow-y-auto pr-1 sm:grid-cols-3" role="radiogroup"
+                    aria-label="Productos disponibles para la visualización">
+                    @for (product of products(); track product.id) {
+                    <button type="button" role="radio"
+                        class="relative overflow-hidden rounded-panel border-2 bg-white text-left transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)]/20 disabled:cursor-not-allowed disabled:opacity-60"
+                        [class.border-[var(--color-primary)]]="selectedProductId() === product.id"
+                        [class.border-[var(--color-border-color)]]="selectedProductId() !== product.id"
+                        [attr.aria-checked]="selectedProductId() === product.id" [disabled]="isGenerating()"
+                        (click)="selectProduct(product.id)">
+                        <div class="relative aspect-square overflow-hidden bg-[var(--color-surface-element)]">
+                            <img [src]="productImage(product) ?? ''" [alt]="product.title"
+                                class="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                                loading="lazy">
+                            @if (selectedProductId() === product.id) {
+                            <span
+                                class="material-symbols-outlined absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-[var(--color-primary)] text-lg text-white shadow-md">
+                                check
+                            </span>
+                            }
+                        </div>
+                        <div class="p-3">
+                            <p class="line-clamp-2 text-sm font-bold text-[var(--color-text-main)]">{{ product.title }}</p>
+                            <p class="mt-1 text-sm font-semibold text-[var(--color-primary)]">Bs {{ product.price }}</p>
+                        </div>
+                    </button>
+                    }
+                </div>
+                }
+            </section>
         </div>
+
+        @if (errorMessage()) {
+        <p class="mt-6 max-w-2xl text-center text-sm font-medium text-red-700" role="alert">
+            {{ errorMessage() }}
+        </p>
         }
-    </div>
 
-    @if (errorMessage()) {
-    <p class="mt-4 max-w-xl text-center text-sm font-medium text-red-700" role="alert">
-        {{ errorMessage() }}
-    </p>
-    }
+        <div class="mt-8 flex w-full max-w-xl flex-col items-center gap-3">
+            <button type="button" (click)="generateImage()" [disabled]="!canGenerate()"
+                class="flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[var(--color-primary)] px-8 py-4 text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:shadow-none">
+                @if (isGenerating()) {
+                <span class="material-symbols-outlined spin text-xl" aria-hidden="true">autorenew</span>
+                Generando imagen...
+                } @else {
+                <span class="material-symbols-outlined text-xl" aria-hidden="true">auto_awesome</span>
+                Generar imagen
+                }
+            </button>
+            @if (!selectedFile()) {
+            <p class="text-center text-xs text-[var(--color-text-secondary)]">Primero selecciona una fotografía.</p>
+            } @else if (!selectedProductId()) {
+            <p class="text-center text-xs text-[var(--color-text-secondary)]">Ahora selecciona el producto que quieres
+                visualizar.</p>
+            } @else {
+            <p class="text-center text-xs text-[var(--color-text-secondary)]">La generación consumirá 1 de tus usos
+                disponibles.</p>
+            }
+        </div>
 
-    <!-- Features / Trust indicators -->
-    <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-4xl animate-fade-in delay-200">
-        <div class="feature-item">
-            <span class="material-symbols-outlined text-4xl text-[var(--color-secondary)] mb-2">
-                auto_fix_high
-            </span>
-            <h4 class="font-bold text-[var(--color-text-main)]">IA Avanzada</h4>
-            <p class="text-sm text-[var(--color-text-secondary)]">Ideas de decoración personalizadas al instante.</p>
-        </div>
-        <div class="feature-item">
-            <span class="material-symbols-outlined text-4xl text-[var(--color-secondary)] mb-2">
-                chair
-            </span>
-            <h4 class="font-bold text-[var(--color-text-main)]">Catálogo Real</h4>
-            <p class="text-sm text-[var(--color-text-secondary)]">Visualiza productos que puedes comprar.</p>
-        </div>
-        <div class="feature-item">
-            <span class="material-symbols-outlined text-4xl text-[var(--color-secondary)] mb-2">
-                photo_camera
-            </span>
-            <h4 class="font-bold text-[var(--color-text-main)]">Fácil de Usar</h4>
-            <p class="text-sm text-[var(--color-text-secondary)]">Solo toma una foto y nosotros hacemos el resto.</p>
+        <div class="mt-16 grid max-w-4xl grid-cols-1 gap-8 text-center md:grid-cols-3 animate-fade-in delay-200">
+            <div class="feature-item">
+                <span
+                    class="material-symbols-outlined mb-2 text-4xl text-[var(--color-secondary)]">auto_fix_high</span>
+                <h4 class="font-bold text-[var(--color-text-main)]">IA avanzada</h4>
+                <p class="text-sm text-[var(--color-text-secondary)]">Ideas de decoración personalizadas al instante.</p>
+            </div>
+            <div class="feature-item">
+                <span class="material-symbols-outlined mb-2 text-4xl text-[var(--color-secondary)]">chair</span>
+                <h4 class="font-bold text-[var(--color-text-main)]">Catálogo real</h4>
+                <p class="text-sm text-[var(--color-text-secondary)]">Visualiza el producto que tú elijas.</p>
+            </div>
+            <div class="feature-item">
+                <span class="material-symbols-outlined mb-2 text-4xl text-[var(--color-secondary)]">photo_camera</span>
+                <h4 class="font-bold text-[var(--color-text-main)]">Tú decides</h4>
+                <p class="text-sm text-[var(--color-text-secondary)]">Nada se genera hasta que confirmas tu selección.</p>
+            </div>
         </div>
     </div>
 </div>
