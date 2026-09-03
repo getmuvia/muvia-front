@@ -22,9 +22,10 @@ export class Result implements OnInit {
     originalImageUrl = this.stagingService.originalImageUrl;
     isLoading = signal(true);
     sliderPosition = signal(50);
-    readonly suggestedProducts = computed(() =>
-        (this.result()?.suggestedProducts ?? []).map(product => this.mapToProduct(product))
-    );
+    readonly selectedProduct = computed(() => {
+        const product = this.result()?.selectedProduct;
+        return product ? this.mapToProduct(product) : null;
+    });
 
     ngOnInit(): void {
         const result = this.stagingService.currentResult();
@@ -48,7 +49,7 @@ export class Result implements OnInit {
             id: stagingProduct.id,
             title: stagingProduct.title,
             price: stagingProduct.price.toString(),
-            description: stagingProduct.description,
+            description: stagingProduct.description ?? '',
             assets: [{
                 id: '1',
                 url: stagingProduct.imageUrl,
@@ -58,7 +59,7 @@ export class Result implements OnInit {
                 metadata: { alt: stagingProduct.title }
             }],
             category: {
-                name: 'Sugerencia AI',
+                name: 'Producto seleccionado',
                 id: '0',
                 imageUrl: '',
                 description: '',

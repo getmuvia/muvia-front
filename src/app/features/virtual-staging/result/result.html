@@ -6,8 +6,8 @@
             class="w-16 h-16 border-4 border-[var(--color-surface-light)] border-t-[var(--color-primary)] rounded-full spin mb-6">
         </div>
         <h2 class="text-2xl font-headline text-[var(--color-text-main)] mb-2">Diseñando tu espacio...</h2>
-        <p class="text-[var(--color-text-secondary)] animate-pulse">Nuestra IA está seleccionando los mejores muebles
-            para ti.</p>
+        <p class="text-[var(--color-text-secondary)] animate-pulse">Estamos preparando el resultado de tu
+            visualización.</p>
     </div>
     } @else {
 
@@ -58,18 +58,20 @@
         </div>
     </div>
 
-    <!-- Shop the Look Section -->
+    <!-- Selected product -->
     <div class="container mx-auto px-4 mt-8 relative z-10">
-        <h3 class="text-2xl font-headline text-[var(--color-text-main)] mb-6 drop-shadow-sm">Productos en este diseño
-        </h3>
+        <h3 class="text-2xl font-headline text-[var(--color-text-main)] mb-2 drop-shadow-sm">Producto utilizado</h3>
+        <p class="mb-6 text-sm text-[var(--color-text-secondary)]">
+            Esta visualización se generó con el producto que seleccionaste.
+        </p>
 
-        <div class="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
-            @for (product of suggestedProducts(); track product.id) {
+        @if (selectedProduct(); as product) {
+        <div class="max-w-[260px] pb-4">
             <app-product-card [product]="product"
-                class="min-w-[200px] md:min-w-[260px] snap-center block">
+                class="block">
             </app-product-card>
-            }
         </div>
+        }
     </div>
     }
 </div>

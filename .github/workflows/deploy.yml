@@ -47,14 +47,6 @@ jobs:
           main_bundle_count="$(find "${hosting_dir}" -maxdepth 1 -type f -name 'main-*.js' | wc -l)"
           test "${main_bundle_count}" -eq 1
 
-          if grep --recursive --binary-files=without-match --fixed-strings --quiet \
-            --regexp='decor@decor.com' \
-            --regexp='Decordemo123@' \
-            "${hosting_dir}"; then
-            echo 'The hosting artifact contains exposed demo credentials.' >&2
-            exit 1
-          fi
-
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
 

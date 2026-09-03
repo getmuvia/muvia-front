@@ -35,7 +35,7 @@ export class VirtualStagingService {
      * Uploads the room image and triggers the AI analysis.
      * @param file The room image file
      */
-    analyzeRoom(file: File): Observable<VirtualStagingResponse> {
+    generateStagedRoom(file: File, productId: string): Observable<VirtualStagingResponse> {
         const uploadFolder = 'virtual-staging/uploads';
 
         return this.uploadService.uploadFile(file, uploadFolder).pipe(
@@ -45,8 +45,8 @@ export class VirtualStagingService {
             switchMap(uploadResponse => {
                 const requestBody: VirtualStagingRequest = {
                     imageKey: uploadResponse.key,
+                    productId,
                     preferredStyle: 'modern',
-                    maxProducts: 3
                 };
 
                 return this.http.post<VirtualStagingResponse>(`${API_ENDPOINTS.AI.VIRTUAL_STAGING}`, requestBody);

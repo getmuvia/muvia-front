@@ -1,12 +1,12 @@
 export interface VirtualStagingRequest {
     imageKey: string;
+    productId: string;
     preferredStyle: string;
-    maxProducts: number;
 }
 
 export interface VirtualStagingResponse {
     analysis: StagingAnalysis;
-    suggestedProducts: StagingProduct[];
+    selectedProduct: StagingProduct;
     stagedImageUrl: string;
     quota: VirtualStagingQuota;
     metadata: StagingMetadata;
@@ -28,11 +28,9 @@ export interface StagingAnalysis {
 export interface StagingProduct {
     id: string;
     title: string;
-    description: string;
+    description: string | null;
     price: number;
     imageUrl: string;
-    score: number;
-    matchType: string;
 }
 
 export interface StagingMetadata {
