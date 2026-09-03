@@ -163,9 +163,10 @@
             </button>
 
             <div class="flex flex-col-reverse gap-3 sm:flex-row">
-                <button type="button" (click)="onSaveDraft()" [disabled]="isSubmitting()"
-                    class="rounded-full border border-primary/30 bg-surface-light px-6 py-3 font-body text-xs font-bold uppercase tracking-widest text-primary transition-all hover:-translate-y-px hover:border-primary-soft hover:bg-primary/5 disabled:opacity-50">
-                    Guardar borrador
+                <button type="button" disabled
+                    class="cursor-not-allowed rounded-full border border-text-light/15 bg-text-light/5 px-6 py-3 font-body text-xs font-bold uppercase tracking-widest text-text-light/45"
+                    title="Los borradores estarán disponibles en una próxima iteración">
+                    Guardar borrador · Próximamente
                 </button>
                 <button type="submit" [disabled]="isSubmitting()"
                     class="rounded-full border border-primary bg-primary px-8 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-all hover:-translate-y-px hover:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-50">

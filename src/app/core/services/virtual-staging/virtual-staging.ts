@@ -2,7 +2,11 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, switchMap, tap } from 'rxjs';
 import { UploadFileService } from '../uploadFile/upload-file';
-import { VirtualStagingRequest, VirtualStagingResponse } from '../../models/ai/virtual-staging.models';
+import {
+    VirtualStagingQuota,
+    VirtualStagingRequest,
+    VirtualStagingResponse,
+} from '../../models/ai/virtual-staging.models';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
 @Injectable({
@@ -17,6 +21,15 @@ export class VirtualStagingService {
 
     private readonly _originalImageUrl = signal<string | null>(null);
     readonly originalImageUrl = this._originalImageUrl.asReadonly();
+
+    private readonly _quota = signal<VirtualStagingQuota | null>(null);
+    readonly quota = this._quota.asReadonly();
+
+    getQuota(): Observable<VirtualStagingQuota> {
+        return this.http
+            .get<VirtualStagingQuota>(`${API_ENDPOINTS.AI.VIRTUAL_STAGING}/quota`)
+            .pipe(tap(quota => this._quota.set(quota)));
+    }
 
     /**
      * Uploads the room image and triggers the AI analysis.
@@ -40,6 +53,7 @@ export class VirtualStagingService {
             }),
             tap(response => {
                 this._currentResult.set(response);
+                this._quota.set(response.quota);
             })
         );
     }

@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { NgOptimizedImage, CurrencyPipe } from '@angular/common';
+import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
 import { LoggerService } from '@core/services/logger/logger';
@@ -22,7 +22,7 @@ import { EMPTY, Subject, catchError, map, of, switchMap, tap, timer } from 'rxjs
 
 @Component({
     selector: 'app-smart-search-modal',
-    imports: [NgOptimizedImage, CurrencyPipe],
+    imports: [NgOptimizedImage, DecimalPipe],
     templateUrl: './smart-search-modal.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './smart-search-modal.css',

@@ -1,26 +1,22 @@
-<a [routerLink]="['/products', product().id]"
-    class="group flex cursor-pointer flex-col gap-4 no-underline">
+<article class="group flex flex-col gap-4">
 
     @if (imageUrl()) {
     <div class="relative overflow-hidden rounded-editorial aspect-[4/5] bg-surface-element">
 
-        <img [ngSrc]="imageUrl()" [alt]="altText()" fill [priority]="priority()"
-            class="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]" />
+        <a [routerLink]="['/products', product().id]" class="absolute inset-0" tabindex="-1" aria-hidden="true">
+            <img [ngSrc]="imageUrl()" [alt]="altText()" fill [priority]="priority()"
+                class="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]" />
+        </a>
 
+        @if (showEditButton()) {
         <div class="absolute top-2 right-2 flex items-center gap-1 z-10">
-            @if (showEditButton()) {
             <a [routerLink]="['/seller/products', product().id, 'edit']"
                 class="flex items-center justify-center size-8 rounded-full bg-white/70 backdrop-blur-sm text-text-light hover:bg-white transition-colors"
-                (click)="$event.stopPropagation()">
+                (click)="$event.stopPropagation()" aria-label="Editar producto" title="Editar producto">
                 <span class="material-symbols-outlined text-base text-text-light">edit</span>
             </a>
-            }
-            <button
-                class="flex items-center justify-center size-8 rounded-full bg-white/70 backdrop-blur-sm text-text-light hover:bg-white transition-colors"
-                (click)="$event.preventDefault(); $event.stopPropagation()">
-                <span class="material-symbols-outlined text-base text-text-light">favorite</span>
-            </button>
         </div>
+        }
     </div>
     }
 
@@ -29,12 +25,14 @@
             {{ product().category.name }}
         </p>
 
-        <h3 class="font-body font-semibold text-base leading-tight text-text-light">
-            {{ product().title }}
-        </h3>
+        <a [routerLink]="['/products', product().id]" class="no-underline hover:text-primary">
+            <h3 class="font-body font-semibold text-base leading-tight text-text-light">
+                {{ product().title }}
+            </h3>
+        </a>
 
         <p class="font-body font-semibold text-primary">
-            {{ priceNumber() | currency:'USD':'symbol':'1.2-2' }}
+            Bs {{ priceNumber() | number:'1.2-2' }}
         </p>
     </div>
-</a>
+</article>

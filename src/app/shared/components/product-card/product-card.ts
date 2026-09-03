@@ -1,11 +1,11 @@
 import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
-import { CurrencyPipe, NgOptimizedImage } from '@angular/common';
+import { DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '@core/models/product/product';
 
 @Component({
   selector: 'app-product-card',
-  imports: [CurrencyPipe, NgOptimizedImage, RouterLink],
+  imports: [DecimalPipe, NgOptimizedImage, RouterLink],
   templateUrl: './product-card.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-card.css',

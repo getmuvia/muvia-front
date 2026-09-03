@@ -15,14 +15,4 @@ export class SellerProfileHeader {
     readonly hasCoverImage = input<boolean>(false);
 
     readonly editAvatar = output<void>();
-    readonly follow = output<void>();
-    readonly contact = output<void>();
-
-    onFollow(): void {
-        this.follow.emit();
-    }
-
-    onContact(): void {
-        this.contact.emit();
-    }
 }

@@ -4,9 +4,18 @@
 
     <!-- Main content area with flex-grow to push footer down -->
     <main class="muvia-wide-container w-full flex-grow bg-background-light py-10 lg:py-14">
-        <!-- Search and sort controls -->
-        <app-filter-bar [selectedSort]="selectedSort()" (sortChange)="onSortChange($event)"
-            (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()"
+        <div class="mb-6 flex flex-col gap-2 rounded-control border border-primary/15 bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm font-bold text-primary">Catálogo de demostración</p>
+                <p class="mt-1 text-xs leading-5 text-text-light/60">
+                    Los productos, precios y disponibilidad son ilustrativos. Muvia todavía no procesa compras.
+                </p>
+            </div>
+            <span class="w-fit rounded-full bg-primary px-3 py-1 text-[0.65rem] font-bold uppercase tracking-wider text-white">Demo</span>
+        </div>
+
+        <!-- Search controls -->
+        <app-filter-bar (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()"
             (clearSearch)="onClearSearch()" />
 
         <!-- Product Grid -->

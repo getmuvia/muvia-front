@@ -1,24 +1,52 @@
-import { Component, input, output, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Product } from '@core/models/product/product';
-import { CurrencyPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
     selector: 'app-product-info',
-    imports: [CurrencyPipe],
+    imports: [DecimalPipe],
     templateUrl: './product-info.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-info.css',
 })
 export class ProductInfo {
     readonly product = input.required<Product>();
-
-    readonly contactSeller = output<void>();
+    readonly shareFeedback = signal('');
 
     get priceNumber(): number {
         return parseFloat(this.product().price) || 0;
     }
 
-    onContactSeller(): void {
-        this.contactSeller.emit();
+    get contactHref(): string {
+        const subject = encodeURIComponent(`Consulta sobre ${this.product().title}`);
+        const body = encodeURIComponent(
+            `Hola Muvia, quiero solicitar información sobre el producto demo ${this.product().title} (ID: ${this.product().id}).`
+        );
+        return `mailto:paul@getmuvia.com?subject=${subject}&body=${body}`;
+    }
+
+    async shareProduct(): Promise<void> {
+        if (typeof navigator === 'undefined') return;
+
+        const shareData = {
+            title: `${this.product().title} · Muvia`,
+            text: `Mira ${this.product().title} en el catálogo demo de Muvia.`,
+            url: `https://app.getmuvia.com/products/${this.product().id}`
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+                this.shareFeedback.set('Producto compartido.');
+            } else if (navigator.clipboard) {
+                await navigator.clipboard.writeText(shareData.url);
+                this.shareFeedback.set('Enlace copiado.');
+            } else {
+                this.shareFeedback.set('Tu navegador no permite copiar el enlace automáticamente.');
+            }
+        } catch (error) {
+            if (error instanceof DOMException && error.name === 'AbortError') return;
+            this.shareFeedback.set('No se pudo compartir el enlace.');
+        }
     }
 }

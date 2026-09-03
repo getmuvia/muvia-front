@@ -63,11 +63,4 @@ export class ProductDetail {
     this.similarProductRequests.next({ categoryId, excludeId });
   }
 
-  onContactSeller(): void {
-    const prod = this.product();
-    if (prod?.seller) {
-      // TODO: Implement contact seller modal
-      alert(`Contactar a: ${prod.seller.name}`);
-    }
-  }
 }

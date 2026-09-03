@@ -1,7 +1,7 @@
 import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Product } from '@core/models/product/product';
 
-type TabType = 'description' | 'details' | 'shipping';
+type TabType = 'description' | 'details';
 
 @Component({
     selector: 'app-product-tabs',

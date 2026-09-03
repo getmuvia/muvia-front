@@ -49,7 +49,6 @@ export class ProductForm {
     readonly glbAssetChange = output<CreateProductAsset | null>();
     readonly usdzAssetChange = output<CreateProductAsset | null>();
     readonly fileSelected = output<{ url: string; file: File }>();
-    readonly saveDraft = output<ProductFormData>();
 
     readonly openSection = signal<ProductFormSection | null>('basic');
 
@@ -179,10 +178,6 @@ export class ProductForm {
         submit(this.productForm, async () => {
             this.formSubmit.emit(this.productForm().value());
         });
-    }
-
-    onSaveDraft(): void {
-        this.saveDraft.emit(this.productForm().value());
     }
 
     onCancel(): void {

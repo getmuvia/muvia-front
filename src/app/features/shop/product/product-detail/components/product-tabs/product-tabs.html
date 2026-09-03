@@ -13,12 +13,6 @@
                 : 'flex-1 py-4 text-sm font-bold text-text-light/50 border-b-2 border-transparent hover:border-text-light/20 tracking-wide uppercase transition-colors font-body'">
             Detalles
         </button>
-        <button (click)="setActiveTab('shipping')"
-            [class]="activeTab() === 'shipping' 
-                ? 'flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary tracking-wide uppercase font-body' 
-                : 'flex-1 py-4 text-sm font-bold text-text-light/50 border-b-2 border-transparent hover:border-text-light/20 tracking-wide uppercase transition-colors font-body'">
-            Envío
-        </button>
     </div>
 
     <!-- Tab Content -->
@@ -66,31 +60,14 @@
             }
         </div>
         }
-        @case ('shipping') {
-        <div class="space-y-4">
-            <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-primary">local_shipping</span>
-                <div>
-                    <p class="font-bold text-text-light">Envío Estándar</p>
-                    <p class="text-sm">Entrega en 5-7 días hábiles</p>
-                </div>
-            </div>
-            <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-primary">verified</span>
-                <div>
-                    <p class="font-bold text-text-light">Garantía</p>
-                    <p class="text-sm">30 días de garantía de satisfacción</p>
-                </div>
-            </div>
-            <div class="flex items-start gap-3">
-                <span class="material-symbols-outlined text-primary">undo</span>
-                <div>
-                    <p class="font-bold text-text-light">Devoluciones</p>
-                    <p class="text-sm">Devolución gratuita dentro de los primeros 15 días</p>
-                </div>
-            </div>
-        </div>
         }
-        }
+    </div>
+
+    <div class="mb-2 flex items-start gap-3 rounded-control border border-secondary/20 bg-secondary/5 p-4 text-sm leading-6 text-text-light/70">
+        <span class="material-symbols-outlined mt-0.5 text-secondary">info</span>
+        <p>
+            Esta ficha pertenece a un catálogo de demostración. Muvia todavía no procesa compras,
+            entregas, garantías ni devoluciones.
+        </p>
     </div>
 </div>

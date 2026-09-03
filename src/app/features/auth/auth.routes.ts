@@ -14,8 +14,8 @@ export const AUTH_ROUTES: Routes = [
             },
             {
                 path: 'register',
-                loadComponent: () => import('./register/register').then(m => m.Register),
-                data: { headerStyle: 'overlay' }
+                redirectTo: 'login',
+                pathMatch: 'full'
             },
             {
                 path: '',

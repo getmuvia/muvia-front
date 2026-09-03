@@ -9,6 +9,13 @@
         <p class="text-lg md:text-xl text-[var(--color-text-secondary)] max-w-2xl mx-auto font-body">
             Sube una foto de tu habitación y descubre cómo nuestros productos pueden transformar tu hogar en segundos.
         </p>
+        <p class="mt-4 text-sm font-medium text-[var(--color-text-secondary)]" aria-live="polite">
+            @if (isQuotaLoading()) {
+            Consultando generaciones disponibles...
+            } @else if (quota(); as currentQuota) {
+            {{ currentQuota.remaining }} de {{ currentQuota.limit }} generaciones disponibles hoy
+            }
+        </p>
     </div>
 
     <!-- Upload Area -->
@@ -18,7 +25,8 @@
         (dragleave)="onDragLeave($event)" (drop)="onDrop($event)">
 
         <input type="file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" accept="image/*"
-            (change)="onFileSelected($event)" [disabled]="isUploading()">
+            (change)="onFileSelected($event)"
+            [disabled]="isUploading() || isQuotaLoading() || quota()?.remaining === 0">
 
         @if (isUploading()) {
         <div class="flex flex-col items-center animate-pulse">
@@ -26,6 +34,18 @@
                 autorenew
             </span>
             <p class="text-[var(--color-text-main)] font-medium">Subiendo imagen...</p>
+        </div>
+        } @else if (quota()?.remaining === 0) {
+        <div class="flex flex-col items-center text-center px-6">
+            <span class="material-symbols-outlined text-5xl mb-4 text-[var(--color-text-secondary)]">
+                hourglass_top
+            </span>
+            <h3 class="text-xl font-semibold text-[var(--color-text-main)] mb-2">
+                Límite diario alcanzado
+            </h3>
+            <p class="text-[var(--color-text-secondary)] text-sm">
+                Mañana volverás a tener 10 generaciones disponibles.
+            </p>
         </div>
         } @else {
         <div class="flex flex-col items-center transform group-hover:scale-105 transition-transform duration-300">
@@ -42,6 +62,12 @@
         </div>
         }
     </div>
+
+    @if (errorMessage()) {
+    <p class="mt-4 max-w-xl text-center text-sm font-medium text-red-700" role="alert">
+        {{ errorMessage() }}
+    </p>
+    }
 
     <!-- Features / Trust indicators -->
     <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center max-w-4xl animate-fade-in delay-200">

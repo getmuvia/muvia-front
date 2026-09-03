@@ -1,5 +1,5 @@
 import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormField,
   form,
@@ -13,17 +13,22 @@ import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
   selector: 'app-login',
-  imports: [RouterLink, FormField],
+  imports: [FormField],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.html',
 })
 export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  readonly demoCredentials: LoginData = {
+    email: 'decor@decor.com',
+    password: 'Decordemo123@',
+  };
 
   loginModel = signal<LoginData>({
-    email: '',
-    password: '',
+    ...this.demoCredentials,
   });
 
   loginForm = form(this.loginModel, (path) => {
@@ -61,8 +66,15 @@ export class Login {
       const success = await this.authService.login(credentials);
 
       if (success) {
-        this.router.navigateByUrl(this.authService.getPostAuthRoute());
+        this.router.navigateByUrl(this.getSafeReturnUrl());
       }
     });
+  }
+
+  private getSafeReturnUrl(): string {
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    return returnUrl?.startsWith('/') && !returnUrl.startsWith('//')
+      ? returnUrl
+      : this.authService.getPostAuthRoute();
   }
 }
