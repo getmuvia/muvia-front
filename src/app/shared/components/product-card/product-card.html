@@ -1,11 +1,18 @@
 <article class="group flex flex-col gap-4">
 
-    @if (imageUrl()) {
     <div class="relative overflow-hidden rounded-editorial aspect-[4/5] bg-surface-element">
 
         <a [routerLink]="['/products', product().id]" class="absolute inset-0" tabindex="-1" aria-hidden="true">
+            @if (showImage()) {
             <img [ngSrc]="imageUrl()" [alt]="altText()" fill [priority]="priority()"
+                (error)="onImageError()"
                 class="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]" />
+            } @else {
+            <div class="flex h-full flex-col items-center justify-center gap-2 text-text-secondary">
+                <span class="material-symbols-outlined text-2xl">image_not_supported</span>
+                <span class="text-xs">Imagen no disponible</span>
+            </div>
+            }
         </a>
 
         @if (showEditButton()) {
@@ -18,7 +25,6 @@
         </div>
         }
     </div>
-    }
 
     <div class="flex flex-col items-start gap-1 px-0.5">
         <p class="text-sm text-text-light/70 font-body">
