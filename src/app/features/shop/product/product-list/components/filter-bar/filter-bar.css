@@ -1,1 +1,3 @@
-/* Filter bar styles are composed with shared Tailwind design tokens. */
+:host {
+    display: block;
+}

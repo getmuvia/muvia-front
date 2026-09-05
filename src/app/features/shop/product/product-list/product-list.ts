@@ -7,7 +7,7 @@ import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
 import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
 import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
-import { EMPTY, Subject, catchError, map, of, switchMap, tap } from 'rxjs';
+import { EMPTY, Subject, catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -28,7 +28,9 @@ export class ProductList implements OnInit {
   private readonly hybridSearchService = inject(HybridSearchService);
   private readonly hybridSearchRequests = new Subject<string>();
 
-  isLoadingMore = computed(() => this.store.isLoading() && this.store.products().length > 0);
+  isLoadingMore = computed(() =>
+    !this.useSmartSearch() && this.store.isLoading() && this.store.products().length > 0
+  );
 
   searchQuery = signal<string>('');
   useSmartSearch = signal<boolean>(false);
@@ -43,6 +45,10 @@ export class ProductList implements OnInit {
   displayLoading = computed(() =>
     this.useSmartSearch() ? this.hybridLoading() : this.store.isLoading()
   );
+  displayError = computed(() => this.useSmartSearch()
+    ? this.hybridError()
+    : this.store.isError() ? 'No pudimos cargar los productos. Inténtalo de nuevo.' : null
+  );
 
   constructor() {
     this.hybridSearchRequests.pipe(
@@ -56,6 +62,7 @@ export class ProductList implements OnInit {
 
         this.hybridLoading.set(true);
         this.hybridError.set(null);
+        this.hybridResults.set([]);
       }),
       switchMap(query => query.length < 2
         ? EMPTY
@@ -63,7 +70,7 @@ export class ProductList implements OnInit {
           map(response => response.results.map(result => this.mapToProduct(result))),
           catchError((error: HttpErrorResponse) => {
             this.logger.error('Hybrid search failed', error, 'ProductList');
-            this.hybridError.set('Error en la búsqueda inteligente');
+            this.hybridError.set('No pudimos completar la búsqueda. Inténtalo de nuevo.');
             return of([] as Product[]);
           })
         )
@@ -77,20 +84,12 @@ export class ProductList implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParamMap.pipe(
+      map(params => (params.get('search') ?? '').trim()),
+      distinctUntilChanged(),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(params => {
-      const query = params.get('search');
-
-      if (query) {
+    ).subscribe(query => {
+      if (query !== this.searchQuery() || this.store.requestStatus() === 'idle') {
         this.searchProducts(query);
-      } else {
-        const currentQuery = this.searchQuery();
-
-        if (currentQuery) {
-          this.searchProducts('');
-        } else if (this.store.products().length === 0) {
-          this.store.searchProducts({ page: 1, search: '' });
-        }
       }
     });
   }
@@ -112,6 +111,7 @@ export class ProductList implements OnInit {
    * @param query Search term from URL or input
    */
   searchProducts(query: string): void {
+    query = query.trim();
     this.searchQuery.set(query);
 
     if (query.length >= 2) {
@@ -125,6 +125,17 @@ export class ProductList implements OnInit {
         search: query
       });
     }
+  }
+
+  retryProducts(): void {
+    if (this.displayLoading()) return;
+
+    if (!this.useSmartSearch() && this.store.products().length > 0) {
+      this.loadMore();
+      return;
+    }
+
+    this.searchProducts(this.searchQuery());
   }
 
   /**
@@ -168,9 +179,7 @@ export class ProductList implements OnInit {
   }
 
   onClearSearch(): void {
-    this.hybridSearchRequests.next('');
-    this.searchQuery.set('');
-    this.useSmartSearch.set(false);
+    this.searchProducts('');
 
     // Clear URL query params
     this.router.navigate([], {
@@ -178,8 +187,5 @@ export class ProductList implements OnInit {
       queryParams: { search: null },
       queryParamsHandling: 'merge'
     });
-
-    // Reset to initial state
-    this.store.searchProducts({ page: 1, search: '' });
   }
 }

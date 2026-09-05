@@ -1,29 +1,29 @@
-<div class="sticky top-16 z-30 flex flex-col gap-3 border-b border-border-color bg-background-light/95 py-4 backdrop-blur-md transition-all sm:py-5">
+<div class="flex flex-col gap-3 border-b border-border-color py-4 sm:py-5">
     <!-- Search and active query -->
     <div class="flex min-w-0 flex-1 flex-wrap items-center gap-3">
         <!-- Search Input -->
         <div class="w-full sm:max-w-sm">
-            <form (submit)="onSearchSubmit($event)" class="relative w-full">
+            <form (submit)="onSearchSubmit($event)" role="search" aria-label="Buscar en el catálogo" class="relative w-full">
                 <label for="product-search" class="sr-only">Buscar productos</label>
                 <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)"
-                    id="product-search" placeholder="Buscar productos..."
-                    class="h-11 w-full rounded-control border border-border-color bg-surface-light px-4 py-2 pl-5 pr-11 text-sm text-text-light transition-all placeholder:text-text-light/40 hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
+                    id="product-search" placeholder="Buscar productos..." enterkeyhint="search"
+                    class="h-11 w-full rounded-control border border-border-color bg-surface-light py-2 pl-5 pr-11 text-sm text-text-light transition-colors placeholder:text-text-secondary hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
                 <button type="submit" aria-label="Buscar" title="Buscar"
                     class="absolute right-1.5 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-text-light/50 transition-colors hover:bg-surface-element hover:text-primary">
-                    <span class="material-symbols-outlined text-lg">search</span>
+                    <span class="material-symbols-outlined text-lg" aria-hidden="true">search</span>
                 </button>
             </form>
         </div>
 
         <!-- Search Chip -->
         @if (activeSearch()) {
-        <button (click)="onClearSearch()"
+        <button type="button" (click)="onClearSearch()" aria-label="Limpiar búsqueda"
             class="h-9 px-4 bg-surface-element border border-border-color text-text-light text-xs font-bold uppercase tracking-wider font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-2 rounded-full group max-w-[200px] sm:max-w-[300px]"
             title="Limpiar búsqueda">
             <span class="opacity-50 whitespace-nowrap hidden sm:inline">Búsqueda:</span>
             <span class="truncate">{{ activeSearch() }}</span>
             <span
-                class="material-symbols-outlined text-base opacity-40 group-hover:opacity-100 group-hover:text-error transition-all">close</span>
+                class="material-symbols-outlined text-base opacity-40 group-hover:opacity-100 group-hover:text-error transition-colors" aria-hidden="true">close</span>
         </button>
         }
     </div>

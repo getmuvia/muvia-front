@@ -1,6 +1,6 @@
 import { Component, input, output, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Subject, map, of, switchMap, timer } from 'rxjs';
+import { EMPTY, Subject, map, of, switchMap, timer } from 'rxjs';
 
 @Component({
     selector: 'app-filter-bar',
@@ -17,16 +17,23 @@ export class FilterBar {
     readonly clearSearch = output<void>();
 
     readonly searchQuery = linkedSignal(() => this.activeSearch());
-    private readonly searchRequests = new Subject<{ query: string; immediate: boolean }>();
+    private readonly searchRequests = new Subject<{ query: string; immediate: boolean } | null>();
 
     constructor() {
         this.searchRequests.pipe(
-            switchMap(({ query, immediate }) => immediate
-                ? of(query)
-                : timer(700).pipe(map(() => query))
+            switchMap(request => request === null
+                ? EMPTY
+                : request.immediate
+                    ? of(request.query)
+                    : timer(700).pipe(map(() => request.query))
             ),
             takeUntilDestroyed()
-        ).subscribe(query => this.searchChange.emit(query));
+        ).subscribe(query => {
+            const normalizedQuery = query.trim();
+            if (normalizedQuery !== this.activeSearch()) {
+                this.searchChange.emit(normalizedQuery);
+            }
+        });
     }
 
     onSearchInput(event: Event): void {
@@ -42,6 +49,7 @@ export class FilterBar {
     }
 
     onClearSearch(): void {
+        this.searchRequests.next(null);
         this.searchQuery.set('');
         this.clearSearch.emit();
     }

@@ -2,8 +2,8 @@
 <!-- Loading skeleton -->
 <div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
     @for (i of [1,2,3,4,5,6,7,8]; track i) {
-    <div class="flex flex-col gap-3">
-        <app-skeleton height="auto" className="aspect-[2/3]" />
+    <div class="flex flex-col gap-4" aria-hidden="true">
+        <app-skeleton height="auto" className="aspect-[4/5]" />
         <div class="space-y-2">
             <app-skeleton width="33%" height="0.75rem" />
             <app-skeleton width="66%" height="1rem" />

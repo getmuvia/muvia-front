@@ -18,14 +18,32 @@
         <app-filter-bar (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()"
             (clearSearch)="onClearSearch()" />
 
-        <!-- Product Grid -->
-        <div class="mt-8">
+        @if (displayError(); as error) {
+        <div role="alert" class="mt-8 flex flex-col gap-3 rounded-control border border-error/20 bg-error/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+            <p class="text-sm text-error">{{ error }}</p>
+            <button type="button" (click)="retryProducts()"
+                class="w-fit shrink-0 rounded-control border border-error/30 px-4 py-2 text-sm font-semibold text-error transition-colors hover:bg-error/10">
+                Reintentar
+            </button>
+        </div>
+        }
+
+        <p role="status" class="sr-only">
+            @if (displayLoading()) {
+                {{ isLoadingMore() ? 'Cargando más productos...' : 'Buscando productos...' }}
+            }
+        </p>
+
+        <!-- Keep loaded products visible when loading another page fails. -->
+        @if (!displayError() || displayProducts().length > 0) {
+        <div class="mt-8" role="region" aria-label="Productos" [attr.aria-busy]="displayLoading()">
             <app-product-grid [products]="displayProducts()"
                 [isLoading]="displayLoading() && displayProducts().length === 0" />
         </div>
+        }
 
         <!-- Load More Button (only for normal search) -->
-        @if (!useSmartSearch()) {
+        @if (!useSmartSearch() && !displayError() && displayProducts().length > 0) {
         <app-load-more-button [isLoading]="isLoadingMore()" [hasMore]="store.hasNextPage()" (loadMore)="loadMore()" />
         }
     </main>
