@@ -5,6 +5,7 @@ import { AuthService } from '@core/auth/services/auth';
 import { filter } from 'rxjs/operators';
 import { NgClass } from '@angular/common';
 import { SmartSearchModal } from '@features/shop/components/modals/smart-search/smart-search-modal';
+import { MarketService } from '@core/services/market/market';
 
 
 @Component({
@@ -19,6 +20,7 @@ export class ShopNavbar implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  readonly marketService = inject(MarketService);
 
   isAuthenticated = this.authService.isAuthenticated;
   currentUser = this.authService.currentUser;

@@ -6,6 +6,7 @@ import {
     HybridSearchRequest,
     HybridSearchResponse
 } from '@core/models/search/hybrid-search.model';
+import { MarketService } from '@core/services/market/market';
 
 /**
  * Default limits for hybrid search
@@ -22,16 +23,22 @@ export const HYBRID_SEARCH_LIMITS = {
 @Injectable({ providedIn: 'root' })
 export class HybridSearchService {
     private readonly http = inject(HttpClient);
+    private readonly marketService = inject(MarketService);
 
     /**
      * Performs a hybrid search (Semantic + Lexical) using Vertex AI.
      * 
      * @param query - The user's search term.
      * @param limit - Max number of results (defaults to Product List limit).
-     * @returns Observable with search results including relevance probability.
+     * @returns Observable with search results including relevance scores and separate suggestions.
      */
     search(query: string, limit: number = HYBRID_SEARCH_LIMITS.PRODUCT_LIST): Observable<HybridSearchResponse> {
-        const payload: HybridSearchRequest = { query, limit };
+        const payload: HybridSearchRequest = {
+            query,
+            limit,
+            marketCode: this.marketService.selectedMarket().code,
+            locale: this.marketService.locale(),
+        };
         return this.http.post<HybridSearchResponse>(API_ENDPOINTS.AI.HYBRID_SEARCH, payload);
     }
 }

@@ -1,6 +1,7 @@
 import { Component, input, output, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, map, of, switchMap, timer } from 'rxjs';
+import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
 
 @Component({
     selector: 'app-filter-bar',
@@ -25,13 +26,16 @@ export class FilterBar {
                 ? EMPTY
                 : request.immediate
                     ? of(request.query)
-                    : timer(700).pipe(map(() => request.query))
+                    : timer(SEARCH_INPUT_CONFIG.DEBOUNCE_MS).pipe(map(() => request.query))
             ),
             takeUntilDestroyed()
         ).subscribe(query => {
             const normalizedQuery = query.trim();
-            if (normalizedQuery !== this.activeSearch()) {
-                this.searchChange.emit(normalizedQuery);
+            const effectiveQuery = normalizedQuery.length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH
+                ? normalizedQuery
+                : '';
+            if (effectiveQuery !== this.activeSearch()) {
+                this.searchChange.emit(effectiveQuery);
             }
         });
     }

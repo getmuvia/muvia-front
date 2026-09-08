@@ -1,20 +1,23 @@
-import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
+import { HttpInterceptorFn, HttpErrorResponse, HttpContextToken } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { tap } from 'rxjs';
 import { ToastService } from '@core/services/toast/toast';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 
+export const SILENT_HTTP_ERRORS = new HttpContextToken<boolean>(() => false);
+
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     const toastService = inject(ToastService);
     const platformId = inject(PLATFORM_ID);
     const isAuthenticationRequest =
         req.url === API_ENDPOINTS.AUTH.LOGIN || req.url === API_ENDPOINTS.AUTH.REGISTER;
+    const isSilentRequest = req.context.get(SILENT_HTTP_ERRORS);
 
     return next(req).pipe(
         tap({
             error: (error: HttpErrorResponse) => {
-                if (isAuthenticationRequest) return;
+                if (isAuthenticationRequest || isSilentRequest) return;
 
                 let errorMessage = 'An unexpected error occurred';
 

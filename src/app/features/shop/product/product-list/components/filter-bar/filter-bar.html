@@ -5,7 +5,7 @@
         <div class="w-full sm:max-w-sm">
             <form (submit)="onSearchSubmit($event)" role="search" aria-label="Buscar en el catálogo" class="relative w-full">
                 <label for="product-search" class="sr-only">Buscar productos</label>
-                <input type="text" [value]="searchQuery()" (input)="onSearchInput($event)"
+                <input type="text" maxlength="200" [value]="searchQuery()" (input)="onSearchInput($event)"
                     id="product-search" placeholder="Buscar productos..." enterkeyhint="search"
                     class="h-11 w-full rounded-control border border-border-color bg-surface-light py-2 pl-5 pr-11 text-sm text-text-light transition-colors placeholder:text-text-secondary hover:border-text-light/30 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
                 <button type="submit" aria-label="Buscar" title="Buscar"

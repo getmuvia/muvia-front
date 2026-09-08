@@ -14,6 +14,8 @@ export type MatchType = 'hybrid' | 'semantic' | 'lexical';
 export interface HybridSearchRequest {
     query: string;
     limit?: number;
+    marketCode?: string;
+    locale?: string;
 }
 
 /**
@@ -22,9 +24,10 @@ export interface HybridSearchRequest {
 export interface HybridSearchResult {
     id: string;
     title: string;
-    description: string;
+    description: string | null;
     price: number;
-    imageUrl: string;
+    currencyCode: string;
+    imageUrl: string | null;
     score: number;
     matchType: MatchType;
 }
@@ -36,4 +39,6 @@ export interface HybridSearchResponse {
     query: string;
     results: HybridSearchResult[];
     count: number;
+    /** Broader suggestions supplied separately by the backend. */
+    relatedResults?: HybridSearchResult[];
 }

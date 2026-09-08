@@ -9,6 +9,12 @@ export const API_ENDPOINTS = {
     },
     CATEGORIES: {
         BASE: `${BASE}/categories`,
+        SELECTABLE: `${BASE}/categories/selectable`,
+    },
+    MARKETS: {
+        BASE: `${BASE}/markets`,
+        CONTEXT: `${BASE}/markets/context`,
+        BOOTSTRAP: `${BASE}/markets/bootstrap`,
     },
     PRODUCTS: {
         BASE: `${BASE}/products`,

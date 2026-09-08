@@ -1,11 +1,14 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { MarketService } from '@core/services/market/market';
 
 @Component({
   selector: 'app-shop-footer',
+  imports: [RouterLink],
   templateUrl: './shop-footer.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './shop-footer.css',
 })
 export class ShopFooter {
-
+  readonly marketService = inject(MarketService);
 }

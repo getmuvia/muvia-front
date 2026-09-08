@@ -41,11 +41,22 @@ export interface ProductAsset {
  */
 export interface ProductCategory {
   id: string;
+  code?: string;
   parentId: string | null;
   name: string;
   description: string;
   imageUrl: string;
   level: number;
+  isSelectable?: boolean;
+}
+
+export interface ProductListing {
+  id: string;
+  marketCode: string;
+  price: string;
+  currencyCode: string;
+  stock: number;
+  isActive: boolean;
 }
 
 /**
@@ -74,5 +85,6 @@ export interface Product {
   assets: ProductAsset[];
   category: ProductCategory;
   seller?: ProductSeller;
+  listings?: ProductListing[];
 }
 
