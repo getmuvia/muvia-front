@@ -37,9 +37,24 @@
         <!-- Keep loaded products visible when loading another page fails. -->
         @if (!displayError() || displayProducts().length > 0) {
         <div class="mt-8" role="region" aria-label="Productos" [attr.aria-busy]="displayLoading()">
+            @if (useSmartSearch() && !displayLoading() && displayProducts().length > 0) {
+            <h2 class="mb-6 text-lg font-semibold text-primary">Resultados de tu búsqueda</h2>
+            }
             <app-product-grid [products]="displayProducts()"
-                [isLoading]="displayLoading() && displayProducts().length === 0" />
+                [isLoading]="displayLoading() && displayProducts().length === 0"
+                [emptyTitle]="useSmartSearch() ? 'No encontramos coincidencias directas' : 'No hay productos'"
+                [emptyDescription]="relatedProducts().length > 0
+                    ? 'Puedes explorar los productos relacionados que aparecen abajo.'
+                    : 'Intenta con el nombre del producto u otros términos.'" />
         </div>
+        }
+
+        @if (useSmartSearch() && !displayLoading() && !displayError() && relatedProducts().length > 0) {
+        <section class="mt-12 border-t border-border-color pt-8" aria-labelledby="related-search-heading">
+            <h2 id="related-search-heading" class="text-lg font-semibold text-primary">Productos relacionados</h2>
+            <p class="mt-2 mb-6 text-sm text-text-secondary">Otras opciones similares que podrían interesarte.</p>
+            <app-product-grid [products]="relatedProducts()" />
+        </section>
         }
 
         <!-- Load More Button (only for normal search) -->

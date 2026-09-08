@@ -18,6 +18,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
 import { LoggerService } from '@core/services/logger/logger';
 import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
+import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
 import { EMPTY, Subject, catchError, map, of, switchMap, tap, timer } from 'rxjs';
 
 @Component({
@@ -41,7 +42,9 @@ export class SmartSearchModal {
 
     /** Search state */
     query = signal('');
-    results = signal<HybridSearchResult[]>([]);
+    primaryResults = signal<HybridSearchResult[]>([]);
+    relatedResults = signal<HybridSearchResult[]>([]);
+    results = computed(() => [...this.primaryResults(), ...this.relatedResults()]);
     isLoading = signal(false);
     error = signal<string | null>(null);
 
@@ -51,7 +54,10 @@ export class SmartSearchModal {
     /** Computed states */
     hasResults = computed(() => this.results().length > 0);
     showEmptyState = computed(() =>
-        this.query().length >= 2 && !this.isLoading() && !this.hasResults() && !this.error()
+        this.query().length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH
+        && !this.isLoading()
+        && !this.hasResults()
+        && !this.error()
     );
 
     constructor() {
@@ -62,27 +68,30 @@ export class SmartSearchModal {
                 this.selectedIndex.set(-1);
                 this.error.set(null);
 
-                if (query.length < 2) {
-                    this.results.set([]);
-                    this.isLoading.set(false);
-                }
+                this.primaryResults.set([]);
+                this.relatedResults.set([]);
+                this.isLoading.set(query.length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH);
             }),
-            switchMap(query => query.length < 2
+            switchMap(query => query.length < SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH
                 ? EMPTY
-                : timer(600).pipe(
+                : timer(SEARCH_INPUT_CONFIG.DEBOUNCE_MS).pipe(
                     tap(() => this.isLoading.set(true)),
                     switchMap(() => this.searchService.search(query, HYBRID_SEARCH_LIMITS.MODAL)),
-                    map(response => response.results),
+                    map(response => ({
+                        results: response.results,
+                        relatedResults: response.relatedResults ?? [],
+                    })),
                     catchError((error: HttpErrorResponse) => {
                         this.logger.error('Hybrid search failed', error, 'SmartSearchModal');
                         this.error.set('Error al buscar. Intenta de nuevo.');
-                        return of([] as HybridSearchResult[]);
+                        return of({ results: [] as HybridSearchResult[], relatedResults: [] as HybridSearchResult[] });
                     })
                 )
             ),
             takeUntilDestroyed(this.destroyRef)
-        ).subscribe(results => {
-            this.results.set(results);
+        ).subscribe(response => {
+            this.primaryResults.set(response.results);
+            this.relatedResults.set(response.relatedResults);
             this.isLoading.set(false);
         });
     }
@@ -108,7 +117,7 @@ export class SmartSearchModal {
             case 'Enter':
                 if (this.selectedIndex() >= 0) {
                     this.selectResult(this.results()[this.selectedIndex()]);
-                } else if (this.query().length >= 2) {
+                } else if (this.query().length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH) {
                     this.submitSearch();
                 }
                 break;
@@ -116,8 +125,7 @@ export class SmartSearchModal {
     }
 
     /**
-     * Handles input changes with a 600ms debounce to avoid excessive API calls.
-     * Triggers the hybrid search if query length >= 2 chars.
+     * Waits for a pause in typing before searching and ignores short queries.
      * @param event Input event
      */
     onSearchInput(event: Event): void {

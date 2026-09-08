@@ -1,0 +1,46 @@
+<main class="min-h-[65vh] bg-background-light px-4 py-16 sm:px-6 sm:py-20 lg:px-10">
+  <section class="mx-auto w-full max-w-5xl">
+    <div class="max-w-2xl">
+      <span class="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">Ubicación</span>
+      <h1 class="mt-3 text-4xl font-semibold text-text-main sm:text-5xl">Selecciona tu ubicación</h1>
+      <p class="mt-4 text-sm leading-6 text-text-secondary sm:text-base">
+        Verás productos disponibles para entrega en el país elegido.
+      </p>
+    </div>
+
+    @for (group of marketGroups(); track group.regionCode) {
+    <div class="mt-12">
+      <h2 class="text-2xl font-semibold text-text-main">{{ group.name }}</h2>
+      <div class="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        @for (market of group.markets; track market.code) {
+          <button
+            type="button"
+            (click)="selectMarket(market)"
+            class="market-card group flex min-h-28 items-center gap-4 rounded-xl border border-border-color bg-white px-5 py-5 text-left shadow-sm transition hover:border-primary/50 hover:shadow-soft"
+          >
+            <img
+              [src]="marketService.flagAssetUrl(market.code)"
+              [alt]="'Bandera de ' + market.name"
+              class="h-9 w-14 rounded object-cover shadow-sm ring-1 ring-black/10"
+            />
+            <span class="min-w-0 flex-1">
+              <span class="block text-base font-semibold text-text-main">{{ market.name }}</span>
+              <span class="mt-1 block text-xs text-text-secondary">Español · {{ market.currencyCode }}</span>
+            </span>
+            @if (marketService.selectedMarket().code === market.code) {
+              <span class="material-symbols-outlined text-primary" title="Ubicación actual">check_circle</span>
+            } @else {
+              <span class="material-symbols-outlined text-primary opacity-0 transition group-hover:opacity-100">arrow_forward</span>
+            }
+          </button>
+        }
+      </div>
+    </div>
+    }
+
+    <div class="mt-10 flex items-center gap-3 rounded-xl border border-dashed border-border-color bg-surface-element px-5 py-4 text-sm text-text-secondary">
+      <span class="material-symbols-outlined text-primary" aria-hidden="true">public</span>
+      <span>Más países próximamente.</span>
+    </div>
+  </section>
+</main>

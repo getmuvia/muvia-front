@@ -1,5 +1,6 @@
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth';
+import { MarketService } from '@core/services/market/market';
 
 /**
  * Initializes the application by verifying the user's session.
@@ -7,5 +8,7 @@ import { AuthService } from '../services/auth';
  */
 export const appInit = () => {
     const auth = inject(AuthService);
+    const market = inject(MarketService);
+    void market.initialize();
     return auth.verifySession();
 };

@@ -36,6 +36,18 @@
             <div class="flex min-w-0 items-center gap-2 justify-self-end">
                 <!-- Desktop Only: Virtual Staging, Search, Auth -->
                 <div class="hidden items-center gap-2 lg:flex">
+                    <a routerLink="/location"
+                        [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
+                        class="flex h-10 items-center gap-2 rounded-full px-3 text-sm font-semibold transition-colors"
+                        [attr.aria-label]="'Cambiar ubicación. Actual: ' + marketService.selectedMarket().name"
+                        title="Cambiar ubicación">
+                        <img
+                            [src]="marketService.flagAssetUrl(marketService.selectedMarket().code)"
+                            [alt]="'Bandera de ' + marketService.selectedMarket().name"
+                            class="h-4 w-6 rounded-[2px] object-cover shadow-sm ring-1 ring-black/10"
+                        />
+                        <span>{{ marketService.selectedMarket().name }}</span>
+                    </a>
                     <!-- Virtual Staging Button -->
                     <a routerLink="/virtual-staging"
                         [ngClass]="isTransparent() ? 'text-white hover:bg-white/10' : 'text-primary hover:bg-primary/10'"
@@ -128,6 +140,15 @@
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
             <span class="material-symbols-outlined text-xl text-primary">inventory_2</span>
             <span>Productos</span>
+        </a>
+        <a (click)="closeMobileMenu()" routerLink="/location"
+            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
+            <img
+                [src]="marketService.flagAssetUrl(marketService.selectedMarket().code)"
+                [alt]="'Bandera de ' + marketService.selectedMarket().name"
+                class="h-4 w-6 rounded-[2px] object-cover shadow-sm ring-1 ring-black/10"
+            />
+            <span>{{ marketService.selectedMarket().name }} · Cambiar ubicación</span>
         </a>
         <div class="my-2 mx-6 border-t border-black/10"></div>
         <a (click)="closeMobileMenu()" routerLink="/virtual-staging"

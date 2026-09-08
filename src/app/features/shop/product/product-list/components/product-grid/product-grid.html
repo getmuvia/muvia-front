@@ -14,8 +14,7 @@
 </div>
 } @else if (products().length === 0) {
 <!-- Empty state -->
-<app-empty-state title="No hay productos"
-    description="No encontramos productos que coincidan con tu búsqueda. Intenta con otros términos." />
+<app-empty-state [title]="emptyTitle()" [description]="emptyDescription()" />
 } @else {
 <!-- Product grid -->
 <div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">

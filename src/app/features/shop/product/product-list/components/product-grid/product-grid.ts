@@ -15,4 +15,6 @@ import { EmptyState } from '@shared/components/empty-state/empty-state';
 export class ProductGrid {
     readonly products = input<Product[]>([]);
     readonly isLoading = input<boolean>(false);
+    readonly emptyTitle = input('No hay productos');
+    readonly emptyDescription = input('No encontramos productos que coincidan con tu búsqueda. Intenta con otros términos.');
 }

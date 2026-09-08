@@ -1,15 +1,19 @@
 import { Component, inject, signal, computed, OnInit, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore } from '@core/services/product/product.store';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
 import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
 import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
+import { MarketService } from '@core/services/market/market';
+import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
 import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
-import { EMPTY, Subject, catchError, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
+import { EMPTY, Subject, catchError, combineLatest, distinctUntilChanged, map, of, switchMap, tap } from 'rxjs';
 
 import { ActivatedRoute, Router } from '@angular/router';
+
+type SearchProduct = Product & Pick<HybridSearchResult, 'score' | 'matchType'>;
 
 @Component({
   selector: 'app-product-list',
@@ -26,7 +30,12 @@ export class ProductList implements OnInit {
   private readonly router = inject(Router);
   readonly store = inject(ProductStore);
   private readonly hybridSearchService = inject(HybridSearchService);
+  private readonly marketService = inject(MarketService);
   private readonly hybridSearchRequests = new Subject<string>();
+  private readonly selectedMarketCode$ = toObservable(this.marketService.selectedMarket).pipe(
+    map(market => market.code),
+    distinctUntilChanged(),
+  );
 
   isLoadingMore = computed(() =>
     !this.useSmartSearch() && this.store.isLoading() && this.store.products().length > 0
@@ -35,7 +44,8 @@ export class ProductList implements OnInit {
   searchQuery = signal<string>('');
   useSmartSearch = signal<boolean>(false);
 
-  hybridResults = signal<Product[]>([]);
+  hybridResults = signal<SearchProduct[]>([]);
+  relatedProducts = signal<SearchProduct[]>([]);
   hybridLoading = signal<boolean>(false);
   hybridError = signal<string | null>(null);
 
@@ -53,7 +63,8 @@ export class ProductList implements OnInit {
   constructor() {
     this.hybridSearchRequests.pipe(
       tap(query => {
-        if (query.length < 2) {
+        this.relatedProducts.set([]);
+        if (query.length < SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH) {
           this.hybridLoading.set(false);
           this.hybridError.set(null);
           this.hybridResults.set([]);
@@ -64,33 +75,39 @@ export class ProductList implements OnInit {
         this.hybridError.set(null);
         this.hybridResults.set([]);
       }),
-      switchMap(query => query.length < 2
+      switchMap(query => query.length < SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH
         ? EMPTY
         : this.hybridSearchService.search(query, HYBRID_SEARCH_LIMITS.PRODUCT_LIST).pipe(
-          map(response => response.results.map(result => this.mapToProduct(result))),
+          map(response => ({
+            results: response.results.map(result => this.mapToProduct(result)),
+            relatedResults: (response.relatedResults ?? []).map(result => this.mapToProduct(result)),
+          })),
           catchError((error: HttpErrorResponse) => {
             this.logger.error('Hybrid search failed', error, 'ProductList');
             this.hybridError.set('No pudimos completar la búsqueda. Inténtalo de nuevo.');
-            return of([] as Product[]);
+            return of({ results: [] as SearchProduct[], relatedResults: [] as SearchProduct[] });
           })
         )
       ),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(products => {
-      this.hybridResults.set(products);
+    ).subscribe(response => {
+      this.hybridResults.set(response.results);
+      this.relatedProducts.set(response.relatedResults);
       this.hybridLoading.set(false);
     });
   }
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(
-      map(params => (params.get('search') ?? '').trim()),
-      distinctUntilChanged(),
+    combineLatest([
+      this.route.queryParamMap.pipe(
+        map(params => (params.get('search') ?? '').trim()),
+        distinctUntilChanged(),
+      ),
+      this.selectedMarketCode$,
+    ]).pipe(
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(query => {
-      if (query !== this.searchQuery() || this.store.requestStatus() === 'idle') {
-        this.searchProducts(query);
-      }
+    ).subscribe(([query, marketCode]) => {
+      this.searchProducts(query, marketCode);
     });
   }
 
@@ -110,19 +127,21 @@ export class ProductList implements OnInit {
    * 
    * @param query Search term from URL or input
    */
-  searchProducts(query: string): void {
+  searchProducts(query: string, marketCode = this.marketService.selectedMarket().code): void {
     query = query.trim();
-    this.searchQuery.set(query);
+    const effectiveQuery = query.length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH ? query : '';
+    this.searchQuery.set(effectiveQuery);
 
-    if (query.length >= 2) {
+    if (effectiveQuery) {
       this.useSmartSearch.set(true);
-      this.performHybridSearch(query);
+      this.performHybridSearch(effectiveQuery);
     } else {
-      this.hybridSearchRequests.next(query);
+      this.hybridSearchRequests.next('');
       this.useSmartSearch.set(false);
       this.store.searchProducts({
         page: 1,
-        search: query
+        search: '',
+        marketCode,
       });
     }
   }
@@ -147,13 +166,15 @@ export class ProductList implements OnInit {
   }
 
   /** Map HybridSearchResult to Product format for display */
-  private mapToProduct(result: HybridSearchResult): Product {
+  private mapToProduct(result: HybridSearchResult): SearchProduct {
     return {
       id: result.id,
       sellerId: '',
       categoryId: '',
       title: result.title,
-      description: result.description,
+      description: result.description ?? '',
+      score: result.score,
+      matchType: result.matchType,
       price: result.price.toString(),
       stock: 0,
       specifications: {},

@@ -7,6 +7,7 @@ import { CreateProductDto } from '@core/models/product/create-product.dto';
 import { UpdateProductDto } from '@core/models/product/update-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { STORE_CONFIG } from '@core/store/store.config';
+import { MarketService } from '@core/services/market/market';
 
 export interface PaginationParams {
   page?: number;
@@ -15,6 +16,7 @@ export interface PaginationParams {
 
 export interface SearchParams extends PaginationParams {
   search: string;
+  marketCode?: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -34,6 +36,7 @@ export interface PaginatedResponse<T> {
 export class ProductService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = API_ENDPOINTS.PRODUCTS.BASE;
+  private readonly marketService = inject(MarketService);
 
   /**
    * Get all products for the current user.
@@ -55,7 +58,8 @@ export class ProductService {
   searchProducts(params: SearchParams): Observable<PaginatedResponse<Product>> {
     let queryParams = new HttpParams()
       .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
-      .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString());
+      .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString())
+      .set('marketCode', params.marketCode ?? this.marketService.selectedMarket().code);
 
     if (params.search) {
       queryParams = queryParams.set('search', params.search);
