@@ -53,6 +53,7 @@ export class ProductCreate {
     formData = signal<ProductFormData | null>(null);
     categories = signal<Category[]>([]);
     isLoadingCategories = signal(true);
+    hasCategoryLoadError = signal(false);
     isSubmitting = signal(false);
 
     // Asset state
@@ -107,6 +108,7 @@ export class ProductCreate {
 
     private loadCategories(): void {
         this.isLoadingCategories.set(true);
+        this.hasCategoryLoadError.set(false);
         this.categoryService.getCategories().pipe(
             takeUntilDestroyed(this.destroyRef)
         ).subscribe({
@@ -116,6 +118,8 @@ export class ProductCreate {
             },
             error: (error: HttpErrorResponse) => {
                 this.logger.error('Failed to load categories', error, 'ProductCreate');
+                this.categories.set([]);
+                this.hasCategoryLoadError.set(true);
                 this.isLoadingCategories.set(false);
             }
         });

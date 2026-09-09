@@ -18,6 +18,7 @@ export class BasicInfoSection {
 
     readonly categories = input<Category[]>([]);
     readonly isLoadingCategories = input(false);
+    readonly hasCategoryLoadError = input(false);
 
     isFieldInvalid(field: FieldTree<unknown>): boolean {
         const state = field();

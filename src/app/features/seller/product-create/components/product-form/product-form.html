@@ -50,7 +50,8 @@
                     <app-basic-info-section [titleField]="productForm.title"
                         [descriptionField]="productForm.description" [priceField]="productForm.price"
                         [stockField]="productForm.stock" [categoryIdField]="productForm.categoryId"
-                        [categories]="categories()" [isLoadingCategories]="isLoadingCategories()">
+                        [categories]="categories()" [isLoadingCategories]="isLoadingCategories()"
+                        [hasCategoryLoadError]="hasCategoryLoadError()">
                     </app-basic-info-section>
                 </div>
                 }
@@ -168,7 +169,8 @@
                     title="Los borradores estarán disponibles en una próxima iteración">
                     Guardar borrador · Próximamente
                 </button>
-                <button type="submit" [disabled]="isSubmitting()"
+                <button type="submit"
+                    [disabled]="isSubmitting() || isLoadingCategories() || hasCategoryLoadError() || categories().length === 0"
                     class="rounded-full border border-primary bg-primary px-8 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-all hover:-translate-y-px hover:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-50">
                     {{ isSubmitting()
                     ? (isEditMode() ? 'Guardando...' : 'Publicando...')

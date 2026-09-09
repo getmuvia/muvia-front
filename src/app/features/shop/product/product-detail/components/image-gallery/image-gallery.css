@@ -1,1 +1,71 @@
 /* Image gallery styles */
+
+:host {
+    display: block;
+}
+
+.dimension-anchor {
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+    --min-hotspot-opacity: 0;
+    --max-hotspot-opacity: 0;
+}
+
+.dimension-label {
+    display: flex;
+    min-width: max-content;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    padding: 0.45rem 0.75rem;
+    transform: translate(-50%, -50%);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 92%);
+    box-shadow: 0 6px 20px rgb(0 0 0 / 12%);
+    color: var(--color-primary);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+    pointer-events: none;
+    white-space: nowrap;
+    backdrop-filter: blur(8px);
+    --min-hotspot-opacity: 1;
+    --max-hotspot-opacity: 1;
+}
+
+.dimension-label small {
+    color: color-mix(in srgb, var(--color-primary) 62%, transparent);
+    font-size: 0.55rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.dimension-lines {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.dimension-lines line {
+    stroke: var(--color-primary);
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+    vector-effect: non-scaling-stroke;
+}
+
+.dimension-overlay--hidden {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    .dimension-label {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.68rem;
+    }
+}
