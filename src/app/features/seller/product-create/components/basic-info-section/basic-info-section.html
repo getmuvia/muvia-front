@@ -76,13 +76,37 @@
                 Categoría
             </label>
             <select [formField]="categoryIdField()"
-                class="w-full rounded-lg border border-border-color bg-white px-4 py-3 text-lg text-text-light transition-colors focus:border-primary focus:ring-0 font-body">
+                [attr.aria-busy]="isLoadingCategories()"
+                class="w-full rounded-lg border border-border-color bg-white px-4 py-3 text-lg text-text-light transition-colors focus:border-primary focus:ring-0 font-body disabled:cursor-wait disabled:bg-surface-element/40 disabled:text-text-light/50">
+                @if (isLoadingCategories()) {
+                <option value="" disabled>Cargando categorías...</option>
+                } @else if (hasCategoryLoadError()) {
+                <option value="" disabled>Categorías no disponibles</option>
+                } @else if (categories().length === 0) {
+                <option value="" disabled>No hay categorías disponibles</option>
+                } @else {
                 <option value="" disabled>Selecciona una categoría</option>
                 @for (category of categories(); track category.id) {
                 <option [value]="category.id">{{ category.name }}</option>
                 }
+                }
             </select>
-            @if (isFieldInvalid(categoryIdField())) {
+            @if (isLoadingCategories()) {
+            <p class="flex items-center gap-1 text-sm font-medium text-text-light/55" role="status">
+                <span class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
+                <span>Estamos cargando las categorías.</span>
+            </p>
+            } @else if (hasCategoryLoadError()) {
+            <p class="flex items-center gap-1 text-sm font-medium text-error" role="alert">
+                <span class="material-symbols-outlined text-sm">error</span>
+                <span>Las categorías no están disponibles en este momento.</span>
+            </p>
+            } @else if (categories().length === 0) {
+            <p class="flex items-center gap-1 text-sm font-medium text-text-light/55">
+                <span class="material-symbols-outlined text-sm">info</span>
+                <span>Aún no hay categorías disponibles para publicar.</span>
+            </p>
+            } @else if (isFieldInvalid(categoryIdField())) {
             <p class="text-sm text-error font-medium flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(categoryIdField()); track $index) {

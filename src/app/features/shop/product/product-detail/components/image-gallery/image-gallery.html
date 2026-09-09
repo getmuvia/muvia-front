@@ -61,11 +61,53 @@
         <span class="text-sm uppercase tracking-wider opacity-60">Vista 3D</span>
     </div>
 
+    @if (hasProductDimensions()) {
+    <button (click)="toggleDimensions()" [attr.aria-pressed]="showDimensions()"
+        class="absolute bottom-4 left-4 z-10 flex items-center gap-2 px-4 py-3 bg-white/90 backdrop-blur-md border border-primary/15 text-primary shadow-sm hover:bg-white transition-colors font-body"
+        [attr.title]="showDimensions() ? 'Ocultar medidas' : 'Mostrar medidas'">
+        <span class="material-symbols-outlined text-xl">straighten</span>
+        <span class="text-sm font-semibold">{{ showDimensions() ? 'Ocultar medidas' : 'Mostrar medidas' }}</span>
+    </button>
+    }
+
     <!-- Model Viewer (only if loaded) -->
     @if (modelViewerLoaded()) {
     <model-viewer #modelViewer [attr.src]="glbAsset()?.url" [attr.ios-src]="usdzAsset()?.url" alt="Modelo 3D del producto"
         camera-controls auto-rotate ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="1"
+        (load)="onModelLoaded()" (camera-change)="onCameraChange()" (ar-status)="onArStatus($event)"
         style="width: 100%; height: 100%; max-width: 90vw; max-height: 90vh;">
+
+        @if (hasProductDimensions()) {
+        <span slot="hotspot-width-start" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
+        <span slot="hotspot-width-end" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
+        <span slot="hotspot-height-start" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
+        <span slot="hotspot-height-end" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
+        <span slot="hotspot-depth-start" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
+        <span slot="hotspot-depth-end" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
+
+        <span slot="hotspot-width-label" class="dimension-label"
+            [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()" data-position="0 0 0">
+            <small>Ancho</small>
+            {{ formatDimension(dimensions()!.width) }}
+        </span>
+        <span slot="hotspot-height-label" class="dimension-label"
+            [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()" data-position="0 0 0">
+            <small>Alto</small>
+            {{ formatDimension(dimensions()!.height) }}
+        </span>
+        <span slot="hotspot-depth-label" class="dimension-label"
+            [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()" data-position="0 0 0">
+            <small>Profundidad</small>
+            {{ formatDimension(dimensions()!.depth) }}
+        </span>
+
+        <svg #dimensionLines class="dimension-lines" [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()"
+            width="100%" height="100%" aria-hidden="true">
+            <line data-dimension-line="width"></line>
+            <line data-dimension-line="height"></line>
+            <line data-dimension-line="depth"></line>
+        </svg>
+        }
 
         <!-- AR Button Slot -->
         <button slot="ar-button"

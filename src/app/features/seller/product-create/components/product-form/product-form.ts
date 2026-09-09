@@ -1,5 +1,5 @@
 import { Component, signal, linkedSignal, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
-import { form, required, minLength, submit, validate } from '@angular/forms/signals';
+import { disabled, form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
@@ -34,6 +34,7 @@ export class ProductForm {
     readonly initialData = input<ProductFormData | null>(null);
     readonly categories = input<Category[]>([]);
     readonly isLoadingCategories = input(true);
+    readonly hasCategoryLoadError = input(false);
     readonly imageAssets = input<CreateProductAsset[]>([]);
     readonly model3dGlbAsset = input<CreateProductAsset | null>(null);
     readonly model3dUsdzAsset = input<CreateProductAsset | null>(null);
@@ -103,6 +104,11 @@ export class ProductForm {
 
         required(path.stock, { message: 'El stock es requerido' });
         required(path.categoryId, { message: 'Selecciona una categoría' });
+        disabled(path.categoryId, {
+            when: () => this.isLoadingCategories()
+                || this.hasCategoryLoadError()
+                || this.categories().length === 0,
+        });
 
         required(path.weight, { message: 'El peso es requerido' });
         required(path.material, { message: 'El material es requerido' });
