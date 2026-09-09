@@ -14,11 +14,20 @@
                     title="Ver en 3D">
                     <span class="material-symbols-outlined text-2xl">3d_rotation</span>
                 </button>
-                <button (click)="activateAr()"
+                @if (isIosDevice() && usdzAsset()) {
+                <a [href]="usdzAsset()!.url" rel="ar"
+                    class="flex items-center justify-center size-12 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-secondary hover:border-secondary transition-all duration-300"
+                    title="Ver en AR">
+                    <img class="hidden" alt="" aria-hidden="true" />
+                    <span class="material-symbols-outlined text-2xl">view_in_ar</span>
+                </a>
+                } @else {
+                <button type="button" (click)="activateAr()"
                     class="flex items-center justify-center size-12 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-secondary hover:border-secondary transition-all duration-300"
                     title="Ver en AR">
                     <span class="material-symbols-outlined text-2xl">view_in_ar</span>
                 </button>
+                }
             </div>
         </div>
         }
@@ -63,7 +72,7 @@
 
     @if (hasProductDimensions()) {
     <button (click)="toggleDimensions()" [attr.aria-pressed]="showDimensions()"
-        class="absolute bottom-4 left-4 z-10 flex items-center gap-2 px-4 py-3 bg-white/90 backdrop-blur-md border border-primary/15 text-primary shadow-sm hover:bg-white transition-colors font-body"
+        class="absolute top-14 left-4 z-10 flex items-center gap-2 px-4 py-3 bg-white/90 backdrop-blur-md border border-primary/15 text-primary shadow-sm hover:bg-white transition-colors font-body sm:top-auto sm:bottom-4"
         [attr.title]="showDimensions() ? 'Ocultar medidas' : 'Mostrar medidas'">
         <span class="material-symbols-outlined text-xl">straighten</span>
         <span class="text-sm font-semibold">{{ showDimensions() ? 'Ocultar medidas' : 'Mostrar medidas' }}</span>

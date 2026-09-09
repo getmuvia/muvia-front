@@ -1,4 +1,4 @@
-import { Component, input, signal, computed, CUSTOM_ELEMENTS_SCHEMA, inject, PLATFORM_ID, ChangeDetectionStrategy, ElementRef, HostListener, viewChild, OnDestroy } from '@angular/core';
+import { afterNextRender, Component, input, signal, computed, CUSTOM_ELEMENTS_SCHEMA, inject, PLATFORM_ID, ChangeDetectionStrategy, ElementRef, HostListener, viewChild, OnDestroy } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ProductAsset, ProductDimensions } from '@core/models/product/product';
 
@@ -27,6 +27,13 @@ export class ImageGallery implements OnDestroy {
     modelViewerLoaded = signal<boolean>(false);
     isArPresenting = signal<boolean>(false);
     showDimensions = signal<boolean>(false);
+    isIosDevice = signal<boolean>(false);
+
+    constructor() {
+        afterNextRender(() => {
+            this.isIosDevice.set(detectIosDevice());
+        });
+    }
 
     imageAssets = computed(() =>
         this.assets().filter(a => a.type === 'image')
@@ -305,3 +312,8 @@ const DIMENSION_NUMBER_FORMAT = new Intl.NumberFormat('es-BO', {
 });
 
 const DIMENSION_RENDER_INTERVAL_MS = 1000 / 30;
+
+function detectIosDevice(): boolean {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent)
+        || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
