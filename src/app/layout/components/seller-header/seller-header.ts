@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { Component, inject, signal, OnInit, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
@@ -8,7 +8,6 @@ import { filter } from 'rxjs/operators';
   selector: 'app-seller-header',
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './seller-header.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './seller-header.css',
 })
 export class SellerHeader implements OnInit {

@@ -1,11 +1,10 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormField, FieldTree } from '@angular/forms/signals';
 
 @Component({
     selector: 'app-specifications-section',
     imports: [FormField],
     templateUrl: './specifications-section.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './specifications-section.css',
 })
 export class SpecificationsSection {

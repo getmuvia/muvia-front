@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit, HostListener, ChangeDetectionStrategy, DestroyRef } from '@angular/core';
+import { Component, computed, inject, signal, OnInit, HostListener, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { AuthService } from '@core/auth/services/auth';
@@ -12,7 +12,6 @@ import { MarketService } from '@core/services/market/market';
   selector: 'app-shop-navbar',
   imports: [RouterLink, NgClass, SmartSearchModal],
   templateUrl: './shop-navbar.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './shop-navbar.css',
 })
 export class ShopNavbar implements OnInit {

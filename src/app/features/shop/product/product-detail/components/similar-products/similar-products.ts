@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Product } from '@core/models/product/product';
 import { ProductCard } from '@shared/components/product-card/product-card';
 
@@ -6,7 +6,6 @@ import { ProductCard } from '@shared/components/product-card/product-card';
     selector: 'app-similar-products',
     imports: [ProductCard],
     templateUrl: './similar-products.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './similar-products.css',
 })
 export class SimilarProducts {

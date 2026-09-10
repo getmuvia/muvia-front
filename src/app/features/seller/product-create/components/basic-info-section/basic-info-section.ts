@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { FormField, FieldTree } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 
@@ -6,7 +6,6 @@ import { Category } from '@core/models/category/category';
     selector: 'app-basic-info-section',
     imports: [FormField],
     templateUrl: './basic-info-section.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './basic-info-section.css',
 })
 export class BasicInfoSection {

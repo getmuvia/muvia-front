@@ -1,4 +1,4 @@
-import { Component, input, output, effect, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, effect, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, ReactiveFormsModule, Validators } from '@angular/forms';
 import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
 
@@ -115,7 +115,6 @@ export interface SidebarFormData {
       </div>
     }
   `,
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styles: []
 })
 export class SidebarEditModal {

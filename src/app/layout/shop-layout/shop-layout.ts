@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -8,7 +8,6 @@ import { ShopNavbar } from '../components/shop-navbar/shop-navbar';
 @Component({
   selector: 'app-shop-layout',
   imports: [RouterOutlet, ShopNavbar, ShopFooter],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shop-layout.html',
 })
 export class ShopLayout {

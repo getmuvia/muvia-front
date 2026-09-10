@@ -60,7 +60,7 @@
         @if (isProductsLoading()) {
         <!-- Product Grid Skeleton -->
         <div class="seller-product-grid-skeleton mt-6 grid gap-6">
-            @for (item of [1,2,3,4,5,6,7,8]; track item) {
+            @for (item of [1,2,3,4,5,6,7,8,9,10]; track item) {
             <div class="overflow-hidden rounded-editorial bg-surface-element">
                 <app-skeleton height="16rem" className="w-full rounded-none"></app-skeleton>
                 <div class="p-4 space-y-2">
@@ -74,9 +74,22 @@
             </div>
             }
         </div>
+        } @else if (isProductsError()) {
+        <div class="mt-6 rounded-panel border border-error/20 bg-error/5 p-6 text-center" role="alert">
+            <p class="text-sm font-medium text-error">
+                {{ productsError() || 'No pudimos cargar tus productos.' }}
+            </p>
+            <button type="button" (click)="retryProducts()"
+                class="mt-4 rounded-full border border-error/30 px-5 py-2 text-xs font-bold uppercase tracking-wide text-error transition-colors hover:bg-error/10">
+                Reintentar
+            </button>
+        </div>
         } @else {
-        <app-seller-product-grid [products]="products()"></app-seller-product-grid>
-
+        <app-seller-product-grid [products]="visibleProducts()"></app-seller-product-grid>
+        @if (totalProductPages() > 1) {
+        <app-pagination [currentPage]="currentProductPage()" [totalPages]="totalProductPages()"
+            (pageChange)="changeProductPage($event)" />
+        }
         }
     </section>
 </div>

@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 interface CollectionPromo {
@@ -14,7 +14,6 @@ interface CollectionPromo {
   selector: 'app-collection-banner',
   imports: [NgOptimizedImage, RouterLink],
   templateUrl: './collection-banner.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './collection-banner.css',
 })
 export class CollectionBanner {

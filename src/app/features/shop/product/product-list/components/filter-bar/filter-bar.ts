@@ -1,4 +1,4 @@
-import { Component, input, output, linkedSignal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, output, linkedSignal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EMPTY, Subject, map, of, switchMap, timer } from 'rxjs';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
@@ -7,7 +7,6 @@ import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
     selector: 'app-filter-bar',
     imports: [],
     templateUrl: './filter-bar.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './filter-bar.css',
 })
 export class FilterBar {

@@ -1,12 +1,11 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-featured-categories',
   imports: [NgOptimizedImage, RouterLink],
   templateUrl: './featured-categories.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './featured-categories.css',
 })
 export class FeaturedCategories {

@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, input, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, effect, input, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -13,7 +13,6 @@ import { EMPTY, Subject, catchError, map, switchMap } from 'rxjs';
   imports: [RouterLink, ImageGallery, ProductInfo, ProductTabs, SimilarProducts],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProductStore]
 })
 export class ProductDetail {
