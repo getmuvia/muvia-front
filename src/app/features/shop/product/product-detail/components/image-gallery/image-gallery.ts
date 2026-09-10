@@ -1,4 +1,4 @@
-import { afterNextRender, Component, input, signal, computed, CUSTOM_ELEMENTS_SCHEMA, inject, PLATFORM_ID, ChangeDetectionStrategy, ElementRef, HostListener, viewChild, OnDestroy } from '@angular/core';
+import { afterNextRender, Component, input, signal, computed, CUSTOM_ELEMENTS_SCHEMA, inject, PLATFORM_ID, ElementRef, HostListener, viewChild, OnDestroy } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ProductAsset, ProductDimensions } from '@core/models/product/product';
 
@@ -7,7 +7,6 @@ import { ProductAsset, ProductDimensions } from '@core/models/product/product';
     imports: [],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     templateUrl: './image-gallery.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './image-gallery.css',
 })
 export class ImageGallery implements OnDestroy {

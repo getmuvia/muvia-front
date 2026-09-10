@@ -1,0 +1,31 @@
+<nav aria-label="Paginación" class="mt-8 flex items-center justify-center gap-2">
+  <button type="button" (click)="previousPage()" [disabled]="currentPage() === 1"
+    aria-label="Ir a la página anterior"
+    [class]="currentPage() === 1
+      ? 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center bg-surface-element text-text-light/30'
+      : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center bg-surface-element text-text-light/60 transition-colors hover:bg-surface-element/80'">
+    <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+  </button>
+
+  @for (page of visiblePages(); track $index) {
+    @if (page === '...') {
+    <span class="inline-flex h-10 w-10 items-center justify-center font-body text-text-light/60">...</span>
+    } @else {
+    <button type="button" (click)="goToPage(+page)" [attr.aria-current]="page === currentPage() ? 'page' : null"
+      [attr.aria-label]="'Ir a la página ' + page"
+      [class]="page === currentPage()
+        ? 'inline-flex h-10 w-10 cursor-default items-center justify-center bg-primary font-body font-bold text-white'
+        : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center font-body text-text-light transition-colors hover:bg-surface-element'">
+      {{ page }}
+    </button>
+    }
+  }
+
+  <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()"
+    aria-label="Ir a la página siguiente"
+    [class]="currentPage() === totalPages()
+      ? 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center bg-surface-element text-text-light/30'
+      : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center bg-surface-element text-text-light/60 transition-colors hover:bg-surface-element/80'">
+    <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+  </button>
+</nav>

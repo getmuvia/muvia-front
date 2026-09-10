@@ -1,14 +1,21 @@
-import { Component, inject, signal, afterNextRender, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { LoggerService } from '@core/services/logger/logger';
 import { AuthService } from '@core/auth/services/auth';
 import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
+import { STORE_CONFIG } from '@core/store/store.config';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
+import { Pagination } from '@shared/components/pagination/pagination';
 import { ImageEditorModal } from '../components/modals/image-editor-modal/image-editor-modal';
 import { SidebarEditModal, SidebarFormData } from '../components/modals/sidebar-edit-modal/sidebar-edit-modal';
-import { SellerCoverBanner, SellerProfileHeader, SellerSidebar, SellerProductGrid } from './components';
+import {
+  SellerCoverBanner,
+  SellerProductGrid,
+  SellerProfileHeader,
+  SellerSidebar,
+} from './components';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -20,14 +27,14 @@ import { firstValueFrom } from 'rxjs';
     SellerProductGrid,
     ImageEditorModal,
     SidebarEditModal,
-    Skeleton
+    Skeleton,
+    Pagination
   ],
   templateUrl: './seller-profile.html',
   styleUrl: './seller-profile.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProductStore]
 })
-export class SellerProfile {
+export class SellerProfile implements OnInit {
   private readonly logger = inject(LoggerService);
   readonly productStore = inject(ProductStore);
   private readonly userService = inject(UserService);
@@ -44,9 +51,19 @@ export class SellerProfile {
   businessHours = computed(() => this.userService.vendorProfile()?.businessHours || {});
 
   products = this.productStore.products;
+  currentProductPage = signal(STORE_CONFIG.PAGINATION.DEFAULT_PAGE);
+  totalProductPages = computed(() =>
+    Math.ceil(this.products().length / STORE_CONFIG.PAGINATION.DEFAULT_LIMIT)
+  );
+  visibleProducts = computed(() => {
+    const start = (this.currentProductPage() - 1) * STORE_CONFIG.PAGINATION.DEFAULT_LIMIT;
+    return this.products().slice(start, start + STORE_CONFIG.PAGINATION.DEFAULT_LIMIT);
+  });
 
   isProfileLoading = computed(() => !this.userService.vendorProfile());
   isProductsLoading = this.productStore.isLoading;
+  isProductsError = this.productStore.isError;
+  productsError = this.productStore.error;
 
   isModalOpen = signal(false);
   modalTitle = signal('');
@@ -61,10 +78,8 @@ export class SellerProfile {
     socialLinks: this.socialLinks()
   }));
 
-  constructor() {
-    afterNextRender(() => {
-      this.loadData();
-    });
+  ngOnInit(): void {
+    this.loadData();
   }
 
   private loadData(): void {
@@ -73,6 +88,17 @@ export class SellerProfile {
 
     this.userService.loadVendorProfile(userId);
     this.productStore.loadUserProducts();
+  }
+
+  changeProductPage(page: number): void {
+    if (page < 1 || page > this.totalProductPages() || page === this.currentProductPage()) return;
+    this.currentProductPage.set(page);
+  }
+
+  retryProducts(): void {
+    if (!this.isProductsLoading()) {
+      this.productStore.loadUserProducts();
+    }
   }
 
   openEditModal(type: 'cover' | 'avatar') {

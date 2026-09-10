@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { Product } from '@core/models/product/product';
 import { ProductCard } from '@shared/components/product-card/product-card';
 
@@ -9,7 +9,6 @@ import { EmptyState } from '@shared/components/empty-state/empty-state';
     selector: 'app-product-grid',
     imports: [ProductCard, Skeleton, EmptyState],
     templateUrl: './product-grid.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-grid.css',
 })
 export class ProductGrid {

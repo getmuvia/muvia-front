@@ -1,10 +1,9 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
     selector: 'app-page-header',
     imports: [],
     templateUrl: './page-header.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './page-header.css',
 })
 export class PageHeader {

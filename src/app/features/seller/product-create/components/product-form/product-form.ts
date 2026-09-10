@@ -1,4 +1,4 @@
-import { Component, signal, linkedSignal, input, output, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, signal, linkedSignal, input, output, computed } from '@angular/core';
 import { disabled, form, required, minLength, submit, validate } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
@@ -25,7 +25,6 @@ type ProductFormSection = 'basic' | 'specifications' | 'keywords' | 'media';
         Model3dUpload
     ],
     templateUrl: './product-form.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-form.css'
 })
 export class ProductForm {

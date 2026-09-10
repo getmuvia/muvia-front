@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, OnInit, DestroyRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, OnInit, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ProductStore } from '@core/services/product/product.store';
@@ -20,7 +20,6 @@ type SearchProduct = Product & Pick<HybridSearchResult, 'score' | 'matchType'>;
   imports: [PageHeader, FilterBar, ProductGrid, LoadMoreButton],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ProductStore]
 })
 export class ProductList implements OnInit {

@@ -176,7 +176,7 @@
                     }
                 </div>
                 } @else {
-                <div class="grid max-h-[32rem] grid-cols-2 gap-4 overflow-y-auto pr-1 sm:grid-cols-3" role="radiogroup"
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3" role="radiogroup"
                     aria-label="Productos disponibles para la visualización">
                     @for (product of products(); track product.id) {
                     <button type="button" role="radio"
@@ -205,22 +205,17 @@
                 </div>
                 }
 
-                <div class="mt-4 flex flex-col items-center justify-between gap-3 sm:flex-row">
-                    <p class="text-xs text-[var(--color-text-secondary)]" aria-live="polite">
-                        Mostrando {{ products().length }} de {{ catalogTotal() }} productos
-                    </p>
-                    @if (hasMoreProducts()) {
-                    <button type="button" (click)="loadMoreProducts()" [disabled]="isLoadingMore()"
-                        class="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-primary/25 px-5 py-2 text-xs font-bold uppercase tracking-wide text-primary transition-colors hover:border-primary hover:bg-primary/5 disabled:cursor-wait disabled:opacity-60">
-                        @if (isLoadingMore()) {
-                        <span class="material-symbols-outlined spin text-lg" aria-hidden="true">autorenew</span>
-                        Cargando...
-                        } @else {
-                        Cargar más productos
-                        }
-                    </button>
+                <p class="mt-4 text-center text-xs text-[var(--color-text-secondary)]" aria-live="polite">
+                    @if (catalogTotal() > 0) {
+                    Página {{ catalogPage() }} de {{ catalogTotalPages() }} · {{ catalogTotal() }} productos en total
+                    } @else {
+                    0 productos disponibles
                     }
-                </div>
+                </p>
+                @if (catalogTotalPages() > 1) {
+                <app-pagination [currentPage]="catalogPage()" [totalPages]="catalogTotalPages()"
+                    (pageChange)="changeCatalogPage($event)" />
+                }
                 }
             </section>
         </div>

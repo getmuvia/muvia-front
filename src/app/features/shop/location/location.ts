@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Market } from '@core/models/market/market';
 import { MarketService } from '@core/services/market/market';
@@ -7,7 +7,6 @@ import { MarketService } from '@core/services/market/market';
   selector: 'app-location',
   templateUrl: './location.html',
   styleUrl: './location.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Location {
   private readonly router = inject(Router);

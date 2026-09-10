@@ -1,4 +1,4 @@
-import { Component, input, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { Product } from '@core/models/product/product';
 
 type TabType = 'description' | 'details';
@@ -7,7 +7,6 @@ type TabType = 'description' | 'details';
     selector: 'app-product-tabs',
     imports: [],
     templateUrl: './product-tabs.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-tabs.css',
 })
 export class ProductTabs {

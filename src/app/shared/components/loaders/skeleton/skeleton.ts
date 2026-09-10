@@ -1,9 +1,8 @@
-import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 
 @Component({
   selector: 'app-skeleton',
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div 
       [className]="computedClasses()"

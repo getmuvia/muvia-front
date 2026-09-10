@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
     FormField,
@@ -19,7 +19,6 @@ import {
 @Component({
     selector: 'app-register',
     imports: [RouterLink, FormField],
-    changeDetection: ChangeDetectionStrategy.OnPush,
     templateUrl: './register.html',
 })
 export class Register {

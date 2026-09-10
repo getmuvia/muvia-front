@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { VirtualStagingResponse, StagingProduct } from '@core/models/ai/virtual-staging.models';
@@ -10,7 +10,6 @@ import { LoggerService } from '@core/services/logger/logger';
     selector: 'app-result',
     imports: [ProductCard],
     templateUrl: './result.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './result.css'
 })
 export class Result implements OnInit {

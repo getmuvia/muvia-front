@@ -1,5 +1,4 @@
 import {
-    ChangeDetectionStrategy,
     Component,
     DestroyRef,
     OnDestroy,
@@ -14,16 +13,16 @@ import { VirtualStagingService } from '@core/services/virtual-staging/virtual-st
 import { LoggerService } from '@core/services/logger/logger';
 import { ProductService } from '@core/services/product/product';
 import { Product } from '@core/models/product/product';
+import { Pagination } from '@shared/components/pagination/pagination';
 import { debounceTime, distinctUntilChanged, firstValueFrom, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-const PRODUCT_PAGE_SIZE = 12;
+const PRODUCT_PAGE_SIZE = 6;
 
 @Component({
     selector: 'app-virtual-staging',
-    imports: [],
+    imports: [Pagination],
     templateUrl: './virtual-staging.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './virtual-staging.css'
 })
 export class VirtualStaging implements OnInit, OnDestroy {
@@ -39,7 +38,6 @@ export class VirtualStaging implements OnInit, OnDestroy {
     isGenerating = signal(false);
     isQuotaLoading = signal(true);
     isCatalogLoading = signal(true);
-    isLoadingMore = signal(false);
     dragActive = signal(false);
     errorMessage = signal<string | null>(null);
     catalogErrorMessage = signal<string | null>(null);
@@ -54,7 +52,6 @@ export class VirtualStaging implements OnInit, OnDestroy {
     catalogTotal = signal(0);
     catalogTotalPages = signal(0);
     readonly quota = this.stagingService.quota;
-    readonly hasMoreProducts = computed(() => this.catalogPage() < this.catalogTotalPages());
     readonly canGenerate = computed(() => {
         const quota = this.quota();
         return !!this.selectedFile()
@@ -70,13 +67,13 @@ export class VirtualStaging implements OnInit, OnDestroy {
             distinctUntilChanged(),
             takeUntilDestroyed(this.destroyRef),
         ).subscribe(() => {
-            void this.loadProducts(1, false);
+            void this.loadProducts(1);
         });
     }
 
     async ngOnInit(): Promise<void> {
         const requestedProductId = this.route.snapshot.queryParamMap.get('productId');
-        const tasks: Promise<void>[] = [this.loadQuota(), this.loadProducts(1, false)];
+        const tasks: Promise<void>[] = [this.loadQuota(), this.loadProducts(1)];
 
         if (requestedProductId) {
             tasks.push(this.loadSelectedProduct(requestedProductId));
@@ -163,10 +160,12 @@ export class VirtualStaging implements OnInit, OnDestroy {
         this.prepareCatalogSearch('');
     }
 
-    async loadMoreProducts(): Promise<void> {
-        if (this.isCatalogLoading() || this.isLoadingMore() || !this.hasMoreProducts()) return;
+    async changeCatalogPage(page: number): Promise<void> {
+        if (this.isCatalogLoading() || page < 1 || page > this.catalogTotalPages() || page === this.catalogPage()) {
+            return;
+        }
 
-        await this.loadProducts(this.catalogPage() + 1, true);
+        await this.loadProducts(page);
     }
 
     productImage(product: Product): string | null {
@@ -229,15 +228,11 @@ export class VirtualStaging implements OnInit, OnDestroy {
         }
     }
 
-    private async loadProducts(page: number, append: boolean): Promise<void> {
+    private async loadProducts(page: number): Promise<void> {
         const requestId = ++this.catalogRequestId;
 
-        if (append) {
-            this.isLoadingMore.set(true);
-        } else {
-            this.isCatalogLoading.set(true);
-            this.catalogErrorMessage.set(null);
-        }
+        this.isCatalogLoading.set(true);
+        this.catalogErrorMessage.set(null);
 
         try {
             const response = await firstValueFrom(this.productService.searchProducts({
@@ -249,11 +244,7 @@ export class VirtualStaging implements OnInit, OnDestroy {
             if (requestId !== this.catalogRequestId) return;
 
             const productsWithImages = response.data.filter(product => !!this.productImage(product));
-            const nextProducts = append
-                ? this.mergeProducts(this.products(), productsWithImages)
-                : productsWithImages;
-
-            this.products.set(nextProducts);
+            this.products.set(productsWithImages);
             this.catalogPage.set(response.page);
             this.catalogTotal.set(response.total);
             this.catalogTotalPages.set(response.totalPages);
@@ -261,16 +252,11 @@ export class VirtualStaging implements OnInit, OnDestroy {
             if (requestId !== this.catalogRequestId) return;
 
             this.logger.error('Could not load products', error, 'VirtualStaging');
-            if (!append) {
-                this.products.set([]);
-                this.catalogErrorMessage.set('No pudimos cargar los productos. Inténtalo nuevamente.');
-            } else {
-                this.errorMessage.set('No pudimos cargar más productos. Inténtalo nuevamente.');
-            }
+            this.products.set([]);
+            this.catalogErrorMessage.set('No pudimos cargar los productos. Inténtalo nuevamente.');
         } finally {
             if (requestId === this.catalogRequestId) {
                 this.isCatalogLoading.set(false);
-                this.isLoadingMore.set(false);
             }
         }
     }
@@ -297,7 +283,6 @@ export class VirtualStaging implements OnInit, OnDestroy {
     private prepareCatalogSearch(query: string): void {
         this.catalogRequestId++;
         this.isCatalogLoading.set(true);
-        this.isLoadingMore.set(false);
         this.catalogErrorMessage.set(null);
         this.searchRequests.next(query);
     }
@@ -309,12 +294,6 @@ export class VirtualStaging implements OnInit, OnDestroy {
             queryParamsHandling: 'merge',
             replaceUrl: true,
         });
-    }
-
-    private mergeProducts(currentProducts: Product[], newProducts: Product[]): Product[] {
-        const productsById = new Map(currentProducts.map(product => [product.id, product]));
-        newProducts.forEach(product => productsById.set(product.id, product));
-        return Array.from(productsById.values());
     }
 
     private async refreshQuota(): Promise<void> {

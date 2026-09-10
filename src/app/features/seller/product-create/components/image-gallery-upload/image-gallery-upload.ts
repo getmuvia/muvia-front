@@ -1,11 +1,10 @@
-import { Component, output, signal, computed, ChangeDetectionStrategy, model } from '@angular/core';
+import { Component, output, signal, computed, model } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
     selector: 'app-image-gallery-upload',
     imports: [],
     templateUrl: './image-gallery-upload.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './image-gallery-upload.css',
 })
 export class ImageGalleryUpload {

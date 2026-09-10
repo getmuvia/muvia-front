@@ -1,5 +1,4 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   DestroyRef,
   OnInit,
@@ -20,7 +19,6 @@ import { distinctUntilChanged, map, switchMap } from 'rxjs';
   selector: 'app-new-arrivals',
   imports: [ProductCard, RouterLink],
   templateUrl: './new-arrivals.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './new-arrivals.css',
 })
 export class NewArrivals implements OnInit {

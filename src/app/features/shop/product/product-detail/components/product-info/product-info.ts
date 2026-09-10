@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 import { Product } from '@core/models/product/product';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -7,7 +7,6 @@ import { RouterLink } from '@angular/router';
     selector: 'app-product-info',
     imports: [DecimalPipe, RouterLink],
     templateUrl: './product-info.html',
-    changeDetection: ChangeDetectionStrategy.OnPush,
     styleUrl: './product-info.css',
 })
 export class ProductInfo {

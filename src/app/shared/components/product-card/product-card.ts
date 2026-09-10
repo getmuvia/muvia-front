@@ -1,4 +1,4 @@
-import { Component, input, computed, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed, signal } from '@angular/core';
 import { DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Product } from '@core/models/product/product';
@@ -7,7 +7,6 @@ import { Product } from '@core/models/product/product';
   selector: 'app-product-card',
   imports: [DecimalPipe, NgOptimizedImage, RouterLink],
   templateUrl: './product-card.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './product-card.css',
 })
 export class ProductCard {

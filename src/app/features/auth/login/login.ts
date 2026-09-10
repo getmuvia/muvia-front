@@ -1,4 +1,4 @@
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   FormField,
@@ -14,7 +14,6 @@ import { LoginData } from '@core/auth/models/auth.models'
 @Component({
   selector: 'app-login',
   imports: [FormField],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login.html',
 })
 export class Login {
