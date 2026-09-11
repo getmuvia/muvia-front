@@ -24,7 +24,13 @@
                 </p>
             </div>
         </div>
-        <div class="flex w-full sm:w-auto">
+        <div class="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:justify-end">
+            <button type="button" (click)="editProfile.emit()"
+                class="inline-flex items-center gap-2 rounded-full border border-text-light/15 px-4 py-2 text-xs font-bold uppercase tracking-wider text-text-light transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
+                aria-label="Editar nombre y descripción del vendedor">
+                <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
+                Editar perfil
+            </button>
             <span class="inline-flex items-center rounded-full bg-secondary/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-secondary">
                 Panel piloto
             </span>

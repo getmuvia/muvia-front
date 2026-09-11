@@ -6,11 +6,13 @@ import { filter } from 'rxjs/operators';
 import { NgClass } from '@angular/common';
 import { SmartSearchModal } from '@features/shop/components/modals/smart-search/smart-search-modal';
 import { MarketService } from '@core/services/market/market';
+import { UserService } from '@core/services/user/user';
+import { StoreAvatar } from '@shared/components/store-avatar/store-avatar';
 
 
 @Component({
   selector: 'app-shop-navbar',
-  imports: [RouterLink, NgClass, SmartSearchModal],
+  imports: [RouterLink, NgClass, SmartSearchModal, StoreAvatar],
   templateUrl: './shop-navbar.html',
   styleUrl: './shop-navbar.css',
 })
@@ -19,11 +21,21 @@ export class ShopNavbar implements OnInit {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly userService = inject(UserService);
   readonly marketService = inject(MarketService);
 
   isAuthenticated = this.authService.isAuthenticated;
   currentUser = this.authService.currentUser;
   accountRoute = computed(() => this.authService.getPostAuthRoute());
+  vendorLogoUrl = computed(() =>
+    this.userService.vendorProfile()?.logoUrl || this.currentUser()?.vendorProfile?.logoUrl || ''
+  );
+  vendorDisplayName = computed(() =>
+    this.userService.vendorProfile()?.businessName
+      || this.currentUser()?.vendorProfile?.businessName
+      || this.currentUser()?.email
+      || 'Mi Cuenta'
+  );
 
   isTransparent = signal<boolean>(false);
   isOverlay = signal<boolean>(false);

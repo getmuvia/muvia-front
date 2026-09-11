@@ -35,33 +35,6 @@
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 9%, transparent);
 }
 
-.seller-nav-link {
-    position: relative;
-    padding-block: 0.7rem;
-    color: color-mix(in srgb, var(--color-text-light) 70%, transparent);
-}
-
-.seller-nav-link::after {
-    position: absolute;
-    inset: auto 0 0.18rem;
-    height: 2px;
-    border-radius: 9999px;
-    background: var(--color-secondary);
-    content: '';
-    transform: scaleX(0);
-    transition: transform 180ms ease;
-}
-
-.seller-nav-link:hover,
-.seller-nav-link.is-active {
-    color: var(--color-primary);
-}
-
-.seller-nav-link:hover::after,
-.seller-nav-link.is-active::after {
-    transform: scaleX(1);
-}
-
 .seller-upload-button,
 .seller-mobile-primary {
     border: 1px solid var(--color-primary);
@@ -84,6 +57,18 @@
 .seller-account:hover,
 .seller-mobile-link:hover {
     background: color-mix(in srgb, var(--color-primary) 11%, transparent);
+}
+
+.seller-account.seller-account--avatar-only {
+    width: 2.5rem;
+    justify-content: center;
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+}
+
+.seller-account.seller-account--avatar-only:hover {
+    background: transparent;
 }
 
 .seller-logout:hover {
