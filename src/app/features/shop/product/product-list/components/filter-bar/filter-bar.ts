@@ -15,6 +15,10 @@ export class FilterBar {
     readonly activeSearch = input<string>('');
     /** Emitted when the user clears the search chip */
     readonly clearSearch = output<void>();
+    /** Name of the category currently filtering the catalog */
+    readonly activeCategory = input<string>('');
+    /** Emitted when the user removes the category filter */
+    readonly clearCategory = output<void>();
 
     readonly searchQuery = linkedSignal(() => this.activeSearch());
     private readonly searchRequests = new Subject<{ query: string; immediate: boolean } | null>();
@@ -55,5 +59,9 @@ export class FilterBar {
         this.searchRequests.next(null);
         this.searchQuery.set('');
         this.clearSearch.emit();
+    }
+
+    onClearCategory(): void {
+        this.clearCategory.emit();
     }
 }

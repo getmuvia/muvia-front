@@ -1,7 +1,7 @@
 <section id="categorias" class="w-full scroll-mt-20 py-20 lg:py-28">
     <div class="muvia-wide-container mb-10 flex items-end justify-between gap-6">
         <div>
-            <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-secondary">Explora por ambiente</p>
+            <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-secondary">Explora por categoría</p>
             <h2 class="text-text-light text-xl sm:text-4xl font-headline font-semibold leading-tight tracking-[-0.025em]">
                 Categorías destacadas
             </h2>
@@ -14,9 +14,9 @@
 
     <div class="muvia-wide-container grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-4">
 
-        @for (cat of categories(); track cat.id) {
+        @for (cat of categories; track cat.code) {
 
-        <a [routerLink]="cat.link" [queryParams]="cat.queryParams"
+        <a routerLink="/products" [queryParams]="{ category: cat.code }"
             class="relative group block aspect-[6/7] cursor-pointer overflow-hidden rounded-editorial bg-surface-element">
 
             <img [ngSrc]="cat.image" [alt]="cat.name" fill

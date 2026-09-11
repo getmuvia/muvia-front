@@ -20,10 +20,21 @@
         <button type="button" (click)="onClearSearch()" aria-label="Limpiar búsqueda"
             class="h-9 px-4 bg-surface-element border border-border-color text-text-light text-xs font-bold uppercase tracking-wider font-body hover:border-primary hover:text-primary transition-colors flex items-center gap-2 rounded-full group max-w-[200px] sm:max-w-[300px]"
             title="Limpiar búsqueda">
-            <span class="opacity-50 whitespace-nowrap hidden sm:inline">Búsqueda:</span>
             <span class="truncate">{{ activeSearch() }}</span>
             <span
                 class="material-symbols-outlined text-base opacity-40 group-hover:opacity-100 group-hover:text-error transition-colors" aria-hidden="true">close</span>
+        </button>
+        }
+
+        <!-- Category Chip -->
+        @if (activeCategory()) {
+        <button type="button" (click)="onClearCategory()"
+            [attr.aria-label]="'Quitar filtro de categoría ' + activeCategory()"
+            [attr.title]="'Quitar filtro de categoría ' + activeCategory()"
+            class="group flex h-9 max-w-[240px] items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 font-body text-xs font-bold uppercase tracking-wider text-primary transition-colors hover:border-error/40 hover:bg-error/5 hover:text-error sm:max-w-[320px]">
+            <span class="truncate">{{ activeCategory() }}</span>
+            <span class="material-symbols-outlined text-base opacity-60 transition-opacity group-hover:opacity-100"
+                aria-hidden="true">close</span>
         </button>
         }
     </div>
