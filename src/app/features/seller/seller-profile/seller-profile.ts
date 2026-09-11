@@ -9,6 +9,10 @@ import { STORE_CONFIG } from '@core/store/store.config';
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
 import { Pagination } from '@shared/components/pagination/pagination';
 import { ImageEditorModal } from '../components/modals/image-editor-modal/image-editor-modal';
+import {
+  ProfileMetadataEditModal,
+  ProfileMetadataFormData,
+} from '../components/modals/profile-metadata-edit-modal/profile-metadata-edit-modal';
 import { SidebarEditModal, SidebarFormData } from '../components/modals/sidebar-edit-modal/sidebar-edit-modal';
 import {
   SellerCoverBanner,
@@ -26,6 +30,7 @@ import { firstValueFrom } from 'rxjs';
     SellerSidebar,
     SellerProductGrid,
     ImageEditorModal,
+    ProfileMetadataEditModal,
     SidebarEditModal,
     Skeleton,
     Pagination
@@ -71,6 +76,12 @@ export class SellerProfile implements OnInit {
   isSaving = signal(false);
 
   isSidebarModalOpen = signal(false);
+  isMetadataModalOpen = signal(false);
+
+  metadataData = computed(() => ({
+    businessName: this.sellerName(),
+    description: this.sellerDescription(),
+  }));
 
   sidebarData = computed(() => ({
     aboutMe: this.aboutText(),
@@ -151,6 +162,18 @@ export class SellerProfile implements OnInit {
       this.isSidebarModalOpen.set(false);
     } catch (error) {
       this.logger.error('Failed to update sidebar info', error, 'SellerProfile');
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  async onSaveMetadata(data: ProfileMetadataFormData): Promise<void> {
+    this.isSaving.set(true);
+    try {
+      await firstValueFrom(this.userService.updateProfile({ vendorProfile: data }));
+      this.isMetadataModalOpen.set(false);
+    } catch (error) {
+      this.logger.error('Failed to update profile metadata', error, 'SellerProfile');
     } finally {
       this.isSaving.set(false);
     }

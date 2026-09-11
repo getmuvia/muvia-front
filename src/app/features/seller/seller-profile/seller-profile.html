@@ -21,7 +21,8 @@
     <app-seller-cover-banner [coverImage]="coverImageUrl()" (edit)="openEditModal('cover')"></app-seller-cover-banner>
 
     <app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
-        [hasCoverImage]="!!coverImageUrl()" (editAvatar)="openEditModal('avatar')">
+        [hasCoverImage]="!!coverImageUrl()" (editAvatar)="openEditModal('avatar')"
+        (editProfile)="isMetadataModalOpen.set(true)">
     </app-seller-profile-header>
 </div>
 }
@@ -30,6 +31,10 @@
     [mode]="activeField() === 'coverImage' ? 'cover' : 'avatar'" (save)="onSaveImage($event)"
     (cancel)="isModalOpen.set(false)">
 </app-image-editor-modal>
+
+<app-profile-metadata-edit-modal [isOpen]="isMetadataModalOpen()" [initialData]="metadataData()"
+    [isLoading]="isSaving()" (save)="onSaveMetadata($event)" (closeModal)="isMetadataModalOpen.set(false)">
+</app-profile-metadata-edit-modal>
 
 <div class="seller-profile-shell mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
     @if (isProfileLoading()) {

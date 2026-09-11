@@ -14,4 +14,5 @@ export class SellerProfileHeader {
     readonly hasCoverImage = input<boolean>(false);
 
     readonly editAvatar = output<void>();
+    readonly editProfile = output<void>();
 }

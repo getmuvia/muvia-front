@@ -1,5 +1,6 @@
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
 
 import { Product } from '@core/models/product/product';
 import { AuthService } from '@core/auth/services/auth';
@@ -13,11 +14,13 @@ describe('SellerProfile', () => {
   let productsState: WritableSignal<Product[]>;
   let loadUserProducts: ReturnType<typeof vi.fn>;
   let loadVendorProfile: ReturnType<typeof vi.fn>;
+  let updateProfile: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     productsState = signal<Product[]>([]);
     loadUserProducts = vi.fn();
     loadVendorProfile = vi.fn();
+    updateProfile = vi.fn().mockReturnValue(of({}));
 
     await TestBed.configureTestingModule({
       imports: [SellerProfile],
@@ -33,6 +36,7 @@ describe('SellerProfile', () => {
           useValue: {
             vendorProfile: signal(null).asReadonly(),
             loadVendorProfile,
+            updateProfile,
           },
         },
       ],
@@ -85,5 +89,23 @@ describe('SellerProfile', () => {
     component.changeProductPage(3);
     expect(component.visibleProducts()).toHaveLength(1);
     expect(component.visibleProducts()[0]?.id).toBe('product-20');
+  });
+
+  it('should update the seller name and description through the current-user endpoint', async () => {
+    component.isMetadataModalOpen.set(true);
+
+    await component.onSaveMetadata({
+      businessName: 'Muvia Decor',
+      description: 'Muebles para espacios contemporáneos.',
+    });
+
+    expect(updateProfile).toHaveBeenCalledWith({
+      vendorProfile: {
+        businessName: 'Muvia Decor',
+        description: 'Muebles para espacios contemporáneos.',
+      },
+    });
+    expect(component.isMetadataModalOpen()).toBe(false);
+    expect(component.isSaving()).toBe(false);
   });
 });

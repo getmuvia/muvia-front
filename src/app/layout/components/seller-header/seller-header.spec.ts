@@ -20,4 +20,18 @@ describe('SellerHeader', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should hide the store name in the account control on the profile page', () => {
+    component.isProfilePage.set(true);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.seller-account-name')).toBeNull();
+  });
+
+  it('should keep the store name in the account control on other seller pages', () => {
+    component.isProfilePage.set(false);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('.seller-account-name')).not.toBeNull();
+  });
 });
