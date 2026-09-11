@@ -1,6 +1,6 @@
 <div class="flex flex-col w-full min-h-screen">
     <!-- Page Header -->
-    <app-page-header />
+    <app-page-header [title]="pageTitle()" [titleBold]="pageTitleBold()" [description]="pageDescription()" />
 
     <!-- Main content area with flex-grow to push footer down -->
     <main class="muvia-wide-container w-full flex-grow bg-background-light py-10 lg:py-14">
@@ -16,7 +16,8 @@
 
         <!-- Search controls -->
         <app-filter-bar (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()"
-            (clearSearch)="onClearSearch()" />
+            (clearSearch)="onClearSearch()" [activeCategory]="activeCategory()?.name ?? ''"
+            (clearCategory)="onClearCategory()" />
 
         @if (displayError(); as error) {
         <div role="alert" class="mt-8 flex flex-col gap-3 rounded-control border border-error/20 bg-error/5 p-4 sm:flex-row sm:items-center sm:justify-between">

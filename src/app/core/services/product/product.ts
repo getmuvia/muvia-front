@@ -17,6 +17,7 @@ export interface PaginationParams {
 export interface SearchParams extends PaginationParams {
   search: string;
   marketCode?: string;
+  categoryId?: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -63,6 +64,10 @@ export class ProductService {
 
     if (params.search) {
       queryParams = queryParams.set('search', params.search);
+    }
+
+    if (params.categoryId) {
+      queryParams = queryParams.set('categoryId', params.categoryId);
     }
 
     return this.http.get<PaginatedResponse<Product>>(this.apiUrl, {
