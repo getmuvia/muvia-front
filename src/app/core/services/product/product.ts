@@ -8,6 +8,7 @@ import { UpdateProductDto } from '@core/models/product/update-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { STORE_CONFIG } from '@core/store/store.config';
 import { MarketService } from '@core/services/market/market';
+import { ProductDimension } from '@core/models/product/product-dimension-filter';
 
 export interface PaginationParams {
   page?: number;
@@ -18,6 +19,8 @@ export interface SearchParams extends PaginationParams {
   search: string;
   marketCode?: string;
   categoryId?: string;
+  dimension?: ProductDimension;
+  maxDimensionCm?: number;
 }
 
 export interface PaginatedResponse<T> {
@@ -68,6 +71,12 @@ export class ProductService {
 
     if (params.categoryId) {
       queryParams = queryParams.set('categoryId', params.categoryId);
+    }
+
+    if (params.dimension && params.maxDimensionCm !== undefined) {
+      queryParams = queryParams
+        .set('dimension', params.dimension)
+        .set('maxDimensionCm', params.maxDimensionCm.toString());
     }
 
     return this.http.get<PaginatedResponse<Product>>(this.apiUrl, {

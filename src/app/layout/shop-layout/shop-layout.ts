@@ -16,8 +16,12 @@ export class ShopLayout {
   readonly showFooter = toSignal(
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      map(() => !this.router.url.startsWith('/auth'))
+      map(() => !this.hidesFooter(this.router.url))
     ),
-    { initialValue: !this.router.url.startsWith('/auth') }
+    { initialValue: !this.hidesFooter(this.router.url) }
   );
+
+  private hidesFooter(url: string): boolean {
+    return url.startsWith('/auth') || url.startsWith('/products/measure');
+  }
 }
