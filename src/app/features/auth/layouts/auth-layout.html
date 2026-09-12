@@ -1,10 +1,12 @@
 <div class="relative flex min-h-[100svh] w-full bg-background-light">
     <!-- Left Side: Visual / Hero Section -->
-    <div class="hidden lg:flex lg:w-1/2 lg:sticky lg:top-0 lg:h-[100svh] relative flex-col justify-between p-10 overflow-hidden bg-text-light">
+    <div
+        class="relative hidden h-[100svh] overflow-hidden bg-text-light p-10 lg:sticky lg:top-0 lg:flex lg:w-1/2 lg:flex-col lg:justify-between">
         <!-- Background Image -->
-        <div class="absolute inset-0 z-0 w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105"
-            style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAUpOiefZAKcQm-iatTmWdq6IOJ513rDaF6E3F0zgRWv7CymR-kCazvMHJUymEJ1AGojwLnn5-djHXJq7n1hW0f6-AiwtONeG7HIYpNXlHUHAWDv9IPdF_5JYaEveqle4f_9QAZFGe5bE74cA2kjwKL5Vss_X6yXAJqzNcCkf6DzaRoQUzQL5wjrzvLS0vZr4dfd8Nni7DCGuNtpjTAT896P5TfVVg7iaTWMIsWcBhw0YEo0h6iiat86Rul49T9Qyr2DPAM_M-7hr8');">
-            <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/10 to-black/15"></div>
+        <div class="absolute inset-0 z-0">
+            <img ngSrc="/images/auth/login-showroom-2026-09.webp" alt="" fill priority sizes="50vw"
+                class="object-cover object-center" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/10"></div>
         </div>
         <!-- Content overlay on image -->
         <div class="relative z-10 flex h-full flex-col justify-end pb-10 pl-4">
@@ -19,8 +21,8 @@
 
     <!-- Right Side: Content Container -->
     <div
-        class="flex min-h-[100svh] flex-1 flex-col items-center px-5 pb-14 pt-28 sm:px-8 lg:w-1/2 lg:flex-none lg:px-16 xl:px-24">
-        <div class="mx-auto w-full max-w-md">
+        class="flex min-h-[100svh] flex-1 flex-col items-center px-5 pb-12 pt-28 sm:px-8 lg:w-1/2 lg:flex-none lg:px-16 xl:px-24">
+        <div class="mx-auto my-auto w-full max-w-md">
             <router-outlet></router-outlet>
         </div>
     </div>
