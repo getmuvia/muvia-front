@@ -15,7 +15,7 @@ export interface SidebarFormData {
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="close()">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
+        <div class="bg-white rounded-dialog shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
             
             <!-- Header -->
             <div class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10">
@@ -32,29 +32,29 @@ export interface SidebarFormData {
                 <div class="flex flex-col gap-2">
                     <label class="text-sm font-bold text-text-light">Sobre Nosotros</label>
                     <textarea formControlName="aboutMe" rows="4" 
-                        class="w-full px-4 py-2 rounded-lg border border-text-light/20 bg-surface-element text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                        class="w-full px-4 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
                         placeholder="Descripción de tu negocio..."></textarea>
                 </div>
 
                 <!-- Business Hours -->
                 <div class="flex flex-col gap-3">
                     <label class="text-sm font-bold text-text-light">Horario de Atención</label>
-                    <div class="flex flex-col gap-2 bg-surface-element p-4 rounded-xl border border-text-light/10">
+                    <div class="flex flex-col gap-2 bg-surface-element p-4 rounded-panel border border-text-light/10">
                         <div formGroupName="businessHours">
                             @for (day of weekDays; track day.key) {
-                                <div [formGroupName]="day.key" class="flex flex-wrap items-center gap-3 py-1 border-b border-text-light/10 last:border-0 hover:bg-white/50 px-2 rounded-lg transition-colors">
+                                <div [formGroupName]="day.key" class="flex flex-wrap items-center gap-3 py-1 border-b border-text-light/10 last:border-0 hover:bg-white/50 px-2 rounded-panel transition-colors">
                                     <span class="w-24 text-sm font-medium text-text-light">{{ day.label }}</span>
                                     
                                     <label class="flex items-center gap-2 cursor-pointer select-none">
-                                        <input type="checkbox" formControlName="isClosed" class="accent-primary w-4 h-4 rounded">
+                                        <input type="checkbox" formControlName="isClosed" class="accent-primary w-4 h-4 rounded-control">
                                         <span class="text-xs text-text-light/60">Cerrado</span>
                                     </label>
 
                                     @if (!form.get('businessHours')?.get(day.key)?.get('isClosed')?.value) {
                                         <div class="flex items-center gap-2 ml-auto sm:ml-0">
-                                            <input type="time" formControlName="open" class="px-2 py-1 rounded border border-text-light/20 bg-surface-element text-text-light text-sm">
+                                            <input type="time" formControlName="open" class="px-2 py-1 rounded-control border border-text-light/20 bg-surface-element text-text-light text-sm">
                                             <span class="text-text-light/40">-</span>
-                                            <input type="time" formControlName="close" class="px-2 py-1 rounded border border-text-light/20 bg-surface-element text-text-light text-sm">
+                                            <input type="time" formControlName="close" class="px-2 py-1 rounded-control border border-text-light/20 bg-surface-element text-text-light text-sm">
                                         </div>
                                     }
                                 </div>
@@ -75,16 +75,16 @@ export interface SidebarFormData {
                     <div formArrayName="socialLinks" class="flex flex-col gap-3">
                         @for (link of socialLinksControls.controls; track $index) {
                             <div [formGroupName]="$index" class="flex items-center gap-2 animate-fade-in-up">
-                                <select formControlName="icon" class="px-3 py-2 rounded-lg border border-text-light/20 bg-surface-element text-text-light text-sm max-w-[120px]">
+                                <select formControlName="icon" class="px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light text-sm max-w-[120px]">
                                     <option value="language">Web</option>
                                     <option value="instagram">Instagram</option>
                                     <option value="facebook">Facebook</option>
                                     <option value="twitter">Twitter</option>
                                     <option value="pinterest">Pinterest</option>
                                 </select>
-                                <input type="text" formControlName="name" placeholder="Nombre (ej. Instagram)" class="flex-1 px-3 py-2 rounded-lg border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[80px]">
-                                <input type="text" formControlName="url" placeholder="URL (https://...)" class="flex-[2] px-3 py-2 rounded-lg border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[120px]">
-                                <button type="button" (click)="removeSocialLink($index)" class="p-2 text-red-500 hover:bg-red-50 rounded-lg">
+                                <input type="text" formControlName="name" placeholder="Nombre (ej. Instagram)" class="flex-1 px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[80px]">
+                                <input type="text" formControlName="url" placeholder="URL (https://...)" class="flex-[2] px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[120px]">
+                                <button type="button" (click)="removeSocialLink($index)" class="p-2 text-red-500 hover:bg-red-50 rounded-control">
                                     <span class="material-symbols-outlined text-lg">delete</span>
                                 </button>
                             </div>
@@ -97,12 +97,12 @@ export interface SidebarFormData {
              <!-- Footer -->
             <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
                 <button (click)="close()" 
-                    class="px-4 py-2 rounded-lg text-sm font-medium text-text-light hover:bg-gray-200 transition-colors">
+                    class="px-4 py-2 rounded-control text-sm font-medium text-text-light hover:bg-gray-200 transition-colors">
                     Cancelar
                 </button>
                 <button (click)="onSubmit()" 
                     [disabled]="form.invalid || isLoading() || form.pristine"
-                    class="px-6 py-2 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
+                    class="px-6 py-2 rounded-control text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
                     @if (isLoading()) {
                         <span class="material-symbols-outlined text-lg animate-spin">refresh</span>
                     } @else {

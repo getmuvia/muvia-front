@@ -6,7 +6,7 @@ import { Component, input, output, signal, effect } from '@angular/core';
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="onBackdropClick($event)">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
+        <div class="bg-white rounded-dialog shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
             
             <!-- Header -->
             <div class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10">
@@ -20,7 +20,7 @@ import { Component, input, output, signal, effect } from '@angular/core';
             <div class="p-6 flex flex-col items-center gap-6 overflow-y-auto">
                 
                 <!-- Preview Area -->
-                <div class="relative w-full aspect-video bg-surface-element rounded-xl overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
+                <div class="relative w-full aspect-video bg-surface-element rounded-panel overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
                     (click)="fileInput.click()">
                     
                     @if (previewUrl()) {
@@ -35,7 +35,7 @@ import { Component, input, output, signal, effect } from '@angular/core';
                         }
 
                         <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                             <div class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full text-white font-medium text-sm flex items-center gap-2 border border-white/20">
+                             <div class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-control text-white font-medium text-sm flex items-center gap-2 border border-white/20">
                                 <span class="material-symbols-outlined text-lg">edit</span> Cambiar
                              </div>
                         </div>
@@ -58,12 +58,12 @@ import { Component, input, output, signal, effect } from '@angular/core';
             <!-- Footer -->
             <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
                 <button (click)="close()" 
-                    class="px-4 py-2 rounded-lg text-sm font-medium text-text-light hover:bg-gray-200 transition-colors">
+                    class="px-4 py-2 rounded-control text-sm font-medium text-text-light hover:bg-gray-200 transition-colors">
                     Cancelar
                 </button>
                 <button (click)="onSave()" 
                     [disabled]="!selectedFile() || isLoading()"
-                    class="px-6 py-2 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
+                    class="px-6 py-2 rounded-control text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
                     @if (isLoading()) {
                         <span class="material-symbols-outlined text-lg animate-spin">refresh</span>
                     } @else {

@@ -16,7 +16,7 @@ export interface ProfileMetadataFormData {
                 (click)="onBackdropClick($event)"
             >
                 <div
-                    class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl animate-fade-in-up"
+                    class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-dialog bg-white shadow-2xl animate-fade-in-up"
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="profile-metadata-title"
@@ -49,7 +49,7 @@ export interface ProfileMetadataFormData {
                                     formControlName="businessName"
                                     maxlength="255"
                                     autocomplete="organization"
-                                    class="w-full rounded-lg border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    class="w-full rounded-control border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50"
                                     [attr.aria-invalid]="businessName.invalid && businessName.touched"
                                     aria-describedby="business-name-help"
                                 />
@@ -72,7 +72,7 @@ export interface ProfileMetadataFormData {
                                     id="seller-description"
                                     formControlName="description"
                                     rows="4"
-                                    class="w-full resize-none rounded-lg border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50"
+                                    class="w-full resize-none rounded-control border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50"
                                     placeholder="Describe brevemente tu negocio..."
                                 ></textarea>
                                 <p class="text-xs text-text-light/60">
@@ -84,7 +84,7 @@ export interface ProfileMetadataFormData {
                         <div class="flex justify-end gap-3 border-t border-text-light/10 bg-surface-element p-4">
                             <button
                                 type="button"
-                                class="rounded-lg px-4 py-2 text-sm font-medium text-text-light transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
+                                class="rounded-control px-4 py-2 text-sm font-medium text-text-light transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50"
                                 [disabled]="isLoading()"
                                 (click)="close()"
                             >
@@ -92,7 +92,7 @@ export interface ProfileMetadataFormData {
                             </button>
                             <button
                                 type="submit"
-                                class="flex items-center gap-2 rounded-lg bg-primary px-6 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
+                                class="flex items-center gap-2 rounded-control bg-primary px-6 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
                                 [disabled]="form.invalid || form.pristine || isLoading()"
                             >
                                 @if (isLoading()) {

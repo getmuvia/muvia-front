@@ -13,7 +13,7 @@
         <app-skeleton width="60%" height="1.25rem"></app-skeleton>
     </div>
     <div class="pb-4">
-        <app-skeleton width="140px" height="42px" className="rounded-full"></app-skeleton>
+        <app-skeleton width="140px" height="42px" className="rounded-control"></app-skeleton>
     </div>
 </div>
 } @else {
@@ -85,7 +85,7 @@
                 {{ productsError() || 'No pudimos cargar tus productos.' }}
             </p>
             <button type="button" (click)="retryProducts()"
-                class="mt-4 rounded-full border border-error/30 px-5 py-2 text-xs font-bold uppercase tracking-wide text-error transition-colors hover:bg-error/10">
+                class="mt-4 rounded-control border border-error/30 px-5 py-2 text-xs font-bold uppercase tracking-wide text-error transition-colors hover:bg-error/10">
                 Reintentar
             </button>
         </div>

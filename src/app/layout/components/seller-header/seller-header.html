@@ -20,20 +20,20 @@
         <div class="ml-auto flex min-w-0 items-center gap-2 xl:gap-3">
             <a routerLink="/seller/products/create"
                 aria-label="Subir producto"
-                class="seller-upload-button flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full px-3.5 text-sm font-body font-bold text-white transition-all duration-200 hover:-translate-y-0.5 sm:px-5">
+                class="seller-upload-button flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-control px-3.5 text-sm font-body font-bold text-white transition-all duration-200 hover:-translate-y-0.5 sm:px-5">
                 <span class="material-symbols-outlined text-xl">add</span>
                 <span class="hidden sm:inline">Subir producto</span>
             </a>
 
             <a routerLink="/home"
-                class="seller-icon-action hidden h-10 items-center justify-center gap-2 rounded-full px-3 text-sm font-semibold text-primary transition-colors xl:flex"
+                class="seller-icon-action hidden h-10 items-center justify-center gap-2 rounded-control px-3 text-sm font-semibold text-primary transition-colors xl:flex"
                 aria-label="Ver tienda pública">
                 <span class="material-symbols-outlined text-xl">storefront</span>
                 <span class="hidden 2xl:inline">Ver tienda</span>
             </a>
 
             <a routerLink="/seller/profile"
-                class="seller-account hidden h-10 min-w-0 items-center gap-2 rounded-full px-2.5 text-sm font-semibold text-primary transition-colors md:flex"
+                class="seller-account hidden h-10 min-w-0 items-center gap-2 rounded-control px-2.5 text-sm font-semibold text-primary transition-colors md:flex"
                 [class.seller-account--avatar-only]="isProfilePage()"
                 [attr.aria-label]="'Abrir el perfil de ' + vendorDisplayName()">
                 <app-store-avatar
@@ -55,7 +55,7 @@
             </button>
 
             <button (click)="toggleMobileMenu()"
-                class="flex size-10 items-center justify-center rounded-lg text-text-light transition-colors hover:bg-text-light/10 lg:hidden"
+                class="flex size-10 items-center justify-center rounded-control text-text-light transition-colors hover:bg-text-light/10 lg:hidden"
                 aria-label="Abrir menú del vendedor" [attr.aria-expanded]="isMobileMenuOpen()">
                 <span class="material-symbols-outlined">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
             </button>
@@ -68,12 +68,12 @@
 <div class="mobile-menu fixed left-0 right-0 top-[65px] z-50 border-t border-border-color bg-surface-light/98 shadow-lg backdrop-blur-xl lg:hidden">
     <nav class="mx-auto flex max-w-[1200px] flex-col gap-1 p-4" aria-label="Menú móvil del vendedor">
         <a (click)="closeMobileMenu()" routerLink="/seller/products/create"
-            class="seller-mobile-primary mt-1 flex items-center gap-3 rounded-xl px-4 py-3 text-white">
+            class="seller-mobile-primary mt-1 flex items-center gap-3 rounded-control px-4 py-3 text-white">
             <span class="material-symbols-outlined">add_circle</span>
             <span class="font-semibold">Subir producto</span>
         </a>
         <a (click)="closeMobileMenu()" routerLink="/home"
-            class="seller-mobile-link flex items-center gap-3 rounded-xl px-4 py-3 text-text-light">
+            class="seller-mobile-link flex items-center gap-3 rounded-control px-4 py-3 text-text-light">
             <span class="material-symbols-outlined text-primary">storefront</span>
             <span class="font-semibold">Ver tienda pública</span>
         </a>
@@ -81,7 +81,7 @@
         <div class="my-2 border-t border-border-color"></div>
 
         <a (click)="closeMobileMenu()" routerLink="/seller/profile"
-            class="seller-mobile-link flex min-w-0 items-center gap-3 rounded-xl px-4 py-3 text-text-light">
+            class="seller-mobile-link flex min-w-0 items-center gap-3 rounded-control px-4 py-3 text-text-light">
             <app-store-avatar
                 [logoUrl]="vendorLogoUrl()"
                 [storeName]="vendorDisplayName()"
@@ -92,7 +92,7 @@
             </span>
         </a>
         <button (click)="logout(); closeMobileMenu()"
-            class="seller-mobile-link flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-text-light">
+            class="seller-mobile-link flex w-full items-center gap-3 rounded-control px-4 py-3 text-left text-text-light">
             <span class="material-symbols-outlined">logout</span>
             <span class="font-semibold">Cerrar sesión</span>
         </button>

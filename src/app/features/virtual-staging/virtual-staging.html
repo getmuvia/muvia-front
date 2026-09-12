@@ -123,7 +123,7 @@
                         <p class="mt-1 text-sm font-semibold text-[var(--color-primary)]">Bs {{ selectedProduct.price }}</p>
                     </div>
                     <button type="button" (click)="changeProduct()" [disabled]="isGenerating()"
-                        class="shrink-0 rounded-full border border-primary/25 px-3 py-2 text-xs font-bold text-primary transition-colors hover:border-primary hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
+                        class="shrink-0 rounded-control border border-primary/25 px-3 py-2 text-xs font-bold text-primary transition-colors hover:border-primary hover:bg-white disabled:cursor-not-allowed disabled:opacity-50">
                         Cambiar
                     </button>
                 </div>
@@ -138,7 +138,7 @@
                     <input id="staging-product-search" type="search" [value]="searchQuery()"
                         (input)="onSearchInput($event)" placeholder="Buscar por nombre o descripción"
                         [disabled]="isGenerating()"
-                        class="h-12 w-full rounded-full border border-[var(--color-border-color)] bg-white pl-12 pr-12 text-sm text-[var(--color-text-main)] outline-none transition focus:border-[var(--color-primary)] focus:ring-4 focus:ring-primary/10">
+                        class="h-12 w-full rounded-control border border-[var(--color-border-color)] bg-white pl-12 pr-12 text-sm text-[var(--color-text-main)] outline-none transition focus:border-[var(--color-primary)] focus:ring-4 focus:ring-primary/10">
                     @if (searchQuery()) {
                     <button type="button" (click)="clearSearch()" aria-label="Limpiar búsqueda" [disabled]="isGenerating()"
                         class="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-element)] hover:text-[var(--color-text-main)]">
@@ -154,8 +154,8 @@
                         class="animate-pulse overflow-hidden rounded-panel border border-[var(--color-border-color)] bg-white">
                         <div class="aspect-square bg-[var(--color-surface-element)]"></div>
                         <div class="space-y-2 p-4">
-                            <div class="h-4 rounded bg-[var(--color-surface-element)]"></div>
-                            <div class="h-3 w-1/2 rounded bg-[var(--color-surface-element)]"></div>
+                            <div class="h-4 rounded-editorial bg-[var(--color-surface-element)]"></div>
+                            <div class="h-3 w-1/2 rounded-editorial bg-[var(--color-surface-element)]"></div>
                         </div>
                     </div>
                     }
@@ -228,7 +228,7 @@
 
         <div class="mt-8 flex w-full max-w-xl flex-col items-center gap-3">
             <button type="button" (click)="generateImage()" [disabled]="!canGenerate()"
-                class="flex min-h-14 w-full items-center justify-center gap-3 rounded-full bg-[var(--color-primary)] px-8 py-4 text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:shadow-none">
+                class="flex min-h-14 w-full items-center justify-center gap-3 rounded-control bg-[var(--color-primary)] px-8 py-4 text-base font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:shadow-none">
                 @if (isGenerating()) {
                 <span class="material-symbols-outlined spin text-xl" aria-hidden="true">autorenew</span>
                 Generando imagen...

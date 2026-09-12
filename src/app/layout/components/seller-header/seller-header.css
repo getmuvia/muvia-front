@@ -26,7 +26,7 @@
 .seller-search {
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--color-border-color) 80%, transparent);
-    border-radius: 9999px;
+    border-radius: var(--radius-control);
     background: color-mix(in srgb, var(--color-surface-element) 82%, white);
 }
 
