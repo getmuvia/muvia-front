@@ -6,10 +6,16 @@ import { CategoryService } from '@core/services/category/category';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
 import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
+import { Category } from '@core/models/category/category';
 import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
 import { MarketService } from '@core/services/market/market';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
-import { findFeaturedCategory, type FeaturedCategoryCode } from '@core/constants/featured-categories';
+import {
+  ProductDimension,
+  findProductDimension,
+  formatDimensionCm,
+  parseMaxDimensionCm,
+} from '@core/models/product/product-dimension-filter';
 import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
 import { EMPTY, Subject, catchError, combineLatest, distinctUntilChanged, finalize, map, of, startWith, switchMap, tap } from 'rxjs';
 
@@ -18,11 +24,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 type SearchProduct = Product & Pick<HybridSearchResult, 'score' | 'matchType'>;
 type ProductListFilters = {
   search: string;
-  categoryCode: FeaturedCategoryCode | '';
+  categoryCode: string;
+  dimension: ProductDimension | '';
+  maxDimensionCm: number | null;
 };
 type ResolvedProductListFilters = ProductListFilters & {
   marketCode: string;
   categoryId: string;
+  category: Category | null;
 };
 
 @Component({
@@ -53,19 +62,28 @@ export class ProductList implements OnInit {
   );
 
   searchQuery = signal<string>('');
-  categoryCode = signal<FeaturedCategoryCode | ''>('');
+  categoryCode = signal<string>('');
   categoryId = signal<string>('');
+  selectedDimension = signal<ProductDimension | ''>('');
+  maxDimensionCm = signal<number | null>(null);
+  activeCategory = signal<Category | null>(null);
   isResolvingCategory = signal<boolean>(false);
   categoryResolutionError = signal<string | null>(null);
   useSmartSearch = signal<boolean>(false);
 
-  activeCategory = computed(() => findFeaturedCategory(this.categoryCode()));
   pageTitle = computed(() => this.activeCategory() ? 'Categoría' : 'Colección');
   pageTitleBold = computed(() => this.activeCategory()?.name ?? 'Completa');
   pageDescription = computed(() => this.activeCategory()
     ? 'Explora los productos disponibles en esta categoría del catálogo de Muvia.'
     : 'Diseño contemporáneo para la vida moderna. Encuentra la pieza perfecta que define tu estilo único.'
   );
+  activeMeasurement = computed(() => {
+    const dimension = findProductDimension(this.selectedDimension());
+    const maximum = this.maxDimensionCm();
+    return dimension && maximum
+      ? `${dimension.label} ≤ ${formatDimensionCm(maximum)} cm`
+      : '';
+  });
 
   hybridResults = signal<SearchProduct[]>([]);
   relatedProducts = signal<SearchProduct[]>([]);
@@ -125,12 +143,21 @@ export class ProductList implements OnInit {
   ngOnInit(): void {
     combineLatest([
       this.route.queryParamMap.pipe(
-        map((params): ProductListFilters => ({
-          search: (params.get('search') ?? '').trim(),
-          categoryCode: findFeaturedCategory(params.get('category'))?.code ?? '',
-        })),
+        map((params): ProductListFilters => {
+          const dimension = findProductDimension(params.get('dimension'));
+          const maxDimensionCm = parseMaxDimensionCm(params.get('maxDimensionCm'));
+          return {
+            search: (params.get('search') ?? '').trim(),
+            categoryCode: params.get('category')?.trim().toUpperCase() ?? '',
+            dimension: dimension && maxDimensionCm ? dimension.value : '',
+            maxDimensionCm: dimension && maxDimensionCm ? maxDimensionCm : null,
+          };
+        }),
         distinctUntilChanged((previous, current) =>
-          previous.search === current.search && previous.categoryCode === current.categoryCode
+          previous.search === current.search
+          && previous.categoryCode === current.categoryCode
+          && previous.dimension === current.dimension
+          && previous.maxDimensionCm === current.maxDimensionCm
         ),
       ),
       this.selectedMarketCode$,
@@ -139,11 +166,21 @@ export class ProductList implements OnInit {
       switchMap(([filters, marketCode]) => {
         this.categoryCode.set(filters.categoryCode);
         this.categoryId.set('');
+        this.selectedDimension.set(filters.dimension);
+        this.maxDimensionCm.set(filters.maxDimensionCm);
+        this.activeCategory.set(null);
         this.categoryResolutionError.set(null);
 
         if (!filters.categoryCode) {
           this.isResolvingCategory.set(false);
-          return of<ResolvedProductListFilters>({ ...filters, marketCode, categoryId: '' });
+          return of<ResolvedProductListFilters>({
+            ...filters,
+            dimension: '',
+            maxDimensionCm: null,
+            marketCode,
+            categoryId: '',
+            category: null,
+          });
         }
 
         this.isResolvingCategory.set(true);
@@ -154,10 +191,10 @@ export class ProductList implements OnInit {
               throw new Error(`Selectable category ${filters.categoryCode} not found`);
             }
 
-            return { ...filters, marketCode, categoryId: category.id };
+            return { ...filters, marketCode, categoryId: category.id, category };
           }),
           catchError((error: unknown) => {
-            this.logger.error('Featured category resolution failed', error, 'ProductList');
+            this.logger.error('Category resolution failed', error, 'ProductList');
             this.categoryResolutionError.set('No pudimos cargar esta categoría. Inténtalo de nuevo.');
             return EMPTY;
           }),
@@ -166,7 +203,15 @@ export class ProductList implements OnInit {
       }),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe((filters) => {
-      this.searchProducts(filters.search, filters.marketCode, filters.categoryCode, filters.categoryId);
+      this.activeCategory.set(filters.category);
+      this.searchProducts(
+        filters.search,
+        filters.marketCode,
+        filters.categoryCode,
+        filters.categoryId,
+        filters.dimension,
+        filters.maxDimensionCm,
+      );
     });
   }
 
@@ -179,6 +224,8 @@ export class ProductList implements OnInit {
       search: this.searchQuery(),
       marketCode: this.marketService.selectedMarket().code,
       categoryId: this.categoryId() || undefined,
+      dimension: this.selectedDimension() || undefined,
+      maxDimensionCm: this.maxDimensionCm() ?? undefined,
     });
   }
 
@@ -191,14 +238,18 @@ export class ProductList implements OnInit {
   searchProducts(
     query: string,
     marketCode = this.marketService.selectedMarket().code,
-    categoryCode: FeaturedCategoryCode | '' = this.categoryCode(),
+    categoryCode = this.categoryCode(),
     categoryId = this.categoryId(),
+    dimension: ProductDimension | '' = this.selectedDimension(),
+    maxDimensionCm: number | null = this.maxDimensionCm(),
   ): void {
     query = query.trim();
     const effectiveQuery = query.length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH ? query : '';
     this.searchQuery.set(effectiveQuery);
     this.categoryCode.set(categoryCode);
     this.categoryId.set(categoryId);
+    this.selectedDimension.set(dimension);
+    this.maxDimensionCm.set(maxDimensionCm);
 
     if (categoryCode && !categoryId) {
       this.categoryResolutionError.set('No pudimos cargar esta categoría. Inténtalo de nuevo.');
@@ -207,7 +258,8 @@ export class ProductList implements OnInit {
 
     this.categoryResolutionError.set(null);
 
-    if (effectiveQuery && !categoryCode) {
+    const hasStructuredFilters = Boolean(categoryCode || (dimension && maxDimensionCm));
+    if (effectiveQuery && !hasStructuredFilters) {
       this.useSmartSearch.set(true);
       this.performHybridSearch(effectiveQuery);
     } else {
@@ -218,6 +270,8 @@ export class ProductList implements OnInit {
         search: effectiveQuery,
         marketCode,
         categoryId: categoryId || undefined,
+        dimension: dimension || undefined,
+        maxDimensionCm: maxDimensionCm ?? undefined,
       });
     }
   }
@@ -240,6 +294,8 @@ export class ProductList implements OnInit {
       this.marketService.selectedMarket().code,
       this.categoryCode(),
       this.categoryId(),
+      this.selectedDimension(),
+      this.maxDimensionCm(),
     );
   }
 
@@ -291,6 +347,8 @@ export class ProductList implements OnInit {
       this.marketService.selectedMarket().code,
       this.categoryCode(),
       this.categoryId(),
+      this.selectedDimension(),
+      this.maxDimensionCm(),
     );
 
     // Clear URL query params
@@ -307,8 +365,33 @@ export class ProductList implements OnInit {
       queryParams: {
         category: null,
         search: this.searchQuery() || null,
+        dimension: null,
+        maxDimensionCm: null,
       },
       queryParamsHandling: 'merge',
+    });
+  }
+
+  onClearMeasurement(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        dimension: null,
+        maxDimensionCm: null,
+        search: this.searchQuery() || null,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  onMeasureRequested(): void {
+    this.router.navigate(['/products/measure'], {
+      queryParams: {
+        search: this.searchQuery() || null,
+        category: this.categoryCode() || null,
+        dimension: this.selectedDimension() || null,
+        maxDimensionCm: this.maxDimensionCm(),
+      },
     });
   }
 }

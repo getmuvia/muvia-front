@@ -19,6 +19,12 @@ export class FilterBar {
     readonly activeCategory = input<string>('');
     /** Emitted when the user removes the category filter */
     readonly clearCategory = output<void>();
+    /** Human-readable active dimension limit */
+    readonly activeMeasurement = input<string>('');
+    /** Emitted when the user removes the dimension limit */
+    readonly clearMeasurement = output<void>();
+    /** Opens the guided measurement flow */
+    readonly measureRequested = output<void>();
 
     readonly searchQuery = linkedSignal(() => this.activeSearch());
     private readonly searchRequests = new Subject<{ query: string; immediate: boolean } | null>();
@@ -63,5 +69,9 @@ export class FilterBar {
 
     onClearCategory(): void {
         this.clearCategory.emit();
+    }
+
+    onClearMeasurement(): void {
+        this.clearMeasurement.emit();
     }
 }

@@ -17,6 +17,10 @@ export const routes: Routes = [
                 data: { headerStyle: 'transparent' }
             },
             {
+                path: 'products/measure',
+                loadComponent: () => import('./features/shop/product/product-measure/product-measure').then(m => m.ProductMeasure),
+            },
+            {
                 path: 'products/:id',
                 loadComponent: () => import('./features/shop/product/product-detail/product-detail').then(m => m.ProductDetail),
             },

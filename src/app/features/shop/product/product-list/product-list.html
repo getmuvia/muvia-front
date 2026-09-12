@@ -17,7 +17,8 @@
         <!-- Search controls -->
         <app-filter-bar (searchChange)="searchProducts($event)" [activeSearch]="searchQuery()"
             (clearSearch)="onClearSearch()" [activeCategory]="activeCategory()?.name ?? ''"
-            (clearCategory)="onClearCategory()" />
+            (clearCategory)="onClearCategory()" [activeMeasurement]="activeMeasurement()"
+            (clearMeasurement)="onClearMeasurement()" (measureRequested)="onMeasureRequested()" />
 
         @if (displayError(); as error) {
         <div role="alert" class="mt-8 flex flex-col gap-3 rounded-control border border-error/20 bg-error/5 p-4 sm:flex-row sm:items-center sm:justify-between">

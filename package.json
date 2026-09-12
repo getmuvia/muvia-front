@@ -24,6 +24,7 @@
   "private": true,
   "packageManager": "npm@11.4.1",
   "dependencies": {
+    "@8thwall/engine-binary": "^1.0.0",
     "@angular/common": "22.1.6",
     "@angular/compiler": "22.1.6",
     "@angular/core": "22.1.6",
