@@ -5,7 +5,7 @@ import { Component, input } from '@angular/core';
     standalone: true,
     imports: [],
     template: `
-    <div class="flex flex-col items-center justify-center rounded-3xl border border-border-color bg-surface-light/70 px-6 py-20 text-center">
+    <div class="flex flex-col items-center justify-center rounded-panel border border-border-color bg-surface-light/70 px-6 py-20 text-center">
         <span class="material-symbols-outlined mb-5 flex size-16 items-center justify-center rounded-full bg-white text-xl text-primary/50 shadow-sm">{{ icon() }}</span>
         <h3 class="text-xl font-semibold text-text-light font-headline mb-2">{{ title() }}</h3>
         <p class="text-text-secondary font-body text-center max-w-md">

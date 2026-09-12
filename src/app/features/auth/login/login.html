@@ -14,7 +14,7 @@
             <span class="material-symbols-outlined mt-0.5 text-primary" aria-hidden="true">key</span>
             <div class="min-w-0 flex-1">
                 <h2 id="demo-account-title" class="text-sm font-bold text-text-main">
-                    Cuenta demo para evaluadores
+                    Cuenta demo
                 </h2>
                 <p class="mt-1 text-xs leading-5 text-text-secondary">
                     Las credenciales ya están cargadas. No necesitas registrarte.
@@ -94,7 +94,7 @@
         </div>
 
         <button type="submit" [disabled]="isLoading()"
-            class="mt-2 flex w-full h-12 items-center justify-center rounded-full bg-primary hover:bg-primary/90 active:bg-primary text-white text-sm font-bold uppercase tracking-[0.1em] transition-all shadow-sm hover:-translate-y-0.5 hover:shadow-soft disabled:opacity-50 disabled:cursor-not-allowed">
+            class="mt-2 flex w-full h-12 items-center justify-center rounded-control bg-primary hover:bg-primary/90 active:bg-primary text-white text-sm font-bold uppercase tracking-[0.1em] transition-all shadow-sm hover:-translate-y-0.5 hover:shadow-soft disabled:opacity-50 disabled:cursor-not-allowed">
             @if (isLoading()) {
             <span class="animate-spin mr-2">⟳</span>
             }
@@ -103,7 +103,7 @@
     </form>
 
     @if (error()) {
-    <p role="alert" class="flex items-center gap-2 rounded-xl bg-error/10 px-4 py-3 text-sm font-medium text-error">
+    <p role="alert" class="flex items-center gap-2 rounded-panel bg-error/10 px-4 py-3 text-sm font-medium text-error">
         <span class="material-symbols-outlined text-lg">error</span>
         <span>{{ error() }}</span>
     </p>

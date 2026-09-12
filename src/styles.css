@@ -46,11 +46,11 @@
   --shadow-soft: 0 16px 42px rgb(22 35 30 / 0.08);
   --shadow-float: 0 24px 64px rgb(22 35 30 / 0.14);
 
-  /* Radius hierarchy: editorial / controls / functional panels / dialogs */
-  --radius-editorial: 0.125rem;
-  --radius-control: 0.5rem;
-  --radius-panel: 0.75rem;
-  --radius-dialog: 1rem;
+  /* Square-first radius hierarchy: only interactive and floating UI gets subtle rounding */
+  --radius-editorial: 0;
+  --radius-control: 0.125rem;
+  --radius-panel: 0;
+  --radius-dialog: 0.125rem;
 }
 
 @layer base {

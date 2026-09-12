@@ -16,12 +16,12 @@
           <button
             type="button"
             (click)="selectMarket(market)"
-            class="market-card group flex min-h-28 items-center gap-4 rounded-xl border border-border-color bg-white px-5 py-5 text-left shadow-sm transition hover:border-primary/50 hover:shadow-soft"
+            class="market-card group flex min-h-28 items-center gap-4 rounded-panel border border-border-color bg-white px-5 py-5 text-left shadow-sm transition hover:border-primary/50 hover:shadow-soft"
           >
             <img
               [src]="marketService.flagAssetUrl(market.code)"
               [alt]="'Bandera de ' + market.name"
-              class="h-9 w-14 rounded object-cover shadow-sm ring-1 ring-black/10"
+              class="h-9 w-14 rounded-editorial object-cover shadow-sm ring-1 ring-black/10"
             />
             <span class="min-w-0 flex-1">
               <span class="block text-base font-semibold text-text-main">{{ market.name }}</span>
@@ -38,7 +38,7 @@
     </div>
     }
 
-    <div class="mt-10 flex items-center gap-3 rounded-xl border border-dashed border-border-color bg-surface-element px-5 py-4 text-sm text-text-secondary">
+    <div class="mt-10 flex items-center gap-3 rounded-panel border border-dashed border-border-color bg-surface-element px-5 py-4 text-sm text-text-secondary">
       <span class="material-symbols-outlined text-primary" aria-hidden="true">public</span>
       <span>Más países próximamente.</span>
     </div>

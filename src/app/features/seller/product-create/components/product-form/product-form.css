@@ -8,7 +8,7 @@
     left: 0;
     width: 5rem;
     height: 2px;
-    border-radius: 9999px;
+    border-radius: var(--radius-editorial);
     background: var(--color-secondary);
     content: '';
 }
@@ -29,7 +29,7 @@
 .form-panel {
     overflow: hidden;
     border: 1px solid var(--color-border-color);
-    border-radius: 0.75rem;
+    border-radius: var(--radius-panel);
     background: #fff;
     transition: border-color 180ms ease;
 }
@@ -100,7 +100,7 @@
 .form-panel__status {
     flex: 0 0 auto;
     border: 1px solid rgb(169 71 47 / 0.12);
-    border-radius: 9999px;
+    border-radius: var(--radius-control);
     background: rgb(217 164 65 / 0.14);
     padding: 0.4rem 0.7rem;
     font-family: var(--font-body);

@@ -19,7 +19,7 @@ export class Skeleton {
 
   computedClasses = computed(() => {
     const baseClasses = 'animate-pulse bg-text-light/10';
-    const shapeClasses = this.shape() === 'circle' ? 'rounded-full' : 'rounded-md';
+    const shapeClasses = this.shape() === 'circle' ? 'rounded-full' : 'rounded-editorial';
     return `${baseClasses} ${shapeClasses} ${this.className()}`;
   });
 }
