@@ -1,5 +1,5 @@
 export interface VirtualStagingRequest {
-    imageKey: string;
+    gcsStorageKey: string;
     productId: string;
     preferredStyle: string;
 }
@@ -8,6 +8,7 @@ export interface VirtualStagingResponse {
     analysis: StagingAnalysis;
     selectedProduct: StagingProduct;
     stagedImageUrl: string;
+    stagedImageExpiresAt: string;
     quota: VirtualStagingQuota;
     metadata: StagingMetadata;
 }
