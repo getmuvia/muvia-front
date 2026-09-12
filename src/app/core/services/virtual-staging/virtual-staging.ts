@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, switchMap, tap } from 'rxjs';
+import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
 import { UploadFileService } from '../uploadFile/upload-file';
 import {
     VirtualStagingQuota,
@@ -36,15 +36,12 @@ export class VirtualStagingService {
      * @param file The room image file
      */
     generateStagedRoom(file: File, productId: string): Observable<VirtualStagingResponse> {
-        const uploadFolder = 'virtual-staging/uploads';
+        this.replaceOriginalImage(file);
 
-        return this.uploadService.uploadFile(file, uploadFolder).pipe(
-            tap(uploadResponse => {
-                this._originalImageUrl.set(uploadResponse.url);
-            }),
+        return this.uploadService.uploadPrivateFile(file, API_ENDPOINTS.AI.VIRTUAL_STAGING_UPLOAD).pipe(
             switchMap(uploadResponse => {
                 const requestBody: VirtualStagingRequest = {
-                    imageKey: uploadResponse.key,
+                    gcsStorageKey: uploadResponse.key,
                     productId,
                     preferredStyle: 'modern',
                 };
@@ -54,7 +51,11 @@ export class VirtualStagingService {
             tap(response => {
                 this._currentResult.set(response);
                 this._quota.set(response.quota);
-            })
+            }),
+            catchError(error => {
+                this.clearOriginalImage();
+                return throwError(() => error);
+            }),
         );
     }
 
@@ -63,6 +64,19 @@ export class VirtualStagingService {
      */
     clearState(): void {
         this._currentResult.set(null);
+        this.clearOriginalImage();
+    }
+
+    private replaceOriginalImage(file: File): void {
+        this.clearOriginalImage();
+        this._originalImageUrl.set(URL.createObjectURL(file));
+    }
+
+    private clearOriginalImage(): void {
+        const currentUrl = this._originalImageUrl();
+        if (currentUrl) {
+            URL.revokeObjectURL(currentUrl);
+        }
         this._originalImageUrl.set(null);
     }
 }

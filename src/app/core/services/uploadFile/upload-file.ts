@@ -8,6 +8,15 @@ export interface UploadResponse {
   key: string;
 }
 
+export interface PrivateUploadResponse {
+  key: string;
+}
+
+interface SignedUploadResponse {
+  url: string;
+  key: string;
+}
+
 /**
  * MIME type map for files that browsers don't natively recognize.
  * Includes 3D model formats used for AR/VR.
@@ -33,32 +42,31 @@ export class UploadFileService {
    * @param folder The folder path (e.g. 'products/{userId}')
    */
   uploadFile(file: File, folder: string): Observable<UploadResponse> {
-    const contentType = this.getContentType(file);
-
-    const body = {
-      filename: file.name,
-      contentType
-    };
-
     const requestUrl = `${this.apiUrl}?folder=${folder}`;
 
-    return this.http.post<UploadResponse>(requestUrl, body).pipe(
-      switchMap(response => {
+    return this.uploadToSignedUrl(file, requestUrl).pipe(
+      map(response => ({
+        key: response.key,
+        url: `${this.storageFirebaseUrl}/${response.key}`
+      }))
+    );
+  }
 
-        return this.http.put(response.url, file, {
-          headers: {
-            'Content-Type': contentType
-          }
-        }
-        ).pipe(
-          map(() => {
-            return {
-              key: response.key,
-              url: `${this.storageFirebaseUrl}/${response.key}`
-            };
-          })
-        );
-      })
+  /** Uploads a file without creating or exposing a public storage URL. */
+  uploadPrivateFile(file: File, requestUrl: string): Observable<PrivateUploadResponse> {
+    return this.uploadToSignedUrl(file, requestUrl);
+  }
+
+  private uploadToSignedUrl(file: File, requestUrl: string): Observable<PrivateUploadResponse> {
+    const contentType = this.getContentType(file);
+    const body = { filename: file.name, contentType };
+
+    return this.http.post<SignedUploadResponse>(requestUrl, body).pipe(
+      switchMap(response => this.http.put(response.url, file, {
+        headers: { 'Content-Type': contentType }
+      }).pipe(
+        map(() => ({ key: response.key }))
+      ))
     );
   }
 

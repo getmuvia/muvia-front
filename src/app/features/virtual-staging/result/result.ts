@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { VirtualStagingResponse, StagingProduct } from '@core/models/ai/virtual-staging.models';
@@ -12,7 +12,7 @@ import { LoggerService } from '@core/services/logger/logger';
     templateUrl: './result.html',
     styleUrl: './result.css'
 })
-export class Result implements OnInit {
+export class Result implements OnInit, OnDestroy {
     private readonly router = inject(Router);
     private readonly stagingService = inject(VirtualStagingService);
     private readonly logger = inject(LoggerService);
@@ -36,6 +36,10 @@ export class Result implements OnInit {
 
         this.result.set(result);
         this.isLoading.set(false);
+    }
+
+    ngOnDestroy(): void {
+        this.stagingService.clearState();
     }
 
     onSliderChange(event: Event): void {
