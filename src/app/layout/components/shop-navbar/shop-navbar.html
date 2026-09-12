@@ -27,8 +27,6 @@
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" routerLink="/home" fragment="categorias">Categorías</a>
                 <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
-                    class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" routerLink="/home" fragment="colecciones">Colecciones</a>
-                <a [ngClass]="isTransparent() ? 'text-white hover:opacity-80' : 'text-primary'"
                     class="text-xs font-semibold uppercase tracking-[0.12em] transition-colors" routerLink="/products">Productos</a>
             </nav>
 
@@ -134,11 +132,6 @@
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
             <span class="material-symbols-outlined text-xl text-primary">category</span>
             <span>Categorías</span>
-        </a>
-        <a (click)="closeMobileMenu()" routerLink="/home" fragment="colecciones"
-            class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">
-            <span class="material-symbols-outlined text-xl text-primary">storefront</span>
-            <span>Colecciones</span>
         </a>
         <a (click)="closeMobileMenu()" routerLink="/products"
             class="flex items-center gap-4 px-6 py-3.5 text-text-light hover:bg-black/5 transition-colors">

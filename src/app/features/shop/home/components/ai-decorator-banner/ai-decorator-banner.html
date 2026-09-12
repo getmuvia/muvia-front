@@ -1,0 +1,52 @@
+<section id="visualizador" class="w-full scroll-mt-20 bg-primary-deep text-white">
+    <div class="muvia-wide-container grid px-0 md:min-h-[620px] md:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] xl:min-h-[720px]">
+        <div class="relative aspect-square overflow-hidden bg-black/20 md:aspect-auto md:min-h-[620px] xl:min-h-[720px]">
+            <img [ngSrc]="promo.resultImage" [alt]="promo.resultImageAlt" fill
+                sizes="(min-width: 768px) 58vw, 100vw" class="object-cover object-center" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10"></div>
+
+            <span class="absolute right-4 top-4 rounded-full bg-primary px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-white shadow-lg sm:right-6 sm:top-6">
+                Resultado con IA
+            </span>
+
+            <figure class="absolute bottom-4 left-4 w-[36%] max-w-56 overflow-hidden rounded-panel border-4 border-white bg-white shadow-2xl sm:bottom-6 sm:left-6">
+                <div class="relative aspect-square">
+                    <img [ngSrc]="promo.beforeImage" [alt]="promo.beforeImageAlt" fill
+                        sizes="(min-width: 768px) 20vw, 36vw" class="object-cover" />
+                </div>
+                <figcaption class="px-3 py-2 text-[0.65rem] font-bold uppercase tracking-[0.12em] text-primary">
+                    Habitación original
+                </figcaption>
+            </figure>
+
+            <div class="absolute bottom-6 right-6 hidden w-56 items-center gap-3 rounded-panel bg-white/95 p-3 text-primary shadow-2xl backdrop-blur-sm sm:flex">
+                <img [ngSrc]="promo.productImage" [alt]="promo.productImageAlt" width="80" height="60"
+                    class="h-14 w-20 shrink-0 rounded-control object-cover" />
+                <div class="min-w-0">
+                    <p class="text-[0.6rem] font-bold uppercase tracking-[0.12em] text-primary/55">Producto elegido</p>
+                    <p class="mt-1 truncate text-sm font-semibold">Escritorio</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center px-6 py-16 sm:px-10 md:px-14 lg:px-20 xl:px-28 2xl:px-32">
+            <div class="max-w-2xl">
+                <p class="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-accent">{{ promo.eyebrow }}</p>
+                <h2 class="font-headline text-[clamp(2.5rem,4vw,5rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-white">
+                    {{ promo.title }}
+                </h2>
+
+                <p class="mt-6 max-w-xl font-body text-base leading-7 text-white/72 lg:text-lg">
+                    {{ promo.description }}
+                </p>
+
+                <div class="mt-9">
+                    <a [routerLink]="promo.link"
+                        class="inline-flex h-12 items-center justify-center rounded-full bg-white px-7 text-xs font-bold uppercase tracking-[0.14em] text-primary transition-all hover:-translate-y-0.5 hover:bg-surface-element">
+                        {{ promo.cta }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
