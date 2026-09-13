@@ -12,9 +12,10 @@
             <!-- Logo -->
             <a routerLink="/home" class="flex items-center gap-3 justify-self-start transition-colors"
                 aria-label="Ir al inicio de Muvia">
-                <div [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'text-white border-white/40 bg-black/10' : 'text-primary border-primary/30 bg-primary/5'"
-                    class="flex size-9 items-center justify-center rounded-full border backdrop-blur-sm">
-                    <span class="font-headline text-xl font-bold leading-none">M</span>
+                <div [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'border-white/40 bg-white/95' : 'border-primary/20 bg-white'"
+                    class="flex size-9 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm">
+                    <img src="/images/brand/muvia-symbol.png" alt="" width="28" height="28"
+                        class="size-7 object-contain" aria-hidden="true">
                 </div>
                 <h2 [ngClass]="isTransparent() && !isMobileMenuOpen() ? 'text-white' : 'text-text-light'" 
                     class="text-xl font-headline font-semibold tracking-[0.04em]">Muvia</h2>
