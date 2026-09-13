@@ -22,11 +22,6 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "node_modules/@8thwall/engine-binary/dist",
-                "output": "external/xr"
               }
             ],
             "styles": [
