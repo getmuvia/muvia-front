@@ -1,41 +1,3 @@
-@if (step() === 'camera') {
-<section class="camera-stage" aria-labelledby="camera-title">
-  <canvas #cameraCanvas class="camera-canvas" aria-hidden="true"></canvas>
-
-  <div class="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4 text-white sm:p-6">
-    <button type="button" (click)="editSetup()"
-      class="pointer-events-auto flex size-11 items-center justify-center rounded-control border border-white/30 bg-black/35 backdrop-blur-sm transition-colors hover:bg-black/55"
-      aria-label="Cerrar cámara" title="Cerrar cámara">
-      <span class="material-symbols-outlined" aria-hidden="true">close</span>
-    </button>
-    <p id="camera-title" class="bg-black/35 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] backdrop-blur-sm">
-      {{ dimensionDetails()?.label }} disponible
-    </p>
-  </div>
-
-  <div class="reticle" [class.reticle--saved]="firstPoint()" aria-hidden="true">
-    <span></span>
-  </div>
-
-  <div class="absolute inset-x-0 bottom-0 z-10 p-4 sm:p-6">
-    <div class="mx-auto max-w-xl border border-white/20 bg-black/60 p-4 text-white backdrop-blur-md sm:p-5">
-      <p class="text-sm leading-6" aria-live="polite">{{ cameraInstruction() }}</p>
-
-      <div class="mt-4 flex flex-col gap-3 sm:flex-row">
-        <button type="button" (click)="capturePoint()" [disabled]="!canCapturePoint()"
-          class="flex h-12 flex-1 items-center justify-center gap-2 rounded-control bg-white px-5 text-xs font-bold uppercase tracking-[0.12em] text-primary transition-colors hover:bg-surface-element disabled:cursor-not-allowed disabled:opacity-45">
-          <span class="material-symbols-outlined text-xl" aria-hidden="true">center_focus_strong</span>
-          {{ firstPoint() ? 'Marcar punto final' : 'Marcar punto inicial' }}
-        </button>
-        <button type="button" (click)="useManualEntry()"
-          class="h-12 rounded-control border border-white/45 px-5 text-xs font-bold uppercase tracking-[0.12em] text-white transition-colors hover:bg-white/10">
-          Escribir medida
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
-} @else {
 <main class="measurement-page">
   <div class="muvia-content-container w-full py-10 sm:py-14 lg:py-16">
     <button type="button" (click)="returnToProducts()"
@@ -47,127 +9,87 @@
     <div class="mt-8 grid gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(30rem,1.2fr)] lg:gap-16">
       <header>
         <p class="text-xs font-bold uppercase tracking-[0.16em] text-secondary">Encuentra el tamaño adecuado</p>
-        <h1 class="mt-3 max-w-xl text-4xl font-semibold leading-none text-text-light sm:text-5xl">Mide tu espacio</h1>
+        <h1 class="mt-3 max-w-xl text-4xl font-semibold leading-none text-text-light sm:text-5xl">Busca por medidas</h1>
         <p class="mt-5 max-w-xl text-sm leading-6 text-text-secondary sm:text-base sm:leading-7">
-          Elige qué buscas y mide el espacio disponible. Podrás corregir el resultado antes de filtrar el catálogo.
+          Introduce el espacio disponible y filtra el catálogo por productos que puedan caber en esa medida.
         </p>
 
-        <ol class="mt-8 grid gap-4 text-sm text-text-light" aria-label="Pasos de la medición">
-          <li class="flex gap-3"><span class="step-number">1</span><span>Selecciona una categoría y una dimensión.</span></li>
-          <li class="flex gap-3"><span class="step-number">2</span><span>Marca el inicio y el final con la cámara.</span></li>
-          <li class="flex gap-3"><span class="step-number">3</span><span>Revisa la medida y busca productos que quepan.</span></li>
+        <ol class="mt-8 grid gap-4 text-sm text-text-light" aria-label="Pasos del filtro por medidas">
+          <li class="flex gap-3"><span class="step-number">1</span><span>Selecciona la categoría que necesitas.</span></li>
+          <li class="flex gap-3"><span class="step-number">2</span><span>Elige la dimensión que debe caber.</span></li>
+          <li class="flex gap-3"><span class="step-number">3</span><span>Escribe el límite en centímetros y busca.</span></li>
         </ol>
       </header>
 
       <section class="border border-border-color bg-surface-light p-5 sm:p-8" [attr.aria-busy]="isLoadingCategories()">
-        @if (step() === 'setup') {
-        <div>
-          <p class="text-xs font-bold uppercase tracking-[0.14em] text-primary">1. Configura la búsqueda</p>
+        <p class="text-xs font-bold uppercase tracking-[0.14em] text-primary">Configura la búsqueda</p>
 
-          <label for="measurement-category" class="mt-6 block text-sm font-semibold text-text-light">Categoría</label>
-          <select id="measurement-category" [value]="selectedCategoryCode()" (change)="selectCategory($event)"
-            [disabled]="isLoadingCategories() || !!categoryError()"
-            class="mt-2 h-12 w-full rounded-control border border-border-color bg-white px-4 text-sm text-text-light focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:bg-surface-element">
-            <option value="" disabled>{{ isLoadingCategories() ? 'Cargando categorías...' : 'Selecciona una categoría' }}</option>
-            @for (category of categories(); track category.id) {
-            <option [value]="category.code">{{ category.name }}</option>
-            }
-          </select>
-
-          @if (categoryError(); as error) {
-          <div role="alert" class="mt-3 flex flex-wrap items-center gap-3">
-            <p class="text-sm text-error">{{ error }}</p>
-            <button type="button" (click)="retryCategories()"
-              class="text-xs font-bold uppercase tracking-[0.1em] text-error underline underline-offset-4">
-              Reintentar
-            </button>
-          </div>
+        <label for="measurement-category" class="mt-6 block text-sm font-semibold text-text-light">Categoría</label>
+        <select id="measurement-category" [value]="selectedCategoryCode()" (change)="selectCategory($event)"
+          [disabled]="isLoadingCategories() || !!categoryError()"
+          class="mt-2 h-12 w-full rounded-control border border-border-color bg-white px-4 text-sm text-text-light focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:bg-surface-element">
+          <option value="" disabled>{{ isLoadingCategories() ? 'Cargando categorías...' : 'Selecciona una categoría' }}</option>
+          @for (category of categories(); track category.id) {
+          <option [value]="category.code">{{ category.name }}</option>
           }
+        </select>
 
-          <fieldset class="mt-7">
-            <legend class="text-sm font-semibold text-text-light">¿Qué dimensión debe caber?</legend>
-            <div class="mt-3 grid gap-2 sm:grid-cols-3">
-              @for (dimension of dimensionOptions; track dimension.value) {
-              <button type="button" (click)="selectDimension(dimension.value)"
-                [attr.aria-pressed]="selectedDimension() === dimension.value"
-                class="min-h-20 rounded-control border px-4 py-3 text-left transition-colors"
-                [class.border-primary]="selectedDimension() === dimension.value"
-                [class.bg-primary]="selectedDimension() === dimension.value"
-                [class.text-white]="selectedDimension() === dimension.value"
-                [class.border-border-color]="selectedDimension() !== dimension.value"
-                [class.bg-white]="selectedDimension() !== dimension.value">
-                <span class="block text-sm font-bold">{{ dimension.label }}</span>
-                <span class="mt-1 block text-xs leading-5 opacity-70">{{ dimension.description }}</span>
-              </button>
-              }
-            </div>
-          </fieldset>
-
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button type="button" (click)="openCamera()" [disabled]="!canUseCamera()"
-              class="flex h-12 flex-1 items-center justify-center gap-2 rounded-control bg-primary px-5 text-xs font-bold uppercase tracking-[0.12em] text-white transition-colors hover:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-45">
-              <span class="material-symbols-outlined text-xl" aria-hidden="true">photo_camera</span>
-              Abrir cámara
-            </button>
-            <button type="button" (click)="useManualEntry()" [disabled]="!canUseCamera()"
-              class="h-12 rounded-control border border-primary px-5 text-xs font-bold uppercase tracking-[0.12em] text-primary transition-colors hover:bg-primary/5 disabled:cursor-not-allowed disabled:opacity-45">
-              Escribir medida
-            </button>
-          </div>
-
-          <p class="mt-4 text-xs leading-5 text-text-secondary">
-            La medición con cámara es aproximada y necesita buena iluminación. Funciona en dispositivos móviles compatibles mediante HTTPS.
-          </p>
-          <p class="mt-2 text-xs leading-5 text-text-secondary">
-            Muvia no guarda fotos ni videos durante esta medición.
-          </p>
-          <p class="mt-2 text-[0.65rem] leading-4 text-text-secondary/80">
-            Motor espacial de Niantic Spatial, Inc. ·
-            <a href="https://github.com/8thwall/engine/blob/main/LICENSE" target="_blank" rel="noopener noreferrer"
-              class="underline underline-offset-2 hover:text-primary">Licencia</a>
-          </p>
-        </div>
-        } @else {
-        <div>
-          <p class="text-xs font-bold uppercase tracking-[0.14em] text-primary">2. Revisa la medida</p>
-          <h2 class="mt-4 text-2xl font-semibold text-text-light">{{ selectedCategory()?.name }}</h2>
-          <p class="mt-2 text-sm leading-6 text-text-secondary">
-            Indica el {{ dimensionDetails()?.label?.toLowerCase() }} máximo que debe tener el producto.
-          </p>
-
-          <label for="measurement-value" class="mt-7 block text-sm font-semibold text-text-light">Medida en centímetros</label>
-          <div class="relative mt-2">
-            <input id="measurement-value" type="number" inputmode="decimal" min="1" max="10000" step="0.1"
-              [value]="measurementInput()" (input)="updateMeasurement($event)" placeholder="Ej. 100"
-              class="h-14 w-full rounded-control border border-border-color bg-white px-4 pr-14 text-lg font-semibold text-text-light focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
-            <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-secondary">cm</span>
-          </div>
-          <p class="mt-2 text-xs leading-5 text-text-secondary">Puedes ajustar el valor si conoces una medida más precisa.</p>
-          @if (measurementInput() && !measurementValue()) {
-          <p role="alert" class="mt-2 text-xs leading-5 text-error">Introduce una medida entre 1 y 10.000 cm.</p>
-          }
-
-          @if (resultSummary()) {
-          <div class="mt-6 border-l-2 border-primary bg-primary/5 px-4 py-3">
-            <p class="text-sm font-semibold text-primary">{{ resultSummary() }}</p>
-          </div>
-          }
-
-          <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button type="button" (click)="searchProducts()" [disabled]="!measurementValue()"
-              class="flex h-12 flex-1 items-center justify-center gap-2 rounded-control bg-primary px-5 text-xs font-bold uppercase tracking-[0.12em] text-white transition-colors hover:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-45">
-              Buscar productos
-              <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
-            </button>
-            <button type="button" (click)="editSetup()"
-              class="h-12 rounded-control border border-primary px-5 text-xs font-bold uppercase tracking-[0.12em] text-primary transition-colors hover:bg-primary/5">
-              Cambiar selección
-            </button>
-          </div>
+        @if (categoryError(); as error) {
+        <div role="alert" class="mt-3 flex flex-wrap items-center gap-3">
+          <p class="text-sm text-error">{{ error }}</p>
+          <button type="button" (click)="retryCategories()"
+            class="text-xs font-bold uppercase tracking-[0.1em] text-error underline underline-offset-4">
+            Reintentar
+          </button>
         </div>
         }
+
+        <fieldset class="mt-7">
+          <legend class="text-sm font-semibold text-text-light">¿Qué dimensión debe caber?</legend>
+          <div class="mt-3 grid gap-2 sm:grid-cols-3">
+            @for (dimension of dimensionOptions; track dimension.value) {
+            <button type="button" (click)="selectDimension(dimension.value)"
+              [attr.aria-pressed]="selectedDimension() === dimension.value"
+              class="min-h-20 rounded-control border px-4 py-3 text-left transition-colors"
+              [class.border-primary]="selectedDimension() === dimension.value"
+              [class.bg-primary]="selectedDimension() === dimension.value"
+              [class.text-white]="selectedDimension() === dimension.value"
+              [class.border-border-color]="selectedDimension() !== dimension.value"
+              [class.bg-white]="selectedDimension() !== dimension.value">
+              <span class="block text-sm font-bold">{{ dimension.label }}</span>
+              <span class="mt-1 block text-xs leading-5 opacity-70">{{ dimension.description }}</span>
+            </button>
+            }
+          </div>
+        </fieldset>
+
+        <label for="measurement-value" class="mt-7 block text-sm font-semibold text-text-light">Medida máxima</label>
+        <div class="relative mt-2">
+          <input id="measurement-value" type="number" inputmode="decimal" min="1" max="10000" step="0.1"
+            [value]="measurementInput()" (input)="updateMeasurement($event)" placeholder="Ej. 100"
+            class="h-14 w-full rounded-control border border-border-color bg-white px-4 pr-14 text-lg font-semibold text-text-light focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/10" />
+          <span class="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-text-secondary">cm</span>
+        </div>
+        <p class="mt-2 text-xs leading-5 text-text-secondary">
+          Usa la medida del espacio disponible. Puedes editarla antes de buscar.
+        </p>
+        @if (measurementInput() && !measurementValue()) {
+        <p role="alert" class="mt-2 text-xs leading-5 text-error">Introduce una medida entre 1 y 10.000 cm.</p>
+        }
+
+        @if (resultSummary()) {
+        <div class="mt-6 border-l-2 border-primary bg-primary/5 px-4 py-3">
+          <p class="text-sm font-semibold text-primary">{{ resultSummary() }}</p>
+        </div>
+        }
+
+        <button type="button" (click)="searchProducts()"
+          [disabled]="!selectedCategory() || !measurementValue()"
+          class="mt-8 flex h-12 w-full items-center justify-center gap-2 rounded-control bg-primary px-5 text-xs font-bold uppercase tracking-[0.12em] text-white transition-colors hover:bg-primary-deep disabled:cursor-not-allowed disabled:opacity-45">
+          Buscar productos
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">arrow_forward</span>
+        </button>
       </section>
     </div>
   </div>
 </main>
-}

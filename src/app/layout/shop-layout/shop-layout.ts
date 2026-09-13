@@ -22,6 +22,6 @@ export class ShopLayout {
   );
 
   private hidesFooter(url: string): boolean {
-    return url.startsWith('/auth') || url.startsWith('/products/measure');
+    return url.startsWith('/auth');
   }
 }

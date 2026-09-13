@@ -23,7 +23,7 @@ export class FilterBar {
     readonly activeMeasurement = input<string>('');
     /** Emitted when the user removes the dimension limit */
     readonly clearMeasurement = output<void>();
-    /** Opens the guided measurement flow */
+    /** Opens the structured dimension filter */
     readonly measureRequested = output<void>();
 
     readonly searchQuery = linkedSignal(() => this.activeSearch());
