@@ -58,6 +58,12 @@ export class ProductDetail {
     this.productStore.getProductById(id);
   }
 
+  retryProduct(): void {
+    if (!this.isLoading()) {
+      this.loadProduct(this.id());
+    }
+  }
+
   loadSimilarProducts(categoryId: string, excludeId: string): void {
     this.similarProductRequests.next({ categoryId, excludeId });
   }

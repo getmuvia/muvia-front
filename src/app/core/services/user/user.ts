@@ -1,11 +1,12 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subscription, tap } from 'rxjs';
+import { finalize, Observable, Subscription, tap } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
 import type { User } from '../../auth/models/auth.models';
 import { LoggerService } from '../logger/logger';
 import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
+import { getErrorMessage } from '@core/models/errors/api-error.model';
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +18,10 @@ export class UserService {
 
     private readonly _vendorProfile = signal<VendorProfile | null>(null);
     readonly vendorProfile = this._vendorProfile.asReadonly();
+    private readonly _isVendorProfileLoading = signal(false);
+    readonly isVendorProfileLoading = this._isVendorProfileLoading.asReadonly();
+    private readonly _vendorProfileError = signal<string | null>(null);
+    readonly vendorProfileError = this._vendorProfileError.asReadonly();
 
     updateProfile(data: UpdateVendorProfilePayload): Observable<User> {
         return this.http.patch<User>(API_ENDPOINTS.USERS.ME, data).pipe(
@@ -44,13 +49,21 @@ export class UserService {
      */
     loadVendorProfile(userId: string): void {
         this.vendorProfileRequest?.unsubscribe();
-        this.vendorProfileRequest = this.getVendorProfile(userId).subscribe({
-            complete: () => {
+        this._isVendorProfileLoading.set(true);
+        this._vendorProfileError.set(null);
+
+        this.vendorProfileRequest = this.getVendorProfile(userId).pipe(
+            finalize(() => {
+                this._isVendorProfileLoading.set(false);
                 this.vendorProfileRequest = null;
-            },
+            }),
+        ).subscribe({
             error: (error: HttpErrorResponse) => {
                 this.logger.error('Background profile refresh failed', error, 'UserService');
-                this.vendorProfileRequest = null;
+                this._vendorProfileError.set(getErrorMessage(
+                    error,
+                    'No pudimos cargar la información de tu negocio.',
+                ));
             }
         });
     }
@@ -63,6 +76,8 @@ export class UserService {
         this.vendorProfileRequest?.unsubscribe();
         this.vendorProfileRequest = null;
         this._vendorProfile.set(null);
+        this._isVendorProfileLoading.set(false);
+        this._vendorProfileError.set(null);
     }
 }
 

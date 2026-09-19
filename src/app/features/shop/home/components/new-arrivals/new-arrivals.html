@@ -13,9 +13,25 @@
     </div>
 
     <div class="muvia-wide-container">
-        <div class="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5">
+        @if (error()) {
+        <div class="mb-6 flex flex-col items-center justify-between gap-3 rounded-control border border-error/20 bg-error/5 p-4 text-center sm:flex-row sm:text-left"
+            role="alert">
+            <p class="text-sm font-medium text-error">{{ error() }}</p>
+            <button type="button" (click)="retry()" [disabled]="isLoading()"
+                class="shrink-0 rounded-control border border-error/30 px-4 py-2 text-xs font-bold uppercase tracking-wide text-error transition-colors hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-50">
+                Reintentar
+            </button>
+        </div>
+        }
 
-            @if (isLoading()) {
+        @if (isRefreshing()) {
+        <p class="mb-4 text-sm text-text-light/60" role="status" aria-live="polite">Actualizando novedades...</p>
+        }
+
+        <div class="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
+            [attr.aria-busy]="isLoading()">
+
+            @if (isInitialLoading()) {
             @for (item of [1, 2, 3, 4, 5]; track item) {
             <div class="h-80 animate-pulse rounded-editorial bg-text-light/10" aria-hidden="true"></div>
             }
@@ -23,9 +39,11 @@
             @for (product of products(); track product.id) {
             <app-product-card [product]="product" />
             } @empty {
+            @if (!error()) {
             <p class="col-span-full text-center text-text-light/60 py-16">
                 No hay novedades por el momento.
             </p>
+            }
             }
             }
 
