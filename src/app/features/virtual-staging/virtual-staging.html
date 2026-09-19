@@ -14,6 +14,16 @@
                 {{ currentQuota.remaining }} de {{ currentQuota.limit }} generaciones disponibles hoy
                 }
             </p>
+            @if (quotaErrorMessage()) {
+            <div class="mx-auto mt-4 flex max-w-xl flex-col items-center justify-center gap-3 rounded-control border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700 sm:flex-row"
+                role="alert">
+                <span>{{ quotaErrorMessage() }}</span>
+                <button type="button" (click)="retryQuota()" [disabled]="isQuotaLoading()"
+                    class="shrink-0 rounded-control border border-red-300 px-4 py-2 text-xs font-bold uppercase tracking-wide transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50">
+                    Reintentar
+                </button>
+            </div>
+            }
         </div>
 
         <div class="grid w-full gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.4fr)]">
@@ -41,9 +51,28 @@
                     <input type="file" accept="image/*" aria-label="Seleccionar fotografía de la habitación"
                         class="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
                         (change)="onFileSelected($event)"
-                        [disabled]="isGenerating() || isQuotaLoading() || quota()?.remaining === 0">
+                        [disabled]="isGenerating() || isQuotaLoading() || !quota() || quota()?.remaining === 0">
 
-                    @if (quota()?.remaining === 0) {
+                    @if (isQuotaLoading()) {
+                    <div class="flex flex-col items-center px-6 text-center" role="status">
+                        <span class="material-symbols-outlined mb-4 animate-spin text-5xl text-[var(--color-primary)]"
+                            aria-hidden="true">progress_activity</span>
+                        <h3 class="text-xl font-semibold text-[var(--color-text-main)]">
+                            Consultando disponibilidad
+                        </h3>
+                    </div>
+                    } @else if (!quota()) {
+                    <div class="flex flex-col items-center px-6 text-center">
+                        <span class="material-symbols-outlined mb-4 text-5xl text-[var(--color-text-secondary)]"
+                            aria-hidden="true">cloud_off</span>
+                        <h3 class="mb-2 text-xl font-semibold text-[var(--color-text-main)]">
+                            Disponibilidad no confirmada
+                        </h3>
+                        <p class="text-sm text-[var(--color-text-secondary)]">
+                            Reintenta la consulta antes de seleccionar una fotografía.
+                        </p>
+                    </div>
+                    } @else if (quota()?.remaining === 0) {
                     <div class="flex flex-col items-center px-6 text-center">
                         <span class="material-symbols-outlined mb-4 text-5xl text-[var(--color-text-secondary)]">
                             hourglass_top
@@ -157,7 +186,7 @@
                     }
                 </div>
 
-                @if (isCatalogLoading()) {
+                @if (isCatalogLoading() && products().length === 0) {
                 <div class="grid grid-cols-2 gap-4 sm:grid-cols-3" aria-label="Cargando productos">
                     @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
                     <div
@@ -170,13 +199,26 @@
                     </div>
                     }
                 </div>
-                } @else if (catalogErrorMessage()) {
-                <div class="rounded-panel border border-red-200 bg-red-50 p-6 text-center text-sm font-medium text-red-700"
-                    role="alert">
-                    {{ catalogErrorMessage() }}
-                </div>
                 } @else {
+                @if (catalogErrorMessage()) {
+                <div class="mb-4 flex flex-col items-center justify-center gap-3 rounded-panel border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-700 sm:flex-row"
+                    role="alert">
+                    <span>{{ catalogErrorMessage() }}</span>
+                    <button type="button" (click)="retryCatalog()" [disabled]="isCatalogLoading()"
+                        class="shrink-0 rounded-control border border-red-300 px-4 py-2 text-xs font-bold uppercase tracking-wide transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50">
+                        Reintentar
+                    </button>
+                </div>
+                }
+
+                @if (isCatalogLoading() && products().length > 0) {
+                <p class="mb-4 text-center text-sm text-[var(--color-text-secondary)]" role="status" aria-live="polite">
+                    Actualizando productos...
+                </p>
+                }
+
                 @if (products().length === 0) {
+                @if (!catalogErrorMessage()) {
                 <div class="rounded-panel border border-[var(--color-border-color)] bg-white p-6 text-center text-sm font-medium text-[var(--color-text-secondary)]"
                     role="status">
                     @if (searchQuery().trim()) {
@@ -185,8 +227,9 @@
                     No hay productos con imágenes disponibles en esta página.
                     }
                 </div>
+                }
                 } @else {
-                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3" role="radiogroup"
+                <div class="grid grid-cols-2 gap-4 sm:grid-cols-3" role="radiogroup" [attr.aria-busy]="isCatalogLoading()"
                     aria-label="Productos disponibles para la visualización">
                     @for (product of products(); track product.id) {
                     <button type="button" role="radio"
@@ -215,6 +258,7 @@
                 </div>
                 }
 
+                @if (!catalogErrorMessage() || products().length > 0) {
                 <p class="mt-4 text-center text-xs text-[var(--color-text-secondary)]" aria-live="polite">
                     @if (catalogTotal() > 0) {
                     Página {{ catalogPage() }} de {{ catalogTotalPages() }} · {{ catalogTotal() }} productos en total
@@ -222,6 +266,7 @@
                     0 productos disponibles
                     }
                 </p>
+                }
                 @if (catalogTotalPages() > 1) {
                 <app-pagination [currentPage]="catalogPage()" [totalPages]="catalogTotalPages()"
                     (pageChange)="changeCatalogPage($event)" />
@@ -247,7 +292,9 @@
                 Generar imagen
                 }
             </button>
-            @if (!selectedFile()) {
+            @if (quotaErrorMessage()) {
+            <p class="text-center text-xs text-[var(--color-text-secondary)]">Primero confirma tus generaciones disponibles.</p>
+            } @else if (!selectedFile()) {
             <p class="text-center text-xs text-[var(--color-text-secondary)]">Primero selecciona una fotografía.</p>
             } @else if (!selectedProductId()) {
             <p class="text-center text-xs text-[var(--color-text-secondary)]">Ahora selecciona el producto que quieres

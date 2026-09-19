@@ -15,12 +15,16 @@ describe('SellerProfile', () => {
   let loadUserProducts: ReturnType<typeof vi.fn>;
   let loadVendorProfile: ReturnType<typeof vi.fn>;
   let updateProfile: ReturnType<typeof vi.fn>;
+  let profileLoadingState: WritableSignal<boolean>;
+  let profileErrorState: WritableSignal<string | null>;
 
   beforeEach(async () => {
     productsState = signal<Product[]>([]);
     loadUserProducts = vi.fn();
     loadVendorProfile = vi.fn();
     updateProfile = vi.fn().mockReturnValue(of({}));
+    profileLoadingState = signal(true);
+    profileErrorState = signal<string | null>(null);
 
     await TestBed.configureTestingModule({
       imports: [SellerProfile],
@@ -35,6 +39,8 @@ describe('SellerProfile', () => {
           provide: UserService,
           useValue: {
             vendorProfile: signal(null).asReadonly(),
+            isVendorProfileLoading: profileLoadingState.asReadonly(),
+            vendorProfileError: profileErrorState.asReadonly(),
             loadVendorProfile,
             updateProfile,
           },
@@ -69,6 +75,20 @@ describe('SellerProfile', () => {
   it('should load the seller profile and products during initialization', () => {
     expect(loadVendorProfile).toHaveBeenCalledWith('seller-id');
     expect(loadUserProducts).toHaveBeenCalledOnce();
+  });
+
+  it('should expose a recoverable profile error after the initial request fails', () => {
+    profileLoadingState.set(false);
+    profileErrorState.set('No pudimos cargar la información de tu negocio.');
+    fixture.detectChanges();
+    loadVendorProfile.mockClear();
+
+    expect(component.isProfileLoading()).toBe(false);
+    expect(component.isProfileError()).toBe(true);
+    expect(fixture.nativeElement.textContent).toContain('No pudimos cargar tu perfil');
+
+    component.retryProfile();
+    expect(loadVendorProfile).toHaveBeenCalledWith('seller-id');
   });
 
   it('should paginate products in pages of 10', () => {

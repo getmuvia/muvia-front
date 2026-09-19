@@ -40,6 +40,7 @@ export class VirtualStaging implements OnInit, OnDestroy {
     isCatalogLoading = signal(true);
     dragActive = signal(false);
     errorMessage = signal<string | null>(null);
+    quotaErrorMessage = signal<string | null>(null);
     catalogErrorMessage = signal<string | null>(null);
     selectionMessage = signal<string | null>(null);
     products = signal<Product[]>([]);
@@ -49,6 +50,7 @@ export class VirtualStaging implements OnInit, OnDestroy {
     previewUrl = signal<string | null>(null);
     searchQuery = signal('');
     catalogPage = signal(1);
+    catalogRequestedPage = signal(1);
     catalogTotal = signal(0);
     catalogTotalPages = signal(0);
     readonly quota = this.stagingService.quota;
@@ -101,7 +103,8 @@ export class VirtualStaging implements OnInit, OnDestroy {
         event.preventDefault();
         event.stopPropagation();
 
-        if (!this.isGenerating() && this.quota()?.remaining !== 0) {
+        const quota = this.quota();
+        if (!this.isGenerating() && !!quota && quota.remaining > 0) {
             this.dragActive.set(true);
         }
     }
@@ -168,6 +171,18 @@ export class VirtualStaging implements OnInit, OnDestroy {
         await this.loadProducts(page);
     }
 
+    async retryQuota(): Promise<void> {
+        if (!this.isQuotaLoading()) {
+            await this.loadQuota();
+        }
+    }
+
+    async retryCatalog(): Promise<void> {
+        if (!this.isCatalogLoading()) {
+            await this.loadProducts(this.catalogRequestedPage());
+        }
+    }
+
     productImage(product: Product): string | null {
         const imageAssets = (product.assets ?? []).filter(asset =>
             asset.type === 'image'
@@ -202,7 +217,8 @@ export class VirtualStaging implements OnInit, OnDestroy {
     }
 
     private selectFile(file: File): void {
-        if (this.isQuotaLoading() || this.quota()?.remaining === 0 || this.isGenerating()) {
+        const quota = this.quota();
+        if (this.isQuotaLoading() || !quota || quota.remaining === 0 || this.isGenerating()) {
             return;
         }
 
@@ -218,11 +234,14 @@ export class VirtualStaging implements OnInit, OnDestroy {
     }
 
     private async loadQuota(): Promise<void> {
+        this.isQuotaLoading.set(true);
+        this.quotaErrorMessage.set(null);
+
         try {
             await firstValueFrom(this.stagingService.getQuota());
         } catch (error) {
             this.logger.error('Could not load quota', error, 'VirtualStaging');
-            this.errorMessage.set('No pudimos consultar tus generaciones disponibles. Inténtalo nuevamente.');
+            this.quotaErrorMessage.set('No pudimos consultar tus generaciones disponibles. Inténtalo nuevamente.');
         } finally {
             this.isQuotaLoading.set(false);
         }
@@ -233,6 +252,7 @@ export class VirtualStaging implements OnInit, OnDestroy {
 
         this.isCatalogLoading.set(true);
         this.catalogErrorMessage.set(null);
+        this.catalogRequestedPage.set(page);
 
         try {
             const response = await firstValueFrom(this.productService.searchProducts({
@@ -252,7 +272,6 @@ export class VirtualStaging implements OnInit, OnDestroy {
             if (requestId !== this.catalogRequestId) return;
 
             this.logger.error('Could not load products', error, 'VirtualStaging');
-            this.products.set([]);
             this.catalogErrorMessage.set('No pudimos cargar los productos. Inténtalo nuevamente.');
         } finally {
             if (requestId === this.catalogRequestId) {
@@ -287,6 +306,11 @@ export class VirtualStaging implements OnInit, OnDestroy {
         this.catalogRequestId++;
         this.isCatalogLoading.set(true);
         this.catalogErrorMessage.set(null);
+        this.products.set([]);
+        this.catalogPage.set(1);
+        this.catalogRequestedPage.set(1);
+        this.catalogTotal.set(0);
+        this.catalogTotalPages.set(0);
         this.searchRequests.next(query);
     }
 

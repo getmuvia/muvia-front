@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
@@ -8,8 +8,13 @@ import { ProductDetail } from './product-detail';
 describe('ProductDetail', () => {
   let component: ProductDetail;
   let fixture: ComponentFixture<ProductDetail>;
+  let getProductById: ReturnType<typeof vi.fn>;
+  let errorState: WritableSignal<string | null>;
 
   beforeEach(async () => {
+    getProductById = vi.fn();
+    errorState = signal<string | null>(null);
+
     await TestBed.configureTestingModule({
       imports: [ProductDetail]
     })
@@ -20,8 +25,8 @@ describe('ProductDetail', () => {
           useValue: {
             selectedEntity: signal(null).asReadonly(),
             isLoading: signal(false).asReadonly(),
-            error: signal(null).asReadonly(),
-            getProductById: () => undefined,
+            error: errorState.asReadonly(),
+            getProductById,
             getAllProducts: () => of({
               data: [],
               total: 0,
@@ -43,5 +48,16 @@ describe('ProductDetail', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('allows retrying the current product after an error', () => {
+    getProductById.mockClear();
+    errorState.set('No pudimos cargar el producto.');
+    fixture.detectChanges();
+
+    component.retryProduct();
+
+    expect(getProductById).toHaveBeenCalledWith('product-id');
+    expect(fixture.nativeElement.textContent).toContain('Reintentar');
   });
 });

@@ -65,7 +65,13 @@ export class SellerProfile implements OnInit {
     return this.products().slice(start, start + STORE_CONFIG.PAGINATION.DEFAULT_LIMIT);
   });
 
-  isProfileLoading = computed(() => !this.userService.vendorProfile());
+  isProfileLoading = computed(() =>
+    this.userService.isVendorProfileLoading() && !this.userService.vendorProfile()
+  );
+  isProfileError = computed(() =>
+    !!this.userService.vendorProfileError() && !this.userService.vendorProfile()
+  );
+  profileError = this.userService.vendorProfileError;
   isProductsLoading = this.productStore.isLoading;
   isProductsError = this.productStore.isError;
   productsError = this.productStore.error;
@@ -109,6 +115,13 @@ export class SellerProfile implements OnInit {
   retryProducts(): void {
     if (!this.isProductsLoading()) {
       this.productStore.loadUserProducts();
+    }
+  }
+
+  retryProfile(): void {
+    const userId = this.auth.currentUser()?.id;
+    if (userId && !this.userService.isVendorProfileLoading()) {
+      this.userService.loadVendorProfile(userId);
     }
   }
 
