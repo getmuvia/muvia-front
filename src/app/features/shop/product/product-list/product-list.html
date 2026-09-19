@@ -53,8 +53,7 @@
 
         @if (useSmartSearch() && !displayLoading() && !displayError() && relatedProducts().length > 0) {
         <section class="mt-12 border-t border-border-color pt-8" aria-labelledby="related-search-heading">
-            <h2 id="related-search-heading" class="text-lg font-semibold text-primary">Otros productos que te podrían interesar</h2>
-            <p class="mt-2 mb-6 text-sm text-text-secondary">Opciones similares que no cumplen completamente con todos los criterios de tu búsqueda.</p>
+            <h2 id="related-search-heading" class="mb-6 text-lg font-semibold text-primary">Otros productos que te podrían interesar</h2>
             <app-product-grid [products]="relatedProducts()" />
         </section>
         }
