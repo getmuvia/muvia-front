@@ -1,5 +1,5 @@
-import { Component, signal, linkedSignal, input, output, computed } from '@angular/core';
-import { disabled, form, required, minLength, submit, validate } from '@angular/forms/signals';
+import { Component, ElementRef, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
+import { FieldTree, disabled, form, min, minLength, required, submit, validate } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
@@ -10,6 +10,12 @@ import { ImageGalleryUpload } from '../image-gallery-upload/image-gallery-upload
 import { Model3dUpload } from '../model-3d-upload/model-3d-upload';
 
 type ProductFormSection = 'basic' | 'specifications' | 'keywords' | 'media';
+
+interface ProductValidationSummaryItem {
+    section: ProductFormSection;
+    label: string;
+    message: string;
+}
 
 /**
  * Standalone form component for product creation/editing.
@@ -28,6 +34,7 @@ type ProductFormSection = 'basic' | 'specifications' | 'keywords' | 'media';
     styleUrl: './product-form.css'
 })
 export class ProductForm {
+    private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
     // Signal Inputs
     readonly initialData = input<ProductFormData | null>(null);
@@ -40,6 +47,7 @@ export class ProductForm {
     readonly keywords = input<string[]>([]);
     readonly isSubmitting = input(false);
     readonly isEditMode = input(false);
+    readonly submissionError = input<string | null>(null);
 
     // Signal Outputs
     readonly formSubmit = output<ProductFormData>();
@@ -49,6 +57,7 @@ export class ProductForm {
     readonly glbAssetChange = output<CreateProductAsset | null>();
     readonly usdzAssetChange = output<CreateProductAsset | null>();
     readonly fileSelected = output<{ url: string; file: File }>();
+    readonly formChange = output<void>();
 
     readonly openSection = signal<ProductFormSection | null>('basic');
 
@@ -89,19 +98,21 @@ export class ProductForm {
     productForm = form(this.productModel, (path) => {
         required(path.title, { message: 'El título es requerido' });
         minLength(path.title, 3, { message: 'El título debe tener al menos 3 caracteres' });
+        validate(path.title, ({ value }) => value().trim().length > 0
+            ? null
+            : { message: 'El título no puede contener solo espacios', kind: 'error' });
 
         required(path.description, { message: 'La descripción es requerida' });
         minLength(path.description, 10, { message: 'La descripción debe tener al menos 10 caracteres' });
+        validate(path.description, ({ value }) => value().trim().length > 0
+            ? null
+            : { message: 'La descripción no puede contener solo espacios', kind: 'error' });
 
         required(path.price, { message: 'El precio es requerido' });
-        validate(path.price, ({ value }) => {
-            if (value() !== undefined && value() <= 0) {
-                return { message: 'El precio debe ser mayor a 0', kind: 'error' };
-            }
-            return null;
-        });
+        min(path.price, 0.01, { message: 'El precio debe ser mayor a 0' });
 
         required(path.stock, { message: 'El stock es requerido' });
+        min(path.stock, 0, { message: 'El stock no puede ser negativo' });
         required(path.categoryId, { message: 'Selecciona una categoría' });
         disabled(path.categoryId, {
             when: () => this.isLoadingCategories()
@@ -112,15 +123,65 @@ export class ProductForm {
         required(path.weight, { message: 'El peso es requerido' });
         required(path.material, { message: 'El material es requerido' });
         required(path.color, { message: 'El color es requerido' });
+        validate(path.weight, ({ value }) => value().trim().length > 0
+            ? null
+            : { message: 'El peso no puede contener solo espacios', kind: 'error' });
+        validate(path.material, ({ value }) => value().trim().length > 0
+            ? null
+            : { message: 'El material no puede contener solo espacios', kind: 'error' });
+        validate(path.color, ({ value }) => value().trim().length > 0
+            ? null
+            : { message: 'El color no puede contener solo espacios', kind: 'error' });
 
         required(path.dimensionWidth, { message: 'El ancho es requerido' });
         required(path.dimensionHeight, { message: 'El alto es requerido' });
         required(path.dimensionDepth, { message: 'El largo es requerido' });
+        min(path.dimensionWidth, 0.01, { message: 'El ancho debe ser mayor a 0' });
+        min(path.dimensionHeight, 0.01, { message: 'El alto debe ser mayor a 0' });
+        min(path.dimensionDepth, 0.01, { message: 'El largo debe ser mayor a 0' });
     });
 
     // Validation error signals
     keywordsError = signal<string | null>(null);
     imagesError = signal<string | null>(null);
+    readonly showValidationSummary = signal(false);
+    readonly validationSummary = computed<ProductValidationSummaryItem[]>(() => {
+        if (!this.showValidationSummary()) return [];
+
+        const items: ProductValidationSummaryItem[] = [];
+        this.addFieldError(items, 'basic', 'Información básica', [
+            this.productForm.title,
+            this.productForm.description,
+            this.productForm.price,
+            this.productForm.stock,
+            this.productForm.categoryId,
+        ]);
+        this.addFieldError(items, 'specifications', 'Especificaciones', [
+            this.productForm.dimensionWidth,
+            this.productForm.dimensionDepth,
+            this.productForm.dimensionHeight,
+            this.productForm.weight,
+            this.productForm.material,
+            this.productForm.color,
+        ]);
+
+        if (this.keywordsError()) {
+            items.push({
+                section: 'keywords',
+                label: 'Palabras clave',
+                message: this.keywordsError()!,
+            });
+        }
+        if (this.imagesError()) {
+            items.push({
+                section: 'media',
+                label: 'Imágenes y modelos 3D',
+                message: this.imagesError()!,
+            });
+        }
+
+        return items;
+    });
 
     isSectionOpen(section: ProductFormSection): boolean {
         return this.openSection() === section;
@@ -160,32 +221,73 @@ export class ProductForm {
         this.fileSelected.emit(event);
     }
 
-    onSubmit(event: Event): void {
+    async onSubmit(event: Event): Promise<void> {
         event.preventDefault();
 
-        let hasErrors = false;
+        this.keywordsError.set(
+            this.keywords().length === 0 ? 'Agrega al menos una palabra clave.' : null
+        );
+        this.imagesError.set(
+            this.imageAssets().length === 0 ? 'Agrega al menos una imagen.' : null
+        );
+        const hasManualErrors = !!this.keywordsError() || !!this.imagesError();
 
-        if (this.keywords().length === 0) {
-            this.keywordsError.set('Agrega al menos una palabra clave');
-            hasErrors = true;
-        }
+        const formIsValid = await submit(this.productForm, {
+            action: async () => {
+                if (!hasManualErrors) {
+                    this.formSubmit.emit(this.productForm().value());
+                }
+            },
+        });
 
-        if (this.imageAssets().length === 0) {
-            this.imagesError.set('Agrega al menos una imagen');
-            hasErrors = true;
-        }
-
-        if (hasErrors) {
-            this.openSection.set(this.keywordsError() ? 'keywords' : 'media');
+        if (!formIsValid || hasManualErrors) {
+            this.showValidationSummary.set(true);
+            const firstError = this.validationSummary()[0];
+            if (firstError) this.navigateToSection(firstError.section);
             return;
         }
 
-        submit(this.productForm, async () => {
-            this.formSubmit.emit(this.productForm().value());
-        });
+        this.showValidationSummary.set(false);
     }
 
     onCancel(): void {
         this.formCancel.emit();
+    }
+
+    navigateToSection(section: ProductFormSection): void {
+        this.openSection.set(section);
+        queueMicrotask(() => {
+            const sectionElement = this.host.nativeElement.querySelector<HTMLElement>(
+                `[data-form-section="${section}"]`
+            );
+            const focusTarget = sectionElement?.querySelector<HTMLElement>(
+                '[aria-invalid="true"], [data-error-focus], input:not([type="hidden"]), textarea, select'
+            );
+
+            sectionElement?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            focusTarget?.focus({ preventScroll: true });
+        });
+    }
+
+    hasSectionError(section: ProductFormSection): boolean {
+        return this.validationSummary().some(item => item.section === section);
+    }
+
+    private addFieldError(
+        items: ProductValidationSummaryItem[],
+        section: ProductFormSection,
+        label: string,
+        fields: FieldTree<unknown>[],
+    ): void {
+        const error = fields
+            .flatMap(field => field().errors())
+            .find(fieldError => !!fieldError.message);
+        if (error) {
+            items.push({
+                section,
+                label,
+                message: error.message ?? 'Revisa los campos de esta sección.',
+            });
+        }
     }
 }

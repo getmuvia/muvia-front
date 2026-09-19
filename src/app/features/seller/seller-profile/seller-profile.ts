@@ -21,6 +21,7 @@ import {
   SellerSidebar,
 } from './components';
 import { firstValueFrom } from 'rxjs';
+import { getErrorMessage } from '@core/models/errors/api-error.model';
 
 @Component({
   selector: 'app-seller-profile',
@@ -80,6 +81,9 @@ export class SellerProfile implements OnInit {
   modalTitle = signal('');
   activeField = signal<'coverImage' | 'logoUrl' | null>(null);
   isSaving = signal(false);
+  imageSaveError = signal<string | null>(null);
+  metadataSaveError = signal<string | null>(null);
+  sidebarSaveError = signal<string | null>(null);
 
   isSidebarModalOpen = signal(false);
   isMetadataModalOpen = signal(false);
@@ -126,6 +130,7 @@ export class SellerProfile implements OnInit {
   }
 
   openEditModal(type: 'cover' | 'avatar') {
+    this.imageSaveError.set(null);
     if (type === 'cover') {
       this.modalTitle.set('Editar Portada');
       this.activeField.set('coverImage');
@@ -136,12 +141,24 @@ export class SellerProfile implements OnInit {
     this.isModalOpen.set(true);
   }
 
+  openMetadataModal(): void {
+    this.metadataSaveError.set(null);
+    this.isMetadataModalOpen.set(true);
+  }
+
+  openSidebarModal(): void {
+    this.sidebarSaveError.set(null);
+    this.isSidebarModalOpen.set(true);
+  }
+
   async onSaveImage(file: File) {
     const field = this.activeField();
     const userId = this.auth.currentUser()?.id;
     if (!field || !userId) return;
 
     this.isSaving.set(true);
+    this.imageSaveError.set(null);
+    let uploadedKey: string | null = null;
 
     // 0. Optimize Image
     let fileToUpload = file;
@@ -155,13 +172,25 @@ export class SellerProfile implements OnInit {
 
     try {
       const response = await firstValueFrom(
-        this.uploadFileService.uploadFile(fileToUpload, `users/${userId}`)
+        this.uploadFileService.uploadFile(fileToUpload, `users/${userId}`, 'local')
       );
+      uploadedKey = response.key;
       const payload = { vendorProfile: { [field]: response.url } };
       await firstValueFrom(this.userService.updateProfile(payload));
       this.isModalOpen.set(false);
     } catch (error) {
       this.logger.error('Failed to save profile image', error, 'SellerProfile');
+      if (uploadedKey) {
+        try {
+          await firstValueFrom(this.uploadFileService.deleteFile(uploadedKey));
+        } catch (cleanupError) {
+          this.logger.error('Failed to clean up profile image upload', cleanupError, 'SellerProfile');
+        }
+      }
+      this.imageSaveError.set(getErrorMessage(
+        error,
+        'No pudimos guardar la imagen. Revisa tu conexión e inténtalo nuevamente.',
+      ));
     } finally {
       this.isSaving.set(false);
     }
@@ -169,12 +198,17 @@ export class SellerProfile implements OnInit {
 
   async onSaveSidebarInfo(data: SidebarFormData): Promise<void> {
     this.isSaving.set(true);
+    this.sidebarSaveError.set(null);
     const payload = { vendorProfile: data };
     try {
       await firstValueFrom(this.userService.updateProfile(payload));
       this.isSidebarModalOpen.set(false);
     } catch (error) {
       this.logger.error('Failed to update sidebar info', error, 'SellerProfile');
+      this.sidebarSaveError.set(getErrorMessage(
+        error,
+        'No pudimos guardar la información. Tus cambios siguen en el formulario.',
+      ));
     } finally {
       this.isSaving.set(false);
     }
@@ -182,11 +216,16 @@ export class SellerProfile implements OnInit {
 
   async onSaveMetadata(data: ProfileMetadataFormData): Promise<void> {
     this.isSaving.set(true);
+    this.metadataSaveError.set(null);
     try {
       await firstValueFrom(this.userService.updateProfile({ vendorProfile: data }));
       this.isMetadataModalOpen.set(false);
     } catch (error) {
       this.logger.error('Failed to update profile metadata', error, 'SellerProfile');
+      this.metadataSaveError.set(getErrorMessage(
+        error,
+        'No pudimos guardar el perfil. Tus cambios siguen en el formulario.',
+      ));
     } finally {
       this.isSaving.set(false);
     }

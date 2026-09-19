@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output } from '@angular/core';
+import { Component, ElementRef, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 export interface ProfileMetadataFormData {
@@ -37,8 +37,19 @@ export interface ProfileMetadataFormData {
                         </button>
                     </div>
 
-                    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                    <form [formGroup]="form" (input)="formChange.emit()" (ngSubmit)="onSubmit()">
                         <div class="flex flex-col gap-5 overflow-y-auto p-6">
+                            @if (errorMessage()) {
+                                <p class="rounded-control border border-error/20 bg-error/5 p-3 text-sm font-medium text-error"
+                                    role="alert">
+                                    {{ errorMessage() }}
+                                </p>
+                            }
+                            @if (form.invalid && form.touched) {
+                                <div class="rounded-control border border-error/20 bg-error/5 p-3" role="alert">
+                                    <p class="text-sm font-bold text-error">Revisa los campos indicados antes de guardar.</p>
+                                </div>
+                            }
                             <div class="flex flex-col gap-2">
                                 <label for="business-name" class="text-sm font-bold text-text-light">
                                     Nombre del vendedor
@@ -93,7 +104,7 @@ export interface ProfileMetadataFormData {
                             <button
                                 type="submit"
                                 class="flex items-center gap-2 rounded-control bg-primary px-6 py-2 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50"
-                                [disabled]="form.invalid || form.pristine || isLoading()"
+                                [disabled]="form.pristine || isLoading()"
                             >
                                 @if (isLoading()) {
                                     <span class="material-symbols-outlined animate-spin text-lg" aria-hidden="true">refresh</span>
@@ -113,11 +124,14 @@ export class ProfileMetadataEditModal {
     readonly isOpen = input(false);
     readonly initialData = input<ProfileMetadataFormData | null>(null);
     readonly isLoading = input(false);
+    readonly errorMessage = input<string | null>(null);
 
     readonly save = output<ProfileMetadataFormData>();
     readonly closeModal = output<void>();
+    readonly formChange = output<void>();
 
     private readonly fb = inject(FormBuilder);
+    private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
     readonly form = this.fb.nonNullable.group({
         businessName: ['', [Validators.required, Validators.pattern(/\S/), Validators.maxLength(255)]],
         description: [''],
@@ -141,7 +155,12 @@ export class ProfileMetadataEditModal {
 
     onSubmit(): void {
         this.form.markAllAsTouched();
-        if (this.form.invalid || this.isLoading()) return;
+        if (this.form.invalid || this.isLoading()) {
+            queueMicrotask(() => {
+                this.host.nativeElement.querySelector<HTMLElement>('#business-name[aria-invalid="true"]')?.focus();
+            });
+            return;
+        }
 
         const value = this.form.getRawValue();
         this.save.emit({

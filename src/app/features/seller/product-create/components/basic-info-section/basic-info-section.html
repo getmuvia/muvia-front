@@ -1,13 +1,14 @@
 <div class="grid grid-cols-1 gap-6">
     <div class="space-y-2">
-        <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
+        <label for="product-title" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
             Título del producto
         </label>
-        <input [formField]="titleField()"
+        <input id="product-title" [formField]="titleField()" [attr.aria-invalid]="isFieldInvalid(titleField())"
+            [attr.aria-describedby]="isFieldInvalid(titleField()) ? 'product-title-error' : null"
             class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-lg text-text-light placeholder-text-light/40 transition-colors focus:border-primary focus:ring-0 font-body"
             placeholder="Ej. Lámpara de Pie Minimalista" type="text" />
         @if (isFieldInvalid(titleField())) {
-        <p class="text-sm text-error font-medium flex items-center gap-1">
+        <p id="product-title-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of getFieldErrors(titleField()); track $index) {
             <span>{{ error.message }}</span>
@@ -17,14 +18,16 @@
     </div>
 
     <div class="space-y-2">
-        <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
+        <label for="product-description" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
             Descripción
         </label>
-        <textarea [formField]="descriptionField()"
+        <textarea id="product-description" [formField]="descriptionField()"
+            [attr.aria-invalid]="isFieldInvalid(descriptionField())"
+            [attr.aria-describedby]="isFieldInvalid(descriptionField()) ? 'product-description-error' : null"
             class="w-full rounded-control border border-border-color bg-white p-4 text-base text-text-light placeholder-text-light/40 resize-none transition-colors focus:border-primary focus:ring-0 font-body"
             placeholder="Describe la historia, inspiración y detalles de tu pieza..." rows="4"></textarea>
         @if (isFieldInvalid(descriptionField())) {
-        <p class="text-sm text-error font-medium flex items-center gap-1">
+        <p id="product-description-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of getFieldErrors(descriptionField()); track $index) {
             <span>{{ error.message }}</span>
@@ -35,17 +38,18 @@
 
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div class="space-y-2">
-            <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
+            <label for="product-price" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
                 Precio
             </label>
             <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-text-light/40">Bs</span>
-                <input [formField]="priceField()"
+                <input id="product-price" [formField]="priceField()" [attr.aria-invalid]="isFieldInvalid(priceField())"
+                    [attr.aria-describedby]="isFieldInvalid(priceField()) ? 'product-price-error' : null"
                     class="w-full rounded-control border border-border-color bg-white py-3 pl-12 pr-4 text-lg text-text-light placeholder-text-light/40 transition-colors focus:border-primary focus:ring-0 font-body"
-                    placeholder="0.00" type="number" />
+                    placeholder="0.00" type="number" step="0.01" />
             </div>
             @if (isFieldInvalid(priceField())) {
-            <p class="text-sm text-error font-medium flex items-center gap-1">
+            <p id="product-price-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(priceField()); track $index) {
                 <span>{{ error.message }}</span>
@@ -55,14 +59,15 @@
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
+            <label for="product-stock" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
                 Stock
             </label>
-            <input [formField]="stockField()"
+            <input id="product-stock" [formField]="stockField()" [attr.aria-invalid]="isFieldInvalid(stockField())"
+                [attr.aria-describedby]="isFieldInvalid(stockField()) ? 'product-stock-error' : null"
                 class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-lg text-text-light placeholder-text-light/40 transition-colors focus:border-primary focus:ring-0 font-body"
-                placeholder="1" type="number" />
+                placeholder="1" type="number" step="1" />
             @if (isFieldInvalid(stockField())) {
-            <p class="text-sm text-error font-medium flex items-center gap-1">
+            <p id="product-stock-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(stockField()); track $index) {
                 <span>{{ error.message }}</span>
@@ -72,11 +77,13 @@
         </div>
 
         <div class="space-y-2">
-            <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
+            <label for="product-category" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
                 Categoría
             </label>
-            <select [formField]="categoryIdField()"
+            <select id="product-category" [formField]="categoryIdField()"
                 [attr.aria-busy]="isLoadingCategories()"
+                [attr.aria-invalid]="isFieldInvalid(categoryIdField())"
+                [attr.aria-describedby]="isFieldInvalid(categoryIdField()) ? 'product-category-error' : null"
                 class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-lg text-text-light transition-colors focus:border-primary focus:ring-0 font-body disabled:cursor-wait disabled:bg-surface-element/40 disabled:text-text-light/50">
                 @if (isLoadingCategories()) {
                 <option value="" disabled>Cargando categorías...</option>
@@ -107,7 +114,7 @@
                 <span>Aún no hay categorías disponibles para publicar.</span>
             </p>
             } @else if (isFieldInvalid(categoryIdField())) {
-            <p class="text-sm text-error font-medium flex items-center gap-1">
+            <p id="product-category-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(categoryIdField()); track $index) {
                 <span>{{ error.message }}</span>

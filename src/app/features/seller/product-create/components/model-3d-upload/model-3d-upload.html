@@ -10,20 +10,24 @@
         <!-- GLB/GLTF Upload (Web Viewer) -->
         <div class="relative w-full aspect-video flex flex-col items-center justify-center rounded-panel border border-dashed bg-surface-element/40 transition-all cursor-pointer group"
             [class.border-secondary]="isDraggingGlb()" [class.border-border-color]="!isDraggingGlb()"
+            [attr.aria-disabled]="disabled()" [class.cursor-not-allowed]="disabled()" role="button" tabindex="0"
+            aria-describedby="product-glb-help product-glb-error"
             (dragover)="onDragOverGlb($event)" (dragleave)="onDragLeaveGlb()" (drop)="onDropGlb($event)"
-            (click)="glbFileInput.click()">
+            (click)="!disabled() && glbFileInput.click()" (keydown.enter)="!disabled() && glbFileInput.click()"
+            (keydown.space)="!disabled() && glbFileInput.click(); $event.preventDefault()">
 
             @if (glbAsset()) {
             <div class="flex flex-col items-center justify-center h-full">
                 <span class="material-symbols-outlined text-3xl text-secondary mb-2">3d_rotation</span>
                 <p class="text-sm font-body font-medium text-text-light">GLB cargado</p>
                 <p class="text-xs text-text-light/60 font-body mt-1">
-                    {{ (glbAsset()!.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
+                    {{ glbAsset()!.metadata['originalName'] || (glbAsset()!.metadata['format'] ?? 'GLB').toString().toUpperCase() }}
                 </p>
             </div>
             <div
                 class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <button type="button" (click)="removeGlbModel(); $event.stopPropagation()"
+                    aria-label="Eliminar modelo GLB o GLTF" [disabled]="disabled()"
                     class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
@@ -41,24 +45,36 @@
                 Web
             </div>
 
-            <input #glbFileInput type="file" accept=".glb,.gltf" class="hidden" (change)="onFileSelectGlb($event)" />
+            <input #glbFileInput type="file" accept=".glb,.gltf" class="hidden" [disabled]="disabled()"
+                aria-describedby="product-glb-help product-glb-error" (change)="onFileSelectGlb($event)" />
         </div>
+
+        <p id="product-glb-help" class="sr-only">Archivos GLB o GLTF de hasta 50 MB.</p>
+        @if (glbFileError()) {
+        <p id="product-glb-error" class="text-sm font-medium text-error md:col-span-2" role="alert">
+            {{ glbFileError() }}
+        </p>
+        }
 
         <!-- USDZ Upload (iOS AR) -->
         <div class="relative w-full aspect-video flex flex-col items-center justify-center rounded-panel border border-dashed bg-surface-element/40 transition-all cursor-pointer group"
             [class.border-secondary]="isDraggingUsdz()" [class.border-border-color]="!isDraggingUsdz()"
+            [attr.aria-disabled]="disabled()" [class.cursor-not-allowed]="disabled()" role="button" tabindex="0"
+            aria-describedby="product-usdz-help product-usdz-error"
             (dragover)="onDragOverUsdz($event)" (dragleave)="onDragLeaveUsdz()" (drop)="onDropUsdz($event)"
-            (click)="usdzFileInput.click()">
+            (click)="!disabled() && usdzFileInput.click()" (keydown.enter)="!disabled() && usdzFileInput.click()"
+            (keydown.space)="!disabled() && usdzFileInput.click(); $event.preventDefault()">
 
             @if (usdzAsset()) {
             <div class="flex flex-col items-center justify-center h-full">
                 <span class="material-symbols-outlined text-3xl text-secondary mb-2">view_in_ar</span>
                 <p class="text-sm font-body font-medium text-text-light">USDZ cargado</p>
-                <p class="text-xs text-text-light/60 font-body mt-1">iOS AR</p>
+                <p class="text-xs text-text-light/60 font-body mt-1">{{ usdzAsset()!.metadata['originalName'] || 'iOS AR' }}</p>
             </div>
             <div
                 class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <button type="button" (click)="removeUsdzModel(); $event.stopPropagation()"
+                    aria-label="Eliminar modelo USDZ" [disabled]="disabled()"
                     class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
@@ -76,7 +92,19 @@
                 iOS
             </div>
 
-            <input #usdzFileInput type="file" accept=".usdz" class="hidden" (change)="onFileSelectUsdz($event)" />
+            <input #usdzFileInput type="file" accept=".usdz" class="hidden" [disabled]="disabled()"
+                aria-describedby="product-usdz-help product-usdz-error" (change)="onFileSelectUsdz($event)" />
         </div>
+
+        <p id="product-usdz-help" class="sr-only">Archivos USDZ de hasta 50 MB.</p>
+        @if (usdzFileError()) {
+        <p id="product-usdz-error" class="text-sm font-medium text-error md:col-span-2" role="alert">
+            {{ usdzFileError() }}
+        </p>
+        }
     </div>
+
+    <p class="mt-4 text-center text-xs text-text-light/40 font-body">
+        GLB, GLTF o USDZ. Máx 50 MB por archivo.
+    </p>
 </div>

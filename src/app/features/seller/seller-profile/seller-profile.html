@@ -34,18 +34,22 @@
 
     <app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
         [hasCoverImage]="!!coverImageUrl()" (editAvatar)="openEditModal('avatar')"
-        (editProfile)="isMetadataModalOpen.set(true)">
+        (editProfile)="openMetadataModal()">
     </app-seller-profile-header>
 </div>
 }
 
 <app-image-editor-modal [isOpen]="isModalOpen()" [title]="modalTitle()" [isLoading]="isSaving()"
+    [errorMessage]="imageSaveError()"
     [mode]="activeField() === 'coverImage' ? 'cover' : 'avatar'" (save)="onSaveImage($event)"
+    (selectionChange)="imageSaveError.set(null)"
     (cancel)="isModalOpen.set(false)">
 </app-image-editor-modal>
 
 <app-profile-metadata-edit-modal [isOpen]="isMetadataModalOpen()" [initialData]="metadataData()"
-    [isLoading]="isSaving()" (save)="onSaveMetadata($event)" (closeModal)="isMetadataModalOpen.set(false)">
+    [isLoading]="isSaving()" [errorMessage]="metadataSaveError()" (save)="onSaveMetadata($event)"
+    (formChange)="metadataSaveError.set(null)"
+    (closeModal)="isMetadataModalOpen.set(false)">
 </app-profile-metadata-edit-modal>
 
 <div class="seller-profile-shell mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
@@ -69,7 +73,7 @@
     </div>
     } @else if (!isProfileError()) {
     <app-seller-sidebar [aboutText]="aboutText()" [businessHours]="businessHours()" [socialLinks]="socialLinks()"
-        (editInfo)="isSidebarModalOpen.set(true)">
+        (editInfo)="openSidebarModal()">
     </app-seller-sidebar>
     }
 
@@ -112,5 +116,7 @@
 </div>
 
 <app-sidebar-edit-modal [isOpen]="isSidebarModalOpen()" [initialData]="sidebarData()" [isLoading]="isSaving()"
+    [errorMessage]="sidebarSaveError()"
+    (formChange)="sidebarSaveError.set(null)"
     (save)="onSaveSidebarInfo($event)" (closeModal)="isSidebarModalOpen.set(false)">
 </app-sidebar-edit-modal>

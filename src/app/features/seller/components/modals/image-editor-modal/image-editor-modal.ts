@@ -1,4 +1,4 @@
-import { Component, input, output, signal, effect } from '@angular/core';
+import { Component, computed, effect, input, output, signal } from '@angular/core';
 
 @Component({
     selector: 'app-image-editor-modal',
@@ -6,12 +6,14 @@ import { Component, input, output, signal, effect } from '@angular/core';
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="onBackdropClick($event)">
-        <div class="bg-white rounded-dialog shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up" (click)="$event.stopPropagation()">
+        <div class="bg-white rounded-dialog shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up"
+            role="dialog" aria-modal="true" aria-labelledby="image-editor-title" (click)="$event.stopPropagation()">
             
             <!-- Header -->
             <div class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10">
-                <h3 class="text-lg font-bold text-text-light">{{ title() }}</h3>
-                <button (click)="close()" class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element">
+                <h3 id="image-editor-title" class="text-lg font-bold text-text-light">{{ title() }}</h3>
+                <button type="button" (click)="close()" aria-label="Cerrar" [disabled]="isLoading()"
+                    class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element disabled:cursor-not-allowed disabled:opacity-50">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
             </div>
@@ -21,7 +23,10 @@ import { Component, input, output, signal, effect } from '@angular/core';
                 
                 <!-- Preview Area -->
                 <div class="relative w-full aspect-video bg-surface-element rounded-panel overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
-                    (click)="fileInput.click()">
+                    role="button" tabindex="0" aria-label="Seleccionar imagen" aria-describedby="profile-image-help profile-image-error"
+                    [attr.aria-disabled]="isLoading()" [attr.tabindex]="isLoading() ? -1 : 0"
+                    (click)="!isLoading() && fileInput.click()" (keydown.enter)="!isLoading() && fileInput.click()"
+                    (keydown.space)="!isLoading() && fileInput.click(); $event.preventDefault()">
                     
                     @if (previewUrl()) {
                         <img [src]="previewUrl()" class="w-full h-full object-cover" alt="Preview">
@@ -47,21 +52,29 @@ import { Component, input, output, signal, effect } from '@angular/core';
                     }
                 </div>
 
-                <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" accept="image/png, image/jpeg, image/webp">
+                <input #fileInput type="file" class="hidden" [disabled]="isLoading()" (change)="onFileSelected($event)"
+                    aria-describedby="profile-image-help profile-image-error" accept="image/png, image/jpeg, image/webp">
 
-                <p class="text-xs text-center text-text-light/60 px-4">
-                    Se recomienda una imagen de alta resolución. Formatos soportados: PNG, JPG, WEBP.
+                <p id="profile-image-help" class="text-xs text-center text-text-light/60 px-4">
+                    Formatos soportados: PNG, JPG o WEBP. Máximo 5 MB.
                 </p>
+
+                @if (displayedError()) {
+                <p id="profile-image-error" class="w-full rounded-control border border-error/20 bg-error/5 p-3 text-sm font-medium text-error"
+                    role="alert">
+                    {{ displayedError() }}
+                </p>
+                }
 
             </div>
 
             <!-- Footer -->
             <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
-                <button (click)="close()" 
-                    class="px-4 py-2 rounded-control text-sm font-medium text-text-light hover:bg-gray-200 transition-colors">
+                <button type="button" (click)="close()" [disabled]="isLoading()"
+                    class="px-4 py-2 rounded-control text-sm font-medium text-text-light hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50">
                     Cancelar
                 </button>
-                <button (click)="onSave()" 
+                <button type="button" (click)="onSave()"
                     [disabled]="!selectedFile() || isLoading()"
                     class="px-6 py-2 rounded-control text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
                     @if (isLoading()) {
@@ -85,12 +98,16 @@ export class ImageEditorModal {
     readonly mode = input<'cover' | 'avatar'>('cover');
 
     readonly isLoading = input<boolean>(false);
+    readonly errorMessage = input<string | null>(null);
 
     readonly save = output<File>();
     readonly cancel = output<void>();
+    readonly selectionChange = output<void>();
 
     previewUrl = signal<string>('');
     selectedFile = signal<File | null>(null);
+    fileError = signal<string | null>(null);
+    displayedError = computed(() => this.fileError() ?? this.errorMessage());
 
     constructor() {
         effect(() => {
@@ -104,13 +121,28 @@ export class ImageEditorModal {
         const input = event.target as HTMLInputElement;
         if (input.files && input.files[0]) {
             const file = input.files[0];
+            const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
+            if (!validTypes.includes(file.type)) {
+                this.fileError.set(`No agregamos “${file.name}”: usa un archivo PNG, JPG o WEBP.`);
+                input.value = '';
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                this.fileError.set(`No agregamos “${file.name}”: supera el límite de 5 MB. Reduce su tamaño e inténtalo nuevamente.`);
+                input.value = '';
+                return;
+            }
+
+            this.fileError.set(null);
             this.selectedFile.set(file);
+            this.selectionChange.emit();
 
             // Create preview
             const reader = new FileReader();
             reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
             reader.readAsDataURL(file);
         }
+        input.value = '';
     }
 
     onSave() {
@@ -121,6 +153,7 @@ export class ImageEditorModal {
     }
 
     close() {
+        if (this.isLoading()) return;
         this.cancel.emit();
         this.reset();
     }
@@ -134,5 +167,6 @@ export class ImageEditorModal {
     reset() {
         this.selectedFile.set(null);
         this.previewUrl.set('');
+        this.fileError.set(null);
     }
 }

@@ -1,4 +1,4 @@
-import { Component, output, signal, computed, model } from '@angular/core';
+import { Component, computed, input, model, output, signal } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
@@ -9,10 +9,14 @@ import { CreateProductAsset } from '@core/models/product/create-product.dto';
 })
 export class ImageGalleryUpload {
     readonly assets = model<CreateProductAsset[]>([]);
+    readonly disabled = input(false);
     readonly fileSelected = output<{ url: string; file: File }>();
 
     isDragging = signal(false);
+    fileErrors = signal<string[]>([]);
     readonly maxImages = 5;
+    readonly maxFileSize = 5 * 1024 * 1024;
+    readonly acceptedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
     primaryImage = computed(() => this.assets().find(a => a.isPrimary));
     secondaryImages = computed(() => this.assets().filter(a => !a.isPrimary));
@@ -24,6 +28,7 @@ export class ImageGalleryUpload {
 
     onDragOver(event: DragEvent): void {
         event.preventDefault();
+        if (this.disabled()) return;
         this.isDragging.set(true);
     }
 
@@ -34,6 +39,7 @@ export class ImageGalleryUpload {
     onDrop(event: DragEvent, isPrimary: boolean): void {
         event.preventDefault();
         this.isDragging.set(false);
+        if (this.disabled()) return;
         const files = event.dataTransfer?.files;
         if (files && files.length > 0) {
             this.handleFiles(files, isPrimary);
@@ -42,22 +48,30 @@ export class ImageGalleryUpload {
 
     onFileSelect(event: Event, isPrimary: boolean): void {
         const input = event.target as HTMLInputElement;
-        if (input.files && input.files.length > 0) {
+        if (!this.disabled() && input.files && input.files.length > 0) {
             this.handleFiles(input.files, isPrimary);
         }
         input.value = '';
     }
 
     private handleFiles(files: FileList, isPrimary: boolean): void {
-        const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        const maxSize = 5 * 1024 * 1024;
-
         let updated = [...this.assets()];
         let assignPrimary = isPrimary || !updated.some(asset => asset.isPrimary);
+        const errors: string[] = [];
 
         for (const file of Array.from(files)) {
-            if (updated.length >= this.maxImages) break;
-            if (!validTypes.includes(file.type) || file.size > maxSize) continue;
+            if (updated.length >= this.maxImages) {
+                errors.push(`No agregamos “${file.name}”: el máximo es de ${this.maxImages} imágenes. Elimina una imagen antes de intentarlo nuevamente.`);
+                continue;
+            }
+            if (!this.acceptedTypes.includes(file.type)) {
+                errors.push(`No agregamos “${file.name}”: usa un archivo JPG, PNG o WEBP.`);
+                continue;
+            }
+            if (file.size > this.maxFileSize) {
+                errors.push(`No agregamos “${file.name}”: supera el límite de 5 MB. Reduce su tamaño e inténtalo nuevamente.`);
+                continue;
+            }
 
             const url = URL.createObjectURL(file);
             if (assignPrimary) {
@@ -75,18 +89,22 @@ export class ImageGalleryUpload {
         }
 
         this.assets.set(updated);
+        this.fileErrors.set(errors);
     }
 
     removeImage(url: string): void {
+        if (this.disabled()) return;
         const remaining = this.assets().filter(a => a.url !== url);
         if (remaining.length > 0 && !remaining.some(asset => asset.isPrimary)) {
             remaining[0] = { ...remaining[0], isPrimary: true };
         }
         this.assets.set(remaining);
-        URL.revokeObjectURL(url);
+        if (url.startsWith('blob:')) URL.revokeObjectURL(url);
+        this.fileErrors.set([]);
     }
 
     setPrimary(url: string): void {
+        if (this.disabled()) return;
         this.assets.set(this.assets().map(a => ({ ...a, isPrimary: a.url === url })));
     }
 }

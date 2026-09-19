@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
         UPDATE_PRODUCT: `${BASE}/products`,
     },
     FILES: {
+        BASE: `${BASE}/files`,
         UPLOAD: `${BASE}/files/upload-url`,
     },
     STORAGE: {

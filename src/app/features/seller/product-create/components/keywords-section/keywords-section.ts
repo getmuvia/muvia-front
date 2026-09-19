@@ -8,6 +8,7 @@ import { Component, input, output, signal } from '@angular/core';
 })
 export class KeywordsSection {
     readonly keywords = input<string[]>([]);
+    readonly hasError = input(false);
     readonly keywordsChange = output<string[]>();
 
     newKeyword = signal('');

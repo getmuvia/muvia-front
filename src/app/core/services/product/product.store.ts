@@ -76,7 +76,7 @@ export const ProductStore = signalStore(
                 pipe(
                     tap(() => patchState(store, setLoading())),
                     exhaustMap(({ dto, onSuccess, onError }) =>
-                        productService.createProduct(dto).pipe(
+                        productService.createProduct(dto, { errorFeedback: 'local' }).pipe(
                             tapResponse({
                                 next: (newProduct) => {
                                     patchState(store, (state) => ({
@@ -176,7 +176,7 @@ export const ProductStore = signalStore(
                 pipe(
                     tap(() => patchState(store, setLoading())),
                     exhaustMap(({ id, dto, onSuccess, onError }) =>
-                        productService.updateProduct(id, dto).pipe(
+                        productService.updateProduct(id, dto, { errorFeedback: 'local' }).pipe(
                             tapResponse({
                                 next: (updatedProduct) => {
                                     patchState(store, (state) => ({

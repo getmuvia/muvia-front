@@ -13,6 +13,8 @@
             </span>
             }
             <input [value]="newKeyword()" (input)="onInputChange($event)" (keydown)="onKeydown($event)"
+                [attr.aria-invalid]="hasError()" [attr.aria-describedby]="hasError() ? 'product-keywords-error' : null"
+                data-error-focus
                 class="bg-transparent border-none text-sm focus:ring-0 placeholder-text-light/40 min-w-[150px] text-text-light font-body flex-1"
                 placeholder="Escribe y presiona Enter..." type="text" />
         </div>
