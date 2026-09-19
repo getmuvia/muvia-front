@@ -17,7 +17,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     return next(req).pipe(
         tap({
             error: (error: HttpErrorResponse) => {
-                if (isAuthenticationRequest || isSilentRequest) return;
+                // Authentication owns 401 presentation so concurrent failures
+                // produce a single logout, redirect and notification.
+                const isSessionUnauthorized =
+                    error.status === 401 && req.headers.has('Authorization');
+                if (isAuthenticationRequest || isSilentRequest || isSessionUnauthorized) return;
 
                 let errorMessage = 'An unexpected error occurred';
 
