@@ -1,15 +1,14 @@
 import { HttpInterceptorFn, HttpErrorResponse, HttpContextToken } from '@angular/common/http';
-import { inject, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { inject } from '@angular/core';
 import { tap } from 'rxjs';
 import { ToastService } from '@core/services/toast/toast';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
+import { toAppError } from '@core/models/errors/api-error.model';
 
 export const SILENT_HTTP_ERRORS = new HttpContextToken<boolean>(() => false);
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     const toastService = inject(ToastService);
-    const platformId = inject(PLATFORM_ID);
     const isAuthenticationRequest =
         req.url === API_ENDPOINTS.AUTH.LOGIN || req.url === API_ENDPOINTS.AUTH.REGISTER;
     const isSilentRequest = req.context.get(SILENT_HTTP_ERRORS);
@@ -23,29 +22,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                     error.status === 401 && req.headers.has('Authorization');
                 if (isAuthenticationRequest || isSilentRequest || isSessionUnauthorized) return;
 
-                let errorMessage = 'An unexpected error occurred';
-
-                if (isPlatformBrowser(platformId) && error.error instanceof ErrorEvent) {
-
-                    errorMessage = error.error.message;
-                } else {
-
-                    if (error.status === 0) {
-                        errorMessage = 'No connection to server';
-                    } else if (error.status === 401) {
-                        errorMessage = 'Session expired or unauthorized';
-                    } else if (error.status === 403) {
-                        errorMessage = 'You do not have permission to perform this action';
-                    } else if (error.status === 404) {
-                        errorMessage = 'Resource not found';
-                    } else if (error.error && error.error.message) {
-                        errorMessage = error.error.message;
-                    } else {
-                        errorMessage = `Server Error (Code: ${error.status})`;
-                    }
-                }
-
-                toastService.error(errorMessage);
+                toastService.error(toAppError(error).message);
             }
         })
     );
