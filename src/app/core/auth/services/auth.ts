@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import {
   AuthResponse,
@@ -84,6 +84,21 @@ export class AuthService {
   }
 
   /**
+   * Invalidates the session only when the failed request used the token that is
+   * still active. This makes concurrent 401 responses idempotent and prevents a
+   * late response from an older token from logging out a newly authenticated
+   * session.
+   */
+  invalidateSession(failedToken: string): boolean {
+    if (!failedToken || this.storage.getToken() !== failedToken) {
+      return false;
+    }
+
+    this.logout();
+    return true;
+  }
+
+  /**
    * Clear any error state.
    */
   clearError(): void {
@@ -120,7 +135,8 @@ export class AuthService {
 
   /**
    * Verify the current session with the backend.
-   * Returns true if valid, false (and logs out) if invalid.
+   * A confirmed 401 invalidates the active token. Transient failures preserve
+   * the restored local session so a temporary outage does not force a login.
    */
   async verifySession(): Promise<boolean> {
     const token = this.storage.getToken();
@@ -135,9 +151,13 @@ export class AuthService {
       this.state.setUser(user);
       this.storage.store(token, user);
       return true;
-    } catch {
-      this.logout();
-      return false;
+    } catch (error) {
+      if (error instanceof HttpErrorResponse && error.status === 401) {
+        this.invalidateSession(token);
+        return false;
+      }
+
+      return this.isAuthenticated();
     }
   }
 }

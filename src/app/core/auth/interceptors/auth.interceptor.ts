@@ -6,6 +6,7 @@ import { catchError, throwError } from 'rxjs';
 import { environment } from '@environments/environment';
 import { AuthService } from '../services/auth';
 import { AuthStorageService } from '../services/storage';
+import { ToastService } from '@core/services/toast/toast';
 
 /**
  * Interceptor that handles 401 Unauthorized errors and attaches the Bearer token.
@@ -18,6 +19,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
     const router = inject(Router);
     const injector = inject(Injector);
     const storage = inject(AuthStorageService);
+    const toastService = inject(ToastService);
 
     const token = storage.getToken();
     const apiUrl = environment.apiUrl.replace(/\/+$/, '');
@@ -44,8 +46,12 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
             if (shouldInvalidateSession) {
                 const authService = injector.get(AuthService);
-                authService.logout();
-                router.navigate(['/auth/login']);
+                const didInvalidateSession = authService.invalidateSession(token);
+
+                if (didInvalidateSession) {
+                    toastService.warning('Tu sesión ha expirado. Inicia sesión nuevamente.', 6000);
+                    void router.navigate(['/auth/login']);
+                }
             }
             return throwError(() => error);
         })
