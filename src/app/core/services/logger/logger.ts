@@ -1,4 +1,5 @@
 import { Injectable, isDevMode } from '@angular/core';
+import { ErrorTelemetryService } from '@core/observability/error-telemetry';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -15,11 +16,13 @@ export interface LogEntry {
  * Centralized logging service with environment-aware behavior.
  * 
  * - Development: Logs to console with colors
- * - Production: Silent by default (can be extended to send to Sentry, LogRocket, etc.)
+ * - Production: Sends sanitized errors to the configured telemetry transport
  */
 @Injectable({ providedIn: 'root' })
 export class LoggerService {
     private readonly isProduction = !isDevMode();
+
+    constructor(private readonly telemetry: ErrorTelemetryService) {}
 
     private readonly levelColors: Record<LogLevel, string> = {
         debug: '#9E9E9E',
@@ -54,11 +57,7 @@ export class LoggerService {
      */
     error(message: string, error?: unknown, context?: string): void {
         this.log('error', message, error, context);
-
-        // In production, we could send to an external service
-        if (this.isProduction) {
-            this.sendToExternalService({ level: 'error', message, data: error, context, timestamp: new Date() });
-        }
+        this.telemetry.captureApplicationError(message, error, context);
     }
 
     private log(level: LogLevel, message: string, data?: unknown, context?: string): void {
@@ -113,12 +112,4 @@ export class LoggerService {
         }
     }
 
-    /**
-     * Placeholder for external logging service integration
-     * Can be extended to send logs to Sentry, LogRocket, Datadog, etc.
-     */
-    private sendToExternalService(entry: LogEntry): void {
-        // TODO: Integrate with external logging service
-        // Example: Sentry.captureException(entry.data);
-    }
 }
