@@ -4,8 +4,13 @@ export type { Product, ProductAsset, ProductSpecifications, ProductSeller, Produ
 export type { ProductFormData } from './product/product-form.model';
 export { INITIAL_PRODUCT_FORM } from './product/product-form.model';
 export type { CreateProductDto, CreateProductAsset, CreateProductSpecifications } from './product/create-product.dto';
-export type { ApiError } from './errors/api-error.model';
-export { getErrorMessage } from './errors/api-error.model';
+export type {
+    ApiError,
+    AppError,
+    AppErrorKind,
+    NormalizeErrorOptions,
+} from './errors/api-error.model';
+export { getErrorMessage, toAppError } from './errors/api-error.model';
 export type { VendorProfile, VendorResponse, UpdateVendorProfilePayload, SocialLink, BusinessHours, BusinessHoursItem } from './user/vendor-profile';
 export type { HybridSearchRequest, HybridSearchResult, HybridSearchResponse, MatchType } from './search/hybrid-search.model';
 

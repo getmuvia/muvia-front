@@ -7,12 +7,12 @@ import {
     inject,
     signal,
 } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { LoggerService } from '@core/services/logger/logger';
 import { ProductService } from '@core/services/product/product';
 import { Product } from '@core/models/product/product';
+import { toAppError } from '@core/models/errors/api-error.model';
 import { Pagination } from '@shared/components/pagination/pagination';
 import { debounceTime, distinctUntilChanged, firstValueFrom, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -305,11 +305,13 @@ export class VirtualStaging implements OnInit, OnDestroy {
     }
 
     private getGenerationErrorMessage(error: unknown): string {
-        if (error instanceof HttpErrorResponse && error.status === 429) {
+        const appError = toAppError(error);
+
+        if (appError.kind === 'rate-limit') {
             return 'Has alcanzado el límite de 10 generaciones de hoy. Inténtalo nuevamente mañana.';
         }
 
-        if (error instanceof HttpErrorResponse && (error.status === 400 || error.status === 404)) {
+        if (appError.kind === 'validation' || appError.kind === 'not-found') {
             return 'El producto seleccionado ya no está disponible para generar esta visualización.';
         }
 
