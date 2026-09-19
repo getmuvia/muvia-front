@@ -37,4 +37,37 @@ describe('ProductList', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('renders fallback products in a separately labeled section', () => {
+    component.useSmartSearch.set(true);
+    component.relatedProducts.set([{
+      id: 'fallback-chair',
+      sellerId: '',
+      categoryId: '',
+      title: 'Silla ergonómica',
+      description: '',
+      price: '1500',
+      stock: 0,
+      specifications: {},
+      keywords: [],
+      createdAt: '',
+      assets: [],
+      category: {
+        id: '',
+        parentId: null,
+        name: '',
+        description: '',
+        imageUrl: '',
+        level: 0,
+      },
+      score: 0.4,
+      matchType: 'lexical',
+    }]);
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain(
+      'Otros productos que te podrían interesar',
+    );
+    expect(fixture.nativeElement.textContent).toContain('Silla ergonómica');
+  });
 });

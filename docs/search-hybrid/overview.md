@@ -31,8 +31,10 @@ The "Smart Search" feature implements a **Hybrid Search** strategy, combining:
 4.  Backend (Vertex AI + PostgreSQL pgvector):
     -   Generates Embedding (Vector) for "Sillon".
     -   Queries database for similar vectors (Cosine Similarity).
-    -   Returns ranked results.
-5.  Frontend displays results.
+    -   Ranks direct matches before partial material matches.
+    -   Returns same-category products without the requested material as separate fallback suggestions.
+5.  Frontend displays direct matches first and fallback suggestions under
+    **Otros productos que te podrían interesar**.
 
 ## Key Logic Decisions
 
