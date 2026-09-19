@@ -39,6 +39,6 @@ export interface HybridSearchResponse {
     query: string;
     results: HybridSearchResult[];
     count: number;
-    /** Broader suggestions supplied separately by the backend. */
+    /** Fallback and broader suggestions supplied separately by the backend. */
     relatedResults?: HybridSearchResult[];
 }

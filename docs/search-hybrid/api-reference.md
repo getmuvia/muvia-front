@@ -1,7 +1,7 @@
 # API Reference: Hybrid Search
 
 ## Endpoint
-`POST /api/ai/hybrid-search`
+`POST /ai/hybrid`
 
 ### Request Body
 ```typescript
@@ -14,7 +14,10 @@ interface HybridSearchRequest {
 ### Response Body
 ```typescript
 interface HybridSearchResponse {
+    query: string;
     results: HybridSearchResult[];
+    count: number;
+    relatedResults: HybridSearchResult[];
 }
 
 interface HybridSearchResult {
@@ -27,3 +30,7 @@ interface HybridSearchResult {
     matchType: string;  // 'semantic', 'lexical', 'hybrid'
 }
 ```
+
+`results` contains direct matches ordered by product type, requested material
+and hybrid relevance. `relatedResults` contains fallback suggestions and is
+rendered separately at the end of `/products`.

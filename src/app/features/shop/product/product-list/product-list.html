@@ -46,15 +46,15 @@
                 [isLoading]="displayLoading() && displayProducts().length === 0"
                 [emptyTitle]="useSmartSearch() ? 'No encontramos coincidencias directas' : 'No hay productos'"
                 [emptyDescription]="relatedProducts().length > 0
-                    ? 'Puedes explorar los productos relacionados que aparecen abajo.'
+                    ? 'Puedes explorar otras opciones que podrían interesarte más abajo.'
                     : 'Intenta con el nombre del producto u otros términos.'" />
         </div>
         }
 
         @if (useSmartSearch() && !displayLoading() && !displayError() && relatedProducts().length > 0) {
         <section class="mt-12 border-t border-border-color pt-8" aria-labelledby="related-search-heading">
-            <h2 id="related-search-heading" class="text-lg font-semibold text-primary">Productos relacionados</h2>
-            <p class="mt-2 mb-6 text-sm text-text-secondary">Otras opciones similares que podrían interesarte.</p>
+            <h2 id="related-search-heading" class="text-lg font-semibold text-primary">Otros productos que te podrían interesar</h2>
+            <p class="mt-2 mb-6 text-sm text-text-secondary">Opciones similares que no cumplen completamente con todos los criterios de tu búsqueda.</p>
             <app-product-grid [products]="relatedProducts()" />
         </section>
         }
