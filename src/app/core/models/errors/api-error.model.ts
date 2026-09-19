@@ -9,6 +9,7 @@ export interface ApiError {
     statusCode?: number;
     error?: string;
     code?: string;
+    correlationId?: string;
 }
 
 export type AppErrorKind =
@@ -31,6 +32,7 @@ export interface AppError {
     status: number | null;
     code: string | null;
     retryable: boolean;
+    correlationId: string | null;
 }
 
 export interface NormalizeErrorOptions {
@@ -94,6 +96,7 @@ export function toAppError(error: unknown, options: NormalizeErrorOptions = {}):
         status,
         code,
         retryable: kind === 'network' || kind === 'rate-limit' || kind === 'server',
+        correlationId: getCorrelationId(httpError, body),
     };
 }
 
@@ -155,6 +158,11 @@ function getErrorCode(body: ApiError | null): string | null {
     return null;
 }
 
+function getCorrelationId(error: HttpErrorResponse | null, body: ApiError | null): string | null {
+    const value = body?.correlationId ?? error?.headers.get('X-Correlation-ID');
+    return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
 function getStatusMessage(
     statusMessages: NormalizeErrorOptions['statusMessages'],
     status: number | null,
@@ -187,6 +195,7 @@ function isAppError(error: unknown): error is AppError {
     return typeof candidate.kind === 'string'
         && typeof candidate.message === 'string'
         && typeof candidate.retryable === 'boolean'
+        && (typeof candidate.correlationId === 'string' || candidate.correlationId === null)
         && (typeof candidate.status === 'number' || candidate.status === null)
         && (typeof candidate.code === 'string' || candidate.code === null);
 }

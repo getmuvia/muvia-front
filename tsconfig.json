@@ -28,6 +28,9 @@
       "@core/interceptors/*": [
         "./src/app/core/interceptors/*"
       ],
+      "@core/observability/*": [
+        "./src/app/core/observability/*"
+      ],
       "@features/*": [
         "./src/app/features/*"
       ]

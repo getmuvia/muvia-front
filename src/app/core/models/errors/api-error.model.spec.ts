@@ -12,6 +12,7 @@ describe('toAppError', () => {
             status: 0,
             code: null,
             retryable: true,
+            correlationId: null,
         });
     });
 
@@ -58,6 +59,7 @@ describe('toAppError', () => {
             code: 'PRODUCT_LIMIT_REACHED',
             message: 'Alcanzaste el límite de productos permitidos.',
             retryable: false,
+            correlationId: null,
         });
     });
 
@@ -79,5 +81,37 @@ describe('toAppError', () => {
             fallbackMessage: 'Error al iniciar sesión.',
             statusMessages: { 401: 'Credenciales inválidas.' },
         })).toBe('Credenciales inválidas.');
+    });
+
+    it.each([
+        [400, 'validation', false],
+        [401, 'authentication', false],
+        [403, 'authorization', false],
+        [404, 'not-found', false],
+        [409, 'conflict', false],
+        [422, 'validation', false],
+        [429, 'rate-limit', true],
+        [500, 'server', true],
+        [503, 'server', true],
+    ] as const)('classifies HTTP %i as %s', (status, kind, retryable) => {
+        const error = new HttpErrorResponse({ status });
+
+        expect(toAppError(error)).toMatchObject({ status, kind, retryable });
+    });
+
+    it('keeps the backend correlation identifier without exposing its message', () => {
+        const correlationId = '3c6c26a6-783d-4fc0-93a3-10cb2f8ef949';
+        const error = new HttpErrorResponse({
+            status: 500,
+            error: {
+                message: 'Database password leaked',
+                correlationId,
+            },
+        });
+
+        const normalized = toAppError(error);
+
+        expect(normalized.correlationId).toBe(correlationId);
+        expect(normalized.message).not.toContain('Database');
     });
 });

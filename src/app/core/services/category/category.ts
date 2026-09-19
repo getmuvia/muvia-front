@@ -1,10 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, retry, timer } from 'rxjs';
+import { Observable, retry, throwError, timer } from 'rxjs';
 import { Category } from '@core/models/category/category';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 import { MarketService } from '@core/services/market/market';
+import { getAutomaticRetryDelay } from '@core/models/errors/http-retry-policy';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,10 @@ export class CategoryService {
     }).pipe(
       retry({
         count: 2,
-        delay: (_error, retryCount) => timer(retryCount * 750),
+        delay: (error, retryCount) => {
+          const delay = getAutomaticRetryDelay(error, retryCount);
+          return delay === null ? throwError(() => error) : timer(delay);
+        },
       }),
     );
   }
