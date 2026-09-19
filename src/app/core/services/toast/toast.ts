@@ -14,10 +14,19 @@ export interface Toast {
 })
 export class ToastService {
     readonly toasts = signal<Toast[]>([]);
+    private nextId = 0;
 
     show(message: string, type: ToastType = 'info', duration = 3000): void {
-        const id = Date.now();
-        const toast: Toast = { id, message, type, duration };
+        const normalizedMessage = message.trim();
+        if (!normalizedMessage) return;
+
+        const isDuplicate = this.toasts().some(toast =>
+            toast.type === type && toast.message === normalizedMessage
+        );
+        if (isDuplicate) return;
+
+        const id = ++this.nextId;
+        const toast: Toast = { id, message: normalizedMessage, type, duration };
 
         this.toasts.update(current => [...current, toast]);
 
@@ -26,19 +35,19 @@ export class ToastService {
         }
     }
 
-    success(message: string, duration = 3000): void {
+    success(message: string, duration = 4000): void {
         this.show(message, 'success', duration);
     }
 
-    error(message: string, duration = 4000): void {
+    error(message: string, duration = 6000): void {
         this.show(message, 'error', duration);
     }
 
-    info(message: string, duration = 3000): void {
+    info(message: string, duration = 4000): void {
         this.show(message, 'info', duration);
     }
 
-    warning(message: string, duration = 3000): void {
+    warning(message: string, duration = 6000): void {
         this.show(message, 'warning', duration);
     }
 

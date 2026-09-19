@@ -5,6 +5,7 @@ import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { VendorProfile, VendorResponse, UpdateVendorProfilePayload } from '../../models/user/vendor-profile';
 import type { User } from '../../auth/models/auth.models';
 import { LoggerService } from '../logger/logger';
+import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 
 @Injectable({
     providedIn: 'root'
@@ -29,7 +30,9 @@ export class UserService {
     }
 
     getVendorProfile(userId: string): Observable<VendorResponse> {
-        return this.http.get<VendorResponse>(`${API_ENDPOINTS.USERS.VENDOR}/${userId}`).pipe(
+        return this.http.get<VendorResponse>(`${API_ENDPOINTS.USERS.VENDOR}/${userId}`, {
+            context: createHttpErrorFeedbackContext('none'),
+        }).pipe(
             tap(response => {
                 this._vendorProfile.set(response.vendorProfile);
             })

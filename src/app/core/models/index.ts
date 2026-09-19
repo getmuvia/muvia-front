@@ -11,6 +11,14 @@ export type {
     NormalizeErrorOptions,
 } from './errors/api-error.model';
 export { getErrorMessage, toAppError } from './errors/api-error.model';
+export type {
+    HttpErrorFeedback,
+    HttpErrorFeedbackOptions,
+} from './errors/http-error-feedback';
+export {
+    HTTP_ERROR_FEEDBACK,
+    createHttpErrorFeedbackContext,
+} from './errors/http-error-feedback';
 export type { VendorProfile, VendorResponse, UpdateVendorProfilePayload, SocialLink, BusinessHours, BusinessHoursItem } from './user/vendor-profile';
 export type { HybridSearchRequest, HybridSearchResult, HybridSearchResponse, MatchType } from './search/hybrid-search.model';
 

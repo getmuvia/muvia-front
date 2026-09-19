@@ -49,12 +49,18 @@ describe('VirtualStaging', () => {
   });
 
   it('should request and replace server-side product pages', async () => {
-    expect(searchProducts).toHaveBeenCalledWith(expect.objectContaining({ page: 1, limit: 6 }));
+    expect(searchProducts).toHaveBeenCalledWith(
+      expect.objectContaining({ page: 1, limit: 6 }),
+      { errorFeedback: 'local' },
+    );
     expect(component.products().map(product => product.id)).toEqual(['product-page-1']);
 
     await component.changeCatalogPage(2);
 
-    expect(searchProducts).toHaveBeenLastCalledWith(expect.objectContaining({ page: 2, limit: 6 }));
+    expect(searchProducts).toHaveBeenLastCalledWith(
+      expect.objectContaining({ page: 2, limit: 6 }),
+      { errorFeedback: 'local' },
+    );
     expect(component.products().map(product => product.id)).toEqual(['product-page-2']);
   });
 });

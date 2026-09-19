@@ -7,6 +7,7 @@ import {
     HybridSearchResponse
 } from '@core/models/search/hybrid-search.model';
 import { MarketService } from '@core/services/market/market';
+import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 
 /**
  * Default limits for hybrid search
@@ -39,6 +40,8 @@ export class HybridSearchService {
             marketCode: this.marketService.selectedMarket().code,
             locale: this.marketService.locale(),
         };
-        return this.http.post<HybridSearchResponse>(API_ENDPOINTS.AI.HYBRID_SEARCH, payload);
+        return this.http.post<HybridSearchResponse>(API_ENDPOINTS.AI.HYBRID_SEARCH, payload, {
+            context: createHttpErrorFeedbackContext('local'),
+        });
     }
 }
