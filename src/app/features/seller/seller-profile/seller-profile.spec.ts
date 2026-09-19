@@ -1,11 +1,13 @@
 import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { Product } from '@core/models/product/product';
 import { AuthService } from '@core/auth/services/auth';
 import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
+import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
+import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { SellerProfile } from './seller-profile';
 
 describe('SellerProfile', () => {
@@ -17,6 +19,8 @@ describe('SellerProfile', () => {
   let updateProfile: ReturnType<typeof vi.fn>;
   let profileLoadingState: WritableSignal<boolean>;
   let profileErrorState: WritableSignal<string | null>;
+  let uploadFile: ReturnType<typeof vi.fn>;
+  let deleteFile: ReturnType<typeof vi.fn>;
 
   beforeEach(async () => {
     productsState = signal<Product[]>([]);
@@ -25,6 +29,11 @@ describe('SellerProfile', () => {
     updateProfile = vi.fn().mockReturnValue(of({}));
     profileLoadingState = signal(true);
     profileErrorState = signal<string | null>(null);
+    uploadFile = vi.fn().mockReturnValue(of({
+      key: 'users/seller-id/logo.webp',
+      url: 'https://storage.example/logo.webp',
+    }));
+    deleteFile = vi.fn().mockReturnValue(of(void 0));
 
     await TestBed.configureTestingModule({
       imports: [SellerProfile],
@@ -44,6 +53,14 @@ describe('SellerProfile', () => {
             loadVendorProfile,
             updateProfile,
           },
+        },
+        {
+          provide: UploadFileService,
+          useValue: { uploadFile, deleteFile },
+        },
+        {
+          provide: ImageOptimizerService,
+          useValue: { compressImage: vi.fn((file: File) => Promise.resolve(file)) },
         },
       ],
     })
@@ -126,6 +143,20 @@ describe('SellerProfile', () => {
       },
     });
     expect(component.isMetadataModalOpen()).toBe(false);
+    expect(component.isSaving()).toBe(false);
+  });
+
+  it('should remove a newly uploaded image when saving the profile fails', async () => {
+    updateProfile.mockReturnValueOnce(throwError(() => new Error('backend failure')));
+    component.openEditModal('avatar');
+    const file = new File(['image'], 'logo.webp', { type: 'image/webp' });
+
+    await component.onSaveImage(file);
+
+    expect(uploadFile).toHaveBeenCalledWith(file, 'users/seller-id', 'local');
+    expect(deleteFile).toHaveBeenCalledWith('users/seller-id/logo.webp');
+    expect(component.isModalOpen()).toBe(true);
+    expect(component.imageSaveError()).toContain('No pudimos guardar la imagen');
     expect(component.isSaving()).toBe(false);
   });
 });

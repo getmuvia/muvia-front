@@ -45,14 +45,29 @@ export class UploadFileService {
    * @param file The file to upload
    * @param folder The folder path (e.g. 'products/{userId}')
    */
-  uploadFile(file: File, folder: string): Observable<UploadResponse> {
+  uploadFile(
+    file: File,
+    folder: string,
+    errorFeedback: HttpErrorFeedback = 'global',
+  ): Observable<UploadResponse> {
     const requestUrl = `${this.apiUrl}?folder=${folder}`;
 
-    return this.uploadToSignedUrl(file, requestUrl).pipe(
+    return this.uploadToSignedUrl(file, requestUrl, errorFeedback).pipe(
       map(response => ({
         key: response.key,
         url: `${this.storageFirebaseUrl}/${response.key}`
       }))
+    );
+  }
+
+  /** Removes a previously uploaded file, primarily for draft rollback. */
+  deleteFile(
+    key: string,
+    errorFeedback: HttpErrorFeedback = 'none',
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${API_ENDPOINTS.FILES.BASE}/${encodeURIComponent(key)}`,
+      { context: createHttpErrorFeedbackContext(errorFeedback) },
     );
   }
 

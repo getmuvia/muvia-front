@@ -8,6 +8,7 @@
     [model3dUsdzAsset]="model3dUsdzAsset()"
     [keywords]="keywords()" 
     [isSubmitting]="isSubmitting()" 
+    [submissionError]="submissionError()"
     [isEditMode]="isEditMode()"
     (formSubmit)="onFormSubmit($event)" 
     (formCancel)="onCancel()" 
@@ -15,5 +16,6 @@
     (imagesChange)="onImagesChange($event)" 
     (glbAssetChange)="onGlbAssetChange($event)"
     (usdzAssetChange)="onUsdzAssetChange($event)"
-    (fileSelected)="onFileSelected($event)">
+    (fileSelected)="onFileSelected($event)"
+    (formChange)="submissionError.set(null)">
 </app-product-form>
