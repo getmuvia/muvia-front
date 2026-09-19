@@ -10,8 +10,8 @@
         </div>
         } @else if (error()) {
         <!-- Error State -->
-        <div class="flex flex-col items-center justify-center py-24">
-            <span class="material-symbols-outlined text-6xl text-text-light/20 mb-4">error</span>
+        <div class="flex flex-col items-center justify-center py-24" role="alert">
+            <span class="material-symbols-outlined text-6xl text-text-light/20 mb-4" aria-hidden="true">error</span>
             <h3 class="text-xl font-bold text-text-light font-body mb-2">{{ error() }}</h3>
             <a routerLink="/products" class="text-primary hover:underline font-body">Volver a productos</a>
         </div>

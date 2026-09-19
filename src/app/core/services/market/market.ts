@@ -1,9 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
-import { SILENT_HTTP_ERRORS } from '@core/interceptors/error.interceptor';
+import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 import { Market, StorefrontBootstrap } from '@core/models/market/market';
 
 const MARKET_STORAGE_KEY = 'muvia.market';
@@ -43,7 +43,7 @@ export class MarketService {
     let params = new HttpParams().set('locale', browserLocale);
     if (storedCode) params = params.set('countryCode', storedCode);
     if (timeZone) params = params.set('timeZone', timeZone);
-    const options = { context: new HttpContext().set(SILENT_HTTP_ERRORS, true) };
+    const options = { context: createHttpErrorFeedbackContext('none') };
 
     try {
       const response = await firstValueFrom(

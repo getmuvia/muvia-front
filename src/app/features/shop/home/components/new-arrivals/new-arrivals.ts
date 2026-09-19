@@ -44,7 +44,7 @@ export class NewArrivals implements OnInit {
           limit: 4,
           search: '',
           marketCode,
-        })),
+        }, { errorFeedback: 'none' })),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({

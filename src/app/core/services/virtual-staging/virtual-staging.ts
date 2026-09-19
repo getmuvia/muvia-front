@@ -8,6 +8,7 @@ import {
     VirtualStagingResponse,
 } from '../../models/ai/virtual-staging.models';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
+import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 
 @Injectable({
     providedIn: 'root'
@@ -27,7 +28,9 @@ export class VirtualStagingService {
 
     getQuota(): Observable<VirtualStagingQuota> {
         return this.http
-            .get<VirtualStagingQuota>(`${API_ENDPOINTS.AI.VIRTUAL_STAGING}/quota`)
+            .get<VirtualStagingQuota>(`${API_ENDPOINTS.AI.VIRTUAL_STAGING}/quota`, {
+                context: createHttpErrorFeedbackContext('local'),
+            })
             .pipe(tap(quota => this._quota.set(quota)));
     }
 
@@ -38,7 +41,11 @@ export class VirtualStagingService {
     generateStagedRoom(file: File, productId: string): Observable<VirtualStagingResponse> {
         this.replaceOriginalImage(file);
 
-        return this.uploadService.uploadPrivateFile(file, API_ENDPOINTS.AI.VIRTUAL_STAGING_UPLOAD).pipe(
+        return this.uploadService.uploadPrivateFile(
+            file,
+            API_ENDPOINTS.AI.VIRTUAL_STAGING_UPLOAD,
+            'local',
+        ).pipe(
             switchMap(uploadResponse => {
                 const requestBody: VirtualStagingRequest = {
                     gcsStorageKey: uploadResponse.key,
@@ -46,7 +53,11 @@ export class VirtualStagingService {
                     preferredStyle: 'modern',
                 };
 
-                return this.http.post<VirtualStagingResponse>(`${API_ENDPOINTS.AI.VIRTUAL_STAGING}`, requestBody);
+                return this.http.post<VirtualStagingResponse>(
+                    `${API_ENDPOINTS.AI.VIRTUAL_STAGING}`,
+                    requestBody,
+                    { context: createHttpErrorFeedbackContext('local') },
+                );
             }),
             tap(response => {
                 this._currentResult.set(response);

@@ -239,7 +239,7 @@ export class VirtualStaging implements OnInit, OnDestroy {
                 search: this.searchQuery().trim(),
                 page,
                 limit: PRODUCT_PAGE_SIZE,
-            }));
+            }, { errorFeedback: 'local' }));
 
             if (requestId !== this.catalogRequestId) return;
 
@@ -263,7 +263,10 @@ export class VirtualStaging implements OnInit, OnDestroy {
 
     private async loadSelectedProduct(productId: string): Promise<void> {
         try {
-            const product = await firstValueFrom(this.productService.getProductById(productId));
+            const product = await firstValueFrom(this.productService.getProductById(
+                productId,
+                { errorFeedback: 'local' },
+            ));
 
             if (!this.productImage(product)) {
                 this.selectionMessage.set('El producto seleccionado no tiene una imagen disponible. Elige otro producto.');

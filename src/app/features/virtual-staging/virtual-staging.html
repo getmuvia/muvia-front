@@ -171,8 +171,8 @@
                     }
                 </div>
                 } @else if (catalogErrorMessage()) {
-                <div class="rounded-panel border border-[var(--color-border-color)] bg-white p-6 text-center text-sm font-medium text-[var(--color-text-secondary)]"
-                    role="status">
+                <div class="rounded-panel border border-red-200 bg-red-50 p-6 text-center text-sm font-medium text-red-700"
+                    role="alert">
                     {{ catalogErrorMessage() }}
                 </div>
                 } @else {

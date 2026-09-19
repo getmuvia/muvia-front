@@ -50,7 +50,7 @@ export const ProductStore = signalStore(
                 pipe(
                     tap(() => patchState(store, setLoading())),
                     switchMap(() =>
-                        productService.getUserProducts().pipe(
+                        productService.getUserProducts({ errorFeedback: 'local' }).pipe(
                             tapResponse({
                                 next: (products) => patchState(store, {
                                     products,
@@ -111,7 +111,7 @@ export const ProductStore = signalStore(
                         }));
                     }),
                     switchMap((params) => {
-                        return productService.searchProducts(params).pipe(
+                        return productService.searchProducts(params, { errorFeedback: 'local' }).pipe(
                             tapResponse({
                                 next: (response) => {
                                     patchState(store, (state) => ({
@@ -141,7 +141,7 @@ export const ProductStore = signalStore(
                         patchState(store, setLoading());
                     }),
                     switchMap((id) =>
-                        productService.getProductById(id).pipe(
+                        productService.getProductById(id, { errorFeedback: 'local' }).pipe(
                             tapResponse({
                                 next: (product) => {
                                     store.selectEntity(product);
@@ -159,7 +159,7 @@ export const ProductStore = signalStore(
              * Useful for independent queries like "Related Products".
              */
             getAllProducts: (params: SearchParams = { search: '' }) => {
-                return productService.searchProducts(params);
+                return productService.searchProducts(params, { errorFeedback: 'none' });
             },
 
             /**
