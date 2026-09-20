@@ -284,7 +284,10 @@ export class VirtualStaging implements OnInit, OnDestroy {
         try {
             const product = await firstValueFrom(this.productService.getProductById(
                 productId,
-                { errorFeedback: 'local' },
+                {
+                    errorFeedback: 'local',
+                    errorTelemetry: { expectedStatuses: [404] },
+                },
             ));
 
             if (!this.productImage(product)) {

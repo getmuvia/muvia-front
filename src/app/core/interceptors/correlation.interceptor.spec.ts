@@ -3,6 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { ErrorTelemetryService } from '@core/observability/error-telemetry';
+import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 import { CORRELATION_ID_HEADER } from '@core/observability/error-telemetry.model';
 import { environment } from '@environments/environment';
 import { correlationInterceptor } from './correlation.interceptor';
@@ -61,5 +62,41 @@ describe('correlationInterceptor', () => {
     const request = httpTesting.expectOne(url);
     expect(request.request.headers.has(CORRELATION_ID_HEADER)).toBe(false);
     request.flush(null);
+  });
+
+  it('does not report a handled validation failure from an expected workflow', () => {
+    const url = `${environment.apiUrl}/products`;
+    http.post(url, {}, {
+      context: createHttpErrorFeedbackContext('local', { expectedStatuses: [422] }),
+    }).subscribe({ error: () => undefined });
+
+    const request = httpTesting.expectOne(url);
+    request.flush(
+      { message: ['title must not be empty'] },
+      { status: 422, statusText: 'Unprocessable Entity' },
+    );
+
+    expect(captureHttpFailure).not.toHaveBeenCalled();
+  });
+
+  it('still reports server failures from an expected workflow', () => {
+    const url = `${environment.apiUrl}/products`;
+    http.post(url, {}, {
+      context: createHttpErrorFeedbackContext('local', { expectedStatuses: [422] }),
+    }).subscribe({ error: () => undefined });
+
+    const request = httpTesting.expectOne(url);
+    const correlationId = request.request.headers.get(CORRELATION_ID_HEADER);
+    request.flush(
+      { message: 'Internal failure' },
+      { status: 500, statusText: 'Internal Server Error' },
+    );
+
+    expect(captureHttpFailure).toHaveBeenCalledOnce();
+    expect(captureHttpFailure).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 500 }),
+      expect.anything(),
+      correlationId,
+    );
   });
 });

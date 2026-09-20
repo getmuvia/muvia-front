@@ -67,7 +67,7 @@ export class UploadFileService {
   ): Observable<void> {
     return this.http.delete<void>(
       `${API_ENDPOINTS.FILES.BASE}/${encodeURIComponent(key)}`,
-      { context: createHttpErrorFeedbackContext(errorFeedback) },
+      { context: this.createErrorContext(errorFeedback) },
     );
   }
 
@@ -87,7 +87,7 @@ export class UploadFileService {
   ): Observable<PrivateUploadResponse> {
     const contentType = this.getContentType(file);
     const body = { filename: file.name, contentType };
-    const context = createHttpErrorFeedbackContext(errorFeedback);
+    const context = this.createErrorContext(errorFeedback);
 
     return this.http.post<SignedUploadResponse>(requestUrl, body, { context }).pipe(
       switchMap(response => this.http.put(response.url, file, {
@@ -111,5 +111,14 @@ export class UploadFileService {
 
     const ext = file.name.toLowerCase().split('.').pop() || '';
     return MIME_TYPE_MAP[ext] || 'application/octet-stream';
+  }
+
+  private createErrorContext(feedback: HttpErrorFeedback) {
+    return createHttpErrorFeedbackContext(
+      feedback,
+      {
+        expectedStatuses: feedback === 'none' ? [404] : feedback === 'local' ? [400, 422] : [],
+      },
+    );
   }
 }
