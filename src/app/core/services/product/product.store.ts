@@ -22,6 +22,16 @@ const initialState: ProductState = {
     products: [],
 };
 
+const EXPECTED_PRODUCT_MUTATION_ERRORS = {
+    errorFeedback: 'local',
+    errorTelemetry: { expectedStatuses: [400, 409, 422] },
+} as const;
+
+const EXPECTED_MISSING_PRODUCT = {
+    errorFeedback: 'local',
+    errorTelemetry: { expectedStatuses: [404] },
+} as const;
+
 /**
  * ProductStore
  * Manages the state for Products including user's products, search results, and details.
@@ -76,7 +86,7 @@ export const ProductStore = signalStore(
                 pipe(
                     tap(() => patchState(store, setLoading())),
                     exhaustMap(({ dto, onSuccess, onError }) =>
-                        productService.createProduct(dto, { errorFeedback: 'local' }).pipe(
+                        productService.createProduct(dto, EXPECTED_PRODUCT_MUTATION_ERRORS).pipe(
                             tapResponse({
                                 next: (newProduct) => {
                                     patchState(store, (state) => ({
@@ -141,7 +151,7 @@ export const ProductStore = signalStore(
                         patchState(store, setLoading());
                     }),
                     switchMap((id) =>
-                        productService.getProductById(id, { errorFeedback: 'local' }).pipe(
+                        productService.getProductById(id, EXPECTED_MISSING_PRODUCT).pipe(
                             tapResponse({
                                 next: (product) => {
                                     store.selectEntity(product);
@@ -176,7 +186,7 @@ export const ProductStore = signalStore(
                 pipe(
                     tap(() => patchState(store, setLoading())),
                     exhaustMap(({ id, dto, onSuccess, onError }) =>
-                        productService.updateProduct(id, dto, { errorFeedback: 'local' }).pipe(
+                        productService.updateProduct(id, dto, EXPECTED_PRODUCT_MUTATION_ERRORS).pipe(
                             tapResponse({
                                 next: (updatedProduct) => {
                                     patchState(store, (state) => ({

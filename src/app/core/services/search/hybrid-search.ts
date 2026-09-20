@@ -41,7 +41,9 @@ export class HybridSearchService {
             locale: this.marketService.locale(),
         };
         return this.http.post<HybridSearchResponse>(API_ENDPOINTS.AI.HYBRID_SEARCH, payload, {
-            context: createHttpErrorFeedbackContext('local'),
+            context: createHttpErrorFeedbackContext('local', {
+                expectedStatuses: [400, 422],
+            }),
         });
     }
 }

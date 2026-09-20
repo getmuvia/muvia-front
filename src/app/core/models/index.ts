@@ -14,9 +14,11 @@ export { getErrorMessage, toAppError } from './errors/api-error.model';
 export type {
     HttpErrorFeedback,
     HttpErrorFeedbackOptions,
+    HttpErrorTelemetryPolicy,
 } from './errors/http-error-feedback';
 export {
     HTTP_ERROR_FEEDBACK,
+    HTTP_ERROR_TELEMETRY,
     createHttpErrorFeedbackContext,
 } from './errors/http-error-feedback';
 export type { VendorProfile, VendorResponse, UpdateVendorProfilePayload, SocialLink, BusinessHours, BusinessHoursItem } from './user/vendor-profile';

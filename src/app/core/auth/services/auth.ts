@@ -13,6 +13,7 @@ import { AuthStateService } from './auth-state';
 import { parseAuthError } from './auth-error';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { UserService } from '@core/services/user/user';
+import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,11 @@ export class AuthService {
 
     try {
       const response = await firstValueFrom(
-        this.http.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, credentials)
+        this.http.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, credentials, {
+          context: createHttpErrorFeedbackContext('local', {
+            expectedStatuses: [400, 401, 422],
+          }),
+        })
       );
       this.handleSuccess(response);
       return true;
@@ -62,7 +67,11 @@ export class AuthService {
 
     try {
       const response = await firstValueFrom(
-        this.http.post<AuthResponse>(API_ENDPOINTS.AUTH.REGISTER, data)
+        this.http.post<AuthResponse>(API_ENDPOINTS.AUTH.REGISTER, data, {
+          context: createHttpErrorFeedbackContext('local', {
+            expectedStatuses: [400, 409, 422],
+          }),
+        })
       );
       this.handleSuccess(response);
       return true;

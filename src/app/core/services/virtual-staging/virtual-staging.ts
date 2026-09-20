@@ -56,7 +56,11 @@ export class VirtualStagingService {
                 return this.http.post<VirtualStagingResponse>(
                     `${API_ENDPOINTS.AI.VIRTUAL_STAGING}`,
                     requestBody,
-                    { context: createHttpErrorFeedbackContext('local') },
+                    {
+                        context: createHttpErrorFeedbackContext('local', {
+                            expectedStatuses: [400, 404, 422],
+                        }),
+                    },
                 );
             }),
             tap(response => {

@@ -4,6 +4,7 @@ import { catchError, throwError } from 'rxjs';
 
 import { ErrorTelemetryService, createCorrelationId, isCorrelationId } from '@core/observability/error-telemetry';
 import { CORRELATION_ID_HEADER } from '@core/observability/error-telemetry.model';
+import { shouldCaptureHttpError } from '@core/observability/http-error-telemetry-policy';
 import { environment } from '@environments/environment';
 
 export const correlationInterceptor: HttpInterceptorFn = (request, next) => {
@@ -22,7 +23,8 @@ export const correlationInterceptor: HttpInterceptorFn = (request, next) => {
 
   return next(correlatedRequest).pipe(
     catchError((error: unknown) => {
-      if (error instanceof HttpErrorResponse) {
+      if (error instanceof HttpErrorResponse
+        && shouldCaptureHttpError(error, correlatedRequest, correlationId)) {
         telemetry.captureHttpFailure(error, correlatedRequest, correlationId);
       }
       return throwError(() => error);

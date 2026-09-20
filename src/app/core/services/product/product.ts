@@ -51,7 +51,10 @@ export class ProductService {
    */
   getUserProducts(options: HttpErrorFeedbackOptions = {}): Observable<Product[]> {
     return this.http.get<Product[]>(API_ENDPOINTS.PRODUCTS.MY_PRODUCTS, {
-      context: createHttpErrorFeedbackContext(options.errorFeedback ?? 'global'),
+      context: createHttpErrorFeedbackContext(
+        options.errorFeedback ?? 'global',
+        options.errorTelemetry,
+      ),
     });
   }
 
@@ -60,7 +63,10 @@ export class ProductService {
    */
   createProduct(dto: CreateProductDto, options: HttpErrorFeedbackOptions = {}): Observable<Product> {
     return this.http.post<Product>(this.apiUrl, dto, {
-      context: createHttpErrorFeedbackContext(options.errorFeedback ?? 'global'),
+      context: createHttpErrorFeedbackContext(
+        options.errorFeedback ?? 'global',
+        options.errorTelemetry,
+      ),
     });
   }
 
@@ -91,7 +97,10 @@ export class ProductService {
     }
 
     return this.http.get<PaginatedResponse<Product>>(this.apiUrl, {
-      context: createHttpErrorFeedbackContext(options.errorFeedback ?? 'global'),
+      context: createHttpErrorFeedbackContext(
+        options.errorFeedback ?? 'global',
+        options.errorTelemetry,
+      ),
       params: queryParams,
       // Product data changes independently from the statically deployed frontend.
       // Do not hydrate the catalog from a response captured during prerendering.
@@ -104,7 +113,10 @@ export class ProductService {
    */
   getProductById(id: string, options: HttpErrorFeedbackOptions = {}): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`, {
-      context: createHttpErrorFeedbackContext(options.errorFeedback ?? 'global'),
+      context: createHttpErrorFeedbackContext(
+        options.errorFeedback ?? 'global',
+        options.errorTelemetry,
+      ),
     });
   }
 
@@ -117,7 +129,10 @@ export class ProductService {
     options: HttpErrorFeedbackOptions = {},
   ): Observable<Product> {
     return this.http.patch<Product>(`${this.apiUrl}/${id}`, dto, {
-      context: createHttpErrorFeedbackContext(options.errorFeedback ?? 'global'),
+      context: createHttpErrorFeedbackContext(
+        options.errorFeedback ?? 'global',
+        options.errorTelemetry,
+      ),
     });
   }
 }

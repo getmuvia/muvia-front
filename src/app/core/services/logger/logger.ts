@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
 import { ErrorTelemetryService } from '@core/observability/error-telemetry';
 
@@ -57,7 +58,11 @@ export class LoggerService {
      */
     error(message: string, error?: unknown, context?: string): void {
         this.log('error', message, error, context);
-        this.telemetry.captureApplicationError(message, error, context);
+        // HTTP telemetry is owned by the correlation interceptor, where the
+        // request context can distinguish expected outcomes from incidents.
+        if (!(error instanceof HttpErrorResponse)) {
+            this.telemetry.captureApplicationError(message, error, context);
+        }
     }
 
     private log(level: LogLevel, message: string, data?: unknown, context?: string): void {
