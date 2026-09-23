@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
+import type { AppError } from '@core/models/errors/api-error.model';
 import { ErrorTelemetryService } from '@core/observability/error-telemetry';
 import { LoggerService } from './logger';
 
@@ -38,6 +39,21 @@ describe('LoggerService', () => {
 
   it('leaves HTTP telemetry to the interceptor policy', () => {
     service.error('Request failed', new HttpErrorResponse({ status: 422 }), 'ProductForm');
+
+    expect(captureApplicationError).not.toHaveBeenCalled();
+  });
+
+  it('does not report a normalized HTTP error as an application failure', () => {
+    const error: AppError = {
+      kind: 'conflict',
+      message: 'No se pudo guardar el producto.',
+      status: 409,
+      code: 'PRODUCT_CONFLICT',
+      retryable: false,
+      correlationId: 'request-id',
+    };
+
+    service.error('Failed to save product', error, 'ProductCreate');
 
     expect(captureApplicationError).not.toHaveBeenCalled();
   });

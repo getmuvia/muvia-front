@@ -188,7 +188,7 @@ function getKnownBackendMessage(messages: string[]): string | null {
     return null;
 }
 
-function isAppError(error: unknown): error is AppError {
+export function isAppError(error: unknown): error is AppError {
     if (typeof error !== 'object' || error === null) return false;
 
     const candidate = error as Partial<AppError>;

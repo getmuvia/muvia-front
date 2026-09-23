@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
+import { isAppError } from '@core/models/errors/api-error.model';
 import { ErrorTelemetryService } from '@core/observability/error-telemetry';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
@@ -58,18 +59,15 @@ export class LoggerService {
      */
     error(message: string, error?: unknown, context?: string): void {
         this.log('error', message, error, context);
-        // HTTP telemetry is owned by the correlation interceptor, where the
-        // request context can distinguish expected outcomes from incidents.
-        if (!(error instanceof HttpErrorResponse)) {
+        // The interceptor owns HTTP telemetry. AppError is its normalized UI
+        // representation and must not be reported again as an application error.
+        if (!(error instanceof HttpErrorResponse) && !isAppError(error)) {
             this.telemetry.captureApplicationError(message, error, context);
         }
     }
 
     private log(level: LogLevel, message: string, data?: unknown, context?: string): void {
-        // Skip debug logs in production
-        if (this.isProduction && level === 'debug') {
-            return;
-        }
+        if (this.isProduction) return;
 
         const entry: LogEntry = {
             level,
@@ -79,10 +77,7 @@ export class LoggerService {
             data
         };
 
-        // In development, log to console with formatting
-        if (!this.isProduction) {
-            this.logToConsole(entry);
-        }
+        this.logToConsole(entry);
     }
 
     private logToConsole(entry: LogEntry): void {
