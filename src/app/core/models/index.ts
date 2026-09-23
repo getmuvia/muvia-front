@@ -10,7 +10,7 @@ export type {
     AppErrorKind,
     NormalizeErrorOptions,
 } from './errors/api-error.model';
-export { getErrorMessage, toAppError } from './errors/api-error.model';
+export { getErrorMessage, isAppError, toAppError } from './errors/api-error.model';
 export type {
     HttpErrorFeedback,
     HttpErrorFeedbackOptions,
