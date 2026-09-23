@@ -1,21 +1,59 @@
-<app-product-form 
-    [initialData]="formData()" 
-    [categories]="categories()" 
+@if (isLoadingProduct()) {
+<section
+    class="mx-auto flex min-h-72 w-full max-w-5xl items-center justify-center rounded-panel border border-border-color/80 bg-surface-dark/40 p-8 text-center"
+    role="status" aria-live="polite" aria-busy="true">
+    <div>
+        <span class="material-symbols-outlined animate-spin text-4xl text-secondary" aria-hidden="true">
+            progress_activity
+        </span>
+        <h1 class="mt-4 font-headline text-2xl font-light text-text-light">Cargando producto</h1>
+        <p class="mt-2 font-body text-sm text-text-light/60">
+            Estamos preparando la información para que puedas editarla.
+        </p>
+    </div>
+</section>
+} @else if (productLoadError(); as errorMessage) {
+<section
+    class="mx-auto flex min-h-72 w-full max-w-5xl items-center justify-center rounded-panel border border-error/20 bg-error/5 p-8 text-center"
+    role="alert" aria-labelledby="product-load-error-title">
+    <div class="max-w-lg">
+        <span class="material-symbols-outlined text-4xl text-error" aria-hidden="true">error</span>
+        <h1 id="product-load-error-title" class="mt-4 font-headline text-2xl font-light text-text-light">
+            No pudimos cargar el producto
+        </h1>
+        <p class="mt-2 font-body text-sm leading-6 text-text-light/70">{{ errorMessage }}</p>
+        <div class="mt-6 flex flex-col-reverse justify-center gap-3 sm:flex-row">
+            <button type="button" (click)="onCancel()"
+                class="rounded-control px-5 py-3 font-body text-sm font-semibold text-text-secondary transition-colors hover:bg-secondary/10 hover:text-secondary">
+                Volver a mis productos
+            </button>
+            <button type="button" (click)="retryProductLoad()"
+                class="rounded-control border border-primary bg-primary px-6 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-primary-deep">
+                Reintentar
+            </button>
+        </div>
+    </div>
+</section>
+} @else {
+<app-product-form
+    [initialData]="formData()"
+    [categories]="categories()"
     [isLoadingCategories]="isLoadingCategories()"
     [hasCategoryLoadError]="hasCategoryLoadError()"
-    [imageAssets]="imageAssets()" 
-    [model3dGlbAsset]="model3dGlbAsset()" 
+    [imageAssets]="imageAssets()"
+    [model3dGlbAsset]="model3dGlbAsset()"
     [model3dUsdzAsset]="model3dUsdzAsset()"
-    [keywords]="keywords()" 
-    [isSubmitting]="isSubmitting()" 
+    [keywords]="keywords()"
+    [isSubmitting]="isSubmitting()"
     [submissionError]="submissionError()"
     [isEditMode]="isEditMode()"
-    (formSubmit)="onFormSubmit($event)" 
-    (formCancel)="onCancel()" 
+    (formSubmit)="onFormSubmit($event)"
+    (formCancel)="onCancel()"
     (keywordsChange)="onKeywordsChange($event)"
-    (imagesChange)="onImagesChange($event)" 
+    (imagesChange)="onImagesChange($event)"
     (glbAssetChange)="onGlbAssetChange($event)"
     (usdzAssetChange)="onUsdzAssetChange($event)"
     (fileSelected)="onFileSelected($event)"
     (formChange)="submissionError.set(null)">
 </app-product-form>
+}
