@@ -27,10 +27,12 @@
                 class="rounded-control px-5 py-3 font-body text-sm font-semibold text-text-secondary transition-colors hover:bg-secondary/10 hover:text-secondary">
                 Volver a mis productos
             </button>
-            <button type="button" (click)="retryProductLoad()"
-                class="rounded-control border border-primary bg-primary px-6 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-primary-deep">
-                Reintentar
-            </button>
+            @if (canRetryProductLoad()) {
+                <button type="button" (click)="retryProductLoad()"
+                    class="rounded-control border border-primary bg-primary px-6 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-primary-deep">
+                    Reintentar
+                </button>
+            }
         </div>
     </div>
 </section>

@@ -4,15 +4,19 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { tapResponse } from '@ngrx/operators';
 import { pipe, tap, switchMap, exhaustMap } from 'rxjs';
 
-import { Product } from '@core/models/product/product';
-import { CreateProductDto } from '@core/models/product/create-product.dto';
-import { UpdateProductDto } from '@core/models/product/update-product.dto';
-import { getErrorMessage } from '@core/models/errors/api-error.model';
+import type { Product } from '@core/models/product/product';
+import type { CreateProductDto } from '@core/models/product/create-product.dto';
+import type { UpdateProductDto } from '@core/models/product/update-product.dto';
+import {
+    toAppError,
+    type AppError,
+    type NormalizeErrorOptions,
+} from '@core/models/errors/api-error.model';
 import { withRequestStatus, setLoading, setLoaded, setError } from '@core/store/features/with-request-status';
 import { withPagination } from '@core/store/features/with-pagination';
 import { withEntitySelection } from '@core/store/features/with-selection';
 import { STORE_CONFIG } from '@core/store/store.config';
-import { ProductService, SearchParams } from './product';
+import { ProductService, type SearchParams } from './product';
 
 interface ProductState {
     products: Product[];
@@ -32,6 +36,22 @@ const EXPECTED_MISSING_PRODUCT = {
     errorTelemetry: { expectedStatuses: [404] },
 } as const;
 
+const PRODUCT_ERROR_CODE_MESSAGES: Readonly<Record<string, string>> = {
+    PRODUCT_LIMIT_REACHED: 'Alcanzaste el límite de productos permitidos.',
+};
+
+function normalizeProductError(
+    error: unknown,
+    fallbackMessage: string,
+    statusMessages?: NormalizeErrorOptions['statusMessages'],
+): AppError {
+    return toAppError(error, {
+        fallbackMessage,
+        statusMessages,
+        codeMessages: PRODUCT_ERROR_CODE_MESSAGES,
+    });
+}
+
 /**
  * ProductStore
  * Manages the state for Products including user's products, search results, and details.
@@ -45,7 +65,7 @@ const EXPECTED_MISSING_PRODUCT = {
 export const ProductStore = signalStore(
     { providedIn: 'root' },
     withState(initialState),
-    withRequestStatus(),
+    withRequestStatus<AppError>(),
     withPagination(),
     withEntitySelection<Product>(),
 
@@ -66,7 +86,13 @@ export const ProductStore = signalStore(
                                     products,
                                     ...setLoaded()
                                 }),
-                                error: (error: unknown) => patchState(store, setError(getErrorMessage(error, 'Error al cargar productos'))),
+                                error: (error: unknown) => patchState(
+                                    store,
+                                    setError(normalizeProductError(
+                                        error,
+                                        'No pudimos cargar tus productos.',
+                                    )),
+                                ),
                             })
                         )
                     )
@@ -75,13 +101,13 @@ export const ProductStore = signalStore(
 
             /**
              * Creates a new product.
-             * - Optimistically adds the product to the store on success.
+             * - Adds the product to local state after the backend confirms creation.
              * - Accepts callbacks for custom UI handling (modals, toasts).
              */
             createProduct: rxMethod<{
                 dto: CreateProductDto;
                 onSuccess?: () => void;
-                onError?: (message: string) => void;
+                onError?: (error: AppError) => void;
             }>(
                 pipe(
                     tap(() => patchState(store, setLoading())),
@@ -93,12 +119,15 @@ export const ProductStore = signalStore(
                                         products: [newProduct, ...state.products],
                                     }));
                                     patchState(store, setLoaded());
-                                    if (onSuccess) onSuccess();
+                                    onSuccess?.();
                                 },
                                 error: (error: unknown) => {
-                                    const errorMsg = getErrorMessage(error, 'No se pudo crear el producto');
-                                    patchState(store, setError(errorMsg));
-                                    if (onError) onError(errorMsg);
+                                    const appError = normalizeProductError(
+                                        error,
+                                        'No se pudo crear el producto.',
+                                    );
+                                    patchState(store, setError(appError));
+                                    onError?.(appError);
                                 },
                             })
                         )
@@ -132,7 +161,13 @@ export const ProductStore = signalStore(
                                     }));
                                     store.setPagination(response);
                                 },
-                                error: (error: unknown) => patchState(store, setError(getErrorMessage(error, 'Error en la búsqueda'))),
+                                error: (error: unknown) => patchState(
+                                    store,
+                                    setError(normalizeProductError(
+                                        error,
+                                        'No pudimos cargar los productos.',
+                                    )),
+                                ),
                             })
                         );
                     })
@@ -157,7 +192,14 @@ export const ProductStore = signalStore(
                                     store.selectEntity(product);
                                     patchState(store, setLoaded());
                                 },
-                                error: (error: unknown) => patchState(store, setError(getErrorMessage(error, 'Producto no encontrado'))),
+                                error: (error: unknown) => patchState(
+                                    store,
+                                    setError(normalizeProductError(
+                                        error,
+                                        'No pudimos cargar el producto.',
+                                        { 404: 'Producto no encontrado.' },
+                                    )),
+                                ),
                             })
                         )
                     )
@@ -174,14 +216,14 @@ export const ProductStore = signalStore(
 
             /**
              * Updates an existing product.
-             * - Optimistically updates the product in the store on success.
+             * - Updates the local product after the backend confirms the change.
              * - Accepts callbacks for custom UI handling.
              */
             updateProduct: rxMethod<{
                 id: string;
                 dto: UpdateProductDto;
                 onSuccess?: () => void;
-                onError?: (message: string) => void;
+                onError?: (error: AppError) => void;
             }>(
                 pipe(
                     tap(() => patchState(store, setLoading())),
@@ -196,12 +238,15 @@ export const ProductStore = signalStore(
                                     }));
                                     store.selectEntity(updatedProduct);
                                     patchState(store, setLoaded());
-                                    if (onSuccess) onSuccess();
+                                    onSuccess?.();
                                 },
                                 error: (error: unknown) => {
-                                    const errorMsg = getErrorMessage(error, 'No se pudo actualizar el producto');
-                                    patchState(store, setError(errorMsg));
-                                    if (onError) onError(errorMsg);
+                                    const appError = normalizeProductError(
+                                        error,
+                                        'No se pudo actualizar el producto.',
+                                    );
+                                    patchState(store, setError(appError));
+                                    onError?.(appError);
                                 },
                             })
                         )
