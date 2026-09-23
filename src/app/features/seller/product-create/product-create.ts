@@ -62,7 +62,6 @@ export class ProductCreate {
     // Edit mode state
     readonly id = input<string | null>(null);
     isEditMode = computed(() => !!this.id());
-    isLoadingProduct = signal(false);
 
     // Form data (passed to child)
     formData = signal<ProductFormData | null>(null);
@@ -81,6 +80,18 @@ export class ProductCreate {
     readonly pendingUploads = signal<ReadonlyMap<string, File>>(new Map());
     private readonly uploadedDraftFiles = new Map<string, UploadResponse>();
     private isDestroyed = false;
+
+    readonly productLoadError = computed(() => {
+        if (!this.isEditMode() || this.formData() || !this.productStore.isError()) {
+            return null;
+        }
+
+        return this.productStore.error() || 'No pudimos cargar el producto.';
+    });
+
+    readonly isLoadingProduct = computed(() =>
+        this.isEditMode() && !this.formData() && !this.productLoadError()
+    );
 
     // Asset change detection
     hasAssetsChanged = computed(() => checkAssetsChanged(
@@ -106,15 +117,15 @@ export class ProductCreate {
 
         effect(() => {
             const id = this.id();
+            this.resetProductData();
             if (id) {
-                this.isLoadingProduct.set(true);
                 this.productStore.getProductById(id);
             }
         });
 
         effect(() => {
             const product = this.productStore.selectedEntity();
-            if (product && this.isEditMode()) {
+            if (product?.id === this.id()) {
                 this.populateFromProduct(product);
             }
         });
@@ -127,7 +138,13 @@ export class ProductCreate {
         this.imageAssets.set(extractImageAssets(product));
         this.model3dGlbAsset.set(extract3dAsset(product, 'glb'));
         this.model3dUsdzAsset.set(extract3dAsset(product, 'usdz'));
-        this.isLoadingProduct.set(false);
+    }
+
+    retryProductLoad(): void {
+        const id = this.id();
+        if (!id || this.productStore.isLoading()) return;
+
+        this.productStore.getProductById(id);
     }
 
     private loadCategories(): void {
@@ -353,6 +370,16 @@ export class ProductCreate {
         for (const url of this.pendingUploads().keys()) {
             if (url.startsWith('blob:')) URL.revokeObjectURL(url);
         }
+    }
+
+    private resetProductData(): void {
+        this.formData.set(null);
+        this.keywords.set([]);
+        this.originalAssets.set([]);
+        this.imageAssets.set([]);
+        this.model3dGlbAsset.set(null);
+        this.model3dUsdzAsset.set(null);
+        this.submissionError.set(null);
     }
 
     private getSubmissionErrorMessage(error: unknown): string {
