@@ -8,10 +8,9 @@ export type RequestStatus = 'idle' | 'loading' | 'success' | 'error';
  * Adds signals: `requestStatus` and `error`.
  * Adds computed signals: `isLoading`, `isLoaded`, `isError`.
  */
-export function withRequestStatus() {
+export function withRequestStatus<TError = string>() {
     return signalStoreFeature(
-        
-        withState<{ requestStatus: RequestStatus; error: string | null }>({
+        withState<{ requestStatus: RequestStatus; error: TError | null }>({
             requestStatus: 'idle',
             error: null,
         }),
@@ -34,7 +33,7 @@ export function setLoaded(): { requestStatus: RequestStatus; error: null } {
     return { requestStatus: 'success', error: null };
 }
 
-/** Helper to set state to Error with a message */
-export function setError(error: string): { requestStatus: RequestStatus; error: string } {
+/** Helper to set state to Error while preserving its typed value. */
+export function setError<TError>(error: TError): { requestStatus: RequestStatus; error: TError } {
     return { requestStatus: 'error', error };
 }

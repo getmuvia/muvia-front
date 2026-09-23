@@ -75,7 +75,8 @@ export class SellerProfile implements OnInit {
   profileError = this.userService.vendorProfileError;
   isProductsLoading = this.productStore.isLoading;
   isProductsError = this.productStore.isError;
-  productsError = this.productStore.error;
+  productsError = computed(() => this.productStore.error()?.message ?? null);
+  canRetryProducts = computed(() => this.productStore.error()?.retryable ?? false);
 
   isModalOpen = signal(false);
   modalTitle = signal('');
@@ -117,7 +118,7 @@ export class SellerProfile implements OnInit {
   }
 
   retryProducts(): void {
-    if (!this.isProductsLoading()) {
+    if (!this.isProductsLoading() && this.canRetryProducts()) {
       this.productStore.loadUserProducts();
     }
   }

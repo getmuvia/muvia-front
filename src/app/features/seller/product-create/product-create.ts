@@ -14,7 +14,7 @@ import { Product, ProductAsset } from '@core/models/product/product';
 import { ProductFormData } from '@core/models/product/product-form.model';
 import { CreateProductDto, CreateProductAsset } from '@core/models/product/create-product.dto';
 import { UpdateProductDto } from '@core/models/product/update-product.dto';
-import { getErrorMessage } from '@core/models/errors/api-error.model';
+import { toAppError } from '@core/models/errors/api-error.model';
 import { UploadResponse } from '@core/services/uploadFile/upload-file';
 import { ProductForm } from './components';
 import {
@@ -86,8 +86,12 @@ export class ProductCreate {
             return null;
         }
 
-        return this.productStore.error() || 'No pudimos cargar el producto.';
+        return this.productStore.error()?.message || 'No pudimos cargar el producto.';
     });
+
+    readonly canRetryProductLoad = computed(() =>
+        this.productStore.error()?.retryable ?? false
+    );
 
     readonly isLoadingProduct = computed(() =>
         this.isEditMode() && !this.formData() && !this.productLoadError()
@@ -142,7 +146,7 @@ export class ProductCreate {
 
     retryProductLoad(): void {
         const id = this.id();
-        if (!id || this.productStore.isLoading()) return;
+        if (!id || this.productStore.isLoading() || !this.canRetryProductLoad()) return;
 
         this.productStore.getProductById(id);
     }
@@ -387,11 +391,10 @@ export class ProductCreate {
             return `No pudimos subir “${error.fileName}”. Revisa tu conexión e inténtalo nuevamente; tus datos siguen guardados en el formulario.`;
         }
 
-        if (typeof error === 'string' && error.trim()) {
-            return `${error} Tus datos siguen guardados en el formulario.`;
-        }
-
-        return `${getErrorMessage(error, 'No pudimos guardar el producto.')} Tus datos siguen guardados en el formulario.`;
+        const appError = toAppError(error, {
+            fallbackMessage: 'No pudimos guardar el producto.',
+        });
+        return `${appError.message} Tus datos siguen guardados en el formulario.`;
     }
 
     private buildProductDto(

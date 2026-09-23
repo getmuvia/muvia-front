@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, input, DestroyRef } from '@angular/core';
+import { Component, computed, inject, signal, effect, input, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
@@ -24,7 +24,8 @@ export class ProductDetail {
   readonly id = input.required<string>();
   readonly product = this.productStore.selectedEntity;
   readonly isLoading = this.productStore.isLoading;
-  readonly error = this.productStore.error;
+  readonly error = computed(() => this.productStore.error()?.message ?? null);
+  readonly canRetry = computed(() => this.productStore.error()?.retryable ?? false);
   readonly similarProducts = signal<Product[]>([]);
 
   constructor() {
@@ -59,7 +60,7 @@ export class ProductDetail {
   }
 
   retryProduct(): void {
-    if (!this.isLoading()) {
+    if (!this.isLoading() && this.canRetry()) {
       this.loadProduct(this.id());
     }
   }

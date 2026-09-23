@@ -1,19 +1,20 @@
-import { signal, WritableSignal } from '@angular/core';
+import { signal, type WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { ProductStore } from '@core/services/product/product.store';
+import type { AppError } from '@core/models/errors/api-error.model';
 import { ProductDetail } from './product-detail';
 
 describe('ProductDetail', () => {
   let component: ProductDetail;
   let fixture: ComponentFixture<ProductDetail>;
   let getProductById: ReturnType<typeof vi.fn>;
-  let errorState: WritableSignal<string | null>;
+  let errorState: WritableSignal<AppError | null>;
 
   beforeEach(async () => {
     getProductById = vi.fn();
-    errorState = signal<string | null>(null);
+    errorState = signal<AppError | null>(null);
 
     await TestBed.configureTestingModule({
       imports: [ProductDetail]
@@ -52,7 +53,14 @@ describe('ProductDetail', () => {
 
   it('allows retrying the current product after an error', () => {
     getProductById.mockClear();
-    errorState.set('No pudimos cargar el producto.');
+    errorState.set({
+      kind: 'network',
+      message: 'No pudimos cargar el producto.',
+      status: 0,
+      code: null,
+      retryable: true,
+      correlationId: null,
+    });
     fixture.detectChanges();
 
     component.retryProduct();

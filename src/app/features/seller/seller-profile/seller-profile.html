@@ -100,10 +100,12 @@
             <p class="text-sm font-medium text-error">
                 {{ productsError() || 'No pudimos cargar tus productos.' }}
             </p>
-            <button type="button" (click)="retryProducts()"
-                class="mt-4 rounded-control border border-error/30 px-5 py-2 text-xs font-bold uppercase tracking-wide text-error transition-colors hover:bg-error/10">
-                Reintentar
-            </button>
+            @if (canRetryProducts()) {
+                <button type="button" (click)="retryProducts()"
+                    class="mt-4 rounded-control border border-error/30 px-5 py-2 text-xs font-bold uppercase tracking-wide text-error transition-colors hover:bg-error/10">
+                    Reintentar
+                </button>
+            }
         </div>
         } @else {
         <app-seller-product-grid [products]="visibleProducts()"></app-seller-product-grid>

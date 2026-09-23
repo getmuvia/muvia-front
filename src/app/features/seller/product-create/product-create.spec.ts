@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { AuthService } from '@core/auth/services/auth';
+import type { AppError } from '@core/models/errors/api-error.model';
 import type { Product } from '@core/models/product/product';
 import { ProductFormData } from '@core/models/product/product-form.model';
 import { CategoryService } from '@core/services/category/category';
@@ -23,7 +24,7 @@ describe('ProductCreate', () => {
   let selectedEntity: WritableSignal<Product | null>;
   let isStoreLoading: WritableSignal<boolean>;
   let isStoreError: WritableSignal<boolean>;
-  let productError: WritableSignal<string | null>;
+  let productError: WritableSignal<AppError | null>;
 
   const validForm: ProductFormData = {
     title: 'Silla Nórdica',
@@ -46,13 +47,20 @@ describe('ProductCreate', () => {
       url: 'https://storage.example/silla.webp',
     }));
     deleteFile = vi.fn().mockReturnValue(of(void 0));
-    createProduct = vi.fn((request: { onError?: (message: string) => void }) => {
-      request.onError?.('No pudimos crear el producto.');
+    createProduct = vi.fn((request: { onError?: (error: AppError) => void }) => {
+      request.onError?.({
+        kind: 'unknown',
+        message: 'No pudimos crear el producto.',
+        status: null,
+        code: null,
+        retryable: false,
+        correlationId: null,
+      });
     });
     selectedEntity = signal<Product | null>(null);
     isStoreLoading = signal(false);
     isStoreError = signal(false);
-    productError = signal<string | null>(null);
+    productError = signal<AppError | null>(null);
     getProductById = vi.fn(() => {
       selectedEntity.set(null);
       isStoreLoading.set(true);
@@ -133,11 +141,18 @@ describe('ProductCreate', () => {
 
     isStoreLoading.set(false);
     isStoreError.set(true);
-    productError.set('Producto no encontrado.');
+    productError.set({
+      kind: 'network',
+      message: 'No pudimos conectarnos al servidor.',
+      status: 0,
+      code: null,
+      retryable: true,
+      correlationId: null,
+    });
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('No pudimos cargar el producto');
-    expect(fixture.nativeElement.textContent).toContain('Producto no encontrado.');
+    expect(fixture.nativeElement.textContent).toContain('No pudimos conectarnos al servidor.');
     expect(fixture.nativeElement.querySelector('app-product-form')).toBeNull();
 
     const retryButton = Array.from(
@@ -148,6 +163,26 @@ describe('ProductCreate', () => {
 
     expect(getProductById).toHaveBeenCalledTimes(2);
     expect(fixture.nativeElement.textContent).toContain('Cargando producto');
+  });
+
+  it('does not offer retry for a non-retryable load error', () => {
+    fixture.componentRef.setInput('id', 'product-id');
+    fixture.detectChanges();
+
+    isStoreLoading.set(false);
+    isStoreError.set(true);
+    productError.set({
+      kind: 'not-found',
+      message: 'Producto no encontrado.',
+      status: 404,
+      code: null,
+      retryable: false,
+      correlationId: null,
+    });
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.textContent).toContain('Producto no encontrado.');
+    expect(fixture.nativeElement.textContent).not.toContain('Reintentar');
   });
 
   it('shows the populated form only after the requested product loads', () => {

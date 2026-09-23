@@ -98,10 +98,20 @@ export class ProductList implements OnInit {
     this.isResolvingCategory()
       || (this.useSmartSearch() ? this.hybridLoading() : this.store.isLoading())
   );
-  displayError = computed(() => this.categoryResolutionError() ?? (this.useSmartSearch()
-    ? this.hybridError()
-    : this.store.isError() ? 'No pudimos cargar los productos. Inténtalo de nuevo.' : null)
-  );
+  displayError = computed(() => {
+    if (this.categoryResolutionError()) return this.categoryResolutionError();
+    if (this.useSmartSearch()) return this.hybridError();
+    if (!this.store.isError()) return null;
+
+    return this.store.error()?.message ?? 'No pudimos cargar los productos. Inténtalo de nuevo.';
+  });
+  canRetryDisplayError = computed(() => {
+    if (this.categoryResolutionError() || (this.useSmartSearch() && this.hybridError())) {
+      return true;
+    }
+
+    return this.store.error()?.retryable ?? false;
+  });
 
   constructor() {
     this.hybridSearchRequests.pipe(
@@ -277,7 +287,7 @@ export class ProductList implements OnInit {
   }
 
   retryProducts(): void {
-    if (this.displayLoading()) return;
+    if (this.displayLoading() || !this.canRetryDisplayError()) return;
 
     if (this.categoryResolutionError()) {
       this.refreshRequests.next();
