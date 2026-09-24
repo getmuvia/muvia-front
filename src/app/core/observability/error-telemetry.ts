@@ -7,7 +7,6 @@ import { environment } from '@environments/environment';
 import { APP_RELEASE } from '@environments/release';
 import { BrowserErrorTelemetryTransport } from './browser-error-telemetry.transport';
 import {
-  CORRELATION_ID_HEADER,
   ErrorTelemetryEvent,
   ErrorTelemetryTransport,
 } from './error-telemetry.model';
@@ -95,7 +94,32 @@ export class ErrorTelemetryService {
     const sanitizedStack = partial.stack
       ? this.sanitizeText(partial.stack, 8000, true)
       : null;
-    const fingerprint = [partial.source, sanitizedMessage, sanitizedStack?.split('\n')[0] ?? ''].join('|');
+    const sanitizedContext = partial.context
+      ? this.sanitizeText(partial.context, 100, false)
+      : null;
+    const sanitizedHttpMethod = partial.httpMethod
+      ? this.sanitizeText(partial.httpMethod, 10, false)
+      : null;
+    const sanitizedHttpPath = partial.httpPath
+      ? this.sanitizePath(partial.httpPath)
+      : null;
+    const sanitizedErrorKind = partial.errorKind
+      ? this.sanitizeText(partial.errorKind, 40, false)
+      : null;
+    const sanitizedErrorCode = partial.errorCode
+      ? this.sanitizeText(partial.errorCode, 80, false)
+      : null;
+    const fingerprint = [
+      partial.source,
+      sanitizedMessage,
+      sanitizedStack?.split('\n')[0] ?? '',
+      sanitizedContext ?? '',
+      sanitizedHttpMethod ?? '',
+      sanitizedHttpPath ?? '',
+      partial.httpStatus ?? '',
+      sanitizedErrorKind ?? '',
+      sanitizedErrorCode ?? '',
+    ].join('|');
     const recent = this.recentFingerprints.get(fingerprint);
     if (recent && Date.now() - recent.timestamp < this.duplicateWindowMs) {
       if (typeof originalError === 'object' && originalError !== null) {
@@ -122,12 +146,12 @@ export class ErrorTelemetryService {
       environment: environment.name,
       release: APP_RELEASE,
       runtime: isPlatformBrowser(this.platformId) ? 'browser' : 'server',
-      context: partial.context ? this.sanitizeText(partial.context, 100, false) : null,
-      httpMethod: partial.httpMethod ? this.sanitizeText(partial.httpMethod, 10, false) : null,
-      httpPath: partial.httpPath ? this.sanitizePath(partial.httpPath) : null,
+      context: sanitizedContext,
+      httpMethod: sanitizedHttpMethod,
+      httpPath: sanitizedHttpPath,
       httpStatus: partial.httpStatus ?? null,
-      errorKind: partial.errorKind ? this.sanitizeText(partial.errorKind, 40, false) : null,
-      errorCode: partial.errorCode ? this.sanitizeText(partial.errorCode, 80, false) : null,
+      errorKind: sanitizedErrorKind,
+      errorCode: sanitizedErrorCode,
     };
 
     this.recentFingerprints.set(fingerprint, { incidentId, timestamp: Date.now() });

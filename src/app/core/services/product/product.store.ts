@@ -63,7 +63,6 @@ function normalizeProductError(
  * HTTP calls are delegated to ProductService for separation of concerns.
  */
 export const ProductStore = signalStore(
-    { providedIn: 'root' },
     withState(initialState),
     withRequestStatus<AppError>(),
     withPagination(),

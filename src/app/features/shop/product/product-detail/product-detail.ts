@@ -1,12 +1,10 @@
 import { Component, computed, inject, signal, effect, input, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { HttpErrorResponse } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { ProductStore } from '@core/services/product/product.store';
-import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
 import { ImageGallery, ProductInfo, ProductTabs, SimilarProducts } from './components';
-import { EMPTY, Subject, catchError, map, switchMap } from 'rxjs';
+import { Subject, catchError, map, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-product-detail',
@@ -17,7 +15,6 @@ import { EMPTY, Subject, catchError, map, switchMap } from 'rxjs';
 })
 export class ProductDetail {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly logger = inject(LoggerService);
   private readonly productStore = inject(ProductStore);
   private readonly similarProductRequests = new Subject<{ categoryId: string; excludeId: string }>();
 
@@ -33,22 +30,27 @@ export class ProductDetail {
 
     effect(() => {
       const product = this.product();
-      if (product) {
-        this.loadSimilarProducts(product.categoryId, product.id);
+      if (!product) {
+        this.similarProducts.set([]);
+        return;
       }
+
+      this.loadSimilarProducts(product.categoryId, product.id);
     });
 
     this.similarProductRequests.pipe(
       switchMap(({ categoryId, excludeId }) =>
-        this.productStore.getAllProducts({ page: 1, limit: 20, search: '' }).pipe(
+        this.productStore.getAllProducts({
+          page: 1,
+          limit: 5,
+          search: '',
+          categoryId,
+        }).pipe(
           map(response => response.data
-            .filter((product: Product) => product.categoryId === categoryId && product.id !== excludeId)
+            .filter((product: Product) => product.id !== excludeId)
             .slice(0, 4)
           ),
-          catchError((error: HttpErrorResponse) => {
-            this.logger.error('Failed to load similar products', error, 'ProductDetail');
-            return EMPTY;
-          })
+          catchError(() => of([]))
         )
       ),
       takeUntilDestroyed(this.destroyRef)
@@ -66,6 +68,7 @@ export class ProductDetail {
   }
 
   loadSimilarProducts(categoryId: string, excludeId: string): void {
+    this.similarProducts.set([]);
     this.similarProductRequests.next({ categoryId, excludeId });
   }
 

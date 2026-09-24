@@ -6,7 +6,7 @@ export type RequestStatus = 'idle' | 'loading' | 'success' | 'error';
 /**
  * SignalStore Feature for managing asynchronous request state.
  * Adds signals: `requestStatus` and `error`.
- * Adds computed signals: `isLoading`, `isLoaded`, `isError`.
+ * Adds computed signals: `isLoading` and `isError`.
  */
 export function withRequestStatus<TError = string>() {
     return signalStoreFeature(
@@ -17,7 +17,6 @@ export function withRequestStatus<TError = string>() {
 
         withComputed(({ requestStatus }) => ({
             isLoading: computed(() => requestStatus() === 'loading'),
-            isLoaded: computed(() => requestStatus() === 'success'),
             isError: computed(() => requestStatus() === 'error'),
         }))
     );

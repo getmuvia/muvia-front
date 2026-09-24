@@ -210,7 +210,7 @@ export class ProductCreate {
                     this.setPendingUpload(event.url, optimizedFile);
                 }
             } catch (error) {
-                this.logger.error('Failed to optimize image', error, 'ProductCreate');
+                this.logger.warn('Image optimization failed; using the original file', error, 'ProductCreate');
             }
         }
     }

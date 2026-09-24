@@ -1,4 +1,5 @@
 import { DOCUMENT } from '@angular/common';
+import { HttpErrorResponse, HttpRequest } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 
 import { APP_RELEASE } from '@environments/release';
@@ -57,6 +58,24 @@ describe('ErrorTelemetryService', () => {
 
     expect(secondIncident).toBe(firstIncident);
     expect(send).toHaveBeenCalledOnce();
+  });
+
+  it('keeps distinct HTTP operations in separate incidents', () => {
+    const capture = (request: HttpRequest<unknown>) => service.captureHttpFailure(
+      new HttpErrorResponse({ status: 500, error: { message: 'Internal server error' } }),
+      request,
+      'b1f67bc6-42a9-4b8f-9da1-72754e0dbabc',
+    );
+
+    const productIncident = capture(new HttpRequest('GET', '/products/1'));
+    const userIncident = capture(new HttpRequest('GET', '/users/1'));
+    const productWriteIncident = capture(new HttpRequest('POST', '/products/1', null));
+    const duplicateProductIncident = capture(new HttpRequest('GET', '/products/2'));
+
+    expect(send).toHaveBeenCalledTimes(3);
+    expect(userIncident).not.toBe(productIncident);
+    expect(productWriteIncident).not.toBe(productIncident);
+    expect(duplicateProductIncident).toBe(productIncident);
   });
 
   it('does not propagate transport failures into the application', () => {
