@@ -167,7 +167,7 @@ export class SellerProfile implements OnInit {
       try {
         fileToUpload = await this.imageOptimizer.compressImage(file);
       } catch (error) {
-        this.logger.error('Failed to optimize image', error, 'SellerProfile');
+        this.logger.warn('Image optimization failed; using the original file', error, 'SellerProfile');
       }
     }
 
