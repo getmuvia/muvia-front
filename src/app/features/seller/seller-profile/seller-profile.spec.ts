@@ -153,7 +153,7 @@ describe('SellerProfile', () => {
 
     await component.onSaveImage(file);
 
-    expect(uploadFile).toHaveBeenCalledWith(file, 'users/seller-id', 'local');
+    expect(uploadFile).toHaveBeenCalledWith(file, 'profile_image', 'local');
     expect(deleteFile).toHaveBeenCalledWith('users/seller-id/logo.webp');
     expect(component.isModalOpen()).toBe(true);
     expect(component.imageSaveError()).toContain('No pudimos guardar la imagen');

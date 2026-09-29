@@ -7,9 +7,13 @@ import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search
 import { LoggerService } from '@core/services/logger/logger';
 import { Product } from '@core/models/product/product';
 import { Category } from '@core/models/category/category';
-import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
+import {
+  HybridSearchInterpretation,
+  HybridSearchResult,
+} from '@core/models/search/hybrid-search.model';
 import { MarketService } from '@core/services/market/market';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
+import { SearchInterpretation } from '@features/shop/search-interpretation/search-interpretation';
 import {
   ProductDimension,
   findProductDimension,
@@ -22,6 +26,11 @@ import { EMPTY, Subject, catchError, combineLatest, distinctUntilChanged, finali
 import { ActivatedRoute, Router } from '@angular/router';
 
 type SearchProduct = Product & Pick<HybridSearchResult, 'score' | 'matchType'>;
+type HybridProductListResponse = {
+  interpretation: HybridSearchInterpretation | null;
+  results: SearchProduct[];
+  relatedResults: SearchProduct[];
+};
 type ProductListFilters = {
   search: string;
   categoryCode: string;
@@ -36,7 +45,7 @@ type ResolvedProductListFilters = ProductListFilters & {
 
 @Component({
   selector: 'app-product-list',
-  imports: [PageHeader, FilterBar, ProductGrid, LoadMoreButton],
+  imports: [PageHeader, FilterBar, SearchInterpretation, ProductGrid, LoadMoreButton],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
   providers: [ProductStore]
@@ -87,6 +96,7 @@ export class ProductList implements OnInit {
 
   hybridResults = signal<SearchProduct[]>([]);
   relatedProducts = signal<SearchProduct[]>([]);
+  interpretation = signal<HybridSearchInterpretation | null>(null);
   hybridLoading = signal<boolean>(false);
   hybridError = signal<string | null>(null);
 
@@ -116,6 +126,7 @@ export class ProductList implements OnInit {
   constructor() {
     this.hybridSearchRequests.pipe(
       tap(query => {
+        this.interpretation.set(null);
         this.relatedProducts.set([]);
         if (query.length < SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH) {
           this.hybridLoading.set(false);
@@ -131,19 +142,25 @@ export class ProductList implements OnInit {
       switchMap(query => query.length < SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH
         ? EMPTY
         : this.hybridSearchService.search(query, HYBRID_SEARCH_LIMITS.PRODUCT_LIST).pipe(
-          map(response => ({
+          map((response): HybridProductListResponse => ({
+            interpretation: response.interpretation,
             results: response.results.map(result => this.mapToProduct(result)),
             relatedResults: (response.relatedResults ?? []).map(result => this.mapToProduct(result)),
           })),
           catchError((error: HttpErrorResponse) => {
             this.logger.error('Hybrid search failed', error, 'ProductList');
             this.hybridError.set('No pudimos completar la búsqueda. Inténtalo de nuevo.');
-            return of({ results: [] as SearchProduct[], relatedResults: [] as SearchProduct[] });
+            return of<HybridProductListResponse>({
+              interpretation: null,
+              results: [],
+              relatedResults: [],
+            });
           })
         )
       ),
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(response => {
+      this.interpretation.set(response.interpretation);
       this.hybridResults.set(response.results);
       this.relatedProducts.set(response.relatedResults);
       this.hybridLoading.set(false);
@@ -352,20 +369,29 @@ export class ProductList implements OnInit {
   }
 
   onClearSearch(): void {
-    this.searchProducts(
-      '',
-      this.marketService.selectedMarket().code,
-      this.categoryCode(),
-      this.categoryId(),
-      this.selectedDimension(),
-      this.maxDimensionCm(),
-    );
-
-    // Clear URL query params
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { search: null },
       queryParamsHandling: 'merge'
+    });
+  }
+
+  onRefineSearch(query: string): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { search: query },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  onSearchSubmit(fragment: string): void {
+    const search = this.composeSearchQuery(this.searchQuery(), fragment);
+    if (!search || search === this.searchQuery()) return;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { search },
+      queryParamsHandling: 'merge',
     });
   }
 
@@ -403,5 +429,14 @@ export class ProductList implements OnInit {
         maxDimensionCm: this.maxDimensionCm(),
       },
     });
+  }
+
+  private composeSearchQuery(currentQuery: string, fragment: string): string {
+    const current = currentQuery.trim().replace(/[\s,;:.]+$/g, '');
+    const addition = fragment.trim().replace(/^[\s,;:.]+/g, '');
+
+    if (!current) return addition;
+    if (!addition) return current;
+    return `${current}, ${addition}`;
   }
 }

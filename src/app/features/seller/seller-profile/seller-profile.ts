@@ -173,7 +173,7 @@ export class SellerProfile implements OnInit {
 
     try {
       const response = await firstValueFrom(
-        this.uploadFileService.uploadFile(fileToUpload, `users/${userId}`, 'local')
+        this.uploadFileService.uploadFile(fileToUpload, 'profile_image', 'local')
       );
       uploadedKey = response.key;
       const payload = { vendorProfile: { [field]: response.url } };

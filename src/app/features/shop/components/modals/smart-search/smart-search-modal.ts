@@ -16,13 +16,23 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
 import { LoggerService } from '@core/services/logger/logger';
-import { HybridSearchResult } from '@core/models/search/hybrid-search.model';
+import {
+  HybridSearchInterpretation,
+  HybridSearchResult,
+} from '@core/models/search/hybrid-search.model';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
+import { SearchInterpretation } from '@features/shop/search-interpretation/search-interpretation';
 import { EMPTY, Subject, catchError, map, of, switchMap, tap, timer } from 'rxjs';
+
+type SmartSearchResponse = {
+    interpretation: HybridSearchInterpretation | null;
+    results: HybridSearchResult[];
+    relatedResults: HybridSearchResult[];
+};
 
 @Component({
     selector: 'app-smart-search-modal',
-    imports: [NgOptimizedImage, DecimalPipe],
+    imports: [NgOptimizedImage, DecimalPipe, SearchInterpretation],
     templateUrl: './smart-search-modal.html',
     styleUrl: './smart-search-modal.css',
 })
@@ -40,6 +50,7 @@ export class SmartSearchModal {
 
     /** Search state */
     query = signal('');
+    interpretation = signal<HybridSearchInterpretation | null>(null);
     primaryResults = signal<HybridSearchResult[]>([]);
     relatedResults = signal<HybridSearchResult[]>([]);
     results = computed(() => [...this.primaryResults(), ...this.relatedResults()]);
@@ -65,6 +76,7 @@ export class SmartSearchModal {
             tap(query => {
                 this.selectedIndex.set(-1);
                 this.error.set(null);
+                this.interpretation.set(null);
 
                 this.primaryResults.set([]);
                 this.relatedResults.set([]);
@@ -75,19 +87,25 @@ export class SmartSearchModal {
                 : timer(SEARCH_INPUT_CONFIG.DEBOUNCE_MS).pipe(
                     tap(() => this.isLoading.set(true)),
                     switchMap(() => this.searchService.search(query, HYBRID_SEARCH_LIMITS.MODAL)),
-                    map(response => ({
+                    map((response): SmartSearchResponse => ({
+                        interpretation: response.interpretation,
                         results: response.results,
                         relatedResults: response.relatedResults ?? [],
                     })),
                     catchError((error: HttpErrorResponse) => {
                         this.logger.error('Hybrid search failed', error, 'SmartSearchModal');
                         this.error.set('Error al buscar. Intenta de nuevo.');
-                        return of({ results: [] as HybridSearchResult[], relatedResults: [] as HybridSearchResult[] });
+                        return of<SmartSearchResponse>({
+                            interpretation: null,
+                            results: [],
+                            relatedResults: [],
+                        });
                     })
                 )
             ),
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(response => {
+            this.interpretation.set(response.interpretation);
             this.primaryResults.set(response.results);
             this.relatedResults.set(response.relatedResults);
             this.isLoading.set(false);
