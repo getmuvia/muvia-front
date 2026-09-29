@@ -25,9 +25,6 @@ export const API_ENDPOINTS = {
         BASE: `${BASE}/files`,
         UPLOAD: `${BASE}/files/upload-url`,
     },
-    STORAGE: {
-        GOOGLE_CLOUD_BASE_URL: environment.storageUrl,
-    },
     USERS: {
         ME: `${BASE}/users/me`,
         VENDOR: `${BASE}/users/vendor`,

@@ -6,7 +6,6 @@ import { ProductStore } from '@core/services/product/product.store';
 import { CategoryService } from '@core/services/category/category';
 import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { LoggerService } from '@core/services/logger/logger';
-import { AuthService } from '@core/auth/services/auth';
 import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
 import { firstValueFrom } from 'rxjs';
 import { Category } from '@core/models/category/category';
@@ -56,7 +55,6 @@ export class ProductCreate {
     private readonly productStore = inject(ProductStore);
     private readonly categoryService = inject(CategoryService);
     private readonly uploadService = inject(UploadFileService);
-    private readonly auth = inject(AuthService);
     private readonly imageOptimizer = inject(ImageOptimizerService);
 
     // Edit mode state
@@ -252,32 +250,26 @@ export class ProductCreate {
     }
 
     private async uploadPendingFiles(): Promise<ResolvedProductAssets> {
-        const currentUser = this.auth.currentUser();
-        if (!currentUser) throw new Error('User not authenticated');
-
-        const uploadFolder = `products/${currentUser.id}`;
         const images: CreateProductAsset[] = [];
         for (const asset of this.imageAssets()) {
-            images.push(await this.resolveAsset(asset, uploadFolder));
+            images.push(await this.resolveAsset(asset));
         }
 
         return {
             images,
-            glb: await this.resolveOptionalAsset(this.model3dGlbAsset(), uploadFolder),
-            usdz: await this.resolveOptionalAsset(this.model3dUsdzAsset(), uploadFolder),
+            glb: await this.resolveOptionalAsset(this.model3dGlbAsset()),
+            usdz: await this.resolveOptionalAsset(this.model3dUsdzAsset()),
         };
     }
 
     private async resolveOptionalAsset(
         asset: CreateProductAsset | null,
-        uploadFolder: string,
     ): Promise<CreateProductAsset | null> {
-        return asset ? this.resolveAsset(asset, uploadFolder) : null;
+        return asset ? this.resolveAsset(asset) : null;
     }
 
     private async resolveAsset(
         asset: CreateProductAsset,
-        uploadFolder: string,
     ): Promise<CreateProductAsset> {
         if (this.isDestroyed) throw new DraftSubmissionCancelledError();
 
@@ -288,7 +280,11 @@ export class ProductCreate {
         if (!response) {
             try {
                 response = await firstValueFrom(
-                    this.uploadService.uploadFile(file, uploadFolder, 'local')
+                    this.uploadService.uploadFile(
+                        file,
+                        asset.type === 'model_3d' ? 'product_model' : 'product_image',
+                        'local',
+                    )
                 );
             } catch {
                 throw new DraftFileUploadError(file.name);

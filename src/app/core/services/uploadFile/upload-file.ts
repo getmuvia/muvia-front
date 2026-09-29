@@ -16,9 +16,18 @@ export interface PrivateUploadResponse {
   key: string;
 }
 
+export type PublicUploadPurpose =
+  | 'profile_image'
+  | 'product_image'
+  | 'product_model';
+
 interface SignedUploadResponse {
   url: string;
   key: string;
+}
+
+interface SignedPostPolicyResponse extends SignedUploadResponse {
+  fields: Record<string, string>;
 }
 
 /**
@@ -38,25 +47,33 @@ export class UploadFileService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl = API_ENDPOINTS.FILES.UPLOAD;
-  private readonly storageFirebaseUrl = API_ENDPOINTS.STORAGE.GOOGLE_CLOUD_BASE_URL;
 
-  /**
-   * Upload a file to the server.
-   * @param file The file to upload
-   * @param folder The folder path (e.g. 'products/{userId}')
-   */
+  /** Requests an owner-scoped URL and uploads directly to Cloud Storage. */
   uploadFile(
     file: File,
-    folder: string,
+    purpose: PublicUploadPurpose,
     errorFeedback: HttpErrorFeedback = 'global',
   ): Observable<UploadResponse> {
-    const requestUrl = `${this.apiUrl}?folder=${folder}`;
-
-    return this.uploadToSignedUrl(file, requestUrl, errorFeedback).pipe(
-      map(response => ({
-        key: response.key,
-        url: `${this.storageFirebaseUrl}/${response.key}`
-      }))
+    const contentType = this.getContentType(file);
+    const context = this.createErrorContext(errorFeedback);
+    return this.http.post<SignedPostPolicyResponse>(
+      this.apiUrl,
+      { purpose, contentType, fileSize: file.size },
+      { context },
+    ).pipe(
+      switchMap(policy => {
+        const form = new FormData();
+        Object.entries(policy.fields).forEach(([name, value]) => form.append(name, value));
+        form.append('file', file, file.name);
+        return this.http.post(policy.url, form, { context, responseType: 'text' }).pipe(
+          map(() => policy.key),
+        );
+      }),
+      switchMap(key => this.http.post<UploadResponse>(
+        `${API_ENDPOINTS.FILES.BASE}/finalize`,
+        { key },
+        { context },
+      )),
     );
   }
 
@@ -77,22 +94,30 @@ export class UploadFileService {
     requestUrl: string,
     errorFeedback: HttpErrorFeedback = 'global',
   ): Observable<PrivateUploadResponse> {
-    return this.uploadToSignedUrl(file, requestUrl, errorFeedback);
+    return this.uploadToSignedUrl(
+      file,
+      requestUrl,
+      { filename: file.name, contentType: this.getContentType(file) },
+      errorFeedback,
+    );
   }
 
   private uploadToSignedUrl(
     file: File,
     requestUrl: string,
+    body: { contentType: string; filename: string } | {
+      contentType: string;
+      purpose: PublicUploadPurpose;
+      fileSize: number;
+    },
     errorFeedback: HttpErrorFeedback = 'global',
   ): Observable<PrivateUploadResponse> {
-    const contentType = this.getContentType(file);
-    const body = { filename: file.name, contentType };
     const context = this.createErrorContext(errorFeedback);
 
     return this.http.post<SignedUploadResponse>(requestUrl, body, { context }).pipe(
       switchMap(response => this.http.put(response.url, file, {
         context,
-        headers: { 'Content-Type': contentType }
+        headers: { 'Content-Type': body.contentType }
       }).pipe(
         map(() => ({ key: response.key }))
       ))
@@ -105,12 +130,15 @@ export class UploadFileService {
    * it detects it by file extension.
    */
   private getContentType(file: File): string {
+    const ext = file.name.toLowerCase().split('.').pop() || '';
+    if (MIME_TYPE_MAP[ext]) {
+      return MIME_TYPE_MAP[ext];
+    }
     if (file.type) {
       return file.type;
     }
 
-    const ext = file.name.toLowerCase().split('.').pop() || '';
-    return MIME_TYPE_MAP[ext] || 'application/octet-stream';
+    return 'application/octet-stream';
   }
 
   private createErrorContext(feedback: HttpErrorFeedback) {

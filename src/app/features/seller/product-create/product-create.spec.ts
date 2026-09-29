@@ -230,7 +230,7 @@ describe('ProductCreate', () => {
 
     await component.onFormSubmit(validForm);
 
-    expect(uploadFile).toHaveBeenCalledWith(file, 'products/seller-id', 'local');
+    expect(uploadFile).toHaveBeenCalledWith(file, 'product_image', 'local');
     expect(deleteFile).toHaveBeenCalledWith('products/seller-id/silla.webp');
     expect(component.imageAssets()[0]?.url).toBe(localUrl);
     expect(component.pendingUploads().get(localUrl)).toBe(file);

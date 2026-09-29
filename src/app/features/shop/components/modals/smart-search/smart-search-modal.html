@@ -30,6 +30,11 @@
             }
         </div>
 
+        @if (!isLoading() && !error() && interpretation(); as searchInterpretation) {
+        <app-search-interpretation [query]="query()" [interpretation]="searchInterpretation"
+            [compact]="true" [editable]="false" />
+        }
+
         <!-- Results Section -->
         <div class="max-h-[50vh] overflow-y-auto">
 

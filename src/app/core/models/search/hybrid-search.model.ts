@@ -8,6 +8,30 @@
  */
 export type MatchType = 'hybrid' | 'semantic' | 'lexical';
 
+/** Source used by the backend to resolve the validated search intent. */
+export type SearchInterpretationSource = 'ai' | 'deterministic';
+
+/** Product dimension recognized in a natural-language search. */
+export type SearchMeasurementDimension = 'width' | 'height' | 'depth';
+
+/** Buyer-facing explanation of the intent applied to a hybrid search. */
+export interface HybridSearchInterpretation {
+    summary: string;
+    source: SearchInterpretationSource;
+    category?: {
+        code: string;
+        label: string;
+    };
+    material?: {
+        code: string;
+        label: string;
+    };
+    measurement?: {
+        dimension: SearchMeasurementDimension;
+        maxDimensionCm: number;
+    };
+}
+
 /**
  * Request payload for hybrid search
  */
@@ -37,6 +61,7 @@ export interface HybridSearchResult {
  */
 export interface HybridSearchResponse {
     query: string;
+    interpretation: HybridSearchInterpretation;
     results: HybridSearchResult[];
     count: number;
     /** Fallback and broader suggestions supplied separately by the backend. */
