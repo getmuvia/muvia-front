@@ -11,7 +11,7 @@ import { USER_ROLES } from '../models/auth.models';
  * During SSR, allows navigation since localStorage is not available.
  * The actual validation happens after hydration on the client.
  */
-export const authGuard: CanActivateFn = (_route, state) => {
+export const authGuard: CanActivateFn = async (_route, state) => {
     const platformId = inject(PLATFORM_ID);
     const authService = inject(AuthService);
     const router = inject(Router);
@@ -21,7 +21,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
         return true;
     }
 
-    if (authService.isAuthenticated()) {
+    if (await authService.verifySession()) {
         return true;
     }
 
@@ -37,7 +37,7 @@ export const authGuard: CanActivateFn = (_route, state) => {
  * During SSR, allows navigation since localStorage is not available.
  * The actual validation happens after hydration on the client.
  */
-export const guestGuard: CanActivateFn = () => {
+export const guestGuard: CanActivateFn = async () => {
     const platformId = inject(PLATFORM_ID);
     const authService = inject(AuthService);
     const router = inject(Router);
@@ -47,7 +47,7 @@ export const guestGuard: CanActivateFn = () => {
         return true;
     }
 
-    if (!authService.isAuthenticated()) {
+    if (!await authService.verifySession()) {
         return true;
     }
 
@@ -57,7 +57,7 @@ export const guestGuard: CanActivateFn = () => {
 /**
  * Guard that restricts seller pages to vendor accounts.
  */
-export const vendorGuard: CanActivateFn = () => {
+export const vendorGuard: CanActivateFn = async () => {
     const platformId = inject(PLATFORM_ID);
     const authService = inject(AuthService);
     const router = inject(Router);
@@ -66,7 +66,8 @@ export const vendorGuard: CanActivateFn = () => {
         return true;
     }
 
-    const user = authService.currentUser();
+    const verified = await authService.verifySession();
+    const user = verified ? authService.currentUser() : null;
     if (!user) {
         return router.createUrlTree(['/auth/login']);
     }

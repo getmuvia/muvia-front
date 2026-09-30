@@ -43,4 +43,31 @@ describe('ProductCard', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('renders the catalog projection without requiring full product assets', () => {
+    fixture.componentRef.setInput('product', {
+      id: 'summary-id',
+      title: 'Escritorio',
+      price: 800,
+      currencyCode: 'BOB',
+      category: { id: 'category-id', name: 'Escritorios' },
+      primaryImage: { url: 'https://example.com/desk.webp', alt: 'Vista del escritorio' },
+    });
+    fixture.detectChanges();
+
+    expect(component.imageUrl()).toBe('https://example.com/desk.webp');
+    expect(component.altText()).toBe('Vista del escritorio');
+    expect(fixture.nativeElement.textContent).toContain('Escritorios');
+    expect(fixture.nativeElement.textContent).toContain('800.00');
+  });
+
+  it('handles a catalog product without a category or an image', () => {
+    fixture.componentRef.setInput('product', {
+      id: 'summary-id', title: 'Producto', price: 0, currencyCode: 'BOB',
+      category: null, primaryImage: null,
+    });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Sin categoría');
+    expect(fixture.nativeElement.textContent).toContain('Imagen no disponible');
+  });
 });

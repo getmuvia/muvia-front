@@ -2,7 +2,7 @@ import { Component, computed, inject, signal, effect, input, DestroyRef } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ProductStore } from '@core/services/product/product.store';
-import { Product } from '@core/models/product/product';
+import { ProductSummary } from '@core/models/product/product-summary';
 import { ImageGallery, ProductInfo, ProductTabs, SimilarProducts } from './components';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
 
@@ -23,7 +23,7 @@ export class ProductDetail {
   readonly isLoading = this.productStore.isLoading;
   readonly error = computed(() => this.productStore.error()?.message ?? null);
   readonly canRetry = computed(() => this.productStore.error()?.retryable ?? false);
-  readonly similarProducts = signal<Product[]>([]);
+  readonly similarProducts = signal<ProductSummary[]>([]);
 
   constructor() {
     effect(() => this.loadProduct(this.id()));
@@ -47,7 +47,7 @@ export class ProductDetail {
           categoryId,
         }).pipe(
           map(response => response.data
-            .filter((product: Product) => product.id !== excludeId)
+            .filter(product => product.id !== excludeId)
             .slice(0, 4)
           ),
           catchError(() => of([]))

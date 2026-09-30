@@ -3,12 +3,12 @@ import { AuthService } from '../services/auth';
 import { MarketService } from '@core/services/market/market';
 
 /**
- * Initializes the application by verifying the user's session.
- * This runs before the app renders to prevent flashing authenticated state.
+ * Starts public bootstrap requests without blocking rendering.
+ * Protected route guards await the shared session verification separately.
  */
 export const appInit = () => {
     const auth = inject(AuthService);
     const market = inject(MarketService);
     void market.initialize();
-    return auth.verifySession();
+    void auth.verifySession();
 };

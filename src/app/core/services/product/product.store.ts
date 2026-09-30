@@ -5,6 +5,7 @@ import { tapResponse } from '@ngrx/operators';
 import { pipe, tap, switchMap, exhaustMap } from 'rxjs';
 
 import type { Product } from '@core/models/product/product';
+import type { ProductSummary } from '@core/models/product/product-summary';
 import type { CreateProductDto } from '@core/models/product/create-product.dto';
 import type { UpdateProductDto } from '@core/models/product/update-product.dto';
 import {
@@ -20,10 +21,12 @@ import { ProductService, type SearchParams } from './product';
 
 interface ProductState {
     products: Product[];
+    catalogProducts: ProductSummary[];
 }
 
 const initialState: ProductState = {
     products: [],
+    catalogProducts: [],
 };
 
 const EXPECTED_PRODUCT_MUTATION_ERRORS = {
@@ -145,7 +148,7 @@ export const ProductStore = signalStore(
                         const page = params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE;
                         patchState(store, (state) => ({
                             ...setLoading(),
-                            products: page === 1 ? [] : state.products
+                            catalogProducts: page === 1 ? [] : state.catalogProducts
                         }));
                     }),
                     switchMap((params) => {
@@ -153,9 +156,9 @@ export const ProductStore = signalStore(
                             tapResponse({
                                 next: (response) => {
                                     patchState(store, (state) => ({
-                                        products: response.page === 1
+                                        catalogProducts: response.page === 1
                                             ? response.data
-                                            : [...state.products, ...response.data],
+                                            : [...state.catalogProducts, ...response.data],
                                         ...setLoaded()
                                     }));
                                     store.setPagination(response);

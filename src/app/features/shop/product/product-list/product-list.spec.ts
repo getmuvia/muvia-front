@@ -18,7 +18,7 @@ describe('ProductList', () => {
         providers: [{
           provide: ProductStore,
           useValue: {
-            products: signal([]).asReadonly(),
+            catalogProducts: signal([]).asReadonly(),
             isLoading: signal(false).asReadonly(),
             isError: signal(false).asReadonly(),
             hasNextPage: signal(false).asReadonly(),

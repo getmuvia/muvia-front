@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { Product } from '@core/models/product/product';
+import { ProductSummary } from '@core/models/product/product-summary';
 import { CreateProductDto } from '@core/models/product/create-product.dto';
 import { UpdateProductDto } from '@core/models/product/update-product.dto';
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
@@ -76,7 +77,7 @@ export class ProductService {
   searchProducts(
     params: SearchParams,
     options: HttpErrorFeedbackOptions = {},
-  ): Observable<PaginatedResponse<Product>> {
+  ): Observable<PaginatedResponse<ProductSummary>> {
     let queryParams = new HttpParams()
       .set('page', (params.page || STORE_CONFIG.PAGINATION.DEFAULT_PAGE).toString())
       .set('limit', (params.limit || STORE_CONFIG.PAGINATION.DEFAULT_LIMIT).toString())
@@ -96,7 +97,7 @@ export class ProductService {
         .set('maxDimensionCm', params.maxDimensionCm.toString());
     }
 
-    return this.http.get<PaginatedResponse<Product>>(this.apiUrl, {
+    return this.http.get<PaginatedResponse<ProductSummary>>(this.apiUrl, {
       context: createHttpErrorFeedbackContext(
         options.errorFeedback ?? 'global',
         options.errorTelemetry,

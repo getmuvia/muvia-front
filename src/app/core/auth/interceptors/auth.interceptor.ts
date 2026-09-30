@@ -7,6 +7,7 @@ import { environment } from '@environments/environment';
 import { AuthService } from '../services/auth';
 import { AuthStorageService } from '../services/storage';
 import { ToastService } from '@core/services/toast/toast';
+import { SILENT_SESSION_CHECK } from '../models/auth-http-context';
 
 /**
  * Interceptor that handles 401 Unauthorized errors and attaches the Bearer token.
@@ -48,7 +49,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                 const authService = injector.get(AuthService);
                 const didInvalidateSession = authService.invalidateSession(token);
 
-                if (didInvalidateSession) {
+                if (didInvalidateSession && !req.context.get(SILENT_SESSION_CHECK)) {
                     toastService.warning('Tu sesión ha expirado. Inicia sesión nuevamente.', 6000);
                     void router.navigate(['/auth/login']);
                 }

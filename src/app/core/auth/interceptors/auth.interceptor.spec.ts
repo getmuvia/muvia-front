@@ -10,6 +10,8 @@ import { environment } from '@environments/environment';
 import { AuthService } from '../services/auth';
 import { AuthStorageService } from '../services/storage';
 import { authInterceptor } from './auth.interceptor';
+import { SILENT_SESSION_CHECK } from '../models/auth-http-context';
+import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 
 describe('authInterceptor', () => {
   let http: HttpClient;
@@ -103,5 +105,21 @@ describe('authInterceptor', () => {
     expect(toastWarning).not.toHaveBeenCalled();
     expect(navigate).not.toHaveBeenCalled();
     expect(toastError).toHaveBeenCalledOnce();
+  });
+
+  it('invalidates a failed background session check without redirecting public pages', () => {
+    invalidateSession.mockReturnValue(true);
+    const requestUrl = `${environment.apiUrl}/users/me`;
+    http.get(requestUrl, {
+      context: createHttpErrorFeedbackContext('none', { expectedStatuses: [401] })
+        .set(SILENT_SESSION_CHECK, true),
+    }).subscribe({ error: () => undefined });
+
+    httpTesting.expectOne(requestUrl).flush({}, { status: 401, statusText: 'Unauthorized' });
+
+    expect(invalidateSession).toHaveBeenCalledWith('active-token');
+    expect(navigate).not.toHaveBeenCalled();
+    expect(toastWarning).not.toHaveBeenCalled();
+    expect(toastError).not.toHaveBeenCalled();
   });
 });

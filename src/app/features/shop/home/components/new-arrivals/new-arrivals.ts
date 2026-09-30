@@ -11,7 +11,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ProductCard } from '@shared/components/product-card/product-card';
-import { Product } from '@core/models/product/product';
+import { ProductSummary } from '@core/models/product/product-summary';
 import { ProductService } from '@core/services/product/product';
 import { MarketService } from '@core/services/market/market';
 import { LoggerService } from '@core/services/logger/logger';
@@ -45,7 +45,7 @@ export class NewArrivals implements OnInit {
     distinctUntilChanged(),
   );
 
-  products = signal<Product[]>([]);
+  products = signal<ProductSummary[]>([]);
   isLoading = signal(true);
   error = signal<string | null>(null);
   isInitialLoading = computed(() => this.isLoading() && this.products().length === 0);

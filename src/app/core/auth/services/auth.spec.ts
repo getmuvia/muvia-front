@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { NEVER, Subject, of, throwError } from 'rxjs';
 
 import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { UserService } from '@core/services/user/user';
@@ -19,6 +19,7 @@ describe('AuthService', () => {
   let service: AuthService;
   let activeToken: string | null;
   let httpGet: ReturnType<typeof vi.fn>;
+  let httpPost: ReturnType<typeof vi.fn>;
   let storageClear: ReturnType<typeof vi.fn>;
   let storageStore: ReturnType<typeof vi.fn>;
   let clearProfile: ReturnType<typeof vi.fn>;
@@ -26,6 +27,7 @@ describe('AuthService', () => {
   beforeEach(() => {
     activeToken = 'active-token';
     httpGet = vi.fn();
+    httpPost = vi.fn();
     storageClear = vi.fn(() => {
       activeToken = null;
     });
@@ -42,7 +44,7 @@ describe('AuthService', () => {
           provide: HttpClient,
           useValue: {
             get: httpGet,
-            post: vi.fn(),
+            post: httpPost,
           },
         },
         {
@@ -68,6 +70,8 @@ describe('AuthService', () => {
   it('should restore the locally stored session', () => {
     expect(service.isAuthenticated()).toBe(true);
     expect(service.currentUser()).toEqual(storedUser);
+    expect(service.isSessionVerified()).toBe(false);
+    expect(service.sessionStatus()).toBe('unverified');
   });
 
   it.each([0, 403, 503])(
@@ -80,11 +84,12 @@ describe('AuthService', () => {
 
       const result = await service.verifySession();
 
-      expect(result).toBe(true);
+      expect(result).toBe(false);
       expect(service.isAuthenticated()).toBe(true);
       expect(activeToken).toBe('active-token');
       expect(storageClear).not.toHaveBeenCalled();
       expect(clearProfile).not.toHaveBeenCalled();
+      expect(service.sessionStatus()).toBe('unavailable');
     },
   );
 
@@ -126,8 +131,96 @@ describe('AuthService', () => {
     const result = await service.verifySession();
 
     expect(result).toBe(true);
-    expect(httpGet).toHaveBeenCalledWith(API_ENDPOINTS.USERS.ME);
+    expect(httpGet).toHaveBeenCalledWith(API_ENDPOINTS.USERS.ME, expect.any(Object));
     expect(service.currentUser()).toEqual(refreshedUser);
     expect(storageStore).toHaveBeenCalledWith('active-token', refreshedUser);
+    expect(service.isSessionVerified()).toBe(true);
+  });
+
+  it('shares pending verification and reuses a verified session', async () => {
+    const response = new Subject<User>();
+    httpGet.mockReturnValue(response);
+
+    const first = service.verifySession();
+    const second = service.verifySession();
+    expect(first).toBe(second);
+    expect(httpGet).toHaveBeenCalledOnce();
+    expect(service.sessionStatus()).toBe('verifying');
+
+    response.next(storedUser);
+    await expect(first).resolves.toBe(true);
+    await expect(service.verifySession()).resolves.toBe(true);
+    expect(httpGet).toHaveBeenCalledOnce();
+  });
+
+  it('does not restore a session when verification completes after logout', async () => {
+    const response = new Subject<User>();
+    httpGet.mockReturnValue(response);
+    const pending = service.verifySession();
+
+    service.logout();
+    response.next(storedUser);
+
+    await expect(pending).resolves.toBe(false);
+    expect(service.currentUser()).toBeNull();
+    expect(activeToken).toBeNull();
+    expect(storageStore).not.toHaveBeenCalled();
+  });
+
+  it('checks a replacement token instead of reusing another token verification', async () => {
+    httpGet.mockReturnValue(of(storedUser));
+    await service.verifySession();
+    activeToken = 'replacement-token';
+    const replacementUser = { ...storedUser, id: 'replacement-user' };
+    httpGet.mockReturnValue(of(replacementUser));
+
+    await expect(service.verifySession()).resolves.toBe(true);
+
+    expect(httpGet).toHaveBeenCalledTimes(2);
+    expect(service.currentUser()).toEqual(replacementUser);
+    expect(storageStore).toHaveBeenLastCalledWith('replacement-token', replacementUser);
+  });
+
+  it.each(['success', 'unauthorized'])(
+    'ignores an old verification %s after another account signs in',
+    async (outcome) => {
+      const response = new Subject<User>();
+      httpGet.mockReturnValue(response);
+      const pending = service.verifySession();
+      const newUser = { ...storedUser, id: 'new-user' };
+      httpPost.mockReturnValue(of({ accessToken: 'new-token', user: newUser }));
+      await service.login({ email: 'new@getmuvia.com', password: 'password' });
+
+      if (outcome === 'success') response.next(storedUser);
+      else response.error(new HttpErrorResponse({ status: 401 }));
+
+      await expect(pending).resolves.toBe(true);
+      expect(service.currentUser()).toEqual(newUser);
+      expect(activeToken).toBe('new-token');
+      expect(storageStore).toHaveBeenCalledOnce();
+      expect(storageClear).not.toHaveBeenCalled();
+    },
+  );
+
+  it('bounds verification without deleting credentials on timeout', async () => {
+    vi.useFakeTimers();
+    try {
+      httpGet.mockReturnValue(NEVER);
+      const pending = service.verifySession();
+      await vi.advanceTimersByTimeAsync(5000);
+
+      await expect(pending).resolves.toBe(false);
+      expect(service.sessionStatus()).toBe('unavailable');
+      expect(activeToken).toBe('active-token');
+      expect(storageClear).not.toHaveBeenCalled();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('does not check an anonymous session', async () => {
+    service.logout();
+    await expect(service.verifySession()).resolves.toBe(false);
+    expect(httpGet).not.toHaveBeenCalled();
   });
 });
