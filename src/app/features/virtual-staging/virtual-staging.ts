@@ -11,7 +11,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { LoggerService } from '@core/services/logger/logger';
 import { ProductService } from '@core/services/product/product';
-import { Product } from '@core/models/product/product';
+import {
+    ProductPreview,
+    ProductSummary,
+    productPreviewImage,
+} from '@core/models/product/product-summary';
 import { toAppError } from '@core/models/errors/api-error.model';
 import { Pagination } from '@shared/components/pagination/pagination';
 import { debounceTime, distinctUntilChanged, firstValueFrom, Subject } from 'rxjs';
@@ -43,10 +47,10 @@ export class VirtualStaging implements OnInit, OnDestroy {
     quotaErrorMessage = signal<string | null>(null);
     catalogErrorMessage = signal<string | null>(null);
     selectionMessage = signal<string | null>(null);
-    products = signal<Product[]>([]);
+    products = signal<ProductSummary[]>([]);
     selectedFile = signal<File | null>(null);
     selectedProductId = signal<string | null>(null);
-    selectedProductDetails = signal<Product | null>(null);
+    selectedProductDetails = signal<ProductPreview | null>(null);
     previewUrl = signal<string | null>(null);
     searchQuery = signal('');
     catalogPage = signal(1);
@@ -126,7 +130,7 @@ export class VirtualStaging implements OnInit, OnDestroy {
         }
     }
 
-    selectProduct(product: Product): void {
+    selectProduct(product: ProductSummary): void {
         if (!this.isGenerating()) {
             this.selectedProductId.set(product.id);
             this.selectedProductDetails.set(product);
@@ -183,12 +187,9 @@ export class VirtualStaging implements OnInit, OnDestroy {
         }
     }
 
-    productImage(product: Product): string | null {
-        const imageAssets = (product.assets ?? []).filter(asset =>
-            asset.type === 'image'
-            && (asset.url.startsWith('https://') || asset.url.startsWith('http://'))
-        );
-        return imageAssets.find(asset => asset.isPrimary)?.url ?? imageAssets[0]?.url ?? null;
+    productImage(product: ProductPreview): string | null {
+        const url = productPreviewImage(product)?.url;
+        return url && (url.startsWith('https://') || url.startsWith('http://')) ? url : null;
     }
 
     async generateImage(): Promise<void> {

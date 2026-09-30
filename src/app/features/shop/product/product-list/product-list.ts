@@ -67,7 +67,7 @@ export class ProductList implements OnInit {
   );
 
   isLoadingMore = computed(() =>
-    !this.useSmartSearch() && this.store.isLoading() && this.store.products().length > 0
+    !this.useSmartSearch() && this.store.isLoading() && this.store.catalogProducts().length > 0
   );
 
   searchQuery = signal<string>('');
@@ -102,7 +102,7 @@ export class ProductList implements OnInit {
 
   displayProducts = computed(() => this.isResolvingCategory() || this.categoryResolutionError()
     ? []
-    : this.useSmartSearch() ? this.hybridResults() : this.store.products()
+    : this.useSmartSearch() ? this.hybridResults() : this.store.catalogProducts()
   );
   displayLoading = computed(() =>
     this.isResolvingCategory()
@@ -311,7 +311,7 @@ export class ProductList implements OnInit {
       return;
     }
 
-    if (!this.useSmartSearch() && this.store.products().length > 0) {
+    if (!this.useSmartSearch() && this.store.catalogProducts().length > 0) {
       this.loadMore();
       return;
     }

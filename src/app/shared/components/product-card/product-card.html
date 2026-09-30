@@ -28,7 +28,7 @@
 
     <div class="flex flex-col items-start gap-1 px-0.5">
         <p class="text-sm text-text-light/70 font-body">
-            {{ product().category.name }}
+            {{ product().category?.name ?? 'Sin categoría' }}
         </p>
 
         <a [routerLink]="['/products', product().id]" class="no-underline hover:text-primary">

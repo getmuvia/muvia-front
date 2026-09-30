@@ -1,7 +1,7 @@
 import { Component, input, computed, signal } from '@angular/core';
 import { DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Product } from '@core/models/product/product';
+import { ProductPreview, productPreviewImage } from '@core/models/product/product-summary';
 
 @Component({
   selector: 'app-product-card',
@@ -10,18 +10,17 @@ import { Product } from '@core/models/product/product';
   styleUrl: './product-card.css',
 })
 export class ProductCard {
-  readonly product = input.required<Product>();
+  readonly product = input.required<ProductPreview>();
   readonly priority = input<boolean>(false);
   readonly showEditButton = input<boolean>(false);
 
   private readonly imageAsset = computed(() => {
-    const images = this.product().assets?.filter(asset => asset.type === 'image' && asset.url);
-    return images?.find(asset => asset.isPrimary) ?? images?.[0];
+    return productPreviewImage(this.product());
   });
   private readonly failedImageUrl = signal<string | null>(null);
 
   readonly imageUrl = computed(() => this.imageAsset()?.url ?? '');
-  readonly altText = computed(() => this.imageAsset()?.metadata?.alt || this.product().title);
+  readonly altText = computed(() => this.imageAsset()?.alt || this.product().title);
   readonly showImage = computed(() => !!this.imageUrl() && this.failedImageUrl() !== this.imageUrl());
 
   onImageError(): void {
@@ -30,6 +29,6 @@ export class ProductCard {
 
   /** Get price as number */
   priceNumber = computed(() => {
-    return parseFloat(this.product().price) || 0;
+    return Number(this.product().price) || 0;
   });
 }

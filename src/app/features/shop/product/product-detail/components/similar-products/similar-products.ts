@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { Product } from '@core/models/product/product';
+import { ProductSummary } from '@core/models/product/product-summary';
 import { ProductCard } from '@shared/components/product-card/product-card';
 
 @Component({
@@ -9,5 +9,5 @@ import { ProductCard } from '@shared/components/product-card/product-card';
     styleUrl: './similar-products.css',
 })
 export class SimilarProducts {
-    readonly products = input<Product[]>([]);
+    readonly products = input<ProductSummary[]>([]);
 }

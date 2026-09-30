@@ -2,7 +2,7 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
-import { Product } from '@core/models/product/product';
+import { ProductSummary } from '@core/models/product/product-summary';
 import { ProductService, SearchParams } from '@core/services/product/product';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
 import { VirtualStaging } from './virtual-staging';
@@ -105,33 +105,19 @@ describe('VirtualStaging', () => {
   });
 });
 
-function createProduct(id: string): Product {
+function createProduct(id: string): ProductSummary {
   return {
     id,
-    sellerId: 'seller-id',
-    categoryId: 'category-id',
     title: `Producto ${id}`,
-    description: 'Producto de prueba',
-    price: '100',
-    stock: 1,
-    specifications: {},
-    keywords: [],
-    createdAt: '2026-09-10T00:00:00.000Z',
-    assets: [{
-      id: `asset-${id}`,
-      productId: id,
+    price: 100,
+    currencyCode: 'BOB',
+    primaryImage: {
       url: 'https://storage.googleapis.com/example/product.webp',
-      type: 'image',
-      isPrimary: true,
-      metadata: {},
-    }],
+      alt: null,
+    },
     category: {
       id: 'category-id',
-      parentId: null,
       name: 'Muebles',
-      description: '',
-      imageUrl: '',
-      level: 0,
     },
   };
 }
