@@ -20,8 +20,8 @@ import {
   formatDimensionCm,
   parseMaxDimensionCm,
 } from '@core/models/product/product-dimension-filter';
-import { PageHeader, FilterBar, ProductGrid, LoadMoreButton } from './components';
-import { EMPTY, Subject, catchError, combineLatest, distinctUntilChanged, finalize, map, of, startWith, switchMap, tap } from 'rxjs';
+import { PageHeader, FilterBar, ProductGrid, LoadMoreButton, CategoryFilter } from './components';
+import { EMPTY, Subject, catchError, combineLatest, distinctUntilChanged, filter, finalize, map, of, shareReplay, startWith, switchMap, take, tap } from 'rxjs';
 
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -42,10 +42,16 @@ type ResolvedProductListFilters = ProductListFilters & {
   categoryId: string;
   category: Category | null;
 };
+type CategoryOptionsState = {
+  marketCode: string;
+  categories: Category[];
+  isLoading: boolean;
+  error: string | null;
+};
 
 @Component({
   selector: 'app-product-list',
-  imports: [PageHeader, FilterBar, SearchInterpretation, ProductGrid, LoadMoreButton],
+  imports: [PageHeader, FilterBar, CategoryFilter, SearchInterpretation, ProductGrid, LoadMoreButton],
   templateUrl: './product-list.html',
   styleUrl: './product-list.css',
   providers: [ProductStore]
@@ -61,6 +67,7 @@ export class ProductList implements OnInit {
   private readonly marketService = inject(MarketService);
   private readonly hybridSearchRequests = new Subject<string>();
   private readonly refreshRequests = new Subject<void>();
+  private readonly categoryRefreshRequests = new Subject<void>();
   private readonly selectedMarketCode$ = toObservable(this.marketService.selectedMarket).pipe(
     map(market => market.code),
     distinctUntilChanged(),
@@ -80,12 +87,42 @@ export class ProductList implements OnInit {
   categoryResolutionError = signal<string | null>(null);
   useSmartSearch = signal<boolean>(false);
 
-  pageTitle = computed(() => this.activeCategory() ? 'Categoría' : 'Colección');
-  pageTitleBold = computed(() => this.activeCategory()?.name ?? 'Completa');
-  pageDescription = computed(() => this.activeCategory()
-    ? 'Explora los productos disponibles en esta categoría del catálogo de Muvia.'
-    : 'Diseño contemporáneo para la vida moderna. Encuentra la pieza perfecta que define tu estilo único.'
+  readonly categories = signal<Category[]>([]);
+  readonly isLoadingCategories = signal(true);
+  readonly categoryListError = signal<string | null>(null);
+  private readonly categoryOptions$ = combineLatest([
+    this.selectedMarketCode$,
+    this.categoryRefreshRequests.pipe(startWith(undefined)),
+  ]).pipe(
+    switchMap(([marketCode]) => {
+      const locale = this.marketService.locale();
+      const loading: CategoryOptionsState = { marketCode, categories: [], isLoading: true, error: null };
+      return this.categoryService.getCategories().pipe(
+        map((categories): CategoryOptionsState => ({
+          marketCode,
+          categories: [...categories].sort((a, b) => a.name.localeCompare(b.name, locale, { sensitivity: 'base' })),
+          isLoading: false,
+          error: null,
+        })),
+        catchError((error: unknown) => {
+          this.logger.error('Catalog categories failed to load', error, 'ProductList');
+          return of<CategoryOptionsState>({
+            ...loading,
+            isLoading: false,
+            error: 'No pudimos cargar las categorías. Inténtalo de nuevo.',
+          });
+        }),
+        startWith(loading),
+      );
+    }),
+    shareReplay({ bufferSize: 1, refCount: true }),
   );
+  pageTitle = computed(() => this.activeCategory()?.name ?? 'Muebles para tu espacio');
+  readonly resultSummary = computed(() => {
+    if (this.displayLoading() && !this.displayProducts().length) return 'Buscando productos…';
+    const count = this.useSmartSearch() ? this.displayProducts().length : this.store.total();
+    return `${count} ${count === 1 ? 'producto' : 'productos'}`;
+  });
   activeMeasurement = computed(() => {
     const dimension = findProductDimension(this.selectedDimension());
     const maximum = this.maxDimensionCm();
@@ -168,6 +205,12 @@ export class ProductList implements OnInit {
   }
 
   ngOnInit(): void {
+    this.categoryOptions$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((state) => {
+      this.categories.set(state.categories);
+      this.isLoadingCategories.set(state.isLoading);
+      this.categoryListError.set(state.error);
+    });
+
     combineLatest([
       this.route.queryParamMap.pipe(
         map((params): ProductListFilters => {
@@ -211,9 +254,11 @@ export class ProductList implements OnInit {
         }
 
         this.isResolvingCategory.set(true);
-        return this.categoryService.getCategories().pipe(
-          map((categories): ResolvedProductListFilters => {
-            const category = categories.find((item) => item.code === filters.categoryCode);
+        return this.categoryOptions$.pipe(
+          filter((state) => state.marketCode === marketCode && !state.isLoading),
+          take(1),
+          map((state): ResolvedProductListFilters => {
+            const category = state.categories.find((item) => item.code === filters.categoryCode);
             if (!category) {
               throw new Error(`Selectable category ${filters.categoryCode} not found`);
             }
@@ -221,8 +266,10 @@ export class ProductList implements OnInit {
             return { ...filters, marketCode, categoryId: category.id, category };
           }),
           catchError((error: unknown) => {
-            this.logger.error('Category resolution failed', error, 'ProductList');
-            this.categoryResolutionError.set('No pudimos cargar esta categoría. Inténtalo de nuevo.');
+            if (!this.categoryListError()) {
+              this.logger.error('Category resolution failed', error, 'ProductList');
+            }
+            this.categoryResolutionError.set(this.categoryListError() ?? 'No pudimos cargar esta categoría. Inténtalo de nuevo.');
             return EMPTY;
           }),
           finalize(() => this.isResolvingCategory.set(false)),
@@ -307,7 +354,8 @@ export class ProductList implements OnInit {
     if (this.displayLoading() || !this.canRetryDisplayError()) return;
 
     if (this.categoryResolutionError()) {
-      this.refreshRequests.next();
+      if (this.categoryListError()) this.retryCategories();
+      else this.refreshRequests.next();
       return;
     }
 
@@ -418,6 +466,28 @@ export class ProductList implements OnInit {
       },
       queryParamsHandling: 'merge',
     });
+  }
+
+  onSelectCategory(code: string): void {
+    if (code === this.categoryCode()) return;
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        category: code || null,
+        dimension: null,
+        maxDimensionCm: null,
+      },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  retryCategories(): void {
+    if (this.isLoadingCategories()) return;
+
+    const needsCategoryResolution = !!this.categoryResolutionError();
+    this.categoryRefreshRequests.next();
+    if (needsCategoryResolution) this.refreshRequests.next();
   }
 
   onMeasureRequested(): void {

@@ -1,0 +1,30 @@
+<div class="category-control" [attr.aria-busy]="isLoading()">
+  <label for="catalog-category">Categoría</label>
+  <select
+    id="catalog-category"
+    [value]="selectedCode()"
+    (change)="onSelectionChange($event)"
+    [disabled]="isLoading() || !!error()"
+    [attr.aria-describedby]="error() ? 'catalog-category-error' : null"
+  >
+    <option value="" [selected]="!selectedCode()">
+      {{ isLoading() ? 'Cargando categorías…' : 'Todas las categorías' }}
+    </option>
+    @if (hasUnavailableSelection()) {
+      <option [value]="selectedCode()" selected disabled>
+        {{ isLoading() ? 'Cargando categoría…' : 'Categoría no disponible' }}
+      </option>
+    }
+    @for (category of categories(); track category.id) {
+      <option [value]="category.code" [selected]="category.code === selectedCode()">
+        {{ category.name }}
+      </option>
+    }
+  </select>
+</div>
+@if (error(); as message) {
+  <div class="category-error" role="alert">
+    <p id="catalog-category-error">{{ message }}</p>
+    <button type="button" (click)="retry.emit()">Reintentar</button>
+  </div>
+}

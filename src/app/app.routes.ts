@@ -14,7 +14,7 @@ export const routes: Routes = [
             {
                 path: 'products',
                 loadComponent: () => import('./features/shop/product/product-list/product-list').then(m => m.ProductList),
-                data: { headerStyle: 'transparent' }
+                data: { headerStyle: 'solid' }
             },
             {
                 path: 'products/measure',
