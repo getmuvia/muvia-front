@@ -1,17 +1,37 @@
-.catalog-hero {
-  isolation: isolate;
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 84% 18%, rgb(217 184 143 / 0.22), transparent 30%),
-    radial-gradient(circle at 8% 100%, rgb(166 83 61 / 0.26), transparent 42%),
-    linear-gradient(135deg, var(--color-primary-deep) 0%, var(--color-primary) 55%, var(--color-primary-soft) 100%);
+:host {
+  display: block;
 }
-
-.catalog-hero::after {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  background-image: linear-gradient(115deg, transparent 0 68%, rgb(255 255 255 / 0.04) 68% 69%, transparent 69%);
-  content: '';
-  pointer-events: none;
+.catalog-heading {
+  display: block;
+}
+h1 {
+  margin: 0;
+  font-size: clamp(2rem, 3.1vw, 2.5rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.demo-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 0.875rem;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+.demo-label {
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-color);
+  padding: 0.05rem 0.4rem;
+  color: var(--color-primary);
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+@media (max-width: 639px) {
+  .demo-notice {
+    max-width: 23rem;
+  }
 }

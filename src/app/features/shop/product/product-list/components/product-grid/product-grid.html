@@ -1,25 +1,22 @@
 @if (isLoading()) {
-<!-- Loading skeleton -->
-<div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
-    @for (i of [1,2,3,4,5,6,7,8]; track i) {
-    <div class="flex flex-col gap-4" aria-hidden="true">
-        <app-skeleton height="auto" className="aspect-[4/5]" />
+  <div class="catalog-grid">
+    @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+      <div class="flex flex-col gap-3" aria-hidden="true">
+        <app-skeleton height="auto" className="aspect-square rounded-editorial" />
         <div class="space-y-2">
-            <app-skeleton width="33%" height="0.75rem" />
-            <app-skeleton width="66%" height="1rem" />
-            <app-skeleton width="25%" height="1rem" />
+          <app-skeleton width="33%" height="0.75rem" />
+          <app-skeleton width="75%" height="1rem" />
+          <app-skeleton width="40%" height="1rem" />
         </div>
-    </div>
+      </div>
     }
-</div>
+  </div>
 } @else if (products().length === 0) {
-<!-- Empty state -->
-<app-empty-state [title]="emptyTitle()" [description]="emptyDescription()" />
+  <app-empty-state [title]="emptyTitle()" [description]="emptyDescription()" />
 } @else {
-<!-- Product grid -->
-<div class="grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+  <div class="catalog-grid">
     @for (product of products(); track product.id) {
-    <app-product-card [product]="product" />
+      <app-product-card [product]="product" appearance="catalog" />
     }
-</div>
+  </div>
 }

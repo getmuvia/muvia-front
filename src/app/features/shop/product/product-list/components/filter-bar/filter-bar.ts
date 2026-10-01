@@ -28,7 +28,7 @@ export class FilterBar {
     readonly searchQuery = signal('');
     readonly searchPlaceholder = computed(() => this.activeSearch()
         ? 'Añade otro detalle...'
-        : 'Describe lo que buscas...'
+        : 'Ej. un escritorio de madera...'
     );
 
     onSearchInput(event: Event): void {

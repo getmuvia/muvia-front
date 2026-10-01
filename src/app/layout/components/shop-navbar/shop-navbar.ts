@@ -89,7 +89,7 @@ export class ShopNavbar implements OnInit {
     }
 
     const path = this.router.url.split(/[?#]/, 1)[0];
-    const fallbackStyle = path === '/home' || path === '/products'
+    const fallbackStyle = path === '/home'
       ? 'transparent'
       : path.startsWith('/auth/')
         ? 'overlay'

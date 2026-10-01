@@ -1,6 +1,6 @@
-<article class="group flex flex-col gap-4">
+<article class="group flex flex-col gap-4" [class.catalog-card]="appearance() === 'catalog'">
 
-    <div class="relative overflow-hidden rounded-editorial aspect-[4/5] bg-surface-element">
+    <div class="product-image relative overflow-hidden rounded-editorial aspect-[4/5] bg-surface-element">
 
         <a [routerLink]="['/products', product().id]" class="absolute inset-0" tabindex="-1" aria-hidden="true">
             @if (showImage()) {
@@ -26,18 +26,18 @@
         }
     </div>
 
-    <div class="flex flex-col items-start gap-1 px-0.5">
-        <p class="text-sm text-text-light/70 font-body">
+    <div class="product-info flex flex-col items-start gap-1 px-0.5">
+        <p class="product-category text-sm text-text-light/70 font-body">
             {{ product().category?.name ?? 'Sin categoría' }}
         </p>
 
         <a [routerLink]="['/products', product().id]" class="no-underline hover:text-primary">
-            <h3 class="font-body font-semibold text-base leading-tight text-text-light">
+            <h3 class="product-title font-body font-semibold text-base leading-tight text-text-light">
                 {{ product().title }}
             </h3>
         </a>
 
-        <p class="font-body font-semibold text-primary">
+        <p class="product-price font-body font-semibold text-primary">
             Bs {{ priceNumber() | number:'1.2-2' }}
         </p>
     </div>
