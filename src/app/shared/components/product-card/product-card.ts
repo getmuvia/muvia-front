@@ -1,15 +1,19 @@
-import { Component, input, computed, signal } from '@angular/core';
-import { DecimalPipe, NgOptimizedImage } from '@angular/common';
+import { Component, input, computed, signal, inject } from '@angular/core';
+import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductPreview, productPreviewImage } from '@core/models/product/product-summary';
+import { resolveProductPrice } from '@core/models/product/product-price';
+import { MarketService } from '@core/services/market/market';
+import { ProductPrice } from '../product-price/product-price';
 
 @Component({
   selector: 'app-product-card',
-  imports: [DecimalPipe, NgOptimizedImage, RouterLink],
+  imports: [ProductPrice, NgOptimizedImage, RouterLink],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css',
 })
 export class ProductCard {
+  private readonly market = inject(MarketService);
   readonly product = input.required<ProductPreview>();
   readonly priority = input<boolean>(false);
   readonly showEditButton = input<boolean>(false);
@@ -28,8 +32,7 @@ export class ProductCard {
     this.failedImageUrl.set(this.imageUrl());
   }
 
-  /** Get price as number */
-  priceNumber = computed(() => {
-    return Number(this.product().price) || 0;
-  });
+  readonly price = computed(() =>
+    resolveProductPrice(this.product(), this.market.selectedMarket().code)
+  );
 }

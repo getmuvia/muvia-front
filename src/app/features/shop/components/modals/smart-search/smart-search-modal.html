@@ -88,7 +88,7 @@
                         <!-- Price -->
                         <div class="flex-shrink-0 text-right">
                             <p class="font-body font-bold text-sm text-primary">
-                                Bs {{ result.price | number:'1.2-2' }}
+                                <app-product-price [amount]="result.price" [currencyCode]="result.currencyCode" />
                             </p>
                         </div>
                     </div>

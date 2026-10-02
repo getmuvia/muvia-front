@@ -1,15 +1,18 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Product } from '@core/models/product/product';
-import { DecimalPipe } from '@angular/common';
+import { resolveProductPrice } from '@core/models/product/product-price';
+import { MarketService } from '@core/services/market/market';
+import { ProductPrice } from '@shared/components/product-price/product-price';
 import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-product-info',
-    imports: [DecimalPipe, RouterLink],
+    imports: [ProductPrice, RouterLink],
     templateUrl: './product-info.html',
     styleUrl: './product-info.css',
 })
 export class ProductInfo {
+    private readonly market = inject(MarketService);
     readonly product = input.required<Product>();
     readonly shareFeedback = signal('');
     readonly canVisualizeProduct = computed(() =>
@@ -19,9 +22,9 @@ export class ProductInfo {
         ) ?? false
     );
 
-    get priceNumber(): number {
-        return parseFloat(this.product().price) || 0;
-    }
+    readonly price = computed(() =>
+        resolveProductPrice(this.product(), this.market.selectedMarket().code)
+    );
 
     get contactHref(): string {
         const subject = encodeURIComponent(`Consulta sobre ${this.product().title}`);

@@ -38,7 +38,7 @@
         </a>
 
         <p class="product-price font-body font-semibold text-primary">
-            Bs {{ priceNumber() | number:'1.2-2' }}
+            <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
         </p>
     </div>
 </article>
