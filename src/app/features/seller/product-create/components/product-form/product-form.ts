@@ -223,6 +223,7 @@ export class ProductForm {
 
     async onSubmit(event: Event): Promise<void> {
         event.preventDefault();
+        if (this.isSubmitting()) return;
 
         this.keywordsError.set(
             this.keywords().length === 0 ? 'Agrega al menos una palabra clave.' : null

@@ -3,10 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { ProductStore } from '@core/services/product/product.store';
+import { ProductService } from '@core/services/product/product';
 import { CategoryService } from '@core/services/category/category';
-import { UploadFileService } from '@core/services/uploadFile/upload-file';
 import { LoggerService } from '@core/services/logger/logger';
-import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
 import { firstValueFrom } from 'rxjs';
 import { Category } from '@core/models/category/category';
 import { Product, ProductAsset } from '@core/models/product/product';
@@ -14,8 +13,13 @@ import { ProductFormData } from '@core/models/product/product-form.model';
 import { CreateProductDto, CreateProductAsset } from '@core/models/product/create-product.dto';
 import { UpdateProductDto } from '@core/models/product/update-product.dto';
 import { toAppError } from '@core/models/errors/api-error.model';
-import { UploadResponse } from '@core/services/uploadFile/upload-file';
 import { ProductForm } from './components';
+import {
+    DraftFileUploadError,
+    DraftSubmissionCancelledError,
+    ProductDraftAssets,
+    ProductDraftFiles,
+} from './product-draft-files';
 import {
     mapProductToFormData,
     buildCreateDto,
@@ -27,35 +31,35 @@ import {
     combineAssets
 } from './utils';
 
-interface ResolvedProductAssets {
-    images: CreateProductAsset[];
-    glb: CreateProductAsset | null;
-    usdz: CreateProductAsset | null;
+interface ProductSubmission {
+    id: string | null;
+    form: ProductFormData;
+    keywords: string[];
+    assets: ProductDraftAssets;
+    originalAssets: ProductAsset[];
+    hasAssetsChanged: boolean;
 }
 
-class DraftFileUploadError extends Error {
-    constructor(readonly fileName: string) {
-        super(`Failed to upload ${fileName}`);
-    }
-}
-
-class DraftSubmissionCancelledError extends Error {}
+const PRODUCT_MUTATION_OPTIONS = {
+    errorFeedback: 'local',
+    errorTelemetry: { expectedStatuses: [400, 409, 422] },
+} as const;
 
 @Component({
     selector: 'app-product-create',
     imports: [ProductForm],
     templateUrl: './product-create.html',
     styleUrl: './product-create.css',
-    providers: [ProductStore]
+    providers: [ProductStore, ProductDraftFiles]
 })
 export class ProductCreate {
     private readonly destroyRef = inject(DestroyRef);
     private readonly logger = inject(LoggerService);
     private readonly router = inject(Router);
     private readonly productStore = inject(ProductStore);
+    private readonly productService = inject(ProductService);
     private readonly categoryService = inject(CategoryService);
-    private readonly uploadService = inject(UploadFileService);
-    private readonly imageOptimizer = inject(ImageOptimizerService);
+    private readonly draftFiles = inject(ProductDraftFiles);
 
     // Edit mode state
     readonly id = input<string | null>(null);
@@ -75,8 +79,7 @@ export class ProductCreate {
     model3dGlbAsset = signal<CreateProductAsset | null>(null);
     model3dUsdzAsset = signal<CreateProductAsset | null>(null);
     originalAssets = signal<ProductAsset[]>([]);
-    readonly pendingUploads = signal<ReadonlyMap<string, File>>(new Map());
-    private readonly uploadedDraftFiles = new Map<string, UploadResponse>();
+    private editorVersion = 0;
     private isDestroyed = false;
 
     readonly productLoadError = computed(() => {
@@ -103,14 +106,12 @@ export class ProductCreate {
             this.model3dGlbAsset(),
             this.model3dUsdzAsset()
         ),
-        this.pendingUploads().size
+        this.draftFiles.pendingCount()
     ));
 
     constructor() {
         this.destroyRef.onDestroy(() => {
             this.isDestroyed = true;
-            this.revokePendingObjectUrls();
-            void this.cleanupUploadedDraftFiles();
         });
 
         afterNextRender(() => {
@@ -170,209 +171,75 @@ export class ProductCreate {
 
     // Event handlers from child form
     onKeywordsChange(keywords: string[]): void {
+        if (this.isSubmitting()) return;
         this.keywords.set(keywords);
     }
 
     onImagesChange(assets: CreateProductAsset[]): void {
-        const activeUrls = new Set(assets.map(asset => asset.url));
-        for (const url of this.pendingUploads().keys()) {
-            if (!activeUrls.has(url)
-                && url !== this.model3dGlbAsset()?.url
-                && url !== this.model3dUsdzAsset()?.url) {
-                this.removePendingUpload(url);
-            }
-        }
+        if (this.isSubmitting()) return;
         this.imageAssets.set(assets);
+        this.draftFiles.retain(new Set(combineAssets(
+            assets, this.model3dGlbAsset(), this.model3dUsdzAsset(),
+        ).map(asset => asset.url)));
     }
 
     onGlbAssetChange(asset: CreateProductAsset | null): void {
+        if (this.isSubmitting()) return;
         const previousUrl = this.model3dGlbAsset()?.url;
-        if (previousUrl && previousUrl !== asset?.url) this.removePendingUpload(previousUrl);
+        if (previousUrl && previousUrl !== asset?.url) this.draftFiles.remove(previousUrl);
         this.model3dGlbAsset.set(asset);
     }
 
     onUsdzAssetChange(asset: CreateProductAsset | null): void {
+        if (this.isSubmitting()) return;
         const previousUrl = this.model3dUsdzAsset()?.url;
-        if (previousUrl && previousUrl !== asset?.url) this.removePendingUpload(previousUrl);
+        if (previousUrl && previousUrl !== asset?.url) this.draftFiles.remove(previousUrl);
         this.model3dUsdzAsset.set(asset);
     }
 
-    async onFileSelected(event: { url: string; file: File }): Promise<void> {
+    onFileSelected(event: { url: string; file: File }): void {
+        if (this.isSubmitting()) return;
         this.submissionError.set(null);
-        this.setPendingUpload(event.url, event.file);
-
-        if (event.file.type.startsWith('image/')) {
-            try {
-                const optimizedFile = await this.imageOptimizer.compressImage(event.file);
-                if (this.pendingUploads().has(event.url)) {
-                    this.setPendingUpload(event.url, optimizedFile);
-                }
-            } catch (error) {
-                this.logger.warn('Image optimization failed; using the original file', error, 'ProductCreate');
-            }
-        }
+        this.draftFiles.register(event);
     }
 
     async onFormSubmit(formValue: ProductFormData): Promise<void> {
-        if (this.isSubmitting()) return;
+        if (this.isSubmitting() || this.isDestroyed) return;
 
+        const version = this.editorVersion;
+        const submission = this.captureSubmission(formValue);
         this.isSubmitting.set(true);
         this.submissionError.set(null);
 
         try {
-            const resolvedAssets = await this.uploadPendingFiles();
-            if (this.isDestroyed) {
-                await this.cleanupUploadedDraftFiles();
-                return;
-            }
-
-            const dto = this.buildProductDto(formValue, resolvedAssets);
-            await this.persistProduct(dto);
-            this.finalizeSuccessfulSubmission();
+            await this.draftFiles.save(submission.assets, assets => this.persistProduct(submission, assets));
+            if (!this.isCurrentEditor(version)) return;
             await this.router.navigate(['/seller/profile']);
         } catch (error) {
-            await this.cleanupUploadedDraftFiles();
-            if (!(error instanceof DraftSubmissionCancelledError) && !this.isDestroyed) {
+            if (!(error instanceof DraftSubmissionCancelledError) && this.isCurrentEditor(version)) {
                 this.logger.error('Failed to save product', error, 'ProductCreate');
                 this.submissionError.set(this.getSubmissionErrorMessage(error));
             }
         } finally {
-            this.isSubmitting.set(false);
+            if (this.isCurrentEditor(version)) this.isSubmitting.set(false);
         }
     }
 
     async onCancel(): Promise<void> {
         if (this.isSubmitting()) return;
 
-        await this.cleanupUploadedDraftFiles();
-        this.revokePendingObjectUrls();
+        this.draftFiles.reset();
         await this.router.navigate(['/seller/profile']);
     }
 
-    private async uploadPendingFiles(): Promise<ResolvedProductAssets> {
-        const images: CreateProductAsset[] = [];
-        for (const asset of this.imageAssets()) {
-            images.push(await this.resolveAsset(asset));
-        }
-
-        return {
-            images,
-            glb: await this.resolveOptionalAsset(this.model3dGlbAsset()),
-            usdz: await this.resolveOptionalAsset(this.model3dUsdzAsset()),
-        };
-    }
-
-    private async resolveOptionalAsset(
-        asset: CreateProductAsset | null,
-    ): Promise<CreateProductAsset | null> {
-        return asset ? this.resolveAsset(asset) : null;
-    }
-
-    private async resolveAsset(
-        asset: CreateProductAsset,
-    ): Promise<CreateProductAsset> {
-        if (this.isDestroyed) throw new DraftSubmissionCancelledError();
-
-        const file = this.pendingUploads().get(asset.url);
-        if (!file) return asset;
-
-        let response = this.uploadedDraftFiles.get(asset.url);
-        if (!response) {
-            try {
-                response = await firstValueFrom(
-                    this.uploadService.uploadFile(
-                        file,
-                        asset.type === 'model_3d' ? 'product_model' : 'product_image',
-                        'local',
-                    )
-                );
-            } catch {
-                throw new DraftFileUploadError(file.name);
-            }
-            this.uploadedDraftFiles.set(asset.url, response);
-        }
-
-        if (this.isDestroyed) {
-            await this.deleteUploadedDraftFile(asset.url, response);
-            throw new DraftSubmissionCancelledError();
-        }
-
-        return { ...asset, url: response.url };
-    }
-
-    private removePendingUpload(url: string): void {
-        this.pendingUploads.update(pending => {
-            if (!pending.has(url)) return pending;
-            const updated = new Map(pending);
-            updated.delete(url);
-            return updated;
-        });
-        void this.deleteUploadedDraftFile(url);
-    }
-
-    private setPendingUpload(url: string, file: File): void {
-        this.pendingUploads.update(pending => {
-            const updated = new Map(pending);
-            updated.set(url, file);
-            return updated;
-        });
-    }
-
-    private persistProduct(dto: CreateProductDto | UpdateProductDto): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (this.isEditMode()) {
-                this.productStore.updateProduct({
-                    id: this.id()!,
-                    dto: dto as UpdateProductDto,
-                    onSuccess: resolve,
-                    onError: reject,
-                });
-                return;
-            }
-
-            this.productStore.createProduct({
-                dto: dto as CreateProductDto,
-                onSuccess: resolve,
-                onError: reject,
-            });
-        });
-    }
-
-    private async cleanupUploadedDraftFiles(): Promise<void> {
-        const uploads = [...this.uploadedDraftFiles.entries()];
-        for (const [localUrl, upload] of uploads) {
-            await this.deleteUploadedDraftFile(localUrl, upload);
-        }
-    }
-
-    private async deleteUploadedDraftFile(
-        localUrl: string,
-        knownUpload?: UploadResponse,
-    ): Promise<void> {
-        const upload = knownUpload ?? this.uploadedDraftFiles.get(localUrl);
-        if (!upload) return;
-
-        try {
-            await firstValueFrom(this.uploadService.deleteFile(upload.key));
-            this.uploadedDraftFiles.delete(localUrl);
-        } catch (error) {
-            this.logger.error('Failed to clean up draft upload', error, 'ProductCreate');
-        }
-    }
-
-    private finalizeSuccessfulSubmission(): void {
-        this.uploadedDraftFiles.clear();
-        this.revokePendingObjectUrls();
-        this.pendingUploads.set(new Map());
-    }
-
-    private revokePendingObjectUrls(): void {
-        for (const url of this.pendingUploads().keys()) {
-            if (url.startsWith('blob:')) URL.revokeObjectURL(url);
-        }
+    private isCurrentEditor(version: number): boolean {
+        return !this.isDestroyed && version === this.editorVersion;
     }
 
     private resetProductData(): void {
+        this.editorVersion++;
+        this.draftFiles.reset();
+        this.isSubmitting.set(false);
         this.formData.set(null);
         this.keywords.set([]);
         this.originalAssets.set([]);
@@ -389,33 +256,54 @@ export class ProductCreate {
 
         const appError = toAppError(error, {
             fallbackMessage: 'No pudimos guardar el producto.',
+            codeMessages: { PRODUCT_LIMIT_REACHED: 'Alcanzaste el límite de productos permitidos.' },
         });
         return `${appError.message} Tus datos siguen guardados en el formulario.`;
     }
 
-    private buildProductDto(
-        formValue: ProductFormData,
-        resolvedAssets: ResolvedProductAssets,
-    ): CreateProductDto | UpdateProductDto {
+    private captureSubmission(formValue: ProductFormData): ProductSubmission {
+        const copyAsset = (asset: CreateProductAsset): CreateProductAsset => ({
+            ...asset, metadata: { ...asset.metadata },
+        });
+        const glb = this.model3dGlbAsset();
+        const usdz = this.model3dUsdzAsset();
+        return {
+            id: this.id(),
+            form: { ...formValue },
+            keywords: [...this.keywords()],
+            assets: {
+                images: this.imageAssets().map(copyAsset),
+                glb: glb ? copyAsset(glb) : null,
+                usdz: usdz ? copyAsset(usdz) : null,
+            },
+            originalAssets: [...this.originalAssets()],
+            hasAssetsChanged: this.hasAssetsChanged(),
+        };
+    }
+
+    private async persistProduct(submission: ProductSubmission, resolvedAssets: ProductDraftAssets): Promise<void> {
         const allAssets = combineAssets(
             resolvedAssets.images,
             resolvedAssets.glb,
             resolvedAssets.usdz
         );
 
-        if (!this.isEditMode()) {
-            return buildCreateDto(formValue, this.keywords(), allAssets);
+        if (!submission.id) {
+            const dto: CreateProductDto = buildCreateDto(submission.form, submission.keywords, allAssets);
+            await firstValueFrom(this.productService.createProduct(dto, PRODUCT_MUTATION_OPTIONS));
+            return;
         }
 
-        const updateAssets = this.hasAssetsChanged()
+        const updateAssets = submission.hasAssetsChanged
             ? buildAssetsForUpdate(
                 resolvedAssets.images,
                 resolvedAssets.glb,
                 resolvedAssets.usdz,
-                this.originalAssets()
+                submission.originalAssets
             )
             : undefined;
 
-        return buildUpdateDto(formValue, this.keywords(), updateAssets);
+        const dto: UpdateProductDto = buildUpdateDto(submission.form, submission.keywords, updateAssets);
+        await firstValueFrom(this.productService.updateProduct(submission.id, dto, PRODUCT_MUTATION_OPTIONS));
     }
 }

@@ -62,8 +62,6 @@ export class Model3dUpload {
             return;
         }
 
-        const previousUrl = this.glbAsset()?.url;
-        if (previousUrl?.startsWith('blob:')) URL.revokeObjectURL(previousUrl);
         const url = URL.createObjectURL(file);
         this.glbAsset.set({
             url,
@@ -77,9 +75,7 @@ export class Model3dUpload {
 
     removeGlbModel(): void {
         if (this.disabled()) return;
-        const url = this.glbAsset()?.url;
         this.glbAsset.set(null);
-        if (url?.startsWith('blob:')) URL.revokeObjectURL(url);
         this.glbFileError.set(null);
     }
 
@@ -123,8 +119,6 @@ export class Model3dUpload {
             return;
         }
 
-        const previousUrl = this.usdzAsset()?.url;
-        if (previousUrl?.startsWith('blob:')) URL.revokeObjectURL(previousUrl);
         const url = URL.createObjectURL(file);
         this.usdzAsset.set({
             url,
@@ -138,9 +132,7 @@ export class Model3dUpload {
 
     removeUsdzModel(): void {
         if (this.disabled()) return;
-        const url = this.usdzAsset()?.url;
         this.usdzAsset.set(null);
-        if (url?.startsWith('blob:')) URL.revokeObjectURL(url);
         this.usdzFileError.set(null);
     }
 }

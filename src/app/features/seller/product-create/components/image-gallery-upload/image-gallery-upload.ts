@@ -99,7 +99,6 @@ export class ImageGalleryUpload {
             remaining[0] = { ...remaining[0], isPrimary: true };
         }
         this.assets.set(remaining);
-        if (url.startsWith('blob:')) URL.revokeObjectURL(url);
         this.fileErrors.set([]);
     }
 
