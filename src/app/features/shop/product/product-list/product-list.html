@@ -3,9 +3,9 @@
     <app-page-header [title]="pageTitle()" />
     <app-filter-bar
       (searchSubmit)="onSearchSubmit($event)"
-      [activeSearch]="searchQuery()"
+      [activeSearch]="catalog.filters().search"
       (clearSearch)="onClearSearch()"
-      [activeCategory]="activeCategory()?.name ?? ''"
+      [activeCategory]="catalog.activeCategory()?.name ?? ''"
       (clearCategory)="onClearCategory()"
       [activeMeasurement]="activeMeasurement()"
       (clearMeasurement)="onClearMeasurement()"
@@ -14,54 +14,57 @@
   </div>
 
   <app-category-filter
-    [categories]="categories()"
-    [selectedCode]="categoryCode()"
-    [isLoading]="isLoadingCategories()"
-    [error]="categoryResolutionError() ? null : categoryListError()"
+    [categories]="catalog.categories()"
+    [selectedCode]="catalog.filters().categoryCode"
+    [isLoading]="catalog.isLoadingCategories()"
+    [error]="catalog.categoryResolutionError() ? null : catalog.categoryListError()"
     (selectCategory)="onSelectCategory($event)"
-    (retry)="retryCategories()"
+    (retry)="catalog.retryCategories()"
   />
 
   @if (
-    useSmartSearch() && !displayLoading() && !displayError() && interpretation();
+    catalog.useSmartSearch()
+      && !catalog.displayLoading()
+      && !catalog.displayError()
+      && catalog.interpretation();
     as searchInterpretation
   ) {
     <app-search-interpretation
-      [query]="searchQuery()"
+      [query]="catalog.filters().search"
       [interpretation]="searchInterpretation"
       (refineSearch)="onRefineSearch($event)"
     />
   }
 
-  @if (displayError(); as error) {
+  @if (catalog.displayError(); as error) {
     <div role="alert" class="catalog-error">
       <p>{{ error }}</p>
-      @if (canRetryDisplayError()) {
-        <button type="button" (click)="retryProducts()">Reintentar</button>
+      @if (catalog.canRetryDisplayError()) {
+        <button type="button" (click)="catalog.retryProducts()">Reintentar</button>
       }
     </div>
   }
 
   <p role="status" class="sr-only">
-    @if (displayLoading()) {
-      {{ isLoadingMore() ? 'Cargando más productos...' : 'Buscando productos...' }}
+    @if (catalog.displayLoading()) {
+      {{ catalog.isLoadingMore() ? 'Cargando más productos...' : 'Buscando productos...' }}
     }
   </p>
 
-  @if (!displayError() || displayProducts().length > 0) {
-    <section class="catalog-results" aria-label="Productos" [attr.aria-busy]="displayLoading()">
+  @if (!catalog.displayError() || catalog.displayProducts().length > 0) {
+    <section class="catalog-results" aria-label="Productos" [attr.aria-busy]="catalog.displayLoading()">
       <div class="catalog-results-heading">
-        <h2>{{ useSmartSearch() ? 'Resultados de tu búsqueda' : 'Explora el catálogo' }}</h2>
+        <h2>{{ catalog.useSmartSearch() ? 'Resultados de tu búsqueda' : 'Explora el catálogo' }}</h2>
         <p>{{ resultSummary() }}</p>
       </div>
       <app-product-grid
-        [products]="displayProducts()"
-        [isLoading]="displayLoading() && displayProducts().length === 0"
+        [products]="catalog.displayProducts()"
+        [isLoading]="catalog.displayLoading() && catalog.displayProducts().length === 0"
         [emptyTitle]="
-          useSmartSearch() ? 'No encontramos coincidencias directas' : 'No hay productos'
+          catalog.useSmartSearch() ? 'No encontramos coincidencias directas' : 'No hay productos'
         "
         [emptyDescription]="
-          relatedProducts().length > 0
+          catalog.relatedProducts().length > 0
             ? 'Puedes explorar otras opciones que podrían interesarte más abajo.'
             : 'Prueba otra categoría o cambia los términos de búsqueda.'
         "
@@ -69,18 +72,23 @@
     </section>
   }
 
-  @if (useSmartSearch() && !displayLoading() && !displayError() && relatedProducts().length > 0) {
+  @if (
+    catalog.useSmartSearch()
+      && !catalog.displayLoading()
+      && !catalog.displayError()
+      && catalog.relatedProducts().length > 0
+  ) {
     <section class="catalog-related" aria-labelledby="related-search-heading">
       <h2 id="related-search-heading">Otros productos que te podrían interesar</h2>
-      <app-product-grid [products]="relatedProducts()" />
+      <app-product-grid [products]="catalog.relatedProducts()" />
     </section>
   }
 
-  @if (!useSmartSearch() && !displayError() && displayProducts().length > 0) {
+  @if (!catalog.useSmartSearch() && !catalog.displayError() && catalog.displayProducts().length > 0) {
     <app-load-more-button
-      [isLoading]="isLoadingMore()"
-      [hasMore]="store.hasNextPage()"
-      (loadMore)="loadMore()"
+      [isLoading]="catalog.isLoadingMore()"
+      [hasMore]="catalog.hasNextPage()"
+      (loadMore)="catalog.loadMore()"
     />
   }
 </main>
