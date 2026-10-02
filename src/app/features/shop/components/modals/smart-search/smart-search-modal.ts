@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { NgOptimizedImage, DecimalPipe } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HybridSearchService, HYBRID_SEARCH_LIMITS } from '@core/services/search/hybrid-search';
 import { LoggerService } from '@core/services/logger/logger';
@@ -22,6 +22,7 @@ import {
 } from '@core/models/search/hybrid-search.model';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
 import { SearchInterpretation } from '@features/shop/search-interpretation/search-interpretation';
+import { ProductPrice } from '@shared/components/product-price/product-price';
 import { EMPTY, Subject, catchError, map, of, switchMap, tap, timer } from 'rxjs';
 
 type SmartSearchResponse = {
@@ -32,7 +33,7 @@ type SmartSearchResponse = {
 
 @Component({
     selector: 'app-smart-search-modal',
-    imports: [NgOptimizedImage, DecimalPipe, SearchInterpretation],
+    imports: [NgOptimizedImage, ProductPrice, SearchInterpretation],
     templateUrl: './smart-search-modal.html',
     styleUrl: './smart-search-modal.css',
 })

@@ -106,6 +106,27 @@ describe('ProductList', () => {
     expect(fixture.nativeElement.textContent).toContain('Escritorio · Madera');
   });
 
+  it('renders the currency of primary results and related suggestions after summary adaptation', () => {
+    const result = {
+      id: 'primary', title: 'Escritorio', description: null, price: 35.5,
+      imageUrl: null, score: 0.8, matchType: 'hybrid' as const,
+    };
+    hybridSearch.mockReturnValue(of({
+      query: 'escritorio', interpretation: { summary: 'Escritorio', source: 'ai' },
+      results: [{ ...result, currencyCode: 'USD' }], count: 1,
+      relatedResults: [{ ...result, id: 'related', price: 180.5, currencyCode: 'PEN' }],
+    }));
+    queryParams.next(convertToParamMap({ search: 'escritorio' }));
+    fixture.detectChanges();
+    const prices = Array.from(fixture.nativeElement.querySelectorAll('.product-price') as NodeListOf<HTMLElement>)
+      .map(price => price.textContent);
+    expect(prices[0]).toContain('USD');
+    expect(prices[0]).toContain('35,50');
+    expect(prices[1]).toContain('PEN');
+    expect(prices[1]).toContain('180,50');
+    expect(prices.join(' ')).not.toContain('Bs');
+  });
+
   it('writes a refined natural-language query to the URL', () => {
     const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
 

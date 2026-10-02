@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { ProductPreview } from '@core/models/product/product-summary';
+import { ProductSummary } from '@core/models/product/product-summary';
 import { ProductCard } from '@shared/components/product-card/product-card';
 
 import { Skeleton } from '@shared/components/loaders/skeleton/skeleton';
@@ -12,7 +12,7 @@ import { EmptyState } from '@shared/components/empty-state/empty-state';
     styleUrl: './product-grid.css',
 })
 export class ProductGrid {
-    readonly products = input<ProductPreview[]>([]);
+    readonly products = input<ProductSummary[]>([]);
     readonly isLoading = input<boolean>(false);
     readonly emptyTitle = input('No hay productos');
     readonly emptyDescription = input('No encontramos productos que coincidan con tu búsqueda. Intenta con otros términos.');

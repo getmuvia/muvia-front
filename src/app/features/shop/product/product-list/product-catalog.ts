@@ -6,7 +6,7 @@ import {
 } from 'rxjs';
 import { Category } from '@core/models/category/category';
 import { AppError, toAppError } from '@core/models/errors/api-error.model';
-import { ProductPreview } from '@core/models/product/product-summary';
+import { ProductSummary } from '@core/models/product/product-summary';
 import { HybridSearchInterpretation } from '@core/models/search/hybrid-search.model';
 import { CategoryService } from '@core/services/category/category';
 import { LoggerService } from '@core/services/logger/logger';
@@ -14,7 +14,7 @@ import { MarketService } from '@core/services/market/market';
 import { ProductService } from '@core/services/product/product';
 import { HYBRID_SEARCH_LIMITS, HybridSearchService } from '@core/services/search/hybrid-search';
 import { ProductListFilters, sameProductListFilters, usesSmartSearch } from './product-list-filters';
-import { SearchProduct, mapSearchResultToProduct } from './product-search-result';
+import { SearchProductSummary, mapSearchResultToSummary } from './product-search-result';
 
 interface CategoryOptionsState {
   marketCode: string;
@@ -26,8 +26,8 @@ interface CategoryOptionsState {
 interface CatalogState {
   filters: ProductListFilters;
   category: Category | null;
-  products: ProductPreview[];
-  relatedProducts: SearchProduct[];
+  products: ProductSummary[];
+  relatedProducts: SearchProductSummary[];
   interpretation: HybridSearchInterpretation | null;
   isLoading: boolean;
   error: AppError | null;
@@ -221,8 +221,8 @@ export class ProductCatalog {
         return this.searchApi.search(filters.search, HYBRID_SEARCH_LIMITS.PRODUCT_LIST).pipe(
           tap(response => this.state.update(state => ({
             ...state,
-            products: response.results.map(mapSearchResultToProduct),
-            relatedProducts: (response.relatedResults ?? []).map(mapSearchResultToProduct),
+            products: response.results.map(mapSearchResultToSummary),
+            relatedProducts: (response.relatedResults ?? []).map(mapSearchResultToSummary),
             interpretation: response.interpretation,
             isLoading: false,
             total: response.results.length,
