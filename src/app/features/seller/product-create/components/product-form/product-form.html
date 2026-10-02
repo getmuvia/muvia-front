@@ -56,7 +56,7 @@
 
     <form (input)="formChange.emit()" (change)="formChange.emit()" (submit)="onSubmit($event)" novalidate
         [attr.aria-describedby]="validationSummary().length > 0 ? 'product-form-error-summary' : null">
-        <div class="space-y-3">
+        <fieldset class="min-w-0 space-y-3" [disabled]="isSubmitting()">
             <section class="form-panel" data-form-section="basic" [class.form-panel--open]="isSectionOpen('basic')">
                 <button type="button" class="form-panel__trigger" (click)="toggleSection('basic')"
                     [attr.aria-expanded]="isSectionOpen('basic')" aria-controls="product-basic-panel">
@@ -184,7 +184,7 @@
                 </div>
                 }
             </section>
-        </div>
+        </fieldset>
 
         <div class="mt-6 flex flex-col-reverse gap-3 border-t border-border-color pt-6 sm:flex-row sm:items-center sm:justify-between">
             <button type="button" (click)="onCancel()" [disabled]="isSubmitting()"

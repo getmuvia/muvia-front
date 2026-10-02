@@ -53,4 +53,17 @@ describe('ProductForm validation recovery', () => {
     expect(document.activeElement?.id).toBe('product-title');
     expect(fixture.nativeElement.textContent).toContain('Revisa 4 secciones');
   });
+
+  it('disables editable controls and ignores repeated submission while saving', async () => {
+    fixture.componentRef.setInput('isSubmitting', true);
+    fixture.detectChanges();
+    const submitSpy = vi.spyOn(component.formSubmit, 'emit');
+
+    expect(fixture.nativeElement.querySelector('fieldset').disabled).toBe(true);
+    expect(fixture.nativeElement.querySelector('#product-title').matches(':disabled')).toBe(true);
+    await component.onSubmit(new Event('submit'));
+
+    expect(submitSpy).not.toHaveBeenCalled();
+    expect(component.showValidationSummary()).toBe(false);
+  });
 });
