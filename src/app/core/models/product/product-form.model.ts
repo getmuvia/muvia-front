@@ -1,3 +1,5 @@
+import { ProductCondition } from './product-condition';
+
 /**
  * Form data model for creating a product.
  * Simplified model for Signal Forms - flat structure for main fields,
@@ -5,6 +7,7 @@
  */
 export interface ProductFormData {
     title: string;
+    condition: ProductCondition;
     description: string;
     price: number;
     stock: number;
@@ -24,6 +27,7 @@ export interface ProductFormData {
  */
 export const INITIAL_PRODUCT_FORM: ProductFormData = {
     title: '',
+    condition: ProductCondition.NEW,
     description: '',
     price: 0,
     stock: 1,

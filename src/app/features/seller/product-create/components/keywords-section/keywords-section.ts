@@ -1,8 +1,9 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { Component, input, output, signal } from '@angular/core';
 
 @Component({
     selector: 'app-keywords-section',
-    imports: [],
+    imports: [TranslatePipe],
     templateUrl: './keywords-section.html',
     styleUrl: './keywords-section.css',
 })

@@ -55,7 +55,7 @@ const DEFAULT_MESSAGES: Readonly<Record<AppErrorKind, string>> = {
 
 /**
  * Only explicitly reviewed backend messages may reach the UI. Unknown backend
- * text is intentionally replaced to avoid leaking technical or English copy.
+ * text is intentionally replaced to avoid exposing unreviewed technical details.
  */
 const KNOWN_BACKEND_MESSAGES: Readonly<Record<string, string>> = {
     'Invalid credentials': 'Credenciales inválidas.',

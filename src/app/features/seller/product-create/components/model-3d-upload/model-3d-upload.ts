@@ -1,9 +1,10 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, input, model, output, signal } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
     selector: 'app-model-3d-upload',
-    imports: [],
+    imports: [TranslatePipe, UiTextPipe],
     templateUrl: './model-3d-upload.html',
     styleUrl: './model-3d-upload.css',
 })

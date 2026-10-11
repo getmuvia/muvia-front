@@ -1,9 +1,11 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, input, output, signal } from '@angular/core';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
+import { ProductCondition, isProductCondition } from '@core/models/product/product-condition';
 
 @Component({
     selector: 'app-filter-bar',
-    imports: [],
+    imports: [TranslatePipe, UiTextPipe],
     templateUrl: './filter-bar.html',
     styleUrl: './filter-bar.css',
 })
@@ -24,6 +26,9 @@ export class FilterBar {
     readonly clearMeasurement = output<void>();
     /** Opens the structured dimension filter */
     readonly measureRequested = output<void>();
+    readonly selectedCondition = input<ProductCondition | ''>('');
+    readonly conditionChange = output<ProductCondition | ''>();
+    readonly productCondition = ProductCondition;
 
     readonly searchQuery = signal('');
     readonly searchPlaceholder = computed(() => this.activeSearch()
@@ -34,6 +39,11 @@ export class FilterBar {
     onSearchInput(event: Event): void {
         const input = event.target as HTMLInputElement;
         this.searchQuery.set(input.value);
+    }
+
+    onConditionChange(event: Event): void {
+        const value = (event.target as HTMLSelectElement).value;
+        this.conditionChange.emit(isProductCondition(value) ? value : '');
     }
 
     onSearchSubmit(event: Event): void {

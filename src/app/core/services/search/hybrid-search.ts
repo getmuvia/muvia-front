@@ -7,6 +7,7 @@ import {
     HybridSearchResponse
 } from '@core/models/search/hybrid-search.model';
 import { MarketService } from '@core/services/market/market';
+import { ProductCondition } from '@core/models/product/product-condition';
 import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-feedback';
 
 /**
@@ -33,12 +34,17 @@ export class HybridSearchService {
      * @param limit - Max number of results (defaults to Product List limit).
      * @returns Observable with search results including relevance scores and separate suggestions.
      */
-    search(query: string, limit: number = HYBRID_SEARCH_LIMITS.PRODUCT_LIST): Observable<HybridSearchResponse> {
+    search(
+        query: string,
+        limit: number = HYBRID_SEARCH_LIMITS.PRODUCT_LIST,
+        condition?: ProductCondition,
+    ): Observable<HybridSearchResponse> {
         const payload: HybridSearchRequest = {
             query,
             limit,
             marketCode: this.marketService.selectedMarket().code,
             locale: this.marketService.locale(),
+            ...(condition ? { condition } : {}),
         };
         return this.http.post<HybridSearchResponse>(API_ENDPOINTS.AI.HYBRID_SEARCH, payload, {
             context: createHttpErrorFeedbackContext('local', {

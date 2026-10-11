@@ -1,6 +1,8 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Product } from '@core/models/product/product';
+import { ProductCondition } from '@core/models/product/product-condition';
+import { I18nService } from '@core/services/i18n/i18n';
 import { MarketService } from '@core/services/market/market';
 import { ProductInfo } from './product-info';
 
@@ -9,6 +11,7 @@ describe('ProductInfo pricing', () => {
   const selectedMarket = signal({ code: 'BO' });
   const locale = signal('es-BO');
   const product: Product = {
+    condition: ProductCondition.NEW,
     id: 'product', title: 'Escritorio', description: '', sellerId: 'seller', categoryId: 'category',
     price: '999', stock: 1, specifications: {}, keywords: [], createdAt: '', assets: [],
     category: { id: 'category', name: 'Escritorios', parentId: null, description: '', imageUrl: '', level: 1 },
@@ -39,6 +42,17 @@ describe('ProductInfo pricing', () => {
     expect(price).toContain('S/');
     expect(price).toContain('180.50');
     expect(price).not.toContain('999');
+  });
+
+  it('shows the product condition in the detail and translates its label', () => {
+    fixture.componentRef.setInput('product', { ...product, condition: ProductCondition.USED });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-product-condition]').textContent).toContain('Usado');
+    const i18n = TestBed.inject(I18nService);
+    i18n.selectLanguage('en');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-product-condition]').textContent).toContain('Used');
+    i18n.selectLanguage('es');
   });
 
   it('retains a known foreign price currency when the current market has no listing', () => {

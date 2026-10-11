@@ -218,7 +218,7 @@ export class ProductCatalog {
     return defer(() => {
       this.state.update(state => ({ ...state, isLoading: true, error: null, failedPage: null }));
       if (usesSmartSearch(filters)) {
-        return this.searchApi.search(filters.search, HYBRID_SEARCH_LIMITS.PRODUCT_LIST).pipe(
+        return this.searchApi.search(filters.search, HYBRID_SEARCH_LIMITS.PRODUCT_LIST, filters.condition).pipe(
           tap(response => this.state.update(state => ({
             ...state,
             products: response.results.map(mapSearchResultToSummary),
@@ -233,6 +233,7 @@ export class ProductCatalog {
       return this.productsApi.searchProducts({
         page,
         search: filters.search,
+        condition: filters.condition,
         marketCode,
         categoryId: category?.id,
         dimension: filters.dimension || undefined,

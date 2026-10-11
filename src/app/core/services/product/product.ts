@@ -10,6 +10,7 @@ import { API_ENDPOINTS } from '@core/constants/api-endpoints';
 import { STORE_CONFIG } from '@core/store/store.config';
 import { MarketService } from '@core/services/market/market';
 import { ProductDimension } from '@core/models/product/product-dimension-filter';
+import { ProductCondition } from '@core/models/product/product-condition';
 import {
   createHttpErrorFeedbackContext,
   HttpErrorFeedbackOptions,
@@ -22,6 +23,7 @@ export interface PaginationParams {
 
 export interface SearchParams extends PaginationParams {
   search: string;
+  condition?: ProductCondition;
   marketCode?: string;
   categoryId?: string;
   dimension?: ProductDimension;
@@ -89,6 +91,10 @@ export class ProductService {
 
     if (params.categoryId) {
       queryParams = queryParams.set('categoryId', params.categoryId);
+    }
+
+    if (params.condition) {
+      queryParams = queryParams.set('condition', params.condition);
     }
 
     if (params.dimension && params.maxDimensionCm !== undefined) {

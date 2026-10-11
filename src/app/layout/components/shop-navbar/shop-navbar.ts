@@ -1,3 +1,4 @@
+import { TranslatePipe, CountryNamePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, inject, signal, OnInit, HostListener, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
@@ -8,11 +9,13 @@ import { SmartSearchModal } from '@features/shop/components/modals/smart-search/
 import { MarketService } from '@core/services/market/market';
 import { UserService } from '@core/services/user/user';
 import { StoreAvatar } from '@shared/components/store-avatar/store-avatar';
+import { LanguageSelector } from '@shared/components/language-selector/language-selector';
+import { I18nService } from '@core/services/i18n/i18n';
 
 
 @Component({
   selector: 'app-shop-navbar',
-  imports: [RouterLink, NgClass, SmartSearchModal, StoreAvatar],
+  imports: [CountryNamePipe, TranslatePipe, RouterLink, NgClass, SmartSearchModal, StoreAvatar, LanguageSelector],
   templateUrl: './shop-navbar.html',
   styleUrl: './shop-navbar.css',
 })
@@ -23,6 +26,7 @@ export class ShopNavbar implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly userService = inject(UserService);
   readonly marketService = inject(MarketService);
+  private readonly i18n = inject(I18nService);
 
   isAuthenticated = this.authService.isAuthenticated;
   currentUser = this.authService.currentUser;
@@ -34,7 +38,7 @@ export class ShopNavbar implements OnInit {
     this.userService.vendorProfile()?.businessName
       || this.currentUser()?.vendorProfile?.businessName
       || this.currentUser()?.email
-      || 'Mi Cuenta'
+      || this.i18n.text('Mi Cuenta')
   );
 
   isTransparent = signal<boolean>(false);

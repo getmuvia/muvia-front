@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import {
   Component,
   inject,
@@ -33,7 +34,7 @@ type SmartSearchResponse = {
 
 @Component({
     selector: 'app-smart-search-modal',
-    imports: [NgOptimizedImage, ProductPrice, SearchInterpretation],
+    imports: [TranslatePipe, UiTextPipe, NgOptimizedImage, ProductPrice, SearchInterpretation],
     templateUrl: './smart-search-modal.html',
     styleUrl: './smart-search-modal.css',
 })

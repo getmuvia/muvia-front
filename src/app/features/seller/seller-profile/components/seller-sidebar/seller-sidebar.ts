@@ -1,10 +1,11 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, input, output } from '@angular/core';
 import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
 import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
 
 @Component({
     selector: 'app-seller-sidebar',
-    imports: [EditTriggerButton],
+    imports: [TranslatePipe, UiTextPipe, EditTriggerButton],
     templateUrl: './seller-sidebar.html',
     styleUrl: './seller-sidebar.css',
 })

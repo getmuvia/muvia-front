@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HybridSearchInterpretation } from '@core/models/search/hybrid-search.model';
 import { SearchInterpretation } from './search-interpretation';
+import { I18nService } from '@core/services/i18n/i18n';
 
 describe('SearchInterpretation', () => {
+  afterEach(() => localStorage.removeItem('muvia.language'));
   let component: SearchInterpretation;
   let fixture: ComponentFixture<SearchInterpretation>;
 
@@ -33,6 +35,15 @@ describe('SearchInterpretation', () => {
     expect(text).toContain(interpretation.summary);
     expect(text).not.toContain('ai');
     expect(text).not.toContain('Gemini');
+  });
+
+  it('localizes structured interpretation labels without rewriting the original query', () => {
+    TestBed.inject(I18nService).selectLanguage('en');
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Muvia understood');
+    expect(fixture.nativeElement.textContent).toContain('Desk · Wood · Maximum 100 cm in width');
+    expect(component.query()).toBe('quiero un escritorio de madera de 100 cm');
+    expect(component.interpretation()).toEqual(interpretation);
   });
 
   it('emits a normalized natural-language correction', () => {

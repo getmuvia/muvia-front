@@ -1,0 +1,10 @@
+{
+  "files.imageLimit": "No agregamos “{file}”: el máximo es de {count} imágenes. Elimina una imagen antes de intentarlo nuevamente.",
+  "files.imageSize": "No agregamos “{file}”: supera el límite de 5 MB. Reduce su tamaño e inténtalo nuevamente.",
+  "files.imageType": "No agregamos “{file}”: usa un archivo JPG, PNG o WEBP.",
+  "files.modelSize": "No agregamos “{file}”: supera el límite de 50 MB. Optimiza el modelo e inténtalo nuevamente.",
+  "files.modelType": "No agregamos “{file}”: usa un archivo GLB o GLTF.",
+  "files.profileImageType": "No agregamos “{file}”: usa un archivo PNG, JPG o WEBP.",
+  "files.uploadFailed": "No pudimos subir “{file}”. Revisa tu conexión e inténtalo nuevamente; tus datos siguen guardados en el formulario.",
+  "files.usdzType": "No agregamos “{file}”: usa un archivo USDZ."
+}

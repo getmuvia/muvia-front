@@ -1,7 +1,9 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, input, signal } from '@angular/core';
 
 @Component({
   selector: 'app-store-avatar',
+  imports: [TranslatePipe],
   template: `
     <span
       class="relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-current/20 bg-current/10"
@@ -11,7 +13,7 @@ import { Component, computed, input, signal } from '@angular/core';
       @if (visibleLogoUrl(); as logoUrl) {
         <img
           [src]="logoUrl"
-          [alt]="storeName() ? 'Logo de ' + storeName() : 'Logo de la tienda'"
+          [alt]="storeName() ? ('seller.storeLogo' | translate: {name: storeName()}) : ('seller.defaultStoreLogo' | translate)"
           class="h-full w-full object-cover"
           decoding="async"
           (error)="handleImageError(logoUrl)"

@@ -1,3 +1,5 @@
+import { ProductCondition } from './product-condition';
+
 /**
  * Product specifications with dimensions
  */
@@ -75,6 +77,7 @@ export interface Product {
   sellerId: string;
   categoryId: string;
   title: string;
+  condition: ProductCondition;
   description: string;
   price: string;
   stock: number;

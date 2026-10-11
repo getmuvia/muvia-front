@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -13,7 +14,7 @@ import { LoginData } from '@core/auth/models/auth.models'
 
 @Component({
   selector: 'app-login',
-  imports: [FormField],
+  imports: [TranslatePipe, UiTextPipe, FormField],
   templateUrl: './login.html',
 })
 export class Login {

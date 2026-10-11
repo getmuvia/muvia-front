@@ -1,7 +1,7 @@
 <header class="catalog-heading">
-  <h1>{{ title() }}</h1>
+  <h1>{{ (title()) | uiText }}</h1>
   <p class="demo-notice">
-    <span class="demo-label">Demo</span>
-    <span>Productos y precios ilustrativos. Muvia todavía no procesa compras.</span>
+    <span class="demo-label">{{ 'catalog.demo' | translate }}</span>
+    <span>{{ 'catalog.illustrativeProductsAndPricesMuviaDoesNotYetProcess' | translate }}</span>
   </p>
 </header>

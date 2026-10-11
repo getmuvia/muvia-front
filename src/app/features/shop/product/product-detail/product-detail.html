@@ -5,34 +5,34 @@
         <div class="flex items-center justify-center py-24">
             <div class="flex flex-col items-center gap-4">
                 <span class="material-symbols-outlined text-4xl text-primary animate-spin">progress_activity</span>
-                <p class="text-text-light/60 font-body">Cargando producto...</p>
+                <p class="text-text-light/60 font-body">{{ 'catalog.loadingProduct' | translate }}</p>
             </div>
         </div>
         } @else if (error()) {
         <!-- Error State -->
         <div class="flex flex-col items-center justify-center py-24" role="alert">
             <span class="material-symbols-outlined text-6xl text-text-light/20 mb-4" aria-hidden="true">error</span>
-            <h3 class="text-xl font-bold text-text-light font-body mb-2">{{ error() }}</h3>
+            <h3 class="text-xl font-bold text-text-light font-body mb-2">{{ (error()) | uiText }}</h3>
             <div class="mt-4 flex flex-wrap items-center justify-center gap-4">
                 @if (canRetry()) {
                     <button type="button" (click)="retryProduct()"
                         class="rounded-control bg-primary px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-primary-dark">
-                        Reintentar
+                        {{ 'common.retry' | translate }}
                     </button>
                 }
-                <a routerLink="/products" class="text-primary hover:underline font-body">Volver a productos</a>
+                <a routerLink="/products" class="text-primary hover:underline font-body">{{ 'catalog.backToProducts' | translate }}</a>
             </div>
         </div>
         } @else if (product()) {
         <!-- Breadcrumb -->
         <div class="flex flex-wrap gap-2 pb-6">
-            <a routerLink="/home" class="text-text-light/50 text-sm font-medium hover:text-primary font-body">Home</a>
+            <a routerLink="/home" class="text-text-light/50 text-sm font-medium hover:text-primary font-body">{{ 'catalog.home' | translate }}</a>
             <span class="text-text-light/30 text-sm font-medium">/</span>
             <a routerLink="/products"
-                class="text-text-light/50 text-sm font-medium hover:text-primary font-body">Productos</a>
+                class="text-text-light/50 text-sm font-medium hover:text-primary font-body">{{ 'catalog.products' | translate }}</a>
             <span class="text-text-light/30 text-sm font-medium">/</span>
             @if (product()?.category) {
-            <span class="text-text-light/50 text-sm font-medium font-body">{{ product()?.category?.name }}</span>
+            <span class="text-text-light/50 text-sm font-medium font-body">{{ product()?.category | categoryName }}</span>
             <span class="text-text-light/30 text-sm font-medium">/</span>
             }
             <span class="text-text-light text-sm font-medium font-body">{{ product()?.title }}</span>

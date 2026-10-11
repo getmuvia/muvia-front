@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, inject, signal, OnInit, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, NavigationEnd, ActivatedRoute } from '@angular/router';
@@ -5,10 +6,12 @@ import { AuthService } from '@core/auth/services/auth';
 import { UserService } from '@core/services/user/user';
 import { StoreAvatar } from '@shared/components/store-avatar/store-avatar';
 import { filter } from 'rxjs/operators';
+import { LanguageSelector } from '@shared/components/language-selector/language-selector';
+import { I18nService } from '@core/services/i18n/i18n';
 
 @Component({
   selector: 'app-seller-header',
-  imports: [RouterLink, StoreAvatar],
+  imports: [TranslatePipe, RouterLink, StoreAvatar, LanguageSelector],
   templateUrl: './seller-header.html',
   styleUrl: './seller-header.css',
 })
@@ -18,6 +21,7 @@ export class SellerHeader implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
   private readonly userService = inject(UserService);
+  private readonly i18n = inject(I18nService);
 
   currentUser = this.authService.currentUser;
   vendorLogoUrl = computed(() =>
@@ -27,7 +31,7 @@ export class SellerHeader implements OnInit {
     this.userService.vendorProfile()?.businessName
       || this.currentUser()?.vendorProfile?.businessName
       || this.currentUser()?.email
-      || 'Mi cuenta'
+      || this.i18n.text('Mi Cuenta')
   );
   isTransparent = signal<boolean>(false);
   isProfilePage = signal(false);

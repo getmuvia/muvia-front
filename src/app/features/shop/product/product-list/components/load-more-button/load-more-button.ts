@@ -1,8 +1,9 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { Component, input, output } from '@angular/core';
 
 @Component({
     selector: 'app-load-more-button',
-    imports: [],
+    imports: [TranslatePipe],
     templateUrl: './load-more-button.html',
     styleUrl: './load-more-button.css',
 })

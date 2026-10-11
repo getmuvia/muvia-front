@@ -1,9 +1,10 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, input } from '@angular/core';
 import { FormField, FieldTree } from '@angular/forms/signals';
 
 @Component({
     selector: 'app-specifications-section',
-    imports: [FormField],
+    imports: [TranslatePipe, UiTextPipe, FormField],
     templateUrl: './specifications-section.html',
     styleUrl: './specifications-section.css',
 })

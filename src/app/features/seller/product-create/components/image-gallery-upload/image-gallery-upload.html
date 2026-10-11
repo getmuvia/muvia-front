@@ -1,7 +1,7 @@
 <div>
     <div class="flex justify-between items-center mb-6">
         <h3 class="text-base font-body font-bold uppercase tracking-wider text-text-light">
-            Galería de Imágenes
+            {{ 'seller.imageGallery' | translate }}
         </h3>
         <span class="material-symbols-outlined text-secondary">imagesmode</span>
     </div>
@@ -22,21 +22,21 @@
             <div
                 class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                 <button type="button" (click)="removeImage(primaryImage()!.url); $event.stopPropagation()"
-                    aria-label="Eliminar imagen principal" [disabled]="disabled()"
+                    [attr.aria-label]="'seller.removeMainImage' | translate" [disabled]="disabled()"
                     class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
             </div>
             <div
                 class="absolute top-2 left-2 bg-secondary text-white text-xs px-2 py-0.5 uppercase font-bold font-body">
-                Principal
+                {{ 'seller.main' | translate }}
             </div>
             } @else {
             <span class="material-symbols-outlined text-4xl text-text-light/40 group-hover:text-secondary mb-2">
                 add_photo_alternate
             </span>
             <p class="text-xs text-text-light/60 text-center px-4 font-body">
-                Arrastra tu imagen principal aquí
+                {{ 'seller.dragYourMainImageHere' | translate }}
             </p>
             }
 
@@ -49,20 +49,20 @@
         @for (asset of secondaryImages(); track asset.url) {
         <div class="aspect-square relative overflow-hidden rounded-editorial border border-border-color group cursor-pointer"
             role="button" tabindex="0" [attr.aria-disabled]="disabled()"
-            [attr.aria-label]="'Usar ' + (asset.metadata['alt'] || 'imagen') + ' como imagen principal'"
+            [attr.aria-label]="'seller.useMainImage' | translate: {image: asset.metadata['alt'] || ('seller.image' | translate)}"
             (click)="setPrimary(asset.url)" (keydown.enter)="setPrimary(asset.url)">
             <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
             <div
                 class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
                 <button type="button"
-                    [attr.aria-label]="'Usar ' + (asset.metadata['alt'] || 'imagen') + ' como imagen principal'"
+                    [attr.aria-label]="'seller.useMainImage' | translate: {image: asset.metadata['alt'] || ('seller.image' | translate)}"
                     [disabled]="disabled()"
                     class="bg-secondary text-white p-1 text-xs hover:bg-secondary/80 transition-colors"
-                    title="Hacer principal">
+                    [title]="'seller.setAsMain' | translate">
                     <span class="material-symbols-outlined text-sm">star</span>
                 </button>
                 <button type="button" (click)="removeImage(asset.url); $event.stopPropagation()"
-                    [attr.aria-label]="'Eliminar ' + (asset.metadata['alt'] || 'imagen')" [disabled]="disabled()"
+                    [attr.aria-label]="'seller.removeImage' | translate: {image: asset.metadata['alt'] || ('seller.image' | translate)}" [disabled]="disabled()"
                     class="bg-red-500 text-white p-1 text-xs hover:bg-red-600 transition-colors">
                     <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
@@ -73,7 +73,7 @@
         <!-- Empty slots for remaining -->
         @for (i of emptySlots(); track i) {
         <div class="aspect-square bg-surface-element/60 flex items-center justify-center rounded-panel border border-border-color cursor-pointer hover:bg-surface-element transition-colors"
-            role="button" tabindex="0" aria-label="Agregar otra imagen" [attr.aria-disabled]="disabled()"
+            role="button" tabindex="0" [attr.aria-label]="'seller.addAnotherImage' | translate" [attr.aria-disabled]="disabled()"
             (click)="!disabled() && secondaryInput.click()" (keydown.enter)="!disabled() && secondaryInput.click()">
             <span class="material-symbols-outlined text-text-light/40">add</span>
         </div>
@@ -85,7 +85,7 @@
         (change)="onFileSelect($event, false)" />
 
     <p id="product-image-upload-help" class="text-xs text-text-light/40 mt-4 text-center font-body">
-        JPG, PNG o WEBP. Máx 5MB por archivo.
+        {{ 'seller.jpgPngOrWebpMaximum5MbPerFile' | translate }}
     </p>
 
     @if (fileErrors().length > 0) {
@@ -93,7 +93,7 @@
         role="alert">
         <ul class="space-y-1 text-sm font-medium text-error">
             @for (message of fileErrors(); track message) {
-            <li>{{ message }}</li>
+            <li>{{ (message) | uiText }}</li>
             }
         </ul>
     </div>

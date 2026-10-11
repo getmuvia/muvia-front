@@ -1,4 +1,5 @@
 import { ProductDimensions } from './product';
+import { ProductCondition } from './product-condition';
 
 /**
  * Asset to be uploaded with the product
@@ -33,6 +34,7 @@ export interface CreateProductSpecifications {
  */
 export interface CreateProductDto {
     title: string;
+    condition: ProductCondition;
     description: string;
     price: number;
     stock: number;

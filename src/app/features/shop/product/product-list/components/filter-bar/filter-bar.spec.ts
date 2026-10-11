@@ -1,45 +1,35 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ProductCondition } from '@core/models/product/product-condition';
 import { FilterBar } from './filter-bar';
 
-describe('FilterBar', () => {
-  let component: FilterBar;
+describe('Condition filter control', () => {
   let fixture: ComponentFixture<FilterBar>;
 
   beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [FilterBar],
-    }).compileComponents();
-
+    await TestBed.configureTestingModule({ imports: [FilterBar] }).compileComponents();
     fixture = TestBed.createComponent(FilterBar);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('waits for an explicit submit and clears the draft afterwards', () => {
-    const submitSpy = vi.spyOn(component.searchSubmit, 'emit');
-    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
-
-    input.value = 'quiero un escritorio';
-    input.dispatchEvent(new Event('input'));
+  it('selects a URL-restored condition during the first render of its options', () => {
+    fixture.componentRef.setInput('selectedCondition', ProductCondition.USED);
     fixture.detectChanges();
-
-    expect(submitSpy).not.toHaveBeenCalled();
-
-    const form = fixture.nativeElement.querySelector('form') as HTMLFormElement;
-    form.dispatchEvent(new Event('submit'));
+    const select = fixture.nativeElement.querySelector('#catalog-condition') as HTMLSelectElement;
+    expect(select.value).toBe(ProductCondition.USED);
+    fixture.componentRef.setInput('selectedCondition', '');
     fixture.detectChanges();
-
-    expect(submitSpy).toHaveBeenCalledOnce();
-    expect(submitSpy).toHaveBeenCalledWith('quiero un escritorio');
-    expect(input.value).toBe('');
+    expect(select.value).toBe('');
   });
 
-  it('presents the empty input as a place to add context after a search', () => {
-    fixture.componentRef.setInput('activeSearch', 'quiero un escritorio');
+  it('defaults to All and emits both an explicit condition and clearing the filter', () => {
     fixture.detectChanges();
-
-    const input = fixture.nativeElement.querySelector('input') as HTMLInputElement;
-    expect(input.value).toBe('');
-    expect(input.placeholder).toBe('Añade otro detalle...');
+    const select = fixture.nativeElement.querySelector('#catalog-condition') as HTMLSelectElement;
+    const emit = vi.spyOn(fixture.componentInstance.conditionChange, 'emit');
+    expect(select.value).toBe('');
+    select.value = ProductCondition.NEW;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(emit).toHaveBeenLastCalledWith(ProductCondition.NEW);
+    select.value = '';
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    expect(emit).toHaveBeenLastCalledWith('');
   });
 });

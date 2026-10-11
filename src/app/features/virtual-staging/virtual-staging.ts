@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import {
     Component,
     DestroyRef,
@@ -20,12 +21,15 @@ import { toAppError } from '@core/models/errors/api-error.model';
 import { Pagination } from '@shared/components/pagination/pagination';
 import { debounceTime, distinctUntilChanged, firstValueFrom, Subject } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ProductPrice } from '@shared/components/product-price/product-price';
+import { resolveProductPrice } from '@core/models/product/product-price';
+import { MarketService } from '@core/services/market/market';
 
 const PRODUCT_PAGE_SIZE = 6;
 
 @Component({
     selector: 'app-virtual-staging',
-    imports: [Pagination],
+    imports: [TranslatePipe, UiTextPipe, Pagination, ProductPrice],
     templateUrl: './virtual-staging.html',
     styleUrl: './virtual-staging.css'
 })
@@ -36,10 +40,14 @@ export class VirtualStaging implements OnInit, OnDestroy {
     private readonly route = inject(ActivatedRoute);
     private readonly logger = inject(LoggerService);
     private readonly destroyRef = inject(DestroyRef);
+    private readonly market = inject(MarketService);
     private readonly searchRequests = new Subject<string>();
     private catalogRequestId = 0;
 
     isGenerating = signal(false);
+    productPrice(product: ProductPreview) {
+        return resolveProductPrice(product, this.market.selectedMarket().code);
+    }
     isQuotaLoading = signal(true);
     isCatalogLoading = signal(true);
     dragActive = signal(false);

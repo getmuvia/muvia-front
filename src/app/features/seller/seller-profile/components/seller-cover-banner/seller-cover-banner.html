@@ -1,12 +1,12 @@
 <div
     class="w-full h-48 md:h-64 lg:h-[450px] flex flex-col justify-end overflow-hidden relative group/banner bg-background-light">
     @if (coverImageUrl()) {
-    <img [src]="coverImageUrl()" alt="Cover Image" class="w-full h-full object-cover absolute inset-0 z-10">
+    <img [src]="coverImageUrl()" [alt]="'seller.coverImage' | translate" class="w-full h-full object-cover absolute inset-0 z-10">
     } @else {
     <div
         class="absolute inset-0 flex flex-col items-center justify-center text-text-light/40 gap-2 bg-background-light z-10">
         <span class="material-symbols-outlined text-6xl">store</span>
-        <p class="text-sm font-medium font-body">Sin imagen de portada</p>
+        <p class="text-sm font-medium font-body">{{ 'seller.noCoverImage' | translate }}</p>
     </div>
     }
 

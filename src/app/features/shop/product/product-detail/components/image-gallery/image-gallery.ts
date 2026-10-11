@@ -1,10 +1,12 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { afterNextRender, Component, input, signal, computed, CUSTOM_ELEMENTS_SCHEMA, inject, PLATFORM_ID, ElementRef, HostListener, viewChild, OnDestroy } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ProductAsset, ProductDimensions } from '@core/models/product/product';
+import { MarketService } from '@core/services/market/market';
 
 @Component({
     selector: 'app-image-gallery',
-    imports: [],
+    imports: [TranslatePipe],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
     templateUrl: './image-gallery.html',
     styleUrl: './image-gallery.css',
@@ -12,6 +14,10 @@ import { ProductAsset, ProductDimensions } from '@core/models/product/product';
 export class ImageGallery implements OnDestroy {
     private readonly platformId = inject(PLATFORM_ID);
     private readonly document = inject(DOCUMENT);
+    private readonly market = inject(MarketService);
+    private readonly dimensionNumberFormat = computed(() => new Intl.NumberFormat(this.market.locale(), {
+        maximumFractionDigits: 2,
+    }));
     private modelViewerImport: Promise<unknown> | null = null;
     private dimensionFrame: number | null = null;
     private lastDimensionRenderAt = 0;
@@ -161,7 +167,7 @@ export class ImageGallery implements OnDestroy {
 
     formatDimension(value: number): string {
         const unit = this.dimensions()?.unit ?? '';
-        return `${DIMENSION_NUMBER_FORMAT.format(Number(value))} ${unit}`.trim();
+        return `${this.dimensionNumberFormat().format(Number(value))} ${unit}`.trim();
     }
 
     private loadModelViewer(): Promise<unknown> {
@@ -305,10 +311,6 @@ function nextAnimationFrame(): Promise<void> {
 function vectorToString(vector: Vector3): string {
     return `${vector.x} ${vector.y} ${vector.z}`;
 }
-
-const DIMENSION_NUMBER_FORMAT = new Intl.NumberFormat('es-BO', {
-    maximumFractionDigits: 2,
-});
 
 const DIMENSION_RENDER_INTERVAL_MS = 1000 / 30;
 

@@ -1,4 +1,5 @@
 import { Product, ProductListing } from './product';
+import { ProductCondition } from './product-condition';
 import { ProductSummary } from './product-summary';
 import { resolveProductPrice } from './product-price';
 
@@ -10,6 +11,7 @@ describe('Product price resolution', () => {
     id: 'pe-listing', marketCode: 'PE', price: '180.50', currencyCode: 'PEN', stock: 1, isActive: true,
   };
   const product: Product = {
+    condition: ProductCondition.NEW,
     id: 'product', sellerId: 'seller', categoryId: 'category', title: 'Escritorio',
     description: '', price: '999', stock: 1, specifications: {}, keywords: [], createdAt: '', assets: [],
     category: { id: 'category', name: 'Escritorios', parentId: null, description: '', imageUrl: '', level: 1 },

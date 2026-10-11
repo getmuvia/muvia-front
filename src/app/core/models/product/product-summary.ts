@@ -11,7 +11,7 @@ export interface ProductSummary {
   title: string;
   price: number;
   currencyCode: string;
-  category: { id: string; name: string } | null;
+  category: { id: string; code?: string; name: string } | null;
   primaryImage: ProductImageSummary | null;
 }
 

@@ -5,9 +5,8 @@
         <div
             class="w-16 h-16 border-4 border-[var(--color-surface-light)] border-t-[var(--color-primary)] rounded-full spin mb-6">
         </div>
-        <h2 class="text-2xl font-headline text-[var(--color-text-main)] mb-2">Diseñando tu espacio...</h2>
-        <p class="text-[var(--color-text-secondary)] animate-pulse">Estamos preparando el resultado de tu
-            visualización.</p>
+        <h2 class="text-2xl font-headline text-[var(--color-text-main)] mb-2">{{ 'staging.designingYourSpace' | translate }}</h2>
+        <p class="text-[var(--color-text-secondary)] animate-pulse">{{ 'staging.weArePreparingYourVisualizationResult' | translate }}</p>
     </div>
     } @else {
 
@@ -17,13 +16,13 @@
         <div class="relative w-full bg-[var(--color-background-light)] overflow-hidden" style="height: 75vh;">
 
             <!-- Generated Image (Background) -->
-            <img [src]="result()?.stagedImageUrl ?? ''" alt="Habitación decorada"
+            <img [src]="result()?.stagedImageUrl ?? ''" [alt]="'staging.decoratedRoom' | translate"
                 class="absolute inset-0 w-full h-full object-contain">
 
             <!-- Original Image (Overlay with Clip Path) - SAME size container -->
             <div class="absolute inset-0 w-full h-full bg-[var(--color-background-light)] transition-all duration-75 ease-out"
                 [style.clip-path]="'polygon(0 0, ' + sliderPosition() + '% 0, ' + sliderPosition() + '% 100%, 0 100%)'">
-                <img [src]="originalImageUrl()" alt="Original Room"
+                <img [src]="originalImageUrl()" [alt]="'staging.originalRoom' | translate"
                     class="absolute inset-0 w-full h-full object-contain">
             </div>
 
@@ -42,17 +41,17 @@
             <!-- Labels -->
             <div
                 class="absolute top-3 left-3 bg-black/60 text-white px-3 py-1 rounded-control text-xs font-medium backdrop-blur-sm z-10 pointer-events-none">
-                Original
+                {{ 'staging.original' | translate }}
             </div>
             <div
                 class="absolute top-3 right-3 bg-black/60 text-white px-3 py-1 rounded-control text-xs font-medium backdrop-blur-sm z-10 pointer-events-none">
-                Decorado
+                {{ 'staging.decorated' | translate }}
             </div>
 
             <!-- Download Button -->
             <button (click)="downloadImage()"
                 class="absolute bottom-3 right-3 z-40 bg-surface-element/80 backdrop-blur-md text-text-secondary hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 rounded-full p-2 shadow-md"
-                title="Descargar imagen">
+                [title]="'staging.downloadImage' | translate">
                 <span class="material-symbols-outlined text-lg">download</span>
             </button>
         </div>
@@ -60,9 +59,9 @@
 
     <!-- Selected product -->
     <div class="container mx-auto px-4 mt-8 relative z-10">
-        <h3 class="text-2xl font-headline text-[var(--color-text-main)] mb-2 drop-shadow-sm">Producto utilizado</h3>
+        <h3 class="text-2xl font-headline text-[var(--color-text-main)] mb-2 drop-shadow-sm">{{ 'staging.productUsed' | translate }}</h3>
         <p class="mb-6 text-sm text-[var(--color-text-secondary)]">
-            Esta visualización se generó con el producto que seleccionaste.
+            {{ 'staging.thisVisualizationWasGeneratedWithTheProductYouSelected' | translate }}
         </p>
 
         @if (selectedProduct(); as product) {

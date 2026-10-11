@@ -1,14 +1,14 @@
 <section id="novedades" class="w-full scroll-mt-20 bg-surface-element py-20 lg:py-28">
     <div class="muvia-wide-container mb-10 flex items-end justify-between gap-6">
         <div>
-            <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-secondary">Recién incorporado</p>
+            <p class="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-secondary">{{ 'home.justAdded' | translate }}</p>
             <h2 class="text-text-light text-xl sm:text-4xl font-headline font-semibold leading-tight tracking-[-0.025em]">
-                Novedades
+                {{ 'home.newArrivals' | translate }}
             </h2>
         </div>
         <a routerLink="/products"
             class="hidden border-b border-primary/30 pb-1 text-xs font-bold uppercase tracking-[0.14em] text-primary transition-colors hover:border-primary sm:block">
-            Ver todo
+            {{ 'home.viewAll2' | translate }}
         </a>
     </div>
 
@@ -16,16 +16,16 @@
         @if (error()) {
         <div class="mb-6 flex flex-col items-center justify-between gap-3 rounded-control border border-error/20 bg-error/5 p-4 text-center sm:flex-row sm:text-left"
             role="alert">
-            <p class="text-sm font-medium text-error">{{ error() }}</p>
+            <p class="text-sm font-medium text-error">{{ (error()) | uiText }}</p>
             <button type="button" (click)="retry()" [disabled]="isLoading()"
                 class="shrink-0 rounded-control border border-error/30 px-4 py-2 text-xs font-bold uppercase tracking-wide text-error transition-colors hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-50">
-                Reintentar
+                {{ 'common.retry' | translate }}
             </button>
         </div>
         }
 
         @if (isRefreshing()) {
-        <p class="mb-4 text-sm text-text-light/60" role="status" aria-live="polite">Actualizando novedades...</p>
+        <p class="mb-4 text-sm text-text-light/60" role="status" aria-live="polite">{{ 'home.updatingNewArrivals' | translate }}</p>
         }
 
         <div class="grid grid-cols-1 gap-x-5 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-5"
@@ -41,7 +41,7 @@
             } @empty {
             @if (!error()) {
             <p class="col-span-full text-center text-text-light/60 py-16">
-                No hay novedades por el momento.
+                {{ 'home.thereAreNoNewArrivalsAtTheMoment' | translate }}
             </p>
             }
             }

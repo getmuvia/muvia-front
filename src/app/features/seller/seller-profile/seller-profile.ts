@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ProductStore } from '@core/services/product/product.store';
 import { UserService } from '@core/services/user/user';
@@ -26,6 +27,8 @@ import { getErrorMessage } from '@core/models/errors/api-error.model';
 @Component({
   selector: 'app-seller-profile',
   imports: [
+        TranslatePipe,
+        UiTextPipe,
     SellerCoverBanner,
     SellerProfileHeader,
     SellerSidebar,
@@ -50,7 +53,7 @@ export class SellerProfile implements OnInit {
 
   coverImageUrl = computed(() => this.userService.vendorProfile()?.coverImage || '');
   avatarUrl = computed(() => this.userService.vendorProfile()?.logoUrl || '');
-  sellerName = computed(() => this.userService.vendorProfile()?.businessName || 'Nombre del Vendedor');
+  sellerName = computed(() => this.userService.vendorProfile()?.businessName || '');
   sellerDescription = computed(() => this.userService.vendorProfile()?.description || '');
   aboutText = computed(() => this.userService.vendorProfile()?.aboutMe || '');
   socialLinks = computed(() => this.userService.vendorProfile()?.socialLinks || []);

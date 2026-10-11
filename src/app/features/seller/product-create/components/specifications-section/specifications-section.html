@@ -2,27 +2,27 @@
         <!-- Dimensions -->
         <div class="space-y-2">
             <p id="product-dimensions-label" class="text-xs text-text-light/60 uppercase font-body">
-                Dimensiones (L x A x H)
+                {{ 'seller.dimensionsLXWXH' | translate }}
             </p>
             <div class="flex gap-2 items-center">
-                <input id="product-dimension-width" [formField]="dimensionWidthField()" aria-label="Ancho"
+                <input id="product-dimension-width" [formField]="dimensionWidthField()" [attr.aria-label]="'common.width' | translate"
                     [attr.aria-invalid]="isFieldInvalid(dimensionWidthField())"
                     [attr.aria-describedby]="isFieldInvalid(dimensionWidthField()) ? 'product-dimensions-error' : null"
                     class="w-full rounded-control border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
-                    placeholder="Ancho" type="number" step="0.01" />
+                    [placeholder]="'common.width' | translate" type="number" step="0.01" />
                 <span class="text-text-light/40">×</span>
-                <input id="product-dimension-depth" [formField]="dimensionDepthField()" aria-label="Largo"
+                <input id="product-dimension-depth" [formField]="dimensionDepthField()" [attr.aria-label]="'common.depth' | translate"
                     [attr.aria-invalid]="isFieldInvalid(dimensionDepthField())"
                     [attr.aria-describedby]="isFieldInvalid(dimensionDepthField()) ? 'product-dimensions-error' : null"
                     class="w-full rounded-control border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
-                    placeholder="Largo" type="number" step="0.01" />
+                    [placeholder]="'common.depth' | translate" type="number" step="0.01" />
                 <span class="text-text-light/40">×</span>
-                <input id="product-dimension-height" [formField]="dimensionHeightField()" aria-label="Alto"
+                <input id="product-dimension-height" [formField]="dimensionHeightField()" [attr.aria-label]="'common.height' | translate"
                     [attr.aria-invalid]="isFieldInvalid(dimensionHeightField())"
                     [attr.aria-describedby]="isFieldInvalid(dimensionHeightField()) ? 'product-dimensions-error' : null"
                     class="w-full rounded-control border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
-                    placeholder="Alto" type="number" step="0.01" />
-                <select id="product-dimension-unit" [formField]="dimensionUnitField()" aria-label="Unidad de medida"
+                    [placeholder]="'common.height' | translate" type="number" step="0.01" />
+                <select id="product-dimension-unit" [formField]="dimensionUnitField()" [attr.aria-label]="'seller.measurementUnit' | translate"
                     class="rounded-control border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body">
                     <option value="cm">cm</option>
                     <option value="m">m</option>
@@ -33,23 +33,23 @@
             isFieldInvalid(dimensionDepthField())) {
             <p id="product-dimensions-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
-                <span>Ingresa medidas mayores a 0 para ancho, largo y alto.</span>
+                <span>{{ 'seller.enterDimensionsGreaterThan0ForWidthDepthAnd' | translate }}</span>
             </p>
             }
         </div>
 
         <!-- Weight -->
         <div class="space-y-2">
-            <label for="product-weight" class="text-xs text-text-light/60 uppercase font-body">Peso</label>
+            <label for="product-weight" class="text-xs text-text-light/60 uppercase font-body">{{ 'common.weight' | translate }}</label>
             <input id="product-weight" [formField]="weightField()" [attr.aria-invalid]="isFieldInvalid(weightField())"
                 [attr.aria-describedby]="isFieldInvalid(weightField()) ? 'product-weight-error' : null"
                 class="w-full rounded-control border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
-                placeholder="Ej. 15 kg" type="text" />
+                [placeholder]="'seller.eG15Kg' | translate" type="text" />
             @if (isFieldInvalid(weightField())) {
             <p id="product-weight-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(weightField()); track $index) {
-                <span>{{ error.message }}</span>
+                <span>{{ (error.message) | uiText }}</span>
                 }
             </p>
             }
@@ -57,16 +57,16 @@
 
         <!-- Material -->
         <div class="space-y-2">
-            <label for="product-material" class="text-xs text-text-light/60 uppercase font-body">Material Principal</label>
+            <label for="product-material" class="text-xs text-text-light/60 uppercase font-body">{{ 'seller.mainMaterial' | translate }}</label>
             <input id="product-material" [formField]="materialField()" [attr.aria-invalid]="isFieldInvalid(materialField())"
                 [attr.aria-describedby]="isFieldInvalid(materialField()) ? 'product-material-error' : null"
                 class="w-full rounded-control border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
-                placeholder="Ej. Roble macizo, Vidrio templado" type="text" />
+                [placeholder]="'seller.eGSolidOakTemperedGlass' | translate" type="text" />
             @if (isFieldInvalid(materialField())) {
             <p id="product-material-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(materialField()); track $index) {
-                <span>{{ error.message }}</span>
+                <span>{{ (error.message) | uiText }}</span>
                 }
             </p>
             }
@@ -74,16 +74,16 @@
 
         <!-- Color -->
         <div class="space-y-2">
-            <label for="product-color" class="text-xs text-text-light/60 uppercase font-body">Color Predominante</label>
+            <label for="product-color" class="text-xs text-text-light/60 uppercase font-body">{{ 'seller.mainColor' | translate }}</label>
             <input id="product-color" [formField]="colorField()" [attr.aria-invalid]="isFieldInvalid(colorField())"
                 [attr.aria-describedby]="isFieldInvalid(colorField()) ? 'product-color-error' : null"
                 class="w-full rounded-control border border-border-color bg-white p-3 text-sm text-text-light transition-colors focus:border-primary focus:ring-0 font-body"
-                placeholder="Ej. Negro mate, Blanco perla" type="text" />
+                [placeholder]="'seller.eGMatteBlackPearlWhite' | translate" type="text" />
             @if (isFieldInvalid(colorField())) {
             <p id="product-color-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(colorField()); track $index) {
-                <span>{{ error.message }}</span>
+                <span>{{ (error.message) | uiText }}</span>
                 }
             </p>
             }

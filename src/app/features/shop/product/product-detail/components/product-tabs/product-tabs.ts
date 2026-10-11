@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { Component, input, signal } from '@angular/core';
 import { Product } from '@core/models/product/product';
 
@@ -5,7 +6,7 @@ type TabType = 'description' | 'details';
 
 @Component({
     selector: 'app-product-tabs',
-    imports: [],
+    imports: [TranslatePipe],
     templateUrl: './product-tabs.html',
     styleUrl: './product-tabs.css',
 })

@@ -12,7 +12,7 @@
     }
   </div>
 } @else if (products().length === 0) {
-  <app-empty-state [title]="emptyTitle()" [description]="emptyDescription()" />
+  <app-empty-state [title]="(emptyTitle()) | uiText" [description]="(emptyDescription()) | uiText" />
 } @else {
   <div class="catalog-grid">
     @for (product of products(); track product.id) {

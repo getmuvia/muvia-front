@@ -1,3 +1,5 @@
+import { ProductCondition } from '@core/models/product/product-condition';
+
 /**
  * Hybrid Search Types
  * For the /ai/hybrid endpoint
@@ -37,6 +39,7 @@ export interface HybridSearchInterpretation {
  */
 export interface HybridSearchRequest {
     query: string;
+    condition?: ProductCondition;
     limit?: number;
     marketCode?: string;
     locale?: string;

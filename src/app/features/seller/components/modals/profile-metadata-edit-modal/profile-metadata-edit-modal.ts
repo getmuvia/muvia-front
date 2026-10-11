@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, ElementRef, effect, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -8,7 +9,7 @@ export interface ProfileMetadataFormData {
 
 @Component({
     selector: 'app-profile-metadata-edit-modal',
-    imports: [ReactiveFormsModule],
+    imports: [TranslatePipe, UiTextPipe, ReactiveFormsModule],
     template: `
         @if (isOpen()) {
             <div
@@ -24,12 +25,12 @@ export interface ProfileMetadataFormData {
                 >
                     <div class="flex items-center justify-between border-b border-text-light/10 px-6 py-4">
                         <h3 id="profile-metadata-title" class="text-lg font-bold text-text-light">
-                            Editar perfil
+                            {{ 'seller.editProfile' | translate }}
                         </h3>
                         <button
                             type="button"
                             class="rounded-full p-1 text-text-light/40 transition-colors hover:bg-surface-element hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
-                            aria-label="Cerrar"
+                            [attr.aria-label]="'common.close' | translate"
                             [disabled]="isLoading()"
                             (click)="close()"
                         >
@@ -42,17 +43,17 @@ export interface ProfileMetadataFormData {
                             @if (errorMessage()) {
                                 <p class="rounded-control border border-error/20 bg-error/5 p-3 text-sm font-medium text-error"
                                     role="alert">
-                                    {{ errorMessage() }}
+                                    {{ (errorMessage()) | uiText }}
                                 </p>
                             }
                             @if (form.invalid && form.touched) {
                                 <div class="rounded-control border border-error/20 bg-error/5 p-3" role="alert">
-                                    <p class="text-sm font-bold text-error">Revisa los campos indicados antes de guardar.</p>
+                                    <p class="text-sm font-bold text-error">{{ 'seller.reviewTheHighlightedFieldsBeforeSaving' | translate }}</p>
                                 </div>
                             }
                             <div class="flex flex-col gap-2">
                                 <label for="business-name" class="text-sm font-bold text-text-light">
-                                    Nombre del vendedor
+                                    {{ 'seller.sellerName' | translate }}
                                 </label>
                                 <input
                                     id="business-name"
@@ -66,28 +67,28 @@ export interface ProfileMetadataFormData {
                                 />
                                 <div id="business-name-help" class="min-h-5 text-xs">
                                     @if (businessName.touched && businessName.hasError('required')) {
-                                        <span class="text-error">El nombre del vendedor es obligatorio.</span>
+                                        <span class="text-error">{{ 'seller.theSellerNameIsRequired' | translate }}</span>
                                     } @else if (businessName.touched && businessName.hasError('pattern')) {
-                                        <span class="text-error">El nombre no puede contener solo espacios.</span>
+                                        <span class="text-error">{{ 'seller.theNameCannotContainOnlySpaces' | translate }}</span>
                                     } @else if (businessName.touched && businessName.hasError('maxlength')) {
-                                        <span class="text-error">El nombre no puede superar los 255 caracteres.</span>
+                                        <span class="text-error">{{ 'seller.theNameCannotExceed255Characters' | translate }}</span>
                                     }
                                 </div>
                             </div>
 
                             <div class="flex flex-col gap-2">
                                 <label for="seller-description" class="text-sm font-bold text-text-light">
-                                    Descripción
+                                    {{ 'common.description' | translate }}
                                 </label>
                                 <textarea
                                     id="seller-description"
                                     formControlName="description"
                                     rows="4"
                                     class="w-full resize-none rounded-control border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50"
-                                    placeholder="Describe brevemente tu negocio..."
+                                    [placeholder]="'seller.brieflyDescribeYourBusiness' | translate"
                                 ></textarea>
                                 <p class="text-xs text-text-light/60">
-                                    Puedes dejarla vacía si todavía no deseas mostrar una descripción.
+                                    {{ 'seller.youCanLeaveItEmptyIfYouDoNot' | translate }}
                                 </p>
                             </div>
                         </div>
@@ -99,7 +100,7 @@ export interface ProfileMetadataFormData {
                                 [disabled]="isLoading()"
                                 (click)="close()"
                             >
-                                Cancelar
+                                {{ 'common.cancel' | translate }}
                             </button>
                             <button
                                 type="submit"
@@ -111,7 +112,7 @@ export interface ProfileMetadataFormData {
                                 } @else {
                                     <span class="material-symbols-outlined text-lg" aria-hidden="true">save</span>
                                 }
-                                Guardar
+                                {{ 'common.save' | translate }}
                             </button>
                         </div>
                     </form>

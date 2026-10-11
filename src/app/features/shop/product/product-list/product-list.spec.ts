@@ -10,8 +10,10 @@ import { CategoryService } from '@core/services/category/category';
 import { Category } from '@core/models/category/category';
 import { MarketService } from '@core/services/market/market';
 import { ProductList } from './product-list';
+import { I18nService } from '@core/services/i18n/i18n';
 
 describe('ProductList', () => {
+  afterEach(() => localStorage.removeItem('muvia.language'));
   let component: ProductList;
   let fixture: ComponentFixture<ProductList>;
   const categories: Category[] = [
@@ -79,6 +81,21 @@ describe('ProductList', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('changes category labels without changing filters or restarting product requests', () => {
+    queryParams.next(convertToParamMap({ category: 'DESK' }));
+    fixture.detectChanges();
+    const requests = searchProducts.mock.calls.length;
+    const filters = { ...component.catalog.filters() };
+    TestBed.inject(I18nService).selectLanguage('en');
+    fixture.detectChanges();
+
+    expect(component.pageTitle()).toBe('Desks');
+    expect(fixture.nativeElement.textContent).toContain('All categories');
+    expect(fixture.nativeElement.textContent).toContain('0 products');
+    expect(component.catalog.filters()).toEqual(filters);
+    expect(searchProducts.mock.calls).toHaveLength(requests);
   });
 
   it('renders fallback products in a separately labeled section', () => {
@@ -332,11 +349,11 @@ describe('ProductList', () => {
   it('preserves search and category context when opening the measurement tool', () => {
     const navigateSpy = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     queryParams.next(convertToParamMap({
-      search: 'madera', category: 'DESK', dimension: 'width', maxDimensionCm: '120',
+      search: 'madera', category: 'DESK', dimension: 'width', maxDimensionCm: '120', condition: 'USED',
     }));
     component.onMeasureRequested();
     expect(navigateSpy).toHaveBeenCalledWith(['/products/measure'], {
-      queryParams: { search: 'madera', category: 'DESK', dimension: 'width', maxDimensionCm: 120 },
+      queryParams: { search: 'madera', category: 'DESK', dimension: 'width', maxDimensionCm: 120, condition: 'USED' },
     });
   });
 

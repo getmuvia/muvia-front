@@ -1,7 +1,9 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, effect, input, output, signal } from '@angular/core';
 
 @Component({
     selector: 'app-image-editor-modal',
+  imports: [TranslatePipe, UiTextPipe],
     standalone: true,
     template: `
     @if (isOpen()) {
@@ -11,8 +13,8 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
             
             <!-- Header -->
             <div class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10">
-                <h3 id="image-editor-title" class="text-lg font-bold text-text-light">{{ title() }}</h3>
-                <button type="button" (click)="close()" aria-label="Cerrar" [disabled]="isLoading()"
+                <h3 id="image-editor-title" class="text-lg font-bold text-text-light">{{ (title()) | uiText }}</h3>
+                <button type="button" (click)="close()" [attr.aria-label]="'common.close' | translate" [disabled]="isLoading()"
                     class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element disabled:cursor-not-allowed disabled:opacity-50">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
@@ -23,13 +25,13 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
                 
                 <!-- Preview Area -->
                 <div class="relative w-full aspect-video bg-surface-element rounded-panel overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
-                    role="button" tabindex="0" aria-label="Seleccionar imagen" aria-describedby="profile-image-help profile-image-error"
+                    role="button" tabindex="0" [attr.aria-label]="'seller.selectImage' | translate" aria-describedby="profile-image-help profile-image-error"
                     [attr.aria-disabled]="isLoading()" [attr.tabindex]="isLoading() ? -1 : 0"
                     (click)="!isLoading() && fileInput.click()" (keydown.enter)="!isLoading() && fileInput.click()"
                     (keydown.space)="!isLoading() && fileInput.click(); $event.preventDefault()">
                     
                     @if (previewUrl()) {
-                        <img [src]="previewUrl()" class="w-full h-full object-cover" alt="Preview">
+                        <img [src]="previewUrl()" class="w-full h-full object-cover" [alt]="'seller.preview' | translate">
                         
                         <!-- Avatar Pro Stencil Overlay -->
                         @if (mode() === 'avatar') {
@@ -41,13 +43,13 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
 
                         <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
                              <div class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-control text-white font-medium text-sm flex items-center gap-2 border border-white/20">
-                                <span class="material-symbols-outlined text-lg">edit</span> Cambiar
+                                <span class="material-symbols-outlined text-lg">edit</span> {{ 'seller.change' | translate }}
                              </div>
                         </div>
                     } @else {
                         <div class="flex flex-col items-center gap-3 text-text-light/40">
                              <span class="material-symbols-outlined text-4xl">add_photo_alternate</span>
-                             <span class="text-sm font-medium">Haz clic para subir una imagen</span>
+                             <span class="text-sm font-medium">{{ 'seller.clickToUploadAnImage' | translate }}</span>
                         </div>
                     }
                 </div>
@@ -56,13 +58,13 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
                     aria-describedby="profile-image-help profile-image-error" accept="image/png, image/jpeg, image/webp">
 
                 <p id="profile-image-help" class="text-xs text-center text-text-light/60 px-4">
-                    Formatos soportados: PNG, JPG o WEBP. Máximo 5 MB.
+                    {{ 'seller.supportedFormatsPngJpgOrWebpMaximum5Mb' | translate }}
                 </p>
 
                 @if (displayedError()) {
                 <p id="profile-image-error" class="w-full rounded-control border border-error/20 bg-error/5 p-3 text-sm font-medium text-error"
                     role="alert">
-                    {{ displayedError() }}
+                    {{ (displayedError()) | uiText }}
                 </p>
                 }
 
@@ -72,7 +74,7 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
             <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
                 <button type="button" (click)="close()" [disabled]="isLoading()"
                     class="px-4 py-2 rounded-control text-sm font-medium text-text-light hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50">
-                    Cancelar
+                    {{ 'common.cancel' | translate }}
                 </button>
                 <button type="button" (click)="onSave()"
                     [disabled]="!selectedFile() || isLoading()"
@@ -82,7 +84,7 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
                     } @else {
                         <span class="material-symbols-outlined text-lg">check</span>
                     }
-                    Guardar
+                    {{ 'common.save' | translate }}
                 </button>
             </div>
         </div>
