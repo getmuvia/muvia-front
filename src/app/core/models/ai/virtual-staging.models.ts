@@ -1,3 +1,5 @@
+import { ProductCondition } from '@core/models/product/product-condition';
+
 export interface VirtualStagingRequest {
     gcsStorageKey: string;
     productId: string;
@@ -28,6 +30,7 @@ export interface StagingAnalysis {
 
 export interface StagingProduct {
     id: string;
+    condition: ProductCondition;
     title: string;
     description: string | null;
     price: number;

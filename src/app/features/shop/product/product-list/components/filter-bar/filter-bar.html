@@ -3,10 +3,10 @@
     <form
       (submit)="onSearchSubmit($event)"
       role="search"
-      aria-label="Buscar en el catálogo"
+      [attr.aria-label]="'catalog.searchTheCatalog' | translate"
       class="catalog-search"
     >
-      <label for="product-search" class="sr-only">Buscar productos</label>
+      <label for="product-search" class="sr-only">{{ 'catalog.searchProducts2' | translate }}</label>
       <span class="material-symbols-outlined search-icon" aria-hidden="true">search</span>
       <input
         type="text"
@@ -14,31 +14,40 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         id="product-search"
-        [placeholder]="searchPlaceholder()"
+        [placeholder]="(searchPlaceholder()) | uiText"
         enterkeyhint="search"
       />
-      <button type="submit" aria-label="Buscar">Buscar</button>
+      <button type="submit" [attr.aria-label]="'catalog.search' | translate">{{ 'catalog.search' | translate }}</button>
     </form>
     <button
       type="button"
       (click)="measureRequested.emit()"
       class="measure-button"
-      aria-label="Configurar filtro por medidas"
+      [attr.aria-label]="'catalog.setUpDimensionFilter' | translate"
     >
       <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
-      Buscar por medidas
+      {{ 'catalog.searchByDimensions' | translate }}
     </button>
   </div>
 
+  <div class="condition-filter">
+    <label for="catalog-condition">{{ 'catalog.productCondition' | translate }}</label>
+    <select id="catalog-condition" (change)="onConditionChange($event)">
+      <option value="" [selected]="selectedCondition() === ''">{{ 'catalog.conditionAll' | translate }}</option>
+      <option [value]="productCondition.NEW" [selected]="selectedCondition() === productCondition.NEW">{{ 'catalog.conditionFilterNew' | translate }}</option>
+      <option [value]="productCondition.USED" [selected]="selectedCondition() === productCondition.USED">{{ 'catalog.conditionFilterUsed' | translate }}</option>
+    </select>
+  </div>
+
   @if (activeSearch() || activeCategory() || activeMeasurement()) {
-    <div class="active-filters" aria-label="Filtros activos">
-      <span class="active-filters-label">Filtrando por</span>
+    <div class="active-filters" [attr.aria-label]="'catalog.activeFilters' | translate">
+      <span class="active-filters-label">{{ 'catalog.filteringBy' | translate }}</span>
       @if (activeSearch()) {
         <button
           type="button"
           (click)="onClearSearch()"
-          aria-label="Limpiar búsqueda"
-          title="Limpiar búsqueda"
+          [attr.aria-label]="'catalog.clearSearch' | translate"
+          [title]="'catalog.clearSearch' | translate"
         >
           <span class="truncate">{{ activeSearch() }}</span>
           <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -48,8 +57,8 @@
         <button
           type="button"
           (click)="onClearCategory()"
-          [attr.aria-label]="'Quitar filtro de categoría ' + activeCategory()"
-          [attr.title]="'Quitar filtro de categoría ' + activeCategory()"
+          [attr.aria-label]="'catalog.removeCategoryFilter' | translate: {category: activeCategory()}"
+          [attr.title]="'catalog.removeCategoryFilter' | translate: {category: activeCategory()}"
         >
           <span class="truncate">{{ activeCategory() }}</span>
           <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -59,8 +68,8 @@
         <button
           type="button"
           (click)="onClearMeasurement()"
-          [attr.aria-label]="'Quitar filtro ' + activeMeasurement()"
-          [attr.title]="'Quitar filtro ' + activeMeasurement()"
+          [attr.aria-label]="'catalog.removeFilter' | translate: {filter: activeMeasurement()}"
+          [attr.title]="'catalog.removeFilter' | translate: {filter: activeMeasurement()}"
         >
           <span class="truncate">{{ activeMeasurement() }}</span>
           <span class="material-symbols-outlined" aria-hidden="true">close</span>

@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import {
   Component,
   computed,
@@ -29,7 +30,7 @@ import {
 
 @Component({
   selector: 'app-new-arrivals',
-  imports: [ProductCard, RouterLink],
+  imports: [TranslatePipe, UiTextPipe, ProductCard, RouterLink],
   templateUrl: './new-arrivals.html',
   styleUrl: './new-arrivals.css',
 })

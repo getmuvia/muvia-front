@@ -1,19 +1,24 @@
+import { TranslatePipe, UiTextPipe, CategoryNamePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { Product } from '@core/models/product/product';
+import { PRODUCT_CONDITION_LABELS } from '@core/models/product/product-condition';
 import { resolveProductPrice } from '@core/models/product/product-price';
 import { MarketService } from '@core/services/market/market';
 import { ProductPrice } from '@shared/components/product-price/product-price';
 import { RouterLink } from '@angular/router';
+import { I18nService } from '@core/services/i18n/i18n';
 
 @Component({
     selector: 'app-product-info',
-    imports: [ProductPrice, RouterLink],
+    imports: [CategoryNamePipe, TranslatePipe, UiTextPipe, ProductPrice, RouterLink],
     templateUrl: './product-info.html',
     styleUrl: './product-info.css',
 })
 export class ProductInfo {
     private readonly market = inject(MarketService);
+    private readonly i18n = inject(I18nService);
     readonly product = input.required<Product>();
+    readonly conditionLabel = computed(() => PRODUCT_CONDITION_LABELS[this.product().condition]);
     readonly shareFeedback = signal('');
     readonly canVisualizeProduct = computed(() =>
         this.product().assets?.some(asset =>
@@ -27,9 +32,9 @@ export class ProductInfo {
     );
 
     get contactHref(): string {
-        const subject = encodeURIComponent(`Consulta sobre ${this.product().title}`);
+        const subject = encodeURIComponent(this.i18n.t('catalog.contactSubject', {title: this.product().title}));
         const body = encodeURIComponent(
-            `Hola Muvia, quiero solicitar información sobre el producto demo ${this.product().title} (ID: ${this.product().id}).`
+            this.i18n.t('catalog.contactBody', {title: this.product().title, id: this.product().id})
         );
         return `mailto:paul@getmuvia.com?subject=${subject}&body=${body}`;
     }
@@ -39,7 +44,7 @@ export class ProductInfo {
 
         const shareData = {
             title: `${this.product().title} · Muvia`,
-            text: `Mira ${this.product().title} en el catálogo demo de Muvia.`,
+            text: this.i18n.t('catalog.shareText', {title: this.product().title}),
             url: `https://app.getmuvia.com/products/${this.product().id}`
         };
 

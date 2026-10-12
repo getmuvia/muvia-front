@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe, CountryNamePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Market } from '@core/models/market/market';
@@ -5,6 +6,7 @@ import { MarketService } from '@core/services/market/market';
 
 @Component({
   selector: 'app-location',
+  imports: [CountryNamePipe, TranslatePipe, UiTextPipe],
   templateUrl: './location.html',
   styleUrl: './location.css',
 })

@@ -1,17 +1,17 @@
 <!-- Page Heading -->
 <div class="mb-7 text-center lg:text-left">
     <h1 class="font-headline text-4xl font-semibold tracking-tight text-text-light mb-2">
-        Crear cuenta
+        {{ 'auth.createAnAccount' | translate }}
     </h1>
     <p class="text-base text-text-secondary">
-        Únete a nuestra comunidad y muestra tus objetos al mundo.
+        {{ 'auth.joinOurCommunityAndShowYourProductsToThe' | translate }}
     </p>
 </div>
 
 <!-- Error Message -->
 @if (error()) {
 <div class="bg-error/10 border border-error/30 text-error px-4 py-3 rounded-panel text-sm mb-6" role="alert">
-    {{ error() }}
+    {{ (error()) | uiText }}
 </div>
 }
 
@@ -20,18 +20,18 @@
     <!-- Business Name Field -->
     <div>
         <label class="block text-sm font-medium leading-6 text-text-main" for="business-name">
-            Nombre del Negocio
+            {{ 'auth.businessName' | translate }}
         </label>
         <div class="mt-2">
             <input [formField]="registerForm.businessName"
                 class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
-                id="business-name" placeholder="Ej. Studio Decor" type="text" />
+                id="business-name" [placeholder]="'auth.eGStudioDecor' | translate" type="text" />
         </div>
         @if (isFieldInvalid('businessName')) {
         <p class="text-sm text-error font-medium flex items-center gap-1 mt-1 pl-1">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of registerForm.businessName().errors(); track $index) {
-            <span>{{ error.message }}</span>
+            <span>{{ (error.message) | uiText }}</span>
             }
         </p>
         }
@@ -40,18 +40,18 @@
     <!-- Email Field -->
     <div>
         <label class="block text-sm font-medium leading-6 text-text-main" for="email">
-            Email
+            {{ 'auth.email2' | translate }}
         </label>
         <div class="mt-2">
             <input [formField]="registerForm.email" autocomplete="email"
                 class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
-                id="email" placeholder="nombre@ejemplo.com" type="text" />
+                id="email" [placeholder]="'auth.nameExampleCom' | translate" type="text" />
         </div>
         @if (isFieldInvalid('email')) {
         <p class="text-sm text-error font-medium flex items-center gap-1 mt-1 pl-1">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of registerForm.email().errors(); track $index) {
-            <span>{{ error.message }}</span>
+            <span>{{ (error.message) | uiText }}</span>
             }
         </p>
         }
@@ -60,7 +60,7 @@
     <!-- Password Field -->
     <div>
         <label class="block text-sm font-medium leading-6 text-text-main" for="password">
-            Contraseña
+            {{ 'auth.password' | translate }}
         </label>
         <div class="relative mt-2">
             <input [formField]="registerForm.password" autocomplete="new-password"
@@ -68,7 +68,7 @@
                 id="password" placeholder="••••••••" [type]="showPassword() ? 'text' : 'password'" />
             <div class="absolute inset-y-0 right-0 flex items-center pr-1">
                 <button type="button" (click)="togglePasswordVisibility()"
-                    [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+                    [attr.aria-label]="showPassword() ? ('common.hidePassword' | translate) : ('common.showPassword' | translate)"
                     [attr.aria-pressed]="showPassword()"
                     class="flex size-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                     <span class="material-symbols-outlined text-xl" aria-hidden="true">
@@ -81,7 +81,7 @@
         <p class="text-sm text-error font-medium flex items-center gap-1 mt-1 pl-1">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of registerForm.password().errors(); track $index) {
-            <span>{{ error.message }}</span>
+            <span>{{ (error.message) | uiText }}</span>
             }
         </p>
         }
@@ -90,12 +90,12 @@
     <!-- Description Field (Textarea) -->
     <div>
         <label class="block text-sm font-medium leading-6 text-text-main" for="description">
-            Descripción
+            {{ 'common.description' | translate }}
         </label>
         <div class="mt-2">
             <textarea [formField]="registerForm.description"
                 class="block w-full resize-none rounded-control border border-border-color bg-surface-light px-4 py-3 text-sm text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary"
-                id="description" placeholder="Describe brevemente tu estilo o productos..." rows="3"></textarea>
+                id="description" [placeholder]="'auth.brieflyDescribeYourStyleOrProducts' | translate" rows="3"></textarea>
         </div>
     </div>
 
@@ -106,7 +106,7 @@
             @if (isLoading()) {
             <span class="animate-spin mr-2">⟳</span>
             }
-            Registrarse
+            {{ 'auth.register' | translate }}
         </button>
     </div>
 </form>
@@ -118,14 +118,14 @@
             <div class="w-full border-t border-text-light/15"></div>
         </div>
         <div class="relative flex justify-center text-sm font-medium leading-6">
-            <span class="bg-background-light px-6 text-text-secondary">O</span>
+            <span class="bg-background-light px-6 text-text-secondary">{{ 'auth.or' | translate }}</span>
         </div>
     </div>
     <div class="mt-6 text-center">
         <p class="text-sm text-text-secondary">
-            ¿Ya tienes una cuenta?
+            {{ 'auth.alreadyHaveAnAccount' | translate }}
             <a routerLink="/auth/login" class="font-bold text-primary hover:text-primary/80 transition-colors ml-1">
-                Inicia sesión
+                {{ 'auth.signIn2' | translate }}
             </a>
         </p>
     </div>
@@ -133,7 +133,7 @@
 
 <!-- Terms -->
 <p class="mt-7 text-center text-xs text-text-secondary">
-    Al registrarte, aceptas nuestros
-    <a class="underline hover:text-primary" href="https://getmuvia.com/terms">Términos de Servicio</a>
-    y <a class="underline hover:text-primary" href="https://getmuvia.com/privacy">Política de Privacidad</a>.
+    {{ 'auth.byRegisteringYouAgreeToOur' | translate }}
+    <a class="underline hover:text-primary" href="https://getmuvia.com/terms">{{ 'auth.termsOfService' | translate }}</a>
+    {{ 'common.and' | translate }} <a class="underline hover:text-primary" href="https://getmuvia.com/privacy">{{ 'auth.privacyPolicy' | translate }}</a>.
 </p>

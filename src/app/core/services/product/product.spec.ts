@@ -10,6 +10,7 @@ import {
 } from '@core/models/errors/http-error-feedback';
 import { MarketService } from '@core/services/market/market';
 import { ProductService } from './product';
+import { ProductCondition } from '@core/models/product/product-condition';
 
 describe('ProductService error feedback ownership', () => {
   let service: ProductService;
@@ -53,6 +54,7 @@ describe('ProductService error feedback ownership', () => {
 
   it('keeps global feedback as the default for mutations', () => {
     service.createProduct({
+      condition: ProductCondition.NEW,
       title: 'Silla',
       description: 'Silla de prueba',
       price: 100,

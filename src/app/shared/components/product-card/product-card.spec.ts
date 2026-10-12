@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { signal } from '@angular/core';
 
 import { Product } from '@core/models/product/product';
+import { ProductCondition } from '@core/models/product/product-condition';
 import { MarketService } from '@core/services/market/market';
 import { ProductCard } from './product-card';
 
@@ -22,6 +23,7 @@ describe('ProductCard', () => {
 
     fixture = TestBed.createComponent(ProductCard);
     const product: Product = {
+      condition: ProductCondition.NEW,
       id: 'product-id',
       sellerId: 'seller-id',
       categoryId: 'category-id',

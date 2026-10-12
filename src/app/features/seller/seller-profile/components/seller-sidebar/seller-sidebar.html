@@ -13,8 +13,7 @@
                 <div class="flex flex-col gap-2">
                     <div class="flex items-center gap-3 px-3 py-2 bg-surface-element rounded-panel">
                         <span class="material-symbols-outlined text-text-light">info</span>
-                        <p class="text-text-light text-sm font-body font-medium leading-normal">Sobre
-                            Nosotros</p>
+                        <p class="text-text-light text-sm font-body font-medium leading-normal">{{ 'seller.aboutUs' | translate }}</p>
                     </div>
 
                     @if (aboutText()) {
@@ -25,7 +24,7 @@
                     <div
                         class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-panel text-text-light/40 gap-1">
                         <span class="material-symbols-outlined text-xl">description</span>
-                        <p class="text-xs font-medium text-center font-body">Sin descripción</p>
+                        <p class="text-xs font-medium text-center font-body">{{ 'seller.noDescription' | translate }}</p>
                     </div>
                     }
                 </div>
@@ -34,17 +33,16 @@
                 <div class="flex flex-col gap-2">
                     <div class="flex items-center gap-3 px-3 py-2 bg-surface-element rounded-panel">
                         <span class="material-symbols-outlined text-text-light">schedule</span>
-                        <p class="text-text-light text-sm font-body font-medium leading-normal">Horario
-                            de Atención</p>
+                        <p class="text-text-light text-sm font-body font-medium leading-normal">{{ 'seller.businessHours' | translate }}</p>
                     </div>
 
                     @if (weekDays.length > 0 && businessHours()) {
                     <div class="flex flex-col gap-2 px-3">
                         @for (day of weekDays; track day.key) {
                         <div class="flex justify-between items-center text-sm font-body">
-                            <span class="text-text-light/80 w-24">{{ day.label }}</span>
+                            <span class="text-text-light/80 w-24">{{ (day.label) | uiText }}</span>
                             @if (businessHours()[day.key]?.isClosed) {
-                            <span class="text-error/80 font-medium font-body">Cerrado</span>
+                            <span class="text-error/80 font-medium font-body">{{ 'seller.closed' | translate }}</span>
                             } @else {
                             <span class="text-text-light/60">
                                 {{ businessHours()[day.key]?.open || '--' }} - {{ businessHours()[day.key]?.close ||
@@ -58,7 +56,7 @@
                     <div
                         class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-panel text-text-light/40 gap-1">
                         <span class="material-symbols-outlined text-xl">calendar_off</span>
-                        <p class="text-xs font-medium text-center font-body">Sin horario</p>
+                        <p class="text-xs font-medium text-center font-body">{{ 'seller.noBusinessHours' | translate }}</p>
                     </div>
                     }
                 </div>
@@ -92,15 +90,14 @@
                     </svg>
                     }
                     }
-                    <p class="text-text-light text-sm font-body font-medium leading-normal">{{ link.name
-                        }}</p>
+                    <p class="text-text-light text-sm font-body font-medium leading-normal">{{ link.name }}</p>
                 </a>
                 }
                 } @else {
                 <div
                     class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-panel text-text-light/40 gap-1">
                     <span class="material-symbols-outlined text-xl">link_off</span>
-                    <p class="text-xs font-medium text-center font-body">Sin redes sociales</p>
+                    <p class="text-xs font-medium text-center font-body">{{ 'seller.noSocialLinks' | translate }}</p>
                 </div>
                 }
             </div>

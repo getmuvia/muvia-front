@@ -1,0 +1,10 @@
+{
+  "files.imageLimit": "We did not add “{file}”: the limit is {count} images. Remove an image before trying again.",
+  "files.imageSize": "We did not add “{file}”: it exceeds the 5 MB limit. Reduce its size and try again.",
+  "files.imageType": "We did not add “{file}”: use a JPG, PNG or WEBP file.",
+  "files.modelSize": "We did not add “{file}”: it exceeds the 50 MB limit. Optimize the model and try again.",
+  "files.modelType": "We did not add “{file}”: use a GLB or GLTF file.",
+  "files.profileImageType": "We did not add “{file}”: use a PNG, JPG or WEBP file.",
+  "files.uploadFailed": "We could not upload “{file}”. Check your connection and try again; your information is still saved in the form.",
+  "files.usdzType": "We did not add “{file}”: use a USDZ file."
+}

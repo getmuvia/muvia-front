@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, ElementRef, effect, inject, input, output } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
@@ -11,7 +12,7 @@ export interface SidebarFormData {
 @Component({
     selector: 'app-sidebar-edit-modal',
     standalone: true,
-    imports: [ReactiveFormsModule],
+    imports: [TranslatePipe, UiTextPipe, ReactiveFormsModule],
     template: `
     @if (isOpen()) {
       <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="close()">
@@ -20,8 +21,8 @@ export interface SidebarFormData {
             
             <!-- Header -->
             <div class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10">
-                <h3 id="sidebar-edit-title" class="text-lg font-bold text-text-light">Editar Información</h3>
-                <button type="button" (click)="close()" aria-label="Cerrar" [disabled]="isLoading()"
+                <h3 id="sidebar-edit-title" class="text-lg font-bold text-text-light">{{ 'seller.editInformation' | translate }}</h3>
+                <button type="button" (click)="close()" [attr.aria-label]="'common.close' | translate" [disabled]="isLoading()"
                     class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element disabled:opacity-50">
                     <span class="material-symbols-outlined text-xl">close</span>
                 </button>
@@ -33,37 +34,37 @@ export interface SidebarFormData {
                 @if (errorMessage()) {
                 <p class="rounded-control border border-error/20 bg-error/5 p-3 text-sm font-medium text-error"
                     role="alert">
-                    {{ errorMessage() }}
+                    {{ (errorMessage()) | uiText }}
                 </p>
                 }
 
                 @if (form.invalid && form.touched) {
                 <p class="rounded-control border border-error/20 bg-error/5 p-3 text-sm font-bold text-error"
                     role="alert">
-                    Revisa los enlaces sociales indicados antes de guardar.
+                    {{ 'seller.reviewTheHighlightedSocialLinksBeforeSaving' | translate }}
                 </p>
                 }
                 
                 <!-- About Me -->
                 <div class="flex flex-col gap-2">
-                    <label class="text-sm font-bold text-text-light">Sobre Nosotros</label>
+                    <label class="text-sm font-bold text-text-light">{{ 'seller.aboutUs' | translate }}</label>
                     <textarea formControlName="aboutMe" rows="4" 
                         class="w-full px-4 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
-                        placeholder="Descripción de tu negocio..."></textarea>
+                        [placeholder]="'seller.yourBusinessDescription' | translate"></textarea>
                 </div>
 
                 <!-- Business Hours -->
                 <div class="flex flex-col gap-3">
-                    <label class="text-sm font-bold text-text-light">Horario de Atención</label>
+                    <label class="text-sm font-bold text-text-light">{{ 'seller.businessHours' | translate }}</label>
                     <div class="flex flex-col gap-2 bg-surface-element p-4 rounded-panel border border-text-light/10">
                         <div formGroupName="businessHours">
                             @for (day of weekDays; track day.key) {
                                 <div [formGroupName]="day.key" class="flex flex-wrap items-center gap-3 py-1 border-b border-text-light/10 last:border-0 hover:bg-white/50 px-2 rounded-panel transition-colors">
-                                    <span class="w-24 text-sm font-medium text-text-light">{{ day.label }}</span>
+                                    <span class="w-24 text-sm font-medium text-text-light">{{ (day.label) | uiText }}</span>
                                     
                                     <label class="flex items-center gap-2 cursor-pointer select-none">
                                         <input type="checkbox" formControlName="isClosed" class="accent-primary w-4 h-4 rounded-control">
-                                        <span class="text-xs text-text-light/60">Cerrado</span>
+                                        <span class="text-xs text-text-light/60">{{ 'seller.closed' | translate }}</span>
                                     </label>
 
                                     @if (!form.get('businessHours')?.get(day.key)?.get('isClosed')?.value) {
@@ -82,9 +83,9 @@ export interface SidebarFormData {
                 <!-- Social Links -->
                 <div class="flex flex-col gap-3">
                      <div class="flex justify-between items-center">
-                        <label class="text-sm font-bold text-text-light">Redes Sociales</label>
+                        <label class="text-sm font-bold text-text-light">{{ 'seller.socialLinks' | translate }}</label>
                         <button type="button" (click)="addSocialLink()" class="text-primary hover:text-primary-600 text-sm font-bold flex items-center gap-1">
-                            <span class="material-symbols-outlined text-lg">add</span> Agregar
+                            <span class="material-symbols-outlined text-lg">add</span> {{ 'seller.add' | translate }}
                         </button>
                     </div>
 
@@ -92,37 +93,37 @@ export interface SidebarFormData {
                         @for (link of socialLinksControls.controls; track $index) {
                             <div [formGroupName]="$index" class="flex flex-col gap-1 animate-fade-in-up">
                                 <div class="flex items-center gap-2">
-                                <select formControlName="icon" [attr.aria-label]="'Tipo de enlace social ' + ($index + 1)"
+                                <select formControlName="icon" [attr.aria-label]="'seller.socialType' | translate: {index: $index + 1}"
                                     class="px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light text-sm max-w-[120px]">
-                                    <option value="language">Web</option>
+                                    <option value="language">{{ 'seller.website' | translate }}</option>
                                     <option value="instagram">Instagram</option>
                                     <option value="facebook">Facebook</option>
                                     <option value="twitter">Twitter</option>
                                     <option value="pinterest">Pinterest</option>
                                 </select>
                                 <input [id]="'social-name-' + $index" type="text" formControlName="name"
-                                    [attr.aria-label]="'Nombre del enlace social ' + ($index + 1)"
+                                    [attr.aria-label]="'seller.socialName' | translate: {index: $index + 1}"
                                     [attr.aria-invalid]="isSocialFieldInvalid($index, 'name')"
                                     [attr.aria-describedby]="isSocialFieldInvalid($index, 'name') ? 'social-name-error-' + $index : null"
-                                    placeholder="Nombre (ej. Instagram)" class="flex-1 px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[80px]">
+                                    [placeholder]="'seller.nameEGInstagram' | translate" class="flex-1 px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[80px]">
                                 <input [id]="'social-url-' + $index" type="url" formControlName="url"
-                                    [attr.aria-label]="'Dirección del enlace social ' + ($index + 1)"
+                                    [attr.aria-label]="'seller.socialAddress' | translate: {index: $index + 1}"
                                     [attr.aria-invalid]="isSocialFieldInvalid($index, 'url')"
                                     [attr.aria-describedby]="isSocialFieldInvalid($index, 'url') ? 'social-url-error-' + $index : null"
-                                    placeholder="URL (https://...)" class="flex-[2] px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[120px]">
-                                <button type="button" (click)="removeSocialLink($index)" [attr.aria-label]="'Eliminar enlace social ' + ($index + 1)"
+                                    [placeholder]="'seller.urlHttps' | translate" class="flex-[2] px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 text-sm w-0 min-w-[120px]">
+                                <button type="button" (click)="removeSocialLink($index)" [attr.aria-label]="'seller.removeSocialLink' | translate: {index: $index + 1}"
                                     class="p-2 text-red-500 hover:bg-red-50 rounded-control">
                                     <span class="material-symbols-outlined text-lg">delete</span>
                                 </button>
                                 </div>
                                 @if (isSocialFieldInvalid($index, 'name')) {
                                 <p [id]="'social-name-error-' + $index" class="text-xs font-medium text-error" role="alert">
-                                    Ingresa un nombre para este enlace.
+                                    {{ 'seller.enterANameForThisLink' | translate }}
                                 </p>
                                 }
                                 @if (isSocialFieldInvalid($index, 'url')) {
                                 <p [id]="'social-url-error-' + $index" class="text-xs font-medium text-error" role="alert">
-                                    {{ getSocialUrlError($index) }}
+                                    {{ (getSocialUrlError($index)) | uiText }}
                                 </p>
                                 }
                             </div>
@@ -136,7 +137,7 @@ export interface SidebarFormData {
             <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
                 <button type="button" (click)="close()" [disabled]="isLoading()"
                     class="px-4 py-2 rounded-control text-sm font-medium text-text-light hover:bg-gray-200 transition-colors">
-                    Cancelar
+                    {{ 'common.cancel' | translate }}
                 </button>
                 <button type="button" (click)="onSubmit()"
                     [disabled]="isLoading() || form.pristine"
@@ -146,7 +147,7 @@ export interface SidebarFormData {
                     } @else {
                         <span class="material-symbols-outlined text-lg">save</span>
                     }
-                    Guardar
+                    {{ 'common.save' | translate }}
                 </button>
             </div>
         </div>

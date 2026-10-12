@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe, CategoryNamePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, inject, signal, effect, input, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
@@ -8,7 +9,7 @@ import { Subject, catchError, map, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-product-detail',
-  imports: [RouterLink, ImageGallery, ProductInfo, ProductTabs, SimilarProducts],
+  imports: [CategoryNamePipe, TranslatePipe, UiTextPipe, RouterLink, ImageGallery, ProductInfo, ProductTabs, SimilarProducts],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
   providers: [ProductStore]

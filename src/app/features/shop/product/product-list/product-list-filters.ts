@@ -1,5 +1,6 @@
 import { ParamMap } from '@angular/router';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
+import { ProductCondition, isProductCondition } from '@core/models/product/product-condition';
 import {
   ProductDimension,
   findProductDimension,
@@ -8,6 +9,7 @@ import {
 
 export interface ProductListFilters {
   search: string;
+  condition?: ProductCondition;
   categoryCode: string;
   dimension: ProductDimension | '';
   maxDimensionCm: number | null;
@@ -15,6 +17,7 @@ export interface ProductListFilters {
 
 export function parseProductListFilters(params: ParamMap): ProductListFilters {
   const search = (params.get('search') ?? '').trim();
+  const condition = params.get('condition');
   const categoryCode = (params.get('category') ?? '').trim().toUpperCase();
   const dimension = findProductDimension(params.get('dimension'));
   const maximum = parseMaxDimensionCm(params.get('maxDimensionCm'));
@@ -22,6 +25,7 @@ export function parseProductListFilters(params: ParamMap): ProductListFilters {
 
   return {
     search: search.length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH ? search : '',
+    ...(isProductCondition(condition) ? { condition } : {}),
     categoryCode,
     dimension: hasMeasurement && dimension ? dimension.value : '',
     maxDimensionCm: hasMeasurement ? maximum : null,
@@ -30,6 +34,7 @@ export function parseProductListFilters(params: ParamMap): ProductListFilters {
 
 export function sameProductListFilters(previous: ProductListFilters, current: ProductListFilters): boolean {
   return previous.search === current.search
+    && previous.condition === current.condition
     && previous.categoryCode === current.categoryCode
     && previous.dimension === current.dimension
     && previous.maxDimensionCm === current.maxDimensionCm;

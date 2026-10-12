@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe, CategoryNamePipe } from '@core/services/i18n/translation-pipes';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -20,10 +21,13 @@ import {
 import { CategoryService } from '@core/services/category/category';
 import { LoggerService } from '@core/services/logger/logger';
 import { catchError, finalize, of } from 'rxjs';
+import { I18nService } from '@core/services/i18n/i18n';
+import { MarketService } from '@core/services/market/market';
+import { isProductCondition } from '@core/models/product/product-condition';
 
 @Component({
   selector: 'app-product-measure',
-  imports: [],
+  imports: [CategoryNamePipe, TranslatePipe, UiTextPipe],
   templateUrl: './product-measure.html',
   styleUrl: './product-measure.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +38,8 @@ export class ProductMeasure implements OnInit {
   private readonly router = inject(Router);
   private readonly categoryService = inject(CategoryService);
   private readonly logger = inject(LoggerService);
+  private readonly i18n = inject(I18nService);
+  private readonly market = inject(MarketService);
 
   readonly dimensionOptions = PRODUCT_DIMENSIONS;
   readonly categories = signal<Category[]>([]);
@@ -44,6 +50,7 @@ export class ProductMeasure implements OnInit {
   readonly measurementInput = signal('');
 
   private readonly sourceSearch = (this.route.snapshot.queryParamMap.get('search') ?? '').trim();
+  private readonly sourceCondition = this.route.snapshot.queryParamMap.get('condition');
   private readonly sourceCategory = this.route.snapshot.queryParamMap
     .get('category')?.trim().toUpperCase() ?? '';
   private readonly sourceDimension = findProductDimension(
@@ -60,7 +67,10 @@ export class ProductMeasure implements OnInit {
   readonly measurementValue = computed(() => parseMaxDimensionCm(this.measurementInput()));
   readonly resultSummary = computed(() => {
     const value = this.measurementValue();
-    return value ? `${this.dimensionDetails()?.label} máximo: ${formatDimensionCm(value)} cm` : '';
+    return value ? this.i18n.t('catalog.maximumDimension', {
+      dimension: this.i18n.text(this.dimensionDetails()?.label),
+      value: formatDimensionCm(value, this.market.locale()),
+    }) : '';
   });
 
   ngOnInit(): void {
@@ -94,6 +104,7 @@ export class ProductMeasure implements OnInit {
     this.router.navigate(['/products'], {
       queryParams: {
         search: this.sourceSearch || null,
+        condition: isProductCondition(this.sourceCondition) ? this.sourceCondition : null,
         category: category.code,
         dimension: this.selectedDimension(),
         maxDimensionCm,
@@ -109,6 +120,7 @@ export class ProductMeasure implements OnInit {
       queryParams: {
         search: this.sourceSearch || null,
         category: this.sourceCategory || null,
+        condition: isProductCondition(this.sourceCondition) ? this.sourceCondition : null,
         dimension: hasSourceMeasurement ? this.sourceDimension?.value : null,
         maxDimensionCm: hasSourceMeasurement ? this.sourceMaximum : null,
       },

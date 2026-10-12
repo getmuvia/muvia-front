@@ -74,6 +74,28 @@ describe('ProductCatalog request coordination', () => {
     expect(catalog.hasNextPage()).toBe(false);
   });
 
+  it('restores condition from the URL, resets pagination on changes, and filters smart requests', () => {
+    flushPage(initialRequest, 1, ['initial']);
+    params.next(convertToParamMap({ condition: 'USED' }));
+    const used = catalogRequest();
+    expect(used.request.params.get('condition')).toBe('USED');
+    expect(used.request.params.get('page')).toBe('1');
+    flushPage(used, 1, ['used']);
+    catalog.loadMore();
+    const nextPage = catalogRequest();
+    expect(nextPage.request.params.get('condition')).toBe('USED');
+    expect(nextPage.request.params.get('page')).toBe('2');
+    flushPage(nextPage, 2, ['used-two']);
+    params.next(convertToParamMap({ search: 'silla', condition: 'USED' }));
+    const smart = hybridRequest();
+    expect(smart.request.body.condition).toBe('USED');
+    flushHybrid(smart, 'used-smart');
+    params.next(convertToParamMap({ search: 'silla' }));
+    const all = hybridRequest();
+    expect(all.request.body.condition).toBeUndefined();
+    flushHybrid(all, 'all-smart');
+  });
+
   it('cancels a smart request when returning to normal search', () => {
     params.next(convertToParamMap({ search: 'escritorio' }));
     const smart = hybridRequest();

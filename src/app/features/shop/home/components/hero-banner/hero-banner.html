@@ -1,6 +1,6 @@
 <section class="relative isolate flex h-[min(82svh,920px)] min-h-[620px] w-full items-center justify-center overflow-hidden text-center sm:min-h-[640px]">
 
-    <img [ngSrc]="heroImage" [alt]="heroImageAlt" fill priority sizes="100vw"
+    <img [ngSrc]="heroImage" [alt]="(heroImageAlt) | uiText" fill priority sizes="100vw"
         class="z-0 object-cover" />
 
     <div class="pointer-events-none absolute inset-0 z-10 bg-gradient-to-b from-black/55 via-black/20 to-black/65"></div>
@@ -9,17 +9,17 @@
 
         <h1
             class="text-[clamp(2.5rem,4.5vw,5.25rem)] text-white font-headline font-semibold leading-[0.98] tracking-[-0.035em] drop-shadow-lg">
-            Diseña el Espacio de Tus Sueños
+            {{ 'home.designYourDreamSpace' | translate }}
         </h1>
 
         <p class="max-w-2xl text-[clamp(1rem,1.25vw,1.25rem)] text-white/85 font-body font-normal leading-relaxed drop-shadow-md">
-            Descubre piezas únicas para transformar tu hogar con estilo y elegancia.
+            {{ 'home.discoverUniquePiecesToTransformYourHomeWithStyle' | translate }}
         </p>
 
         <div class="pt-2 flex flex-wrap gap-4 justify-center">
             <a routerLink="/products"
                 class="inline-flex items-center gap-2 border-b border-white/55 pb-1.5 text-xs font-bold uppercase tracking-[0.14em] text-white transition-colors hover:border-white">
-                <span>Descubrir Ahora</span>
+                <span>{{ 'home.exploreNow' | translate }}</span>
                 <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
             </a>
         </div>

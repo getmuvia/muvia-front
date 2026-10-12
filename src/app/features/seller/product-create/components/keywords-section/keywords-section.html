@@ -1,6 +1,6 @@
 <div class="space-y-4">
         <label class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
-            Etiquetas (Keywords)
+            {{ 'seller.tagsKeywords' | translate }}
         </label>
         <div
             class="flex min-h-[80px] flex-wrap items-start gap-2 rounded-control border border-border-color bg-white p-4 transition-colors focus-within:border-primary">
@@ -16,9 +16,9 @@
                 [attr.aria-invalid]="hasError()" [attr.aria-describedby]="hasError() ? 'product-keywords-error' : null"
                 data-error-focus
                 class="bg-transparent border-none text-sm focus:ring-0 placeholder-text-light/40 min-w-[150px] text-text-light font-body flex-1"
-                placeholder="Escribe y presiona Enter..." type="text" />
+                [placeholder]="'seller.typeAndPressEnter' | translate" type="text" />
         </div>
         <p class="text-xs text-text-light/60 font-body">
-            Ayuda a los compradores a encontrar tu producto más rápido.
+            {{ 'seller.helpBuyersFindYourProductFaster' | translate }}
         </p>
 </div>

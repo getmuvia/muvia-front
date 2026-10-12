@@ -1,7 +1,13 @@
 import { convertToParamMap } from '@angular/router';
 import { composeProductSearchQuery, parseProductListFilters, usesSmartSearch } from './product-list-filters';
+import { ProductCondition } from '@core/models/product/product-condition';
 
 describe('Product list filters', () => {
+  it('restores an explicit condition and treats absent or invalid values as All', () => {
+    expect(parseProductListFilters(convertToParamMap({ condition: 'USED' })).condition).toBe(ProductCondition.USED);
+    expect(parseProductListFilters(convertToParamMap({})).condition).toBeUndefined();
+    expect(parseProductListFilters(convertToParamMap({ condition: 'SEMINUEVO' })).condition).toBeUndefined();
+  });
   it('normalizes URL filters and preserves a valid category measurement', () => {
     const filters = parseProductListFilters(convertToParamMap({
       search: '  madera  ', category: ' desk ', dimension: 'width', maxDimensionCm: '120.5',

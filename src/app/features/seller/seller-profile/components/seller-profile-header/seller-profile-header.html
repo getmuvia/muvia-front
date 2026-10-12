@@ -17,22 +17,22 @@
             </div>
             <div class="flex flex-col justify-center pb-2">
                 <p class="text-3xl font-headline font-bold leading-tight tracking-[-0.015em] text-text-light">
-                    {{ sellerName() || 'Nombre del Vendedor' }}
+                    {{ sellerName() || ('common.sellerName' | translate) }}
                 </p>
                 <p class="text-base font-body font-normal leading-normal text-text-light/80">
-                    {{ description() || 'Descripción del vendedor.' }}
+                    {{ description() || ('common.sellerDescription' | translate) }}
                 </p>
             </div>
         </div>
         <div class="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:justify-end">
             <button type="button" (click)="editProfile.emit()"
                 class="inline-flex items-center gap-2 rounded-control border border-text-light/15 px-4 py-2 text-xs font-bold uppercase tracking-wider text-text-light transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-                aria-label="Editar nombre y descripción del vendedor">
+                [attr.aria-label]="'seller.editSellerNameAndDescription' | translate">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
-                Editar perfil
+                {{ 'seller.editProfile' | translate }}
             </button>
             <span class="inline-flex items-center rounded-control bg-secondary/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-secondary">
-                Panel piloto
+                {{ 'seller.pilotDashboard' | translate }}
             </span>
         </div>
     </div>

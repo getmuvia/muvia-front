@@ -8,6 +8,7 @@ import { AuthService } from '@core/auth/services/auth';
 import type { AppError } from '@core/models/errors/api-error.model';
 import type { Product } from '@core/models/product/product';
 import { ProductFormData } from '@core/models/product/product-form.model';
+import { ProductCondition } from '@core/models/product/product-condition';
 import { CategoryService } from '@core/services/category/category';
 import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
 import { LoggerService } from '@core/services/logger/logger';
@@ -33,6 +34,7 @@ describe('ProductCreate', () => {
   let productError: WritableSignal<AppError | null>;
 
   const validForm: ProductFormData = {
+    condition: ProductCondition.NEW,
     title: 'Silla Nórdica',
     description: 'Silla de madera para comedor contemporáneo.',
     price: 850,
@@ -194,12 +196,21 @@ describe('ProductCreate', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Reintentar');
   });
 
+  it('renders creation when route input binding supplies no product ID', () => {
+    fixture.componentRef.setInput('id', undefined);
+    fixture.detectChanges();
+    expect(component.isEditMode()).toBe(false);
+    expect(component.formData()).toBeNull();
+    expect(fixture.nativeElement.querySelector('app-product-form')).not.toBeNull();
+  });
+
   it('shows the populated form only after the requested product loads', () => {
     fixture.componentRef.setInput('id', 'product-id');
     fixture.detectChanges();
 
     selectedEntity.set({
       id: 'product-id',
+      condition: ProductCondition.NEW,
       sellerId: 'seller-id',
       categoryId: 'category-id',
       title: 'Silla Nórdica',

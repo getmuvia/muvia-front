@@ -1,17 +1,40 @@
 <div class="grid grid-cols-1 gap-6">
     <div class="space-y-2">
         <label for="product-title" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
-            Título del producto
+            {{ 'seller.productTitle' | translate }}
         </label>
         <input id="product-title" [formField]="titleField()" [attr.aria-invalid]="isFieldInvalid(titleField())"
             [attr.aria-describedby]="isFieldInvalid(titleField()) ? 'product-title-error' : null"
             class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-lg text-text-light placeholder-text-light/40 transition-colors focus:border-primary focus:ring-0 font-body"
-            placeholder="Ej. Lámpara de Pie Minimalista" type="text" />
+            [placeholder]="'seller.eGMinimalistFloorLamp' | translate" type="text" />
         @if (isFieldInvalid(titleField())) {
         <p id="product-title-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of getFieldErrors(titleField()); track $index) {
-            <span>{{ error.message }}</span>
+            <span>{{ (error.message) | uiText }}</span>
+            }
+        </p>
+        }
+    </div>
+
+    <div class="space-y-2">
+        <label for="product-condition" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
+            {{ 'catalog.productCondition' | translate }}
+        </label>
+        <select id="product-condition" [formField]="conditionField()"
+            [attr.aria-invalid]="isFieldInvalid(conditionField())"
+            [attr.aria-describedby]="isFieldInvalid(conditionField()) ? 'product-condition-help product-condition-error' : 'product-condition-help'"
+            class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-lg text-text-light transition-colors focus:border-primary focus:ring-0 font-body">
+            <option [value]="productCondition.NEW">{{ 'catalog.conditionNew' | translate }}</option>
+            <option [value]="productCondition.USED">{{ 'catalog.conditionUsed' | translate }}</option>
+        </select>
+        <p id="product-condition-help" class="text-sm text-text-light/60 font-body">
+            {{ (conditionField()().value() === productCondition.USED ? 'seller.conditionUsedHelp' : 'seller.conditionNewHelp') | translate }}
+        </p>
+        @if (isFieldInvalid(conditionField())) {
+        <p id="product-condition-error" class="text-sm text-error font-medium" role="alert">
+            @for (error of getFieldErrors(conditionField()); track $index) {
+            <span>{{ error.message | uiText }}</span>
             }
         </p>
         }
@@ -19,18 +42,21 @@
 
     <div class="space-y-2">
         <label for="product-description" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
-            Descripción
+            {{ 'common.description' | translate }}
         </label>
         <textarea id="product-description" [formField]="descriptionField()"
             [attr.aria-invalid]="isFieldInvalid(descriptionField())"
             [attr.aria-describedby]="isFieldInvalid(descriptionField()) ? 'product-description-error' : null"
             class="w-full rounded-control border border-border-color bg-white p-4 text-base text-text-light placeholder-text-light/40 resize-none transition-colors focus:border-primary focus:ring-0 font-body"
-            placeholder="Describe la historia, inspiración y detalles de tu pieza..." rows="4"></textarea>
+            [placeholder]="'seller.describeTheStoryInspirationAndDetailsOfYourPiece' | translate" rows="4"></textarea>
+        @if (conditionField()().value() === productCondition.USED) {
+        <p class="text-sm text-text-light/60 font-body">{{ 'seller.usedConditionDescription' | translate }}</p>
+        }
         @if (isFieldInvalid(descriptionField())) {
         <p id="product-description-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
             <span class="material-symbols-outlined text-sm">error</span>
             @for (error of getFieldErrors(descriptionField()); track $index) {
-            <span>{{ error.message }}</span>
+            <span>{{ (error.message) | uiText }}</span>
             }
         </p>
         }
@@ -39,7 +65,7 @@
     <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         <div class="space-y-2">
             <label for="product-price" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
-                Precio
+                {{ 'common.price' | translate }}
             </label>
             <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-text-light/40">Bs</span>
@@ -52,7 +78,7 @@
             <p id="product-price-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(priceField()); track $index) {
-                <span>{{ error.message }}</span>
+                <span>{{ (error.message) | uiText }}</span>
                 }
             </p>
             }
@@ -60,7 +86,7 @@
 
         <div class="space-y-2">
             <label for="product-stock" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
-                Stock
+                {{ 'common.stock' | translate }}
             </label>
             <input id="product-stock" [formField]="stockField()" [attr.aria-invalid]="isFieldInvalid(stockField())"
                 [attr.aria-describedby]="isFieldInvalid(stockField()) ? 'product-stock-error' : null"
@@ -70,7 +96,7 @@
             <p id="product-stock-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(stockField()); track $index) {
-                <span>{{ error.message }}</span>
+                <span>{{ (error.message) | uiText }}</span>
                 }
             </p>
             }
@@ -78,7 +104,7 @@
 
         <div class="space-y-2">
             <label for="product-category" class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide">
-                Categoría
+                {{ 'common.category' | translate }}
             </label>
             <select id="product-category" [formField]="categoryIdField()"
                 [attr.aria-busy]="isLoadingCategories()"
@@ -86,38 +112,38 @@
                 [attr.aria-describedby]="isFieldInvalid(categoryIdField()) ? 'product-category-error' : null"
                 class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-lg text-text-light transition-colors focus:border-primary focus:ring-0 font-body disabled:cursor-wait disabled:bg-surface-element/40 disabled:text-text-light/50">
                 @if (isLoadingCategories()) {
-                <option value="" disabled>Cargando categorías...</option>
+                <option value="" disabled>{{ 'catalog.loadingCategories' | translate }}</option>
                 } @else if (hasCategoryLoadError()) {
-                <option value="" disabled>Categorías no disponibles</option>
+                <option value="" disabled>{{ 'seller.categoriesUnavailable' | translate }}</option>
                 } @else if (categories().length === 0) {
-                <option value="" disabled>No hay categorías disponibles</option>
+                <option value="" disabled>{{ 'seller.noCategoriesAvailable' | translate }}</option>
                 } @else {
-                <option value="" disabled>Selecciona una categoría</option>
+                <option value="" disabled>{{ 'catalog.selectCategory' | translate }}</option>
                 @for (category of categories(); track category.id) {
-                <option [value]="category.id">{{ category.name }}</option>
+                <option [value]="category.id">{{ category | categoryName }}</option>
                 }
                 }
             </select>
             @if (isLoadingCategories()) {
             <p class="flex items-center gap-1 text-sm font-medium text-text-light/55" role="status">
                 <span class="material-symbols-outlined animate-spin text-sm">progress_activity</span>
-                <span>Estamos cargando las categorías.</span>
+                <span>{{ 'seller.weAreLoadingTheCategories' | translate }}</span>
             </p>
             } @else if (hasCategoryLoadError()) {
             <p class="flex items-center gap-1 text-sm font-medium text-error" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
-                <span>Las categorías no están disponibles en este momento.</span>
+                <span>{{ 'seller.categoriesAreCurrentlyUnavailable' | translate }}</span>
             </p>
             } @else if (categories().length === 0) {
             <p class="flex items-center gap-1 text-sm font-medium text-text-light/55">
                 <span class="material-symbols-outlined text-sm">info</span>
-                <span>Aún no hay categorías disponibles para publicar.</span>
+                <span>{{ 'seller.thereAreNoCategoriesAvailableForPublishingYet' | translate }}</span>
             </p>
             } @else if (isFieldInvalid(categoryIdField())) {
             <p id="product-category-error" class="text-sm text-error font-medium flex items-center gap-1" role="alert">
                 <span class="material-symbols-outlined text-sm">error</span>
                 @for (error of getFieldErrors(categoryIdField()); track $index) {
-                <span>{{ error.message }}</span>
+                <span>{{ (error.message) | uiText }}</span>
                 }
             </p>
             }

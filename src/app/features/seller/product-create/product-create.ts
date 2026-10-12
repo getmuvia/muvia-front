@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, inject, signal, input, afterNextRender, DestroyRef, effect, computed } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -47,7 +48,7 @@ const PRODUCT_MUTATION_OPTIONS = {
 
 @Component({
     selector: 'app-product-create',
-    imports: [ProductForm],
+    imports: [TranslatePipe, UiTextPipe, ProductForm],
     templateUrl: './product-create.html',
     styleUrl: './product-create.css',
     providers: [ProductStore, ProductDraftFiles]
@@ -128,7 +129,7 @@ export class ProductCreate {
 
         effect(() => {
             const product = this.productStore.selectedEntity();
-            if (product?.id === this.id()) {
+            if (product && product.id === this.id()) {
                 this.populateFromProduct(product);
             }
         });

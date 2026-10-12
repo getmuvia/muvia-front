@@ -1,9 +1,10 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, input, model, output, signal } from '@angular/core';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 
 @Component({
     selector: 'app-image-gallery-upload',
-    imports: [],
+    imports: [TranslatePipe, UiTextPipe],
     templateUrl: './image-gallery-upload.html',
     styleUrl: './image-gallery-upload.css',
 })

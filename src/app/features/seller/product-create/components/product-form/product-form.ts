@@ -1,7 +1,9 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, ElementRef, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { FieldTree, disabled, form, min, minLength, required, submit, validate } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
 import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
+import { isProductCondition } from '@core/models/product/product-condition';
 import { CreateProductAsset } from '@core/models/product/create-product.dto';
 import { BasicInfoSection } from '../basic-info-section/basic-info-section';
 import { SpecificationsSection } from '../specifications-section/specifications-section';
@@ -24,6 +26,8 @@ interface ProductValidationSummaryItem {
 @Component({
     selector: 'app-product-form',
     imports: [
+        TranslatePipe,
+        UiTextPipe,
         BasicInfoSection,
         SpecificationsSection,
         KeywordsSection,
@@ -72,7 +76,8 @@ export class ProductForm {
             && product.description.trim().length >= 10
             && product.price > 0
             && product.stock >= 0
-            && product.categoryId.length > 0;
+            && product.categoryId.length > 0
+            && isProductCondition(product.condition);
     });
 
     readonly specificationsComplete = computed(() => {
@@ -96,6 +101,11 @@ export class ProductForm {
     readonly completionPercentage = computed(() => this.completedSectionCount() * 25);
 
     productForm = form(this.productModel, (path) => {
+        required(path.condition, { message: 'Selecciona la condición del producto' });
+        validate(path.condition, ({ value }) => isProductCondition(value())
+            ? null
+            : { message: 'La condición debe ser Nuevo o Usado', kind: 'error' });
+
         required(path.title, { message: 'El título es requerido' });
         minLength(path.title, 3, { message: 'El título debe tener al menos 3 caracteres' });
         validate(path.title, ({ value }) => value().trim().length > 0
@@ -151,6 +161,7 @@ export class ProductForm {
         const items: ProductValidationSummaryItem[] = [];
         this.addFieldError(items, 'basic', 'Información básica', [
             this.productForm.title,
+            this.productForm.condition,
             this.productForm.description,
             this.productForm.price,
             this.productForm.stock,

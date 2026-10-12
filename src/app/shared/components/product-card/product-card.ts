@@ -1,3 +1,4 @@
+import { TranslatePipe, CategoryNamePipe } from '@core/services/i18n/translation-pipes';
 import { Component, input, computed, signal, inject } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -8,7 +9,7 @@ import { ProductPrice } from '../product-price/product-price';
 
 @Component({
   selector: 'app-product-card',
-  imports: [ProductPrice, NgOptimizedImage, RouterLink],
+  imports: [CategoryNamePipe, TranslatePipe, ProductPrice, NgOptimizedImage, RouterLink],
   templateUrl: './product-card.html',
   styleUrl: './product-card.css',
 })

@@ -7,7 +7,7 @@
         <p [class]="chip.id === activeChipId()
                 ? 'text-primary text-sm font-body font-medium leading-normal'
                 : 'text-text-light text-sm font-body font-medium leading-normal'">
-            {{ chip.label }}
+            {{ (chip.label) | uiText }}
         </p>
         @if (chip.hasDropdown) {
         <span class="material-symbols-outlined text-text-light/60">arrow_drop_down</span>

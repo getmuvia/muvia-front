@@ -1,15 +1,19 @@
+import { TranslatePipe, UiTextPipe, CategoryNamePipe } from '@core/services/i18n/translation-pipes';
 import { Component, input } from '@angular/core';
 import { FormField, FieldTree } from '@angular/forms/signals';
 import { Category } from '@core/models/category/category';
+import { ProductCondition } from '@core/models/product/product-condition';
 
 @Component({
     selector: 'app-basic-info-section',
-    imports: [FormField],
+    imports: [CategoryNamePipe, TranslatePipe, UiTextPipe, FormField],
     templateUrl: './basic-info-section.html',
     styleUrl: './basic-info-section.css',
 })
 export class BasicInfoSection {
     readonly titleField = input.required<FieldTree<string>>();
+    readonly conditionField = input.required<FieldTree<ProductCondition>>();
+    readonly productCondition = ProductCondition;
     readonly descriptionField = input.required<FieldTree<string>>();
     readonly priceField = input.required<FieldTree<number>>();
     readonly stockField = input.required<FieldTree<number>>();

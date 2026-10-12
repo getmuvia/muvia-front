@@ -1,3 +1,4 @@
+import { UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, input, output } from '@angular/core';
 
 export interface FilterChip {
@@ -8,7 +9,7 @@ export interface FilterChip {
 
 @Component({
     selector: 'app-seller-filter-chips',
-    imports: [],
+    imports: [UiTextPipe],
     templateUrl: './seller-filter-chips.html',
     styleUrl: './seller-filter-chips.css',
 })

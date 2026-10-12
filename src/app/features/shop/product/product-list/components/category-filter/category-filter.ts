@@ -1,8 +1,10 @@
+import { TranslatePipe, UiTextPipe, CategoryNamePipe } from '@core/services/i18n/translation-pipes';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { Category } from '@core/models/category/category';
 
 @Component({
   selector: 'app-category-filter',
+  imports: [CategoryNamePipe, TranslatePipe, UiTextPipe],
   templateUrl: './category-filter.html',
   styleUrl: './category-filter.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

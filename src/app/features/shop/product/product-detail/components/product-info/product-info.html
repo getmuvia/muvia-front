@@ -3,12 +3,16 @@
     <div class="flex justify-between items-start">
         <div>
             <h1 class="text-text-light text-4xl font-bold leading-tight font-headline">{{ product().title }}</h1>
-            <p class="text-text-light/60 mt-2 text-lg font-body">{{ product().category.name }}</p>
+            <p class="text-text-light/60 mt-2 text-lg font-body">{{ product().category | categoryName }}</p>
+            <p class="text-text-light/70 mt-2 text-sm font-body" data-product-condition>
+                {{ 'catalog.productCondition' | translate }}:
+                <span class="font-medium text-text-light">{{ conditionLabel() | translate }}</span>
+            </p>
         </div>
         <div class="flex gap-2">
             <button type="button" (click)="shareProduct()"
                 class="text-text-light/50 cursor-pointer hover:text-primary transition-colors"
-                title="Compartir producto" aria-label="Compartir producto">
+                [title]="'catalog.shareProduct' | translate" [attr.aria-label]="'catalog.shareProduct' | translate">
                 <span class="material-symbols-outlined">share</span>
             </button>
         </div>
@@ -21,15 +25,15 @@
 
     <div class="mt-4 flex flex-wrap items-center gap-2">
         <span class="rounded-control bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
-            Catálogo demo
+            {{ 'catalog.demoCatalog' | translate }}
         </span>
-        <span class="text-xs text-text-light/55">Precio y disponibilidad ilustrativos</span>
+        <span class="text-xs text-text-light/55">{{ 'catalog.illustrativePriceAndAvailability' | translate }}</span>
     </div>
 
     <!-- Seller Info -->
     <div class="mt-4 flex items-center gap-2 text-text-light/60 font-body">
         <span class="material-symbols-outlined text-lg text-primary">storefront</span>
-        <span class="text-sm">Producto del catálogo de demostración de Muvia</span>
+        <span class="text-sm">{{ 'catalog.productFromTheMuviaDemonstrationCatalog' | translate }}</span>
     </div>
 
     <!-- Product actions -->
@@ -38,16 +42,16 @@
         <a [routerLink]="['/virtual-staging']" [queryParams]="{ productId: product().id }"
             class="flex h-14 w-full items-center justify-center gap-2 bg-primary px-6 text-lg font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary/90 font-body">
             <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
-            Visualizar en mi espacio
+            {{ 'catalog.visualizeInMySpace' | translate }}
         </a>
         }
         <a [href]="contactHref"
             class="flex h-12 w-full items-center justify-center border border-primary/30 px-6 text-sm font-bold uppercase tracking-wide text-primary transition-colors hover:border-primary hover:bg-primary/5 font-body">
-            Solicitar información a Muvia · Piloto
+            {{ 'catalog.requestInformationFromMuviaPilot' | translate }}
         </a>
     </div>
 
     @if (shareFeedback()) {
-    <p class="text-xs text-text-light/55" aria-live="polite">{{ shareFeedback() }}</p>
+    <p class="text-xs text-text-light/55" aria-live="polite">{{ (shareFeedback()) | uiText }}</p>
     }
 </div>

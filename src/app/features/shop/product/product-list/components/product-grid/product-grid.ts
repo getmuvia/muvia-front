@@ -1,3 +1,4 @@
+import { UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, input } from '@angular/core';
 import { ProductSummary } from '@core/models/product/product-summary';
 import { ProductCard } from '@shared/components/product-card/product-card';
@@ -7,7 +8,7 @@ import { EmptyState } from '@shared/components/empty-state/empty-state';
 
 @Component({
     selector: 'app-product-grid',
-    imports: [ProductCard, Skeleton, EmptyState],
+    imports: [UiTextPipe, ProductCard, Skeleton, EmptyState],
     templateUrl: './product-grid.html',
     styleUrl: './product-grid.css',
 })

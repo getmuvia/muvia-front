@@ -1,4 +1,5 @@
 import { CreateProductSpecifications } from './create-product.dto';
+import { ProductCondition } from './product-condition';
 
 /**
  * Asset for updating a product
@@ -29,6 +30,7 @@ export interface UpdateProductAsset {
  */
 export interface UpdateProductDto {
     title?: string;
+    condition?: ProductCondition;
     description?: string;
     price?: number;
     stock?: number;

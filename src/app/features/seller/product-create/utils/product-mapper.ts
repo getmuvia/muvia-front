@@ -11,6 +11,7 @@ export function mapProductToFormData(product: Product): ProductFormData {
 
     return {
         title: product.title,
+        condition: product.condition,
         description: product.description,
         price: parseFloat(product.price),
         stock: product.stock,
@@ -52,6 +53,7 @@ export function buildCreateDto(
 ): CreateProductDto {
     return {
         title: formValue.title,
+        condition: formValue.condition,
         description: formValue.description,
         price: formValue.price,
         stock: formValue.stock,
@@ -72,6 +74,7 @@ export function buildUpdateDto(
 ): UpdateProductDto {
     const dto: UpdateProductDto = {
         title: formValue.title,
+        condition: formValue.condition,
         description: formValue.description,
         price: formValue.price,
         stock: formValue.stock,

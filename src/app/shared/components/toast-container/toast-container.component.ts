@@ -1,8 +1,10 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, inject } from '@angular/core';
 import { ToastService } from '@core/services/toast/toast';
 
 @Component({
   selector: 'app-toast-container',
+  imports: [TranslatePipe, UiTextPipe],
   template: `
     <div class="pointer-events-none fixed bottom-4 left-4 right-4 z-[9999] flex flex-col items-end gap-3 sm:left-auto">
       @for (toast of toastService.toasts(); track toast.id) {
@@ -27,10 +29,10 @@ import { ToastService } from '@core/services/toast/toast';
                 @case ('warning') { warning }
               }
             </span>
-            <p class="font-medium text-sm">{{ toast.message }}</p>
+            <p class="font-medium text-sm">{{ (toast.message) | uiText }}</p>
           </div>
           
-          <button type="button" (click)="toastService.remove(toast.id)" aria-label="Cerrar notificación"
+          <button type="button" (click)="toastService.remove(toast.id)" [attr.aria-label]="'common.dismissNotification' | translate"
             class="ml-3 flex size-11 shrink-0 items-center justify-center rounded-full opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-current">
             <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
           </button>

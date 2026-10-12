@@ -5,13 +5,13 @@
             [class]="activeTab() === 'description' 
                 ? 'flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary tracking-wide uppercase font-body' 
                 : 'flex-1 py-4 text-sm font-bold text-text-light/50 border-b-2 border-transparent hover:border-text-light/20 tracking-wide uppercase transition-colors font-body'">
-            Descripción
+            {{ 'common.description' | translate }}
         </button>
         <button (click)="setActiveTab('details')"
             [class]="activeTab() === 'details' 
                 ? 'flex-1 py-4 text-sm font-bold border-b-2 border-primary text-primary tracking-wide uppercase font-body' 
                 : 'flex-1 py-4 text-sm font-bold text-text-light/50 border-b-2 border-transparent hover:border-text-light/20 tracking-wide uppercase transition-colors font-body'">
-            Detalles
+            {{ 'catalog.details' | translate }}
         </button>
     </div>
 
@@ -25,25 +25,25 @@
         <div class="space-y-3">
             @if (product().specifications.material) {
             <div class="flex justify-between border-b border-text-light/10 pb-2">
-                <span class="font-bold text-text-light">Material</span>
+                <span class="font-bold text-text-light">{{ 'common.material' | translate }}</span>
                 <span>{{ product().specifications.material }}</span>
             </div>
             }
             @if (product().specifications.color) {
             <div class="flex justify-between border-b border-text-light/10 pb-2">
-                <span class="font-bold text-text-light">Color</span>
+                <span class="font-bold text-text-light">{{ 'common.color' | translate }}</span>
                 <span>{{ product().specifications.color }}</span>
             </div>
             }
             @if (product().specifications.weight) {
             <div class="flex justify-between border-b border-text-light/10 pb-2">
-                <span class="font-bold text-text-light">Peso</span>
+                <span class="font-bold text-text-light">{{ 'common.weight' | translate }}</span>
                 <span>{{ product().specifications.weight }}</span>
             </div>
             }
             @if (product().specifications.dimensions) {
             <div class="flex justify-between border-b border-text-light/10 pb-2">
-                <span class="font-bold text-text-light">Dimensiones</span>
+                <span class="font-bold text-text-light">{{ 'common.dimensions' | translate }}</span>
                 <span>
                     {{ product().specifications.dimensions?.width }} x
                     {{ product().specifications.dimensions?.height }} x
@@ -54,8 +54,8 @@
             }
             @if (product().stock !== undefined) {
             <div class="flex justify-between border-b border-text-light/10 pb-2">
-                <span class="font-bold text-text-light">Stock</span>
-                <span>{{ product().stock }} unidades</span>
+                <span class="font-bold text-text-light">{{ 'common.stock' | translate }}</span>
+                <span>{{ (product().stock === 1 ? 'catalog.units.one' : 'catalog.units.other') | translate: {count: product().stock} }}</span>
             </div>
             }
         </div>
@@ -66,8 +66,7 @@
     <div class="mb-2 flex items-start gap-3 rounded-control border border-secondary/20 bg-secondary/5 p-4 text-sm leading-6 text-text-light/70">
         <span class="material-symbols-outlined mt-0.5 text-secondary">info</span>
         <p>
-            Esta ficha pertenece a un catálogo de demostración. Muvia todavía no procesa compras,
-            entregas, garantías ni devoluciones.
+            {{ 'catalog.demoNotice' | translate }}
         </p>
     </div>
 </div>

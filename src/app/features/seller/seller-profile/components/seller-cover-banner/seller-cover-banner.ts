@@ -1,9 +1,10 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, input, output } from '@angular/core';
 import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
 
 @Component({
     selector: 'app-seller-cover-banner',
-    imports: [EditTriggerButton],
+    imports: [TranslatePipe, EditTriggerButton],
     templateUrl: './seller-cover-banner.html'
 })
 export class SellerCoverBanner {

@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { NgOptimizedImage } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -18,7 +19,7 @@ interface AiDecoratorPromo {
 
 @Component({
   selector: 'app-ai-decorator-banner',
-  imports: [NgOptimizedImage, RouterLink],
+  imports: [TranslatePipe, UiTextPipe, NgOptimizedImage, RouterLink],
   templateUrl: './ai-decorator-banner.html',
   styleUrl: './ai-decorator-banner.css',
 })

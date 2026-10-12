@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { Component, computed, inject, signal, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { VirtualStagingService } from '@core/services/virtual-staging/virtual-staging';
@@ -8,7 +9,7 @@ import { LoggerService } from '@core/services/logger/logger';
 
 @Component({
     selector: 'app-result',
-    imports: [ProductCard],
+    imports: [TranslatePipe, ProductCard],
     templateUrl: './result.html',
     styleUrl: './result.css'
 })
@@ -50,6 +51,7 @@ export class Result implements OnInit, OnDestroy {
     private mapToProduct(stagingProduct: StagingProduct): Product {
         return {
             id: stagingProduct.id,
+            condition: stagingProduct.condition,
             title: stagingProduct.title,
             price: stagingProduct.price.toString(),
             description: stagingProduct.description ?? '',

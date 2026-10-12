@@ -12,7 +12,7 @@
                 search
             </span>
             <input #searchInput type="text" maxlength="200" [value]="query()" (input)="onSearchInput($event)"
-                placeholder="Buscar productos..."
+                [placeholder]="'catalog.searchProducts' | translate"
                 class="w-full h-14 pl-12 pr-12 text-base text-text-light placeholder-text-light/40 outline-none font-body bg-transparent" />
 
             @if (isLoading()) {
@@ -22,7 +22,7 @@
                 progress_activity
             </span>
             } @else {
-            <button type="button" aria-label="Cerrar búsqueda"
+            <button type="button" [attr.aria-label]="'catalog.closeSearch' | translate"
                 class="absolute right-2 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-full text-text-light/30 transition-colors hover:bg-primary/5 hover:text-text-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 (click)="onClose()">
                 <span class="material-symbols-outlined text-lg" aria-hidden="true">close</span>
@@ -42,21 +42,21 @@
             <!-- Error State -->
             <div class="flex flex-col items-center justify-center py-10 px-4" role="alert">
                 <span class="material-symbols-outlined text-3xl text-error mb-2" aria-hidden="true">error</span>
-                <p class="text-text-light/70 font-body text-sm text-center">{{ error() }}</p>
+                <p class="text-text-light/70 font-body text-sm text-center">{{ (error()) | uiText }}</p>
             </div>
             } @else if (hasResults()) {
             @if (primaryResults().length === 0) {
-            <p class="px-4 pt-4 pb-2 text-sm text-text-secondary">No encontramos coincidencias directas.</p>
+            <p class="px-4 pt-4 pb-2 text-sm text-text-secondary">{{ 'catalog.weFoundNoDirectMatches' | translate }}</p>
             }
             <!-- Results List -->
             <ul>
                 @for (result of results(); track result.id; let i = $index) {
                 @if (i === 0 && primaryResults().length > 0) {
-                <li role="presentation" class="px-4 py-2 text-xs font-semibold text-primary">Resultados de tu búsqueda</li>
+                <li role="presentation" class="px-4 py-2 text-xs font-semibold text-primary">{{ 'catalog.yourSearchResults' | translate }}</li>
                 }
                 @if (i === primaryResults().length && relatedResults().length > 0) {
                 <li role="presentation" class="border-t border-border-color px-4 py-3 text-xs font-semibold text-primary">
-                    Productos relacionados
+                    {{ 'catalog.relatedProducts' | translate }}
                 </li>
                 }
                 <li class="cursor-pointer transition-colors border-b border-border-color last:border-b-0"
@@ -100,7 +100,7 @@
             @if (results().length > 0) {
             <button (click)="submitSearch()"
                 class="w-full py-3 text-xs font-bold uppercase tracking-wider text-primary hover:bg-primary/5 transition-colors border-t border-border-color font-body">
-                Ver todos los resultados
+                {{ 'catalog.viewAllResults' | translate }}
             </button>
             }
             } @else if (showEmptyState()) {
@@ -108,7 +108,7 @@
             <div class="flex flex-col items-center justify-center py-10 px-4">
                 <span class="material-symbols-outlined text-3xl text-text-light/20 mb-2">search_off</span>
                 <p class="text-text-light/70 font-body text-sm text-center">
-                    No encontramos productos para "{{ query() }}"
+                    {{ 'catalog.noProductsForQuery' | translate: {query: query()} }}
                 </p>
             </div>
             }

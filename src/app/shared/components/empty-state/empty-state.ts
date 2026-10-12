@@ -1,15 +1,16 @@
+import { UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, input } from '@angular/core';
 
 @Component({
     selector: 'app-empty-state',
     standalone: true,
-    imports: [],
+    imports: [UiTextPipe],
     template: `
     <div class="flex flex-col items-center justify-center rounded-panel border border-border-color bg-surface-light/70 px-6 py-20 text-center">
         <span class="material-symbols-outlined mb-5 flex size-16 items-center justify-center rounded-full bg-white text-xl text-primary/50 shadow-sm">{{ icon() }}</span>
-        <h3 class="text-xl font-semibold text-text-light font-headline mb-2">{{ title() }}</h3>
+        <h3 class="text-xl font-semibold text-text-light font-headline mb-2">{{ (title()) | uiText }}</h3>
         <p class="text-text-secondary font-body text-center max-w-md">
-            {{ description() }}
+            {{ (description()) | uiText }}
         </p>
         <ng-content select="button"></ng-content>
     </div>

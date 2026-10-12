@@ -1,3 +1,4 @@
+import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import {
@@ -18,7 +19,7 @@ import {
 
 @Component({
     selector: 'app-register',
-    imports: [RouterLink, FormField],
+    imports: [TranslatePipe, UiTextPipe, RouterLink, FormField],
     templateUrl: './register.html',
 })
 export class Register {

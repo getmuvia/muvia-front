@@ -6,9 +6,9 @@
         <span class="material-symbols-outlined animate-spin text-4xl text-secondary" aria-hidden="true">
             progress_activity
         </span>
-        <h1 class="mt-4 font-headline text-2xl font-light text-text-light">Cargando producto</h1>
+        <h1 class="mt-4 font-headline text-2xl font-light text-text-light">{{ 'seller.loadingProduct' | translate }}</h1>
         <p class="mt-2 font-body text-sm text-text-light/60">
-            Estamos preparando la información para que puedas editarla.
+            {{ 'seller.weArePreparingTheInformationForYouToEdit' | translate }}
         </p>
     </div>
 </section>
@@ -19,18 +19,18 @@
     <div class="max-w-lg">
         <span class="material-symbols-outlined text-4xl text-error" aria-hidden="true">error</span>
         <h1 id="product-load-error-title" class="mt-4 font-headline text-2xl font-light text-text-light">
-            No pudimos cargar el producto
+            {{ 'errors.weCouldNotLoadTheProduct' | translate }}
         </h1>
-        <p class="mt-2 font-body text-sm leading-6 text-text-light/70">{{ errorMessage }}</p>
+        <p class="mt-2 font-body text-sm leading-6 text-text-light/70">{{ (errorMessage) | uiText }}</p>
         <div class="mt-6 flex flex-col-reverse justify-center gap-3 sm:flex-row">
             <button type="button" (click)="onCancel()"
                 class="rounded-control px-5 py-3 font-body text-sm font-semibold text-text-secondary transition-colors hover:bg-secondary/10 hover:text-secondary">
-                Volver a mis productos
+                {{ 'seller.backToMyProducts' | translate }}
             </button>
             @if (canRetryProductLoad()) {
                 <button type="button" (click)="retryProductLoad()"
                     class="rounded-control border border-primary bg-primary px-6 py-3 font-body text-sm font-bold uppercase tracking-widest text-white transition-colors hover:bg-primary-deep">
-                    Reintentar
+                    {{ 'common.retry' | translate }}
                 </button>
             }
         </div>
