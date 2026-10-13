@@ -25,6 +25,11 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/shop/product/product-detail/product-detail').then(m => m.ProductDetail),
             },
             {
+                path: 'stores/:id',
+                loadComponent: () => import('./features/shop/store/store-profile').then(m => m.StoreProfile),
+                data: { headerStyle: 'solid' }
+            },
+            {
                 path: 'location',
                 loadComponent: () => import('./features/shop/location/location').then(m => m.Location),
             },

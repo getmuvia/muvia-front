@@ -1,33 +1,39 @@
-<div class="flex p-4 z-10 relative group/header" [class.-mt-16]="hasCoverImage()">
-
-
-
-    <div class="flex w-full flex-col gap-4 sm:flex-row sm:justify-between sm:items-end">
-        <div class="flex gap-4 items-end">
-            <div class="relative flex items-center justify-center bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 ring-4 ring-background-light bg-surface-element"
+<div class="flex p-4 z-10 relative group/header">
+    <div class="flex w-full flex-col gap-4 lg:flex-row lg:justify-between lg:items-start">
+        <div class="flex min-w-0 flex-col gap-4 items-start sm:flex-row lg:flex-1">
+            <div class="relative flex shrink-0 items-center justify-center bg-center bg-no-repeat aspect-square bg-cover rounded-full size-20 sm:size-32 ring-4 ring-background-light bg-surface-element"
+                [class.-mt-12]="hasCoverImage()"
                 [style.background-image]="avatarUrl() ? 'url(' + avatarUrl() + ')' : null">
                 @if (!avatarUrl()) {
                 <span class="material-symbols-outlined text-5xl text-text-light/50">storefront</span>
                 }
 
                 <!-- Edit Avatar Button -->
+                @if (editable()) {
                 <app-edit-trigger-button (click)="editAvatar.emit()" tooltip="Cambiar logo"
                     customClass="bottom-0 right-0 group-hover/header:opacity-100" icon="photo_camera">
                 </app-edit-trigger-button>
+                }
             </div>
-            <div class="flex flex-col justify-center pb-2">
-                <p class="text-3xl font-headline font-bold leading-tight tracking-[-0.015em] text-text-light">
+            <div class="flex min-w-0 flex-col justify-center pb-2">
+                <h1 class="break-words text-3xl font-headline font-bold leading-tight tracking-[-0.015em] text-text-light">
                     {{ sellerName() || ('common.sellerName' | translate) }}
-                </p>
-                <p class="text-base font-body font-normal leading-normal text-text-light/80">
+                </h1>
+                @if (editable() || description()) {
+                <p class="break-words whitespace-pre-line text-base font-body font-normal leading-normal text-text-light/80">
                     {{ description() || ('common.sellerDescription' | translate) }}
                 </p>
+                }
             </div>
         </div>
-        <div class="flex w-full flex-wrap items-center gap-3 sm:w-auto sm:justify-end">
+        @if (editable() || (repairSettings()?.offersRepairs && repairSettings()?.repairScope)) {
+        <div class="flex w-full flex-col items-end gap-3 lg:w-80 lg:shrink-0">
+            <app-vendor-repair-badge [profile]="repairSettings()" class="block w-full max-w-sm" />
+        @if (editable()) {
+        <div class="flex w-full flex-wrap items-center justify-end gap-3">
             <button type="button" (click)="editProfile.emit()"
                 class="inline-flex items-center gap-2 rounded-control border border-text-light/15 px-4 py-2 text-xs font-bold uppercase tracking-wider text-text-light transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary"
-                [attr.aria-label]="'seller.editSellerNameAndDescription' | translate">
+                [attr.aria-label]="'seller.editProfile' | translate">
                 <span class="material-symbols-outlined text-base" aria-hidden="true">edit</span>
                 {{ 'seller.editProfile' | translate }}
             </button>
@@ -35,5 +41,8 @@
                 {{ 'seller.pilotDashboard' | translate }}
             </span>
         </div>
+        }
+        </div>
+        }
     </div>
 </div>

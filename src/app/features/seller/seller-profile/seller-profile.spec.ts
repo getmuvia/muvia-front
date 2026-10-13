@@ -134,12 +134,20 @@ describe('SellerProfile', () => {
     await component.onSaveMetadata({
       businessName: 'Muvia Decor',
       description: 'Muebles para espacios contemporáneos.',
+      offersRepairs: true,
+      repairScope: 'Tapizado',
+      repairDetails: '',
+      repairsExternalProducts: false,
     });
 
     expect(updateProfile).toHaveBeenCalledWith({
       vendorProfile: {
         businessName: 'Muvia Decor',
         description: 'Muebles para espacios contemporáneos.',
+        offersRepairs: true,
+        repairScope: 'Tapizado',
+        repairDetails: '',
+        repairsExternalProducts: false,
       },
     });
     expect(component.isMetadataModalOpen()).toBe(false);

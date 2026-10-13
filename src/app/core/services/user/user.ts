@@ -42,15 +42,16 @@ export class UserService {
   }
 
   getVendorProfile(userId: string): Observable<VendorResponse> {
+    return this.getPublicVendorProfile(userId).pipe(
+      tap((response) => this._vendorProfile.set(response.vendorProfile)),
+    );
+  }
+
+  getPublicVendorProfile(userId: string): Observable<VendorResponse> {
     return this.http
       .get<VendorResponse>(`${API_ENDPOINTS.USERS.VENDOR}/${userId}`, {
         context: createHttpErrorFeedbackContext('none'),
-      })
-      .pipe(
-        tap((response) => {
-          this._vendorProfile.set(response.vendorProfile);
-        }),
-      );
+      });
   }
 
   /**

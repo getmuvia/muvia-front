@@ -1,5 +1,5 @@
 import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
-import { Component, input, output } from '@angular/core';
+import { Component, computed, input, output } from '@angular/core';
 import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
 import { BusinessHours, SocialLink } from '@core/models/user/vendor-profile';
 
@@ -13,6 +13,8 @@ export class SellerSidebar {
     readonly aboutText = input('');
     readonly businessHours = input<BusinessHours>({});
     readonly socialLinks = input<SocialLink[]>([]);
+    readonly editable = input(true);
+    readonly hasBusinessHours = computed(() => Object.keys(this.businessHours()).length > 0);
 
     readonly editInfo = output<void>();
 

@@ -1,5 +1,5 @@
 import { TranslatePipe } from '@core/services/i18n/translation-pipes';
-import { Component, computed, input, output } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-button/edit-trigger-button';
 
 @Component({
@@ -9,9 +9,16 @@ import { EditTriggerButton } from '@shared/components/buttons/edit-trigger-butto
 })
 export class SellerCoverBanner {
     readonly coverImage = input<string | null>(null);
+    readonly editable = input(true);
+    private readonly failedImage = signal<string | null>(null);
     readonly edit = output<void>();
 
     coverImageUrl = computed(() => {
-        return this.coverImage();
+        const image = this.coverImage();
+        return image && image !== this.failedImage() ? image : null;
     });
+
+    onImageError(): void {
+        this.failedImage.set(this.coverImage());
+    }
 }

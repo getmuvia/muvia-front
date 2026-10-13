@@ -50,6 +50,7 @@ export class SellerProfile implements OnInit {
   private readonly uploadFileService = inject(UploadFileService);
   private readonly auth = inject(AuthService);
   private readonly imageOptimizer = inject(ImageOptimizerService);
+  readonly vendorProfile = this.userService.vendorProfile;
 
   coverImageUrl = computed(() => this.userService.vendorProfile()?.coverImage || '');
   avatarUrl = computed(() => this.userService.vendorProfile()?.logoUrl || '');
@@ -95,6 +96,10 @@ export class SellerProfile implements OnInit {
   metadataData = computed(() => ({
     businessName: this.sellerName(),
     description: this.sellerDescription(),
+    offersRepairs: this.vendorProfile()?.offersRepairs ?? false,
+    repairScope: this.vendorProfile()?.repairScope ?? '',
+    repairDetails: this.vendorProfile()?.repairDetails ?? '',
+    repairsExternalProducts: this.vendorProfile()?.repairsExternalProducts ?? false,
   }));
 
   sidebarData = computed(() => ({
@@ -228,7 +233,13 @@ export class SellerProfile implements OnInit {
       this.logger.error('Failed to update profile metadata', error, 'SellerProfile');
       this.metadataSaveError.set(getErrorMessage(
         error,
-        'No pudimos guardar el perfil. Tus cambios siguen en el formulario.',
+        {
+          fallbackMessage: 'No pudimos guardar el perfil. Tus cambios siguen en el formulario.',
+          codeMessages: {
+            VENDOR_REPAIR_SCOPE_REQUIRED: 'Indica qué reparas antes de activar el servicio.',
+            VENDOR_PROFILE_FORBIDDEN: 'Solo las cuentas de comercio pueden configurar reparaciones.',
+          },
+        },
       ));
     } finally {
       this.isSaving.set(false);

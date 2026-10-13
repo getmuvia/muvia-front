@@ -63,4 +63,8 @@ describe('ProductInfo pricing', () => {
     expect(price).toContain('180,50');
     expect(price).not.toContain('Bs');
   });
+
+  it('links the product to its seller public store', () => {
+    expect(fixture.nativeElement.querySelector('a[href="/stores/seller"]')?.textContent).toContain('Ver comercio');
+  });
 });

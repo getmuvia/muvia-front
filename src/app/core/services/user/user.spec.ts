@@ -54,4 +54,16 @@ describe('UserService vendor profile state', () => {
     expect(service.isVendorProfileLoading()).toBe(false);
     expect(service.vendorProfileError()).toBe('No pudimos cargar la información de tu negocio.');
   });
+
+  it('does not replace the owner profile when reading a public store', () => {
+    service.getVendorProfile('owner').subscribe();
+    httpTesting.expectOne(`${API_ENDPOINTS.USERS.VENDOR}/owner`).flush({
+      vendorProfile: { businessName: 'My store' },
+    });
+    service.getPublicVendorProfile('other').subscribe();
+    httpTesting.expectOne(`${API_ENDPOINTS.USERS.VENDOR}/other`).flush({
+      vendorProfile: { businessName: 'Other store', offersRepairs: true },
+    });
+    expect(service.vendorProfile()?.businessName).toBe('My store');
+  });
 });

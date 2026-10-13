@@ -31,9 +31,15 @@
     </div>
 
     <!-- Seller Info -->
-    <div class="mt-4 flex items-center gap-2 text-text-light/60 font-body">
+    <div class="mt-4 flex flex-wrap items-center gap-2 text-text-light/60 font-body">
         <span class="material-symbols-outlined text-lg text-primary">storefront</span>
         <span class="text-sm">{{ 'catalog.productFromTheMuviaDemonstrationCatalog' | translate }}</span>
+        @if (product().sellerId) {
+            <a [routerLink]="['/stores', product().sellerId]" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-primary hover:underline">
+                {{ 'seller.viewStore' | translate }}
+                <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+            </a>
+        }
     </div>
 
     <!-- Product actions -->

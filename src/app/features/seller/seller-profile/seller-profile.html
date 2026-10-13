@@ -34,6 +34,7 @@
 
     <app-seller-profile-header [avatarUrl]="avatarUrl()" [sellerName]="sellerName()" [description]="sellerDescription()"
         [hasCoverImage]="!!coverImageUrl()" (editAvatar)="openEditModal('avatar')"
+        [repairSettings]="vendorProfile()"
         (editProfile)="openMetadataModal()">
     </app-seller-profile-header>
 </div>
