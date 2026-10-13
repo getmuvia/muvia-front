@@ -26,6 +26,7 @@ export interface SearchParams extends PaginationParams {
   condition?: ProductCondition;
   marketCode?: string;
   categoryId?: string;
+  sellerId?: string;
   dimension?: ProductDimension;
   maxDimensionCm?: number;
 }
@@ -91,6 +92,10 @@ export class ProductService {
 
     if (params.categoryId) {
       queryParams = queryParams.set('categoryId', params.categoryId);
+    }
+
+    if (params.sellerId) {
+      queryParams = queryParams.set('sellerId', params.sellerId);
     }
 
     if (params.condition) {

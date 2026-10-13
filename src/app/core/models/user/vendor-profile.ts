@@ -25,6 +25,10 @@ export interface VendorProfile {
     socialLinks: SocialLink[] | null;
     businessHours: BusinessHours | null;
     isVerified?: boolean;
+    offersRepairs?: boolean;
+    repairScope?: string | null;
+    repairDetails?: string | null;
+    repairsExternalProducts?: boolean;
 }
 
 export interface BusinessHoursItem {
@@ -42,6 +46,10 @@ export interface UpdateVendorProfilePayload {
         aboutMe?: string;
         socialLinks?: SocialLink[];
         businessHours?: Record<string, BusinessHoursItem>;
+        offersRepairs?: boolean;
+        repairScope?: string;
+        repairDetails?: string;
+        repairsExternalProducts?: boolean;
     };
 }
 

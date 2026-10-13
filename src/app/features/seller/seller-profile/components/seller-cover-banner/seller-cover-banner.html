@@ -1,7 +1,7 @@
 <div
     class="w-full h-48 md:h-64 lg:h-[450px] flex flex-col justify-end overflow-hidden relative group/banner bg-background-light">
     @if (coverImageUrl()) {
-    <img [src]="coverImageUrl()" [alt]="'seller.coverImage' | translate" class="w-full h-full object-cover absolute inset-0 z-10">
+    <img [src]="coverImageUrl()" [alt]="'seller.coverImage' | translate" (error)="onImageError()" class="w-full h-full object-cover absolute inset-0 z-10">
     } @else {
     <div
         class="absolute inset-0 flex flex-col items-center justify-center text-text-light/40 gap-2 bg-background-light z-10">
@@ -11,7 +11,9 @@
     }
 
     <!-- Edit Button -->
+    @if (editable()) {
     <app-edit-trigger-button (click)="edit.emit()" tooltip="Cambiar portada"
         customClass="bottom-4 right-4 group-hover/banner:opacity-100" [class.opacity-100]="!coverImageUrl()">
     </app-edit-trigger-button>
+    }
 </div>

@@ -1,0 +1,74 @@
+<main class="w-full px-4 pb-20 pt-6 sm:px-6 lg:px-10 lg:pb-24 lg:pt-10 2xl:px-12">
+    @let view = state();
+    @if (view.status === 'loading') {
+        <div aria-busy="true" [attr.aria-label]="'seller.loadingStore' | translate" class="seller-profile-shell space-y-6">
+            <app-skeleton height="16rem" className="w-full rounded-panel" />
+            <app-skeleton width="60%" height="2.5rem" />
+            <app-skeleton width="90%" height="1.25rem" />
+        </div>
+    } @else if (view.status === 'error') {
+        <section class="seller-profile-shell rounded-panel border border-border-color bg-surface-light p-8 text-center" role="alert">
+            <span class="material-symbols-outlined text-5xl text-text-light/50" aria-hidden="true">storefront</span>
+            <h1 class="mt-4 text-2xl font-bold text-text-light">{{ (view.notFound ? 'seller.storeNotFound' : 'seller.storeUnavailable') | translate }}</h1>
+            <p class="mt-3 text-text-light/70">{{ (view.notFound ? 'seller.storeNotFoundHelp' : 'seller.storeUnavailableHelp') | translate }}</p>
+            @if (!view.notFound) {
+                <button type="button" (click)="retry()" class="mt-6 min-h-11 rounded-control border border-primary/30 px-5 py-2 font-semibold text-primary hover:bg-primary/5">
+                    {{ 'common.retry' | translate }}
+                </button>
+            }
+        </section>
+    } @else {
+        @let profile = view.vendor.vendorProfile;
+        <div class="seller-profile-shell seller-profile-hero overflow-hidden rounded-control bg-white" data-store-profile>
+            <app-seller-cover-banner [coverImage]="profile.coverImage || ''" [editable]="false" />
+            <app-seller-profile-header
+                [avatarUrl]="profile.logoUrl || ''"
+                [sellerName]="profile.businessName"
+                [description]="profile.description || ''"
+                [hasCoverImage]="!!profile.coverImage"
+                [repairSettings]="profile"
+                [editable]="false" />
+        </div>
+
+        <div class="seller-profile-shell mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
+            @if (hasSidebar()) {
+                <app-seller-sidebar
+                    [aboutText]="profile.aboutMe || ''"
+                    [businessHours]="profile.businessHours || {}"
+                    [socialLinks]="profile.socialLinks || []"
+                    [editable]="false" />
+            }
+            <section id="productos" class="seller-products min-w-0 flex-1" [attr.aria-label]="'seller.sellerProducts' | translate">
+                @let products = productsState();
+                <div class="flex items-center gap-3">
+                    <h2 class="font-headline text-2xl font-bold text-text-light">{{ 'catalog.products' | translate }}</h2>
+                    @if (products.status === 'ready') {
+                        <span class="bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">{{ products.page.total }}</span>
+                    }
+                </div>
+                @if (products.status === 'loading') {
+                    <div class="seller-product-grid-skeleton mt-6 grid gap-6" aria-busy="true" [attr.aria-label]="'catalog.loading' | translate">
+                        @for (item of [1, 2, 3, 4, 5, 6]; track item) {
+                            <app-skeleton height="20rem" className="w-full rounded-control" />
+                        }
+                    </div>
+                } @else if (products.status === 'error') {
+                    <div class="mt-6 rounded-control border border-border-color bg-surface-light p-6" role="alert">
+                        <p class="text-text-light/75">{{ products.message | uiText }}</p>
+                        <button type="button" (click)="retryProducts()" class="mt-4 min-h-11 rounded-control border border-primary/30 px-5 py-2 font-semibold text-primary hover:bg-primary/5">
+                            {{ 'common.retry' | translate }}
+                        </button>
+                    </div>
+                } @else {
+                    <app-seller-product-grid [products]="products.page.data" [editable]="false" />
+                    @if (products.page.totalPages > 1) {
+                        <app-pagination
+                            [currentPage]="currentProductPage()"
+                            [totalPages]="products.page.totalPages"
+                            (pageChange)="changeProductPage($event)" />
+                    }
+                }
+            </section>
+        </div>
+    }
+</main>

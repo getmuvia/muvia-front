@@ -69,4 +69,18 @@ describe('ProductService error feedback ownership', () => {
     expect(request.request.context.get(HTTP_ERROR_FEEDBACK)).toBe('global');
     request.flush({});
   });
+
+  it('scopes a public store catalog by seller, page and market', () => {
+    service.searchProducts({
+      search: '', sellerId: 'store-one', page: 2, limit: 10, marketCode: 'PE',
+    }, { errorFeedback: 'local' }).subscribe();
+
+    const request = httpTesting.expectOne(req => req.url === API_ENDPOINTS.PRODUCTS.BASE);
+    expect(request.request.params.get('sellerId')).toBe('store-one');
+    expect(request.request.params.get('page')).toBe('2');
+    expect(request.request.params.get('limit')).toBe('10');
+    expect(request.request.params.get('marketCode')).toBe('PE');
+    expect(request.request.context.get(HTTP_ERROR_FEEDBACK)).toBe('local');
+    request.flush({ data: [], total: 0, page: 2, limit: 10, totalPages: 0 });
+  });
 });
