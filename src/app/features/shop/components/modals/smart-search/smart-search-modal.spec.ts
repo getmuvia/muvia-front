@@ -47,6 +47,7 @@ describe('SmartSearchModal', () => {
   it('preserves the currency of both primary results and related suggestions', () => {
     const result = {
       id: 'primary', title: 'Escritorio', description: null, price: 100,
+      category: null,
       imageUrl: null, score: 0.8, matchType: 'hybrid' as const,
     };
     component.primaryResults.set([{ ...result, currencyCode: 'USD' }]);

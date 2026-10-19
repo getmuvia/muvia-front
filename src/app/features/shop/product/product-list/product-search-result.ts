@@ -10,7 +10,7 @@ export function mapSearchResultToSummary(result: HybridSearchResult): SearchProd
     title: result.title,
     price: result.price,
     currencyCode: result.currencyCode,
-    category: null,
+    category: result.category ?? null,
     primaryImage: result.imageUrl ? { url: result.imageUrl, alt: null } : null,
     score: result.score,
     matchType: result.matchType,

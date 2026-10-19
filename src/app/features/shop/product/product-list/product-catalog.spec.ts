@@ -286,24 +286,27 @@ describe('ProductCatalog request coordination', () => {
     http.expectNone(req => req.url === API_ENDPOINTS.PRODUCTS.BASE);
   });
 
-  it('keeps summary prices and currencies for primary and related smart-search results', () => {
+  it('keeps each product category, price and currency for primary and related smart-search results', () => {
     params.next(convertToParamMap({ search: 'escritorio' }));
     const result = {
       id: 'primary', title: 'Escritorio', description: null, price: 35.5, currencyCode: 'USD',
+      category: { id: 'desk-category', code: 'DESK', name: 'Escritorios' },
       imageUrl: 'https://example.com/desk.webp', score: 0.8, matchType: 'hybrid',
     };
+    const relatedCategory = { id: 'chair-category', code: 'CHAIR', name: 'Sillas' };
     hybridRequest().flush({
       query: 'escritorio', interpretation: { summary: 'Escritorio', source: 'ai' },
       results: [result], count: 1,
-      relatedResults: [{ ...result, id: 'related', price: 180.5, currencyCode: 'PEN', imageUrl: null },
+      relatedResults: [{ ...result, id: 'related', title: 'Silla', category: relatedCategory,
+        price: 180.5, currencyCode: 'PEN', imageUrl: null },
       ],
     });
     expect(catalog.displayProducts()[0]).toMatchObject({
-      price: 35.5, currencyCode: 'USD', category: null,
+      price: 35.5, currencyCode: 'USD', category: result.category,
       primaryImage: { url: 'https://example.com/desk.webp', alt: null }, score: 0.8,
     });
     expect(catalog.relatedProducts()[0]).toMatchObject({
-      price: 180.5, currencyCode: 'PEN', category: null, primaryImage: null, score: 0.8,
+      price: 180.5, currencyCode: 'PEN', category: relatedCategory, primaryImage: null, score: 0.8,
     });
     expect(catalog.displayProducts()[0]).not.toHaveProperty('stock');
     expect(catalog.relatedProducts()[0]).not.toHaveProperty('assets');
