@@ -4,6 +4,11 @@
     ? 'border-b border-border-color bg-primary/5 px-4 py-3'
     : 'mt-5 rounded-control border border-primary/20 bg-primary/5 p-4 sm:p-5'"
 >
+  @if (interpretation().source === 'deterministic') {
+  <p role="status" class="text-sm text-text-light/80">
+    {{ 'search.basicSearchHint' | translate }}
+  </p>
+  } @else {
   <div class="flex min-w-0 items-start gap-3">
     <span
       class="material-symbols-outlined mt-0.5 shrink-0 text-xl text-primary"
@@ -80,4 +85,5 @@
       }
     </div>
   </div>
+  }
 </section>

@@ -274,9 +274,9 @@ describe('ProductList', () => {
     params.next(convertToParamMap({ category: 'DIVAN', search: 'madera' }));
     await fixture.whenStable();
     expect(getCategories).toHaveBeenCalledOnce();
-    expect(searchProducts).toHaveBeenLastCalledWith(
-      expect.objectContaining({ categoryId: 'divan-id', search: 'madera' }),
-      { errorFeedback: 'local' },
+    expect(hybridSearch).toHaveBeenLastCalledWith(
+      'madera', 20, undefined,
+      expect.objectContaining({ categoryCode: 'DIVAN' }),
     );
   });
 

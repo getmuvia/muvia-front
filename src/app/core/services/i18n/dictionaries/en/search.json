@@ -24,6 +24,15 @@
   "search.material.PLASTIC": "Plastic",
   "search.material.STONE": "Stone",
   "search.material.WOOD": "Wood",
-  "search.measurement": "Maximum {value} cm in {dimension}",
-  "search.width": "width"
+  "search.measurementAtMost": "Maximum {value} cm in {dimension}",
+  "search.measurementAtLeast": "Minimum {value} cm in {dimension}",
+  "search.measurementLessThan": "Less than {value} cm in {dimension}",
+  "search.measurementMoreThan": "More than {value} cm in {dimension}",
+  "search.measurementExactly": "Exactly {value} cm in {dimension}",
+  "search.priceAtLeast": "At least {value}",
+  "search.priceAtMost": "Up to {value}",
+  "search.priceLessThan": "Less than {value}",
+  "search.priceMoreThan": "More than {value}",
+  "search.width": "width",
+  "search.basicSearchHint": "Search by name or category using up to 3 words, for example: “wooden chair”."
 }

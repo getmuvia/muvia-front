@@ -1,3 +1,4 @@
+import { toAppError } from '@core/models/errors/api-error.model';
 import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import {
   Component,
@@ -96,7 +97,7 @@ export class SmartSearchModal {
                     })),
                     catchError((error: HttpErrorResponse) => {
                         this.logger.error('Hybrid search failed', error, 'SmartSearchModal');
-                        this.error.set('Error al buscar. Intenta de nuevo.');
+                        this.error.set(toAppError(error, { fallbackMessage: 'Error al buscar. Intenta de nuevo.' }).message);
                         return of<SmartSearchResponse>({
                             interpretation: null,
                             results: [],

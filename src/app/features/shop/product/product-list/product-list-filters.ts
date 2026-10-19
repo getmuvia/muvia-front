@@ -41,7 +41,7 @@ export function sameProductListFilters(previous: ProductListFilters, current: Pr
 }
 
 export function usesSmartSearch(filters: ProductListFilters): boolean {
-  return Boolean(filters.search && !filters.categoryCode);
+  return Boolean(filters.search);
 }
 
 export function composeProductSearchQuery(currentQuery: string, fragment: string): string {

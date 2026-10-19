@@ -1,4 +1,6 @@
 {
+  "errors.invalidSearchPrice": "Enter a valid budget, such as “up to 2,000” or “between 500 and 2,000”.",
+  "errors.searchPriceCurrencyMismatch": "Enter the price in this country’s local currency.",
   "errors.anUnexpectedErrorOccurredTryAgain": "An unexpected error occurred. Try again.",
   "errors.authenticationFailed": "Authentication failed.",
   "errors.completeYourBusinessLocationBeforeCreatingProducts": "Complete your business location before creating products.",

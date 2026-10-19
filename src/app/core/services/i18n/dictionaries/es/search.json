@@ -24,6 +24,15 @@
   "search.material.PLASTIC": "Plástico",
   "search.material.STONE": "Piedra",
   "search.material.WOOD": "Madera",
-  "search.measurement": "Máximo {value} cm de {dimension}",
-  "search.width": "ancho"
+  "search.measurementAtMost": "Máximo {value} cm de {dimension}",
+  "search.measurementAtLeast": "Mínimo {value} cm de {dimension}",
+  "search.measurementLessThan": "Menos de {value} cm de {dimension}",
+  "search.measurementMoreThan": "Más de {value} cm de {dimension}",
+  "search.measurementExactly": "Exactamente {value} cm de {dimension}",
+  "search.priceAtLeast": "Desde {value}",
+  "search.priceAtMost": "Hasta {value}",
+  "search.priceLessThan": "Menos de {value}",
+  "search.priceMoreThan": "Más de {value}",
+  "search.width": "ancho",
+  "search.basicSearchHint": "Prueba buscando por nombre o categoría con hasta 3 palabras, por ejemplo: «silla de madera»."
 }

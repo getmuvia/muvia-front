@@ -3,6 +3,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { getErrorMessage, toAppError } from './api-error.model';
 
 describe('toAppError', () => {
+    it.each(['SEARCH_PRICE_INVALID', 'SEARCH_PRICE_CURRENCY_MISMATCH'])(
+        'provides safe, actionable feedback for %s',
+        code => {
+            const error = new HttpErrorResponse({
+                status: 400,
+                error: { code, message: 'Internal parser details' },
+            });
+            const result = toAppError(error, { fallbackMessage: 'Search failed' });
+            expect(result.message).not.toBe('Search failed');
+            expect(result.message).not.toContain('Internal');
+            expect(result).toMatchObject({ code, kind: 'validation', retryable: false });
+        },
+    );
     it('classifies network failures as retryable', () => {
         const error = new HttpErrorResponse({ status: 0, statusText: 'Unknown Error' });
 
@@ -54,7 +67,8 @@ describe('toAppError', () => {
             codeMessages: {
                 PRODUCT_LIMIT_REACHED: 'Alcanzaste el límite de productos permitidos.',
             },
-        })).toMatchObject({
+        }),
+        ).toMatchObject({
             kind: 'conflict',
             code: 'PRODUCT_LIMIT_REACHED',
             message: 'Alcanzaste el límite de productos permitidos.',
@@ -80,7 +94,8 @@ describe('toAppError', () => {
         expect(getErrorMessage(error, {
             fallbackMessage: 'Error al iniciar sesión.',
             statusMessages: { 401: 'Credenciales inválidas.' },
-        })).toBe('Credenciales inválidas.');
+        }),
+        ).toBe('Credenciales inválidas.');
     });
 
     it.each([

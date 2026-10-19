@@ -1,4 +1,5 @@
 import { ProductCondition } from '@core/models/product/product-condition';
+import { ProductPriceFilter } from './product-price-filter';
 
 /**
  * Hybrid Search Types
@@ -16,22 +17,26 @@ export type SearchInterpretationSource = 'ai' | 'deterministic';
 /** Product dimension recognized in a natural-language search. */
 export type SearchMeasurementDimension = 'width' | 'height' | 'depth';
 
+export interface SearchMeasurementFilter {
+    dimension: SearchMeasurementDimension;
+    minimum?: { valueCm: number; inclusive: boolean };
+    maximum?: { valueCm: number; inclusive: boolean };
+}
+
 /** Buyer-facing explanation of the intent applied to a hybrid search. */
 export interface HybridSearchInterpretation {
     summary: string;
     source: SearchInterpretationSource;
+    price?: ProductPriceFilter;
     category?: {
         code: string;
         label: string;
     };
     material?: {
-        code: string;
+        code?: string;
         label: string;
     };
-    measurement?: {
-        dimension: SearchMeasurementDimension;
-        maxDimensionCm: number;
-    };
+    measurements?: SearchMeasurementFilter[];
 }
 
 /**
@@ -43,6 +48,9 @@ export interface HybridSearchRequest {
     limit?: number;
     marketCode?: string;
     locale?: string;
+    categoryCode?: string;
+    dimension?: SearchMeasurementDimension;
+    maxDimensionCm?: number;
 }
 
 /**
