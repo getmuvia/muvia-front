@@ -11,10 +11,14 @@ import {
   viewChild,
 } from '@angular/core';
 import { SEARCH_INPUT_CONFIG } from '@core/constants/search-input';
-import { HybridSearchInterpretation } from '@core/models/search/hybrid-search.model';
-import { I18nService } from '@core/services/i18n/i18n';
+import {
+  HybridSearchInterpretation,
+  SearchMeasurementFilter,
+} from '@core/models/search/hybrid-search.model';
+import { I18nService, TranslationKey } from '@core/services/i18n/i18n';
 import { MarketService } from '@core/services/market/market';
 import { formatDimensionCm } from '@core/models/product/product-dimension-filter';
+import { ProductPriceFilter } from '@core/models/search/product-price-filter';
 
 @Component({
   selector: 'app-search-interpretation',
@@ -33,12 +37,12 @@ export class SearchInterpretation {
   readonly summary = computed(() => {
     const intent = this.interpretation();
     const parts = [
-      intent.category ? this.i18n.label(`search.category.${intent.category.code}`, intent.category.label) : '',
+      intent.category
+        ? this.i18n.label(`search.category.${intent.category.code}`, intent.category.label)
+        : '',
       intent.material ? this.i18n.text(intent.material.label) : '',
-      intent.measurement ? this.i18n.t('search.measurement', {
-        value: formatDimensionCm(intent.measurement.maxDimensionCm, this.market.locale()),
-        dimension: this.i18n.t(`search.${intent.measurement.dimension}`),
-      }) : '',
+      intent.price ? this.priceLabel(intent.price) : '',
+      ...(intent.measurements ?? []).map((measurement) => this.measurementLabel(measurement)),
     ].filter(Boolean);
     return parts.length ? parts.join(' · ') : intent.summary;
   });
@@ -51,9 +55,11 @@ export class SearchInterpretation {
   protected readonly normalizedDraft = computed(() => this.normalizeQuery(this.draftQuery()));
   protected readonly canSubmit = computed(() => {
     const draft = this.normalizedDraft();
-    return draft.length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH
-      && draft.length <= this.maxQueryLength
-      && draft !== this.normalizeQuery(this.query());
+    return (
+      draft.length >= SEARCH_INPUT_CONFIG.MIN_QUERY_LENGTH &&
+      draft.length <= this.maxQueryLength &&
+      draft !== this.normalizeQuery(this.query())
+    );
   });
 
   protected startEditing(): void {
@@ -87,5 +93,54 @@ export class SearchInterpretation {
 
   private normalizeQuery(query: string): string {
     return query.trim().replace(/\s+/g, ' ');
+  }
+
+  private priceLabel(price: ProductPriceFilter): string {
+    const format = new Intl.NumberFormat(this.market.locale(), {
+      style: 'currency',
+      currency: price.currencyCode,
+    });
+    return [
+      price.minimum
+        ? this.i18n.t(price.minimum.inclusive ? 'search.priceAtLeast' : 'search.priceMoreThan', {
+            value: format.format(price.minimum.amount),
+          })
+        : '',
+      price.maximum
+        ? this.i18n.t(price.maximum.inclusive ? 'search.priceAtMost' : 'search.priceLessThan', {
+            value: format.format(price.maximum.amount),
+          })
+        : '',
+    ]
+      .filter(Boolean)
+      .join(' · ');
+  }
+
+  private measurementLabel(measurement: SearchMeasurementFilter): string {
+    const { minimum, maximum, dimension } = measurement;
+    const label = (key: TranslationKey, value: number) =>
+      this.i18n.t(key, {
+        value: formatDimensionCm(value, this.market.locale(), 20),
+        dimension: this.i18n.t(`search.${dimension}`),
+      });
+    if (minimum?.inclusive && maximum?.inclusive && minimum.valueCm === maximum.valueCm) {
+      return label('search.measurementExactly', minimum.valueCm);
+    }
+    return [
+      minimum
+        ? label(
+            minimum.inclusive ? 'search.measurementAtLeast' : 'search.measurementMoreThan',
+            minimum.valueCm,
+          )
+        : '',
+      maximum
+        ? label(
+            maximum.inclusive ? 'search.measurementAtMost' : 'search.measurementLessThan',
+            maximum.valueCm,
+          )
+        : '',
+    ]
+      .filter(Boolean)
+      .join(' · ');
   }
 }

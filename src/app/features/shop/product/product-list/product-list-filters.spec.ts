@@ -13,7 +13,7 @@ describe('Product list filters', () => {
       search: '  madera  ', category: ' desk ', dimension: 'width', maxDimensionCm: '120.5',
     }));
     expect(filters).toEqual({ search: 'madera', categoryCode: 'DESK', dimension: 'width', maxDimensionCm: 120.5 });
-    expect(usesSmartSearch(filters)).toBe(false);
+    expect(usesSmartSearch(filters)).toBe(true);
   });
 
   it.each([

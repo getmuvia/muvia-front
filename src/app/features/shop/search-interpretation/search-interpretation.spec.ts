@@ -13,7 +13,7 @@ describe('SearchInterpretation', () => {
     source: 'ai',
     category: { code: 'DESK', label: 'Escritorio' },
     material: { code: 'WOOD', label: 'Madera' },
-    measurement: { dimension: 'width', maxDimensionCm: 100 },
+    measurements: [{ dimension: 'width', maximum: { valueCm: 100, inclusive: true } }],
   };
 
   beforeEach(async () => {
@@ -26,6 +26,21 @@ describe('SearchInterpretation', () => {
     fixture.componentRef.setInput('query', 'quiero un escritorio de madera de 100 cm');
     fixture.componentRef.setInput('interpretation', interpretation);
     fixture.detectChanges();
+  });
+
+  it('shows only actionable short-search guidance when interpretation is unavailable', () => {
+    fixture.componentRef.setInput('interpretation', {
+      summary: 'technical detail',
+      source: 'deterministic',
+    });
+    fixture.detectChanges();
+    const text = fixture.nativeElement.textContent as string;
+    expect(text).toContain('hasta 3 palabras');
+    expect(text).not.toContain('Muvia entendió');
+    expect(text).not.toContain('technical detail');
+    expect(text).not.toContain('Gemini');
+    expect(text).not.toContain('medidas');
+    expect(text).not.toContain('precios');
   });
 
   it('renders the validated buyer-facing summary without exposing its technical source', () => {
@@ -48,7 +63,7 @@ describe('SearchInterpretation', () => {
 
   it('emits a normalized natural-language correction', () => {
     let emittedQuery = '';
-    component.refineSearch.subscribe(query => emittedQuery = query);
+    component.refineSearch.subscribe((query) => (emittedQuery = query));
 
     const editButton = fixture.nativeElement.querySelector('button') as HTMLButtonElement;
     editButton.click();
@@ -72,5 +87,83 @@ describe('SearchInterpretation', () => {
 
     expect(fixture.nativeElement.querySelector('button')).toBeNull();
     expect(fixture.nativeElement.querySelector('form')).toBeNull();
+  });
+
+  it('displays the applied strict budget and translates it without changing the currency', () => {
+    fixture.componentRef.setInput('interpretation', {
+      ...interpretation,
+      price: { currencyCode: 'BOB', maximum: { amount: 2000, inclusive: false } },
+    });
+    fixture.detectChanges();
+    const before = fixture.nativeElement.textContent as string;
+    expect(before).toContain('Menos de');
+    expect(before).toContain('2.000,00');
+    TestBed.inject(I18nService).selectLanguage('en');
+    fixture.detectChanges();
+    const after = fixture.nativeElement.textContent as string;
+    expect(after).toContain('Less than');
+    expect(after).toContain('2,000.00');
+    expect(after).toContain('BOB');
+  });
+
+  it('renders inclusive and strict bounds without omitting either end', () => {
+    fixture.componentRef.setInput('interpretation', {
+      summary: '',
+      source: 'ai',
+      price: {
+        currencyCode: 'BOB',
+        minimum: { amount: 500, inclusive: true },
+        maximum: { amount: 2000, inclusive: true },
+      },
+    });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Desde');
+    expect(fixture.nativeElement.textContent).toContain('Hasta');
+    fixture.componentRef.setInput('interpretation', {
+      summary: '',
+      source: 'ai',
+      price: { currencyCode: 'BOB', minimum: { amount: 500, inclusive: false } },
+    });
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Más de');
+  });
+
+  it('shows every dimension with strict, inclusive and exact bounds in both languages', () => {
+    fixture.componentRef.setInput('interpretation', {
+      summary: '',
+      source: 'ai',
+      measurements: [
+        {
+          dimension: 'width',
+          minimum: { valueCm: 150, inclusive: true },
+          maximum: { valueCm: 180.25, inclusive: false },
+        },
+        {
+          dimension: 'depth',
+          minimum: { valueCm: 60, inclusive: false },
+          maximum: { valueCm: 80, inclusive: true },
+        },
+        {
+          dimension: 'height',
+          minimum: { valueCm: 75, inclusive: true },
+          maximum: { valueCm: 75, inclusive: true },
+        },
+      ],
+    });
+    fixture.detectChanges();
+    const spanish = fixture.nativeElement.textContent as string;
+    expect(spanish).toContain('Mínimo 150 cm de ancho');
+    expect(spanish).toContain('Menos de 180,25 cm de ancho');
+    expect(spanish).toContain('Más de 60 cm de profundidad');
+    expect(spanish).toContain('Máximo 80 cm de profundidad');
+    expect(spanish).toContain('Exactamente 75 cm de alto');
+    TestBed.inject(I18nService).selectLanguage('en');
+    fixture.detectChanges();
+    const english = fixture.nativeElement.textContent as string;
+    expect(english).toContain('Minimum 150 cm in width');
+    expect(english).toContain('Less than 180.25 cm in width');
+    expect(english).toContain('More than 60 cm in depth');
+    expect(english).toContain('Maximum 80 cm in depth');
+    expect(english).toContain('Exactly 75 cm in height');
   });
 });

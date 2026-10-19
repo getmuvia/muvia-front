@@ -1,5 +1,6 @@
 import { provideHttpClient } from '@angular/common/http';
-import { HttpTestingController, TestRequest, provideHttpClientTesting } from '@angular/common/http/testing';
+import { HttpTestingController, TestRequest, provideHttpClientTesting,
+} from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { convertToParamMap } from '@angular/router';
@@ -21,7 +22,8 @@ describe('ProductCatalog request coordination', () => {
   const categories = [{
     id: 'desk-id', code: 'DESK', name: 'Escritorios', parentId: null,
     description: '', imageUrl: '', level: 1, isSelectable: true,
-  }];
+  },
+  ];
   const product = (id: string): ProductSummary => ({
     id, title: id, price: 100, currencyCode: 'BOB', category: null, primaryImage: null,
   });
@@ -38,7 +40,8 @@ describe('ProductCatalog request coordination', () => {
       results: [{
         id, title: id, description: null, price: 100, currencyCode: 'BOB',
         imageUrl: null, score: 0.8, matchType: 'hybrid',
-      }],
+      },
+      ],
       count: 1,
     });
   };
@@ -72,6 +75,35 @@ describe('ProductCatalog request coordination', () => {
     expect(catalog.interpretation()?.summary).toBe('Escritorio · Madera');
     expect(catalog.displayLoading()).toBe(false);
     expect(catalog.hasNextPage()).toBe(false);
+  });
+
+  it('shows the server-applied budget for a category search and clears it on filter changes', () => {
+    flushPage(initialRequest, 1, ['initial']);
+    params.next(convertToParamMap({ category: 'DESK', search: 'escritorio hasta 2000 Bs' }));
+    const request = hybridRequest();
+    expect(request.request.body.categoryCode).toBe('DESK');
+    const priceFilter = { currencyCode: 'BOB', maximum: { amount: 2000, inclusive: true } };
+    request.flush({
+      query: request.request.body.query,
+      results: [
+        {
+          id: 'affordable',
+          title: 'Affordable',
+          price: 100,
+          currencyCode: 'BOB',
+          description: null,
+          imageUrl: null,
+          score: 1,
+          matchType: 'lexical',
+        },
+      ],
+      count: 1,
+      interpretation: { summary: 'escritorio', source: 'ai', price: priceFilter },
+    });
+    expect(catalog.interpretation()?.price).toEqual(priceFilter);
+    params.next(convertToParamMap({ category: 'DESK' }));
+    flushPage(catalogRequest(), 1, ['all']);
+    expect(catalog.interpretation()).toBeNull();
   });
 
   it('restores condition from the URL, resets pagination on changes, and filters smart requests', () => {
@@ -138,7 +170,8 @@ describe('ProductCatalog request coordination', () => {
     const pageTwo = catalogRequest();
     expect(pageTwo.request.params.get('page')).toBe('2');
     expect(pageTwo.request.context.get(HTTP_ERROR_FEEDBACK)).toBe('local');
-    pageTwo.flush({ message: 'Internal database error' }, { status: 500, statusText: 'Server Error' });
+    pageTwo.flush({ message: 'Internal database error' }, { status: 500, statusText: 'Server Error' },
+    );
     expect(catalog.displayProducts().map(item => item.id)).toEqual(['page-one']);
     expect(catalog.displayError()).not.toContain('Internal database');
     expect(catalog.canRetryDisplayError()).toBe(true);
@@ -153,18 +186,21 @@ describe('ProductCatalog request coordination', () => {
     http.expectNone(req => req.url === API_ENDPOINTS.PRODUCTS.BASE);
   });
 
-  it('retries a failed first page without dropping the current filters', () => {
-    params.next(convertToParamMap({ category: 'DESK', search: 'madera', dimension: 'width', maxDimensionCm: '120' }));
-    const request = catalogRequest();
+  it('retries a failed selected-category search without dropping its controls', () => {
+    params.next(convertToParamMap({ category: 'DESK', search: 'madera', dimension: 'width', maxDimensionCm: '120',
+      }),
+    );
+    const request = hybridRequest();
     request.flush({}, { status: 503, statusText: 'Unavailable' });
     catalog.retryProducts();
-    const retry = catalogRequest();
-    expect(retry.request.params.get('page')).toBe('1');
-    expect(retry.request.params.get('categoryId')).toBe('desk-id');
-    expect(retry.request.params.get('search')).toBe('madera');
-    expect(retry.request.params.get('dimension')).toBe('width');
-    expect(retry.request.params.get('maxDimensionCm')).toBe('120');
-    flushPage(retry, 1, ['retry-result']);
+    const retry = hybridRequest();
+    expect(retry.request.body).toMatchObject({
+      categoryCode: 'DESK',
+      query: 'madera',
+      dimension: 'width',
+      maxDimensionCm: 120,
+    });
+    flushHybrid(retry, 'retry-result');
     expect(catalog.displayError()).toBeNull();
   });
 
@@ -204,7 +240,8 @@ describe('ProductCatalog request coordination', () => {
     expect(previous.cancelled).toBe(true);
     categoryRequest().flush(categories);
     const current = hybridRequest();
-    expect(current.request.body).toEqual({ query: 'escritorio', limit: 20, marketCode: 'PE', locale: 'es-PE' });
+    expect(current.request.body).toEqual({ query: 'escritorio', limit: 20, marketCode: 'PE', locale: 'es-PE',
+    });
     flushHybrid(current, 'peru-result');
   });
 
@@ -215,7 +252,8 @@ describe('ProductCatalog request coordination', () => {
       relatedResults: [{
         id: 'related', title: 'Silla', description: null, price: 100, currencyCode: 'BOB',
         imageUrl: null, score: 0.4, matchType: 'lexical',
-      }],
+      },
+      ],
     });
     expect(catalog.relatedProducts()).toHaveLength(1);
     params.next(convertToParamMap({ search: 'silla' }));
@@ -228,7 +266,8 @@ describe('ProductCatalog request coordination', () => {
     params.next(convertToParamMap({ search: 'escritorio' }));
     const request = hybridRequest();
     expect(request.request.context.get(HTTP_ERROR_FEEDBACK)).toBe('local');
-    request.flush({ message: 'Internal embedding error' }, { status: 500, statusText: 'Server Error' });
+    request.flush({ message: 'Internal embedding error' }, { status: 500, statusText: 'Server Error' },
+    );
     expect(catalog.displayLoading()).toBe(false);
     expect(catalog.displayError()).toBe('No pudimos completar la búsqueda. Inténtalo de nuevo.');
     catalog.retryProducts();
@@ -240,7 +279,8 @@ describe('ProductCatalog request coordination', () => {
   });
 
   it('does not retry a non-retryable normal-search error', () => {
-    initialRequest.flush({ message: 'Forbidden details' }, { status: 403, statusText: 'Forbidden' });
+    initialRequest.flush({ message: 'Forbidden details' }, { status: 403, statusText: 'Forbidden' },
+    );
     expect(catalog.canRetryDisplayError()).toBe(false);
     catalog.retryProducts();
     http.expectNone(req => req.url === API_ENDPOINTS.PRODUCTS.BASE);
@@ -255,7 +295,8 @@ describe('ProductCatalog request coordination', () => {
     hybridRequest().flush({
       query: 'escritorio', interpretation: { summary: 'Escritorio', source: 'ai' },
       results: [result], count: 1,
-      relatedResults: [{ ...result, id: 'related', price: 180.5, currencyCode: 'PEN', imageUrl: null }],
+      relatedResults: [{ ...result, id: 'related', price: 180.5, currencyCode: 'PEN', imageUrl: null },
+      ],
     });
     expect(catalog.displayProducts()[0]).toMatchObject({
       price: 35.5, currencyCode: 'USD', category: null,

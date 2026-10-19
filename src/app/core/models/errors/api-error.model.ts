@@ -68,6 +68,12 @@ const KNOWN_BACKEND_MESSAGES: Readonly<Record<string, string>> = {
     'File type not allowed.': 'El tipo de archivo seleccionado no está permitido.',
 };
 
+const KNOWN_CODE_MESSAGES: Readonly<Record<string, string>> = {
+    SEARCH_PRICE_INVALID:
+        'Indica un presupuesto válido, por ejemplo «hasta 2.000» o «entre 500 y 2.000».',
+    SEARCH_PRICE_CURRENCY_MISMATCH: 'Escribe el precio en la moneda de este país.',
+};
+
 /**
  * Converts any caught value into the error contract used by the application.
  * It never exposes an unreviewed backend or JavaScript error message.
@@ -85,7 +91,8 @@ export function toAppError(error: unknown, options: NormalizeErrorOptions = {}):
     const backendMessages = getBackendMessages(body);
 
     const message = getStatusMessage(options.statusMessages, status)
-        ?? getCodeMessage(code, options.codeMessages)
+        ?? getCodeMessage(code, options.codeMessages) ??
+        getCodeMessage(code, KNOWN_CODE_MESSAGES)
         ?? getKnownBackendMessage(backendMessages)
         ?? options.fallbackMessage
         ?? DEFAULT_MESSAGES[kind];
@@ -192,10 +199,12 @@ export function isAppError(error: unknown): error is AppError {
     if (typeof error !== 'object' || error === null) return false;
 
     const candidate = error as Partial<AppError>;
-    return typeof candidate.kind === 'string'
+    return (
+        typeof candidate.kind === 'string'
         && typeof candidate.message === 'string'
         && typeof candidate.retryable === 'boolean'
         && (typeof candidate.correlationId === 'string' || candidate.correlationId === null)
         && (typeof candidate.status === 'number' || candidate.status === null)
-        && (typeof candidate.code === 'string' || candidate.code === null);
+        && (typeof candidate.code === 'string' || candidate.code === null)
+    );
 }

@@ -1,4 +1,6 @@
 {
+  "errors.invalidSearchPrice": "Indica un presupuesto válido, por ejemplo «hasta 2.000» o «entre 500 y 2.000».",
+  "errors.searchPriceCurrencyMismatch": "Escribe el precio en la moneda de este país.",
   "errors.anUnexpectedErrorOccurredTryAgain": "Ocurrió un error inesperado. Inténtalo nuevamente.",
   "errors.authenticationFailed": "Error en la autenticación.",
   "errors.completeYourBusinessLocationBeforeCreatingProducts": "Completa la ubicación de tu negocio antes de crear productos.",

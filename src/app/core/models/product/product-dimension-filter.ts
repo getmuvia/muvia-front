@@ -31,8 +31,12 @@ export function parseMaxDimensionCm(value: string | null | undefined): number | 
     : null;
 }
 
-export function formatDimensionCm(value: number, locale = 'es-BO'): string {
+export function formatDimensionCm(
+  value: number,
+  locale = 'es-BO',
+  maximumFractionDigits = 1,
+): string {
   return new Intl.NumberFormat(locale, {
-    maximumFractionDigits: 1,
+    maximumFractionDigits,
   }).format(value);
 }

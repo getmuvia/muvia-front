@@ -15,7 +15,7 @@ import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-f
  */
 export const HYBRID_SEARCH_LIMITS = {
     MODAL: 10,       // Quick modal search
-    PRODUCT_LIST: 20 // Full product list
+    PRODUCT_LIST: 20, // Full product list
 } as const;
 
 /**
@@ -29,7 +29,7 @@ export class HybridSearchService {
 
     /**
      * Performs a hybrid search (Semantic + Lexical) using Vertex AI.
-     * 
+     *
      * @param query - The user's search term.
      * @param limit - Max number of results (defaults to Product List limit).
      * @returns Observable with search results including relevance scores and separate suggestions.
@@ -38,10 +38,12 @@ export class HybridSearchService {
         query: string,
         limit: number = HYBRID_SEARCH_LIMITS.PRODUCT_LIST,
         condition?: ProductCondition,
+        filters: Pick<HybridSearchRequest, 'categoryCode' | 'dimension' | 'maxDimensionCm'> = {},
     ): Observable<HybridSearchResponse> {
         const payload: HybridSearchRequest = {
             query,
             limit,
+            ...filters,
             marketCode: this.marketService.selectedMarket().code,
             locale: this.marketService.locale(),
             ...(condition ? { condition } : {}),
