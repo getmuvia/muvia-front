@@ -4,6 +4,7 @@ import { signal } from '@angular/core';
 import { Product } from '@core/models/product/product';
 import { ProductCondition } from '@core/models/product/product-condition';
 import { MarketService } from '@core/services/market/market';
+import { mapSearchResultToSummary } from '@features/shop/product/product-list/product-search-result';
 import { ProductCard } from './product-card';
 
 describe('ProductCard', () => {
@@ -80,12 +81,15 @@ describe('ProductCard', () => {
     expect(fixture.nativeElement.textContent).toContain('Imagen no disponible');
   });
 
-  it('renders the summary currency and keeps the detail link for a search result', () => {
-    fixture.componentRef.setInput('product', {
+  it('renders the category and currency and keeps the detail link for a search result', () => {
+    fixture.componentRef.setInput('product', mapSearchResultToSummary({
       id: 'search-id', title: 'Escritorio', price: 35.5, currencyCode: 'USD',
-      category: null, primaryImage: null, score: 0.8, matchType: 'hybrid',
-    });
+      category: { id: 'desk-category', code: 'DESK', name: 'Escritorios' },
+      description: null, imageUrl: null, score: 0.8, matchType: 'hybrid',
+    }));
     fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Escritorios');
+    expect(fixture.nativeElement.textContent).not.toContain('Sin categoría');
     const price = fixture.nativeElement.querySelector('.product-price').textContent as string;
     expect(price).toContain('USD');
     expect(price).toContain('35,50');

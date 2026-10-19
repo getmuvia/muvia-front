@@ -1,4 +1,5 @@
 import { ProductCondition } from '@core/models/product/product-condition';
+import type { ProductSummary } from '@core/models/product/product-summary';
 import { ProductPriceFilter } from './product-price-filter';
 
 /**
@@ -62,6 +63,7 @@ export interface HybridSearchResult {
     description: string | null;
     price: number;
     currencyCode: string;
+    category: ProductSummary['category'];
     imageUrl: string | null;
     score: number;
     matchType: MatchType;
