@@ -103,7 +103,8 @@ describe('ProductList', () => {
       query: 'silla', interpretation: { summary: '', source: 'ai' }, results: [], count: 0,
       relatedResults: [{
         id: 'fallback-chair', title: 'Silla ergonómica', description: null,
-        price: 1500, currencyCode: 'BOB', imageUrl: null, score: 0.4, matchType: 'lexical',
+        price: 1500, currencyCode: 'BOB', category: null,
+        imageUrl: null, score: 0.4, matchType: 'lexical',
       }],
     }));
     queryParams.next(convertToParamMap({ search: 'silla' }));
@@ -125,7 +126,7 @@ describe('ProductList', () => {
 
   it('renders the currency of primary results and related suggestions after summary adaptation', () => {
     const result = {
-      id: 'primary', title: 'Escritorio', description: null, price: 35.5,
+      id: 'primary', title: 'Escritorio', description: null, price: 35.5, category: null,
       imageUrl: null, score: 0.8, matchType: 'hybrid' as const,
     };
     hybridSearch.mockReturnValue(of({
