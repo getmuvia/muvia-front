@@ -1,4 +1,5 @@
 import { signal, WritableSignal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 
@@ -165,6 +166,53 @@ describe('SellerProfile', () => {
     expect(deleteFile).toHaveBeenCalledWith('users/seller-id/logo.webp');
     expect(component.isModalOpen()).toBe(true);
     expect(component.imageSaveError()).toContain('No pudimos guardar la imagen');
+    expect(component.isSaving()).toBe(false);
+  });
+
+  it.each([
+    ['avatar', 'logoUrl'],
+    ['cover', 'coverImage'],
+  ] as const)('saves the uploaded %s URL to the vendor profile', async (mode, field) => {
+    component.openEditModal(mode);
+    const file = new File(['image'], 'photo.png', { type: 'image/png' });
+
+    await component.onSaveImage(file);
+
+    expect(updateProfile).toHaveBeenCalledWith({
+      vendorProfile: { [field]: 'https://storage.example/logo.webp' },
+    });
+    expect(component.isModalOpen()).toBe(false);
+    expect(component.imageSaveError()).toBeNull();
+    expect(deleteFile).not.toHaveBeenCalled();
+  });
+
+  it('reports a processing failure when saving the image returns FILE_INVALID', async () => {
+    updateProfile.mockReturnValueOnce(throwError(() => new HttpErrorResponse({
+      status: 400,
+      error: { code: 'FILE_INVALID', message: 'Uploaded file does not meet the requirements' },
+    })));
+    component.openEditModal('avatar');
+
+    await component.onSaveImage(new File(['image'], 'logo.webp', { type: 'image/webp' }));
+
+    expect(component.imageSaveError()).toBe('No pudimos procesar la imagen. Inténtalo nuevamente.');
+    expect(component.isModalOpen()).toBe(true);
+    expect(deleteFile).toHaveBeenCalledWith('users/seller-id/logo.webp');
+    expect(component.isSaving()).toBe(false);
+  });
+
+  it('reports a connection failure separately and keeps the image editor open', async () => {
+    uploadFile.mockReturnValueOnce(throwError(() => new HttpErrorResponse({ status: 0 })));
+    component.openEditModal('cover');
+
+    await component.onSaveImage(new File(['image'], 'cover.jpg', { type: 'image/jpeg' }));
+
+    expect(component.imageSaveError()).toBe(
+      'No pudimos conectarnos al servidor. Verifica tu conexión e inténtalo nuevamente.',
+    );
+    expect(component.isModalOpen()).toBe(true);
+    expect(updateProfile).not.toHaveBeenCalled();
+    expect(deleteFile).not.toHaveBeenCalled();
     expect(component.isSaving()).toBe(false);
   });
 });
