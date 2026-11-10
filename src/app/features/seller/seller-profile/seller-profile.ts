@@ -22,7 +22,7 @@ import {
   SellerSidebar,
 } from './components';
 import { firstValueFrom } from 'rxjs';
-import { getErrorMessage } from '@core/models/errors/api-error.model';
+import { getErrorMessage, toAppError } from '@core/models/errors/api-error.model';
 
 @Component({
   selector: 'app-seller-profile',
@@ -196,10 +196,16 @@ export class SellerProfile implements OnInit {
           this.logger.error('Failed to clean up profile image upload', cleanupError, 'SellerProfile');
         }
       }
-      this.imageSaveError.set(getErrorMessage(
-        error,
-        'No pudimos guardar la imagen. Revisa tu conexión e inténtalo nuevamente.',
-      ));
+      const imageError = toAppError(error, {
+        codeMessages: {
+          FILE_INVALID: 'No pudimos procesar la imagen. Inténtalo nuevamente.',
+          FILE_TYPE_NOT_ALLOWED: 'Usa una imagen PNG, JPG o WEBP.',
+          FILE_SIZE_INVALID: 'Selecciona una imagen válida de hasta 5 MB.',
+        },
+      });
+      this.imageSaveError.set(imageError.kind === 'unknown'
+        ? 'No pudimos guardar la imagen. Inténtalo nuevamente.'
+        : imageError.message);
     } finally {
       this.isSaving.set(false);
     }
