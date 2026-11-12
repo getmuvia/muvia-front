@@ -19,7 +19,7 @@ import { Component, computed, input, signal } from '@angular/core';
           (error)="handleImageError(logoUrl)"
         />
       } @else {
-        <span class="material-symbols-outlined text-[1.15rem]" aria-hidden="true">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">
           {{ fallbackIcon() }}
         </span>
       }

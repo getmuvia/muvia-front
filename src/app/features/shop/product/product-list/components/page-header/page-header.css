@@ -2,36 +2,36 @@
   display: block;
 }
 .catalog-heading {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
 }
 h1 {
   margin: 0;
-  font-size: clamp(2rem, 3.1vw, 2.5rem);
-  font-weight: 500;
-  line-height: 1.1;
+  color: var(--color-text-main);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  line-height: var(--text-2xl--line-height);
   letter-spacing: -0.025em;
 }
 .demo-notice {
   display: flex;
-  align-items: flex-start;
-  gap: 0.65rem;
-  margin-top: 0.875rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0;
   color: var(--color-text-secondary);
-  font-size: 0.75rem;
-  line-height: 1.6;
+  font-size: var(--text-xs);
+  line-height: 1.5;
 }
 .demo-label {
   flex-shrink: 0;
-  border: 1px solid var(--color-border-color);
-  padding: 0.05rem 0.4rem;
-  color: var(--color-primary);
-  font-size: 0.625rem;
-  font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 65%, var(--color-border-color));
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  padding: 0.125rem 0.5rem;
+  color: var(--color-secondary);
+  font-size: var(--text-2xs);
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-@media (max-width: 639px) {
-  .demo-notice {
-    max-width: 23rem;
-  }
+  letter-spacing: 0.12em;
 }

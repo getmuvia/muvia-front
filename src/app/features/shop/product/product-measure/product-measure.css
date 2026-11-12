@@ -5,7 +5,7 @@
 .measurement-page {
   min-height: calc(100dvh - 5rem);
   background:
-    linear-gradient(135deg, rgb(23 72 59 / 0.05), transparent 42%),
+    linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 5%, transparent), transparent 42%),
     var(--color-background-light);
 }
 
@@ -19,6 +19,6 @@
   border: 1px solid color-mix(in srgb, var(--color-primary) 35%, transparent);
   border-radius: var(--radius-control);
   color: var(--color-primary);
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   font-weight: 700;
 }

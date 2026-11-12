@@ -21,7 +21,6 @@ interface AiDecoratorPromo {
   selector: 'app-ai-decorator-banner',
   imports: [TranslatePipe, UiTextPipe, NgOptimizedImage, RouterLink],
   templateUrl: './ai-decorator-banner.html',
-  styleUrl: './ai-decorator-banner.css',
 })
 export class AiDecoratorBanner {
   readonly promo: AiDecoratorPromo = {

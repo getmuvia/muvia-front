@@ -18,7 +18,6 @@ export class ProductCard {
   readonly product = input.required<ProductPreview>();
   readonly priority = input<boolean>(false);
   readonly showEditButton = input<boolean>(false);
-  readonly appearance = input<'default' | 'catalog'>('default');
 
   private readonly imageAsset = computed(() => {
     return productPreviewImage(this.product());

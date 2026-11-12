@@ -18,7 +18,7 @@
     height: 0.45rem;
     border-radius: 9999px;
     background: var(--color-accent);
-    box-shadow: 0 0 0 5px rgb(217 164 65 / 0.13);
+    box-shadow: 0 0 0 5px color-mix(in srgb, var(--color-accent) 16%, transparent);
     content: '';
 }
 
@@ -30,7 +30,7 @@
     overflow: hidden;
     border: 1px solid var(--color-border-color);
     border-radius: var(--radius-panel);
-    background: #fff;
+    background: var(--color-surface-light);
     transition: border-color 180ms ease;
 }
 
@@ -40,7 +40,7 @@
 
 .form-panel--open {
     border-color: var(--color-primary);
-    background: #fff;
+    background: var(--color-surface-light);
 }
 
 .form-panel__trigger {
@@ -59,11 +59,11 @@
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgb(169 71 47 / 0.14);
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 22%, transparent);
     border-radius: 9999px;
-    background: rgb(217 164 65 / 0.16);
+    background: color-mix(in srgb, var(--color-accent) 16%, transparent);
     font-family: var(--font-body);
-    font-size: 0.6875rem;
+    font-size: var(--text-2xs);
     font-weight: 700;
     letter-spacing: 0.08em;
     color: var(--color-secondary);
@@ -83,7 +83,7 @@
 
 .form-panel__title {
     font-family: var(--font-body);
-    font-size: 0.9375rem;
+    font-size: var(--text-sm);
     font-weight: 700;
     letter-spacing: 0.02em;
 }
@@ -93,18 +93,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-family: var(--font-body);
-    font-size: 0.75rem;
+    font-size: var(--text-xs);
     color: var(--color-text-secondary);
 }
 
 .form-panel__status {
     flex: 0 0 auto;
-    border: 1px solid rgb(169 71 47 / 0.12);
+    border: 1px solid color-mix(in srgb, var(--color-secondary) 20%, transparent);
     border-radius: var(--radius-control);
-    background: rgb(217 164 65 / 0.14);
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
     padding: 0.4rem 0.7rem;
     font-family: var(--font-body);
-    font-size: 0.625rem;
+    font-size: var(--text-2xs);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -112,8 +112,8 @@
 }
 
 .form-panel__status--complete {
-    border-color: rgb(36 117 83 / 0.13);
-    background: rgb(36 117 83 / 0.1);
+    border-color: color-mix(in srgb, var(--color-success) 20%, transparent);
+    background: color-mix(in srgb, var(--color-success) 10%, transparent);
     color: var(--color-success);
 }
 
@@ -130,7 +130,7 @@
 
 .form-panel__content {
     border-top: 1px solid color-mix(in srgb, var(--color-border-color) 72%, transparent);
-    background: #fff;
+    background: var(--color-surface-light);
     padding: 1.5rem;
     animation: reveal-panel 180ms ease-out;
 }

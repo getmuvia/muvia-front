@@ -5,7 +5,6 @@ import { Component, input, output } from '@angular/core';
     selector: 'app-load-more-button',
     imports: [TranslatePipe],
     templateUrl: './load-more-button.html',
-    styleUrl: './load-more-button.css',
 })
 export class LoadMoreButton {
     readonly isLoading = input<boolean>(false);

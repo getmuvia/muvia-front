@@ -1,6 +1,15 @@
-<main class="catalog-page">
+<main class="catalog-page muvia-wide-container">
+  <app-page-header [title]="pageTitle()" />
+
   <div class="catalog-toolbar">
-    <app-page-header [title]="pageTitle()" />
+    <app-category-filter
+      [categories]="catalog.categories()"
+      [selectedCode]="catalog.filters().categoryCode"
+      [isLoading]="catalog.isLoadingCategories()"
+      [error]="catalog.categoryResolutionError() ? null : catalog.categoryListError()"
+      (selectCategory)="onSelectCategory($event)"
+      (retry)="catalog.retryCategories()"
+    />
     <app-filter-bar
       (searchSubmit)="onSearchSubmit($event)"
       [activeSearch]="catalog.filters().search"
@@ -14,15 +23,6 @@
       (measureRequested)="onMeasureRequested()"
     />
   </div>
-
-  <app-category-filter
-    [categories]="catalog.categories()"
-    [selectedCode]="catalog.filters().categoryCode"
-    [isLoading]="catalog.isLoadingCategories()"
-    [error]="catalog.categoryResolutionError() ? null : catalog.categoryListError()"
-    (selectCategory)="onSelectCategory($event)"
-    (retry)="catalog.retryCategories()"
-  />
 
   @if (
     catalog.useSmartSearch()
