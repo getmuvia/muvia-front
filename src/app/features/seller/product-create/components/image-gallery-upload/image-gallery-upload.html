@@ -6,64 +6,63 @@
         <span class="material-symbols-outlined text-secondary">imagesmode</span>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-2 gap-4 mb-4"
+        (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event)">
         <!-- Primary Image Slot -->
         <div class="col-span-2 aspect-[4/3] flex flex-col items-center justify-center rounded-panel border border-dashed bg-surface-element/40 transition-colors cursor-pointer group relative overflow-hidden"
             [class.border-secondary]="isDragging()" [class.border-border-color]="!isDragging()"
-            [class.cursor-not-allowed]="disabled()" [attr.aria-disabled]="disabled()" role="button" tabindex="0"
-            data-error-focus aria-describedby="product-image-upload-help product-image-upload-errors"
-            (dragover)="onDragOver($event)" (dragleave)="onDragLeave()" (drop)="onDrop($event, true)"
-            (click)="!disabled() && primaryInput.click()" (keydown.enter)="!disabled() && primaryInput.click()"
-            (keydown.space)="!disabled() && primaryInput.click(); $event.preventDefault()">
+            [class.cursor-not-allowed]="disabled()">
 
-            @if (primaryImage()) {
-            <img [src]="primaryImage()!.url" [alt]="primaryImage()!.metadata['alt']"
-                class="w-full h-full object-cover" />
+            <button type="button" class="w-full h-full flex flex-col items-center justify-center cursor-pointer disabled:cursor-not-allowed"
+                [disabled]="disabled()" [attr.aria-label]="'seller.addImages' | translate"
+                data-error-focus aria-describedby="product-image-upload-help product-image-upload-errors"
+                (click)="fileInput.click()">
+                @if (primaryImage(); as primary) {
+                <img [src]="primary.url" [alt]="primary.metadata['alt']"
+                    class="w-full h-full object-cover" />
+                } @else {
+                <span class="material-symbols-outlined text-4xl text-text-light/40 group-hover:text-secondary mb-2">
+                    add_photo_alternate
+                </span>
+                <span class="text-xs text-text-light/60 text-center px-4 font-body">
+                    {{ 'seller.selectOrDragYourImagesHere' | translate }}
+                </span>
+                }
+            </button>
+
+            @if (primaryImage(); as primary) {
             <div
-                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                <button type="button" (click)="removeImage(primaryImage()!.url); $event.stopPropagation()"
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                <button type="button" (click)="removeImage(primary.url)"
                     [attr.aria-label]="'seller.removeMainImage' | translate" [disabled]="disabled()"
-                    class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors">
+                    class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors pointer-events-auto">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
             </div>
             <div
-                class="absolute top-2 left-2 bg-secondary text-white text-xs px-2 py-0.5 uppercase font-bold font-body">
+                class="absolute top-2 left-2 bg-secondary text-white text-xs px-2 py-0.5 uppercase font-bold font-body pointer-events-none">
                 {{ 'seller.main' | translate }}
             </div>
-            } @else {
-            <span class="material-symbols-outlined text-4xl text-text-light/40 group-hover:text-secondary mb-2">
-                add_photo_alternate
-            </span>
-            <p class="text-xs text-text-light/60 text-center px-4 font-body">
-                {{ 'seller.dragYourMainImageHere' | translate }}
-            </p>
             }
-
-            <input #primaryInput type="file" accept="image/jpeg,image/png,image/webp" class="hidden"
-                [disabled]="disabled()" aria-describedby="product-image-upload-help product-image-upload-errors"
-                (change)="onFileSelect($event, true)" />
         </div>
 
         <!-- Secondary Image Slots -->
         @for (asset of secondaryImages(); track asset.url) {
-        <div class="aspect-square relative overflow-hidden rounded-editorial border border-border-color group cursor-pointer"
-            role="button" tabindex="0" [attr.aria-disabled]="disabled()"
-            [attr.aria-label]="'seller.useMainImage' | translate: {image: asset.metadata['alt'] || ('seller.image' | translate)}"
-            (click)="setPrimary(asset.url)" (keydown.enter)="setPrimary(asset.url)">
-            <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
+        <div class="aspect-square relative overflow-hidden rounded-editorial border border-border-color group">
+            <button type="button" class="w-full h-full cursor-pointer disabled:cursor-not-allowed"
+                [disabled]="disabled()" (click)="setPrimary(asset.url)"
+                [attr.aria-label]="'seller.useMainImage' | translate: {image: asset.metadata['alt'] || ('seller.image' | translate)}"
+                [title]="'seller.setAsMain' | translate">
+                <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
+            </button>
             <div
-                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1">
-                <button type="button"
-                    [attr.aria-label]="'seller.useMainImage' | translate: {image: asset.metadata['alt'] || ('seller.image' | translate)}"
-                    [disabled]="disabled()"
-                    class="bg-secondary text-white p-1 text-xs hover:bg-secondary/80 transition-colors"
-                    [title]="'seller.setAsMain' | translate">
+                class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-1 pointer-events-none">
+                <span aria-hidden="true" class="bg-secondary text-white p-1 text-xs">
                     <span class="material-symbols-outlined text-sm">star</span>
-                </button>
-                <button type="button" (click)="removeImage(asset.url); $event.stopPropagation()"
+                </span>
+                <button type="button" (click)="removeImage(asset.url)"
                     [attr.aria-label]="'seller.removeImage' | translate: {image: asset.metadata['alt'] || ('seller.image' | translate)}" [disabled]="disabled()"
-                    class="bg-red-500 text-white p-1 text-xs hover:bg-red-600 transition-colors">
+                    class="bg-red-500 text-white p-1 text-xs hover:bg-red-600 transition-colors pointer-events-auto">
                     <span class="material-symbols-outlined text-sm">delete</span>
                 </button>
             </div>
@@ -72,20 +71,20 @@
 
         <!-- Empty slots for remaining -->
         @for (i of emptySlots(); track i) {
-        <div class="aspect-square bg-surface-element/60 flex items-center justify-center rounded-panel border border-border-color cursor-pointer hover:bg-surface-element transition-colors"
-            role="button" tabindex="0" [attr.aria-label]="'seller.addAnotherImage' | translate" [attr.aria-disabled]="disabled()"
-            (click)="!disabled() && secondaryInput.click()" (keydown.enter)="!disabled() && secondaryInput.click()">
+        <button type="button" class="aspect-square bg-surface-element/60 flex items-center justify-center rounded-panel border border-border-color cursor-pointer hover:bg-surface-element transition-colors disabled:cursor-not-allowed"
+            [attr.aria-label]="'seller.addImages' | translate" [disabled]="disabled()"
+            aria-describedby="product-image-upload-help product-image-upload-errors" (click)="fileInput.click()">
             <span class="material-symbols-outlined text-text-light/40">add</span>
-        </div>
+        </button>
         }
     </div>
 
-    <input #secondaryInput type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden"
+    <input #fileInput type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden"
         [disabled]="disabled()" aria-describedby="product-image-upload-help product-image-upload-errors"
-        (change)="onFileSelect($event, false)" />
+        (change)="onFileSelect($event)" />
 
     <p id="product-image-upload-help" class="text-xs text-text-light/40 mt-4 text-center font-body">
-        {{ 'seller.jpgPngOrWebpMaximum5MbPerFile' | translate }}
+        {{ 'seller.imageGalleryHelp' | translate: {count: maxImages} }}
     </p>
 
     @if (fileErrors().length > 0) {
