@@ -1,11 +1,11 @@
 @if (isLoading()) {
   <div class="catalog-grid">
     @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
-      <div class="flex flex-col gap-3" aria-hidden="true">
-        <app-skeleton height="auto" className="aspect-square rounded-editorial" />
+      <div class="flex flex-col gap-3.5" aria-hidden="true">
+        <app-skeleton height="auto" className="aspect-[4/5] rounded-editorial" />
         <div class="space-y-2">
           <app-skeleton width="33%" height="0.75rem" />
-          <app-skeleton width="75%" height="1rem" />
+          <app-skeleton width="75%" height="1.125rem" />
           <app-skeleton width="40%" height="1rem" />
         </div>
       </div>
@@ -16,7 +16,7 @@
 } @else {
   <div class="catalog-grid">
     @for (product of products(); track product.id) {
-      <app-product-card [product]="product" appearance="catalog" />
+      <app-product-card [product]="product" />
     }
   </div>
 }

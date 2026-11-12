@@ -8,7 +8,6 @@ import { NewArrivalsStore } from '@core/services/product/new-arrivals.store';
   selector: 'app-new-arrivals',
   imports: [TranslatePipe, UiTextPipe, ProductCard, RouterLink],
   templateUrl: './new-arrivals.html',
-  styleUrl: './new-arrivals.css',
 })
 export class NewArrivals implements OnInit {
   private readonly store = inject(NewArrivalsStore);

@@ -8,7 +8,6 @@ import { FEATURED_CATEGORIES } from '@core/constants/featured-categories';
   selector: 'app-featured-categories',
   imports: [CategoryNamePipe, TranslatePipe, NgOptimizedImage, RouterLink],
   templateUrl: './featured-categories.html',
-  styleUrl: './featured-categories.css',
 })
 export class FeaturedCategories {
   readonly categories = FEATURED_CATEGORIES;

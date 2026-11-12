@@ -8,7 +8,6 @@ import { RouterLink } from '@angular/router';
   selector: 'app-hero-banner',
   imports: [TranslatePipe, UiTextPipe, NgOptimizedImage, RouterLink],
   templateUrl: './hero-banner.html',
-  styleUrl: './hero-banner.css',
 })
 export class HeroBanner {
   readonly heroImage = '/images/hero/muvia-home-2026-09.webp';

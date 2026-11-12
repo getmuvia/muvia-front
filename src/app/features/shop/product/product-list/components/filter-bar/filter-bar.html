@@ -19,6 +19,16 @@
       />
       <button type="submit" [attr.aria-label]="'catalog.search' | translate">{{ 'catalog.search' | translate }}</button>
     </form>
+
+    <div class="condition-filter muvia-select-field">
+      <label for="catalog-condition" class="muvia-select-label">{{ 'catalog.productCondition' | translate }}</label>
+      <select id="catalog-condition" class="muvia-select-control" (change)="onConditionChange($event)">
+        <option value="" [selected]="selectedCondition() === ''">{{ 'catalog.conditionAll' | translate }}</option>
+        <option [value]="productCondition.NEW" [selected]="selectedCondition() === productCondition.NEW">{{ 'catalog.conditionFilterNew' | translate }}</option>
+        <option [value]="productCondition.USED" [selected]="selectedCondition() === productCondition.USED">{{ 'catalog.conditionFilterUsed' | translate }}</option>
+      </select>
+    </div>
+
     <button
       type="button"
       (click)="measureRequested.emit()"
@@ -28,15 +38,6 @@
       <span class="material-symbols-outlined" aria-hidden="true">straighten</span>
       {{ 'catalog.searchByDimensions' | translate }}
     </button>
-  </div>
-
-  <div class="condition-filter">
-    <label for="catalog-condition">{{ 'catalog.productCondition' | translate }}</label>
-    <select id="catalog-condition" (change)="onConditionChange($event)">
-      <option value="" [selected]="selectedCondition() === ''">{{ 'catalog.conditionAll' | translate }}</option>
-      <option [value]="productCondition.NEW" [selected]="selectedCondition() === productCondition.NEW">{{ 'catalog.conditionFilterNew' | translate }}</option>
-      <option [value]="productCondition.USED" [selected]="selectedCondition() === productCondition.USED">{{ 'catalog.conditionFilterUsed' | translate }}</option>
-    </select>
   </div>
 
   @if (activeSearch() || activeCategory() || activeMeasurement()) {

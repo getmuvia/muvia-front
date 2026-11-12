@@ -1,7 +1,8 @@
-<div class="category-control" [attr.aria-busy]="isLoading()">
-  <label for="catalog-category">{{ 'common.category' | translate }}</label>
+<div class="muvia-select-field" [attr.aria-busy]="isLoading()">
+  <label for="catalog-category" class="muvia-select-label">{{ 'common.category' | translate }}</label>
   <select
     id="catalog-category"
+    class="muvia-select-control"
     [value]="selectedCode()"
     (change)="onSelectionChange($event)"
     [disabled]="isLoading() || !!error()"

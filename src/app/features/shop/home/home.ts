@@ -8,7 +8,6 @@ import { AiDecoratorBanner } from './components/ai-decorator-banner/ai-decorator
   selector: 'app-home',
   imports: [HeroBanner, FeaturedCategories, NewArrivals, AiDecoratorBanner],
   templateUrl: './home.html',
-  styleUrl: './home.css',
 })
 export class Home {
 

@@ -21,10 +21,9 @@ export class ImageGalleryUpload {
 
     primaryImage = computed(() => this.assets().find(a => a.isPrimary));
     secondaryImages = computed(() => this.assets().filter(a => !a.isPrimary));
-    remainingSlots = computed(() => Math.max(0, this.maxImages - this.assets().length));
     emptySlots = computed(() => {
-        const count = Math.min(this.remainingSlots(), 4 - this.secondaryImages().length);
-        return count > 0 ? Array.from({ length: count }, (_, i) => i) : [];
+        const count = Math.max(0, this.maxImages - Math.max(1, this.assets().length));
+        return Array.from({ length: count }, (_, i) => i);
     });
 
     onDragOver(event: DragEvent): void {
@@ -37,27 +36,28 @@ export class ImageGalleryUpload {
         this.isDragging.set(false);
     }
 
-    onDrop(event: DragEvent, isPrimary: boolean): void {
+    onDrop(event: DragEvent): void {
         event.preventDefault();
         this.isDragging.set(false);
         if (this.disabled()) return;
         const files = event.dataTransfer?.files;
         if (files && files.length > 0) {
-            this.handleFiles(files, isPrimary);
+            this.handleFiles(files);
         }
     }
 
-    onFileSelect(event: Event, isPrimary: boolean): void {
+    onFileSelect(event: Event): void {
         const input = event.target as HTMLInputElement;
         if (!this.disabled() && input.files && input.files.length > 0) {
-            this.handleFiles(input.files, isPrimary);
+            this.handleFiles(input.files);
         }
         input.value = '';
     }
 
-    private handleFiles(files: FileList, isPrimary: boolean): void {
-        let updated = [...this.assets()];
-        let assignPrimary = isPrimary || !updated.some(asset => asset.isPrimary);
+    private handleFiles(files: FileList): void {
+        const updated = [...this.assets()];
+        const initialCount = updated.length;
+        let assignPrimary = !updated.some(asset => asset.isPrimary);
         const errors: string[] = [];
 
         for (const file of Array.from(files)) {
@@ -75,10 +75,6 @@ export class ImageGalleryUpload {
             }
 
             const url = URL.createObjectURL(file);
-            if (assignPrimary) {
-                updated = updated.map(a => ({ ...a, isPrimary: false }));
-            }
-
             updated.push({
                 url,
                 type: 'image',
@@ -89,7 +85,7 @@ export class ImageGalleryUpload {
             assignPrimary = false;
         }
 
-        this.assets.set(updated);
+        if (updated.length > initialCount) this.assets.set(updated);
         this.fileErrors.set(errors);
     }
 
