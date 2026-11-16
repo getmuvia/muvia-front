@@ -1,0 +1,23 @@
+:host {
+    display: block;
+    position: relative;
+    min-width: 0;
+}
+
+.search-preview {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + var(--navbar-search-panel-offset, var(--spacing) * 2));
+    max-height: min(calc(var(--spacing) * 112), calc(100dvh - var(--navbar-block-size) - var(--navbar-secondary-block-size) - var(--spacing) * 12));
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-color) transparent;
+}
+
+:host :is(button, input):focus-visible {
+    outline-color: var(--navbar-foreground);
+}
+
+.search-preview button:focus-visible {
+    outline-color: var(--color-primary);
+}

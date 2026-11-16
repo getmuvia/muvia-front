@@ -56,6 +56,8 @@
   "common.includeAnUppercaseLetterALowercaseLetterANumber": "Incluye mayúscula, minúscula, número y carácter especial (@$!%*?&)",
   "common.invalidField": "Campo inválido",
   "common.language": "Idioma",
+  "common.spanish": "Español",
+  "common.english": "English",
   "common.linkCopied": "Enlace copiado.",
   "common.livingAndDiningRoomInAContemporaryHomeWith": "Sala y comedor de un hogar contemporáneo con muebles variados y luz natural",
   "common.loadingCategories": "Cargando categorías…",

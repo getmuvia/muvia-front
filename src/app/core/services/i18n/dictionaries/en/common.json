@@ -56,6 +56,8 @@
   "common.includeAnUppercaseLetterALowercaseLetterANumber": "Include an uppercase letter, a lowercase letter, a number and a special character (@$!%*?&)",
   "common.invalidField": "Invalid field",
   "common.language": "Language",
+  "common.spanish": "Español",
+  "common.english": "English",
   "common.linkCopied": "Link copied.",
   "common.livingAndDiningRoomInAContemporaryHomeWith": "Living and dining room in a contemporary home with varied furniture and natural light",
   "common.loadingCategories": "Loading categories…",
