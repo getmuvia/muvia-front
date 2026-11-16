@@ -1,63 +1,88 @@
-<div class="flex flex-col pt-2">
-    <!-- Title, Category, Share -->
-    <div class="flex justify-between items-start">
-        <div>
-            <h1 class="text-text-light text-4xl font-bold leading-tight font-headline">{{ product().title }}</h1>
-            <p class="text-text-light/60 mt-2 text-lg font-body">{{ product().category | categoryName }}</p>
-            <p class="text-text-light/70 mt-2 text-sm font-body" data-product-condition>
-                {{ 'catalog.productCondition' | translate }}:
-                <span class="font-medium text-text-light">{{ conditionLabel() | translate }}</span>
-            </p>
-        </div>
-        <div class="flex gap-2">
-            <button type="button" (click)="shareProduct()"
-                class="text-text-light/50 cursor-pointer hover:text-primary transition-colors"
-                [title]="'catalog.shareProduct' | translate" [attr.aria-label]="'catalog.shareProduct' | translate">
-                <span class="material-symbols-outlined">share</span>
-            </button>
-        </div>
-    </div>
-
-    <!-- Price -->
-    <p class="text-primary text-3xl font-bold mt-6 font-body">
-        <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
+<header class="mb-6 flex flex-wrap items-end justify-between gap-5">
+  <div class="min-w-0">
+    <p class="mb-2 text-xs font-medium tracking-wider text-text-secondary uppercase">
+      {{ product().category | categoryName }}
     </p>
-
-    <div class="mt-4 flex flex-wrap items-center gap-2">
-        <span class="rounded-control bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-primary">
-            {{ 'catalog.demoCatalog' | translate }}
-        </span>
-        <span class="text-xs text-text-light/55">{{ 'catalog.illustrativePriceAndAvailability' | translate }}</span>
+    <h1 class="font-headline text-2xl font-medium text-primary">{{ product().title }}</h1>
+  </div>
+  <div class="flex flex-wrap items-center gap-4">
+    <span
+      data-product-condition
+      class="rounded-control bg-surface-element px-3 py-2 text-xs font-medium text-secondary"
+    >
+      <span class="sr-only">{{ 'catalog.productCondition' | translate }}: </span>
+      {{ conditionLabel() | translate }}
+    </span>
+    <button
+      type="button"
+      (click)="shareProduct()"
+      [attr.aria-label]="'catalog.shareProduct' | translate"
+      class="flex size-11 cursor-pointer items-center justify-center rounded-control border border-border-color text-primary transition-colors hover:bg-surface-element"
+    >
+      <span class="material-symbols-outlined text-lg" aria-hidden="true">share</span>
+    </button>
+  </div>
+</header>
+@if (shareFeedback(); as feedback) {
+  <p role="status" class="mb-4 text-sm text-text-secondary">{{ feedback | translate }}</p>
+}
+<section class="overflow-hidden rounded-control border border-border-color bg-surface-light">
+  <ng-content />
+  <footer
+    class="flex flex-col gap-6 border-t border-border-color bg-surface-element/40 p-5 sm:p-6 lg:flex-row lg:items-center lg:justify-between"
+  >
+    <div class="min-w-0">
+      <p class="mb-1 text-xs text-text-secondary">
+        {{ 'catalog.publishedModelPrice' | translate }}
+      </p>
+      <p class="text-xl font-semibold text-primary">
+        <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
+      </p>
+      @if (dimensionsLabel(); as label) {
+        <p class="mt-2 text-xs text-text-secondary" data-price-dimensions>
+          {{ 'catalog.priceForPublishedDimensions' | translate: { dimensions: label } }}
+        </p>
+        <p class="mt-1 text-2xs text-text-secondary">{{ 'catalog.dimensionOrder' | translate }}</p>
+      }
+      <p class="mt-2 text-2xs text-text-secondary">
+        {{ 'catalog.illustrativePriceAndAvailability' | translate }}
+      </p>
     </div>
-
-    <!-- Seller Info -->
-    <div class="mt-4 flex flex-wrap items-center gap-2 text-text-light/60 font-body">
-        <span class="material-symbols-outlined text-lg text-primary">storefront</span>
-        <span class="text-sm">{{ 'catalog.productFromTheMuviaDemonstrationCatalog' | translate }}</span>
-        @if (product().sellerId) {
-            <a [routerLink]="['/stores', product().sellerId]" class="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-primary hover:underline">
-                {{ 'seller.viewStore' | translate }}
-                <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-            </a>
-        }
-    </div>
-
-    <!-- Product actions -->
-    <div class="mt-8 flex flex-col gap-4">
-        @if (canVisualizeProduct()) {
-        <a [routerLink]="['/virtual-staging']" [queryParams]="{ productId: product().id }"
-            class="flex h-14 w-full items-center justify-center gap-2 bg-primary px-6 text-lg font-bold uppercase tracking-wide text-white transition-colors hover:bg-primary/90 font-body">
-            <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
-            {{ 'catalog.visualizeInMySpace' | translate }}
+    <div class="flex shrink-0 flex-col gap-3 xl:flex-row">
+      @if (canVisualizeProduct()) {
+        <a
+          [routerLink]="['/virtual-staging']"
+          [queryParams]="{ productId: product().id }"
+          class="flex min-h-(--control-height) items-center justify-center gap-2 rounded-control border border-border-color px-4 py-3 text-center text-xs font-medium text-primary transition-colors hover:bg-surface-element"
+        >
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">auto_awesome</span>
+          {{ 'catalog.visualizeInMySpace' | translate }}
         </a>
-        }
-        <a [href]="contactHref"
-            class="flex h-12 w-full items-center justify-center border border-primary/30 px-6 text-sm font-bold uppercase tracking-wide text-primary transition-colors hover:border-primary hover:bg-primary/5 font-body">
-            {{ 'catalog.requestInformationFromMuviaPilot' | translate }}
-        </a>
+      }
+      <a
+        [href]="contactHref()"
+        class="flex min-h-(--control-height) items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-center text-xs font-medium text-surface-light transition-colors hover:bg-primary-soft"
+      >
+        {{ 'catalog.requestInformationFromMuviaPilot' | translate }}
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">north_east</span>
+      </a>
     </div>
-
-    @if (shareFeedback()) {
-    <p class="text-xs text-text-light/55" aria-live="polite">{{ (shareFeedback()) | uiText }}</p>
-    }
+  </footer>
+</section>
+<div class="mt-5 flex flex-wrap items-center justify-between gap-3 text-xs text-text-secondary">
+  <p class="flex items-center gap-2">
+    <span class="rounded-control bg-surface-element px-2 py-1 font-medium text-secondary">{{
+      'catalog.demoCatalog' | translate
+    }}</span>
+    {{ 'catalog.productFromTheMuviaDemonstrationCatalog' | translate }}
+  </p>
+  @if (product().sellerId) {
+    <a
+      [routerLink]="['/stores', product().sellerId]"
+      class="inline-flex min-h-11 items-center gap-1 font-medium text-primary underline-offset-4 hover:underline"
+    >
+      {{ 'seller.viewStore' | translate }}
+      <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
+    </a>
+  }
 </div>

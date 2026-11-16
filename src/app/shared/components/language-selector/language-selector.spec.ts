@@ -6,29 +6,58 @@ import { ProductCondition } from '@core/models/product/product-condition';
 import { I18nService } from '@core/services/i18n/i18n';
 import { MarketService } from '@core/services/market/market';
 import { ProductCard } from '@shared/components/product-card/product-card';
-import { ProductTabs } from '@features/shop/product/product-detail/components/product-tabs/product-tabs';
+import { ProductOverview } from '@features/shop/product/product-detail/components/product-overview/product-overview';
 import { LanguageSelector } from './language-selector';
 
 @Component({
-  imports: [LanguageSelector, ProductCard, ProductTabs],
-  template: `<app-language-selector /><app-product-card [product]="product" /><app-product-tabs [product]="product" />`,
+  imports: [LanguageSelector, ProductCard, ProductOverview],
+  template: `<app-language-selector /><app-product-card [product]="product" /><app-product-overview
+      [product]="product"
+    />`,
 })
 class BilingualProductHost {
   readonly product: Product = {
     condition: ProductCondition.NEW,
-    id: 'desk', sellerId: 'seller', categoryId: 'category', title: 'Guardar',
-    description: 'Descripción original del vendedor.', price: '1234.50', stock: 1,
+    id: 'desk',
+    sellerId: 'seller',
+    categoryId: 'category',
+    title: 'Guardar',
+    description: 'Descripción original del vendedor.',
+    price: '1234.50',
+    stock: 1,
     specifications: { material: 'Roble macizo', color: 'Negro mate', weight: '15 kg' },
-    keywords: ['madera'], createdAt: '', assets: [],
-    category: { id: 'category', code: 'DESK', name: 'Escritorios', description: '', parentId: null, imageUrl: '', level: 1 },
-    listings: [{ id: 'listing', marketCode: 'BO', price: '1234.50', currencyCode: 'BOB', stock: 1, isActive: true }],
+    keywords: ['madera'],
+    createdAt: '',
+    assets: [],
+    category: {
+      id: 'category',
+      code: 'DESK',
+      name: 'Escritorios',
+      description: '',
+      parentId: null,
+      imageUrl: '',
+      level: 1,
+    },
+    listings: [
+      {
+        id: 'listing',
+        marketCode: 'BO',
+        price: '1234.50',
+        currencyCode: 'BOB',
+        stock: 1,
+        isActive: true,
+      },
+    ],
   };
 }
 
 describe('bilingual product presentation', () => {
   beforeEach(() => {
     localStorage.removeItem('muvia.language');
-    TestBed.configureTestingModule({ imports: [BilingualProductHost], providers: [provideHttpClient()] });
+    TestBed.configureTestingModule({
+      imports: [BilingualProductHost],
+      providers: [provideHttpClient()],
+    });
   });
   afterEach(() => localStorage.removeItem('muvia.language'));
 
@@ -52,9 +81,6 @@ describe('bilingual product presentation', () => {
     expect(TestBed.inject(MarketService).selectedMarket().code).toBe('BO');
     expect(fixture.componentInstance.product).toEqual(original);
 
-    const details = fixture.nativeElement.querySelectorAll('app-product-tabs button')[1] as HTMLButtonElement;
-    details.click();
-    fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Weight');
     expect(fixture.nativeElement.textContent).toContain('Roble macizo');
     expect(fixture.nativeElement.textContent).toContain('Negro mate');

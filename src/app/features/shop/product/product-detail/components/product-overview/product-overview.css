@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary span {
+  transition: transform var(--default-transition-duration);
+}
+details[open] summary span {
+  transform: rotate(180deg);
+}

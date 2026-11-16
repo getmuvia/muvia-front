@@ -1,0 +1,95 @@
+/* Native dialog owns keyboard containment and Escape dismissal. */
+
+:host {
+  display: block;
+}
+
+.dimension-anchor {
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  --min-hotspot-opacity: 0;
+  --max-hotspot-opacity: 0;
+}
+
+.dimension-label {
+  display: flex;
+  min-width: max-content;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing) / 2);
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+  transform: translate(-50%, -50%);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--color-surface-light) 95%, transparent);
+  box-shadow: var(--shadow-soft);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  white-space: nowrap;
+  backdrop-filter: blur(calc(var(--spacing) * 2));
+  --min-hotspot-opacity: 1;
+  --max-hotspot-opacity: 1;
+}
+
+.dimension-label small {
+  color: color-mix(in srgb, var(--color-primary) 62%, transparent);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dimension-lines {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.dimension-lines line {
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+
+.dimension-overlay--hidden {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .dimension-label {
+    padding: var(--spacing) calc(var(--spacing) * 2);
+    font-size: var(--text-2xs);
+  }
+}
+
+dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  padding: calc(var(--spacing) * 4);
+  border: 0;
+}
+dialog[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+dialog::backdrop {
+  background: color-mix(in srgb, var(--color-primary-deep) 40%, transparent);
+}
+.model-stage {
+  width: 100%;
+  height: 100%;
+}

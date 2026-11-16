@@ -35,7 +35,7 @@ export interface ProductAsset {
   url: string;
   type: string;
   isPrimary: boolean;
-  metadata: AssetMetadata;
+  metadata: AssetMetadata | null;
 }
 
 /**
@@ -81,7 +81,7 @@ export interface Product {
   description: string;
   price: string;
   stock: number;
-  specifications: ProductSpecifications;
+  specifications: ProductSpecifications | null;
   keywords: string[];
   createdAt: string;
   updatedAt?: string;
@@ -90,4 +90,3 @@ export interface Product {
   seller?: ProductSeller;
   listings?: ProductListing[];
 }
-

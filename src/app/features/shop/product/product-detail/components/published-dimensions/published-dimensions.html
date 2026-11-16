@@ -1,0 +1,158 @@
+@if (showDiagram()) {
+  <div
+    id="product-gallery-dimensions-panel"
+    role="tabpanel"
+    aria-labelledby="product-gallery-dimensions-tab"
+    class="dimension-plan"
+  >
+    <h2 class="mb-4 px-2 font-body text-xs font-medium text-primary">
+      {{ 'catalog.publishedDimensions' | translate }}
+    </h2>
+    <div class="dimension-views">
+      <figure>
+        @let front = frontPlane();
+        <svg
+          viewBox="0 0 320 220"
+          role="img"
+          [attr.aria-label]="
+            'catalog.frontDimensionDiagram'
+              | translate: { width: labels().width, height: labels().height }
+          "
+        >
+          <rect
+            class="plane"
+            [attr.x]="front.x"
+            [attr.y]="front.y"
+            [attr.width]="front.width"
+            [attr.height]="front.height"
+          />
+          <g class="measurement">
+            <line
+              [attr.x1]="front.x"
+              [attr.x2]="front.right"
+              [attr.y1]="front.bottom + 20"
+              [attr.y2]="front.bottom + 20"
+            />
+            <line
+              [attr.x1]="front.x"
+              [attr.x2]="front.x"
+              [attr.y1]="front.bottom + 16"
+              [attr.y2]="front.bottom + 24"
+            />
+            <line
+              [attr.x1]="front.right"
+              [attr.x2]="front.right"
+              [attr.y1]="front.bottom + 16"
+              [attr.y2]="front.bottom + 24"
+            />
+            <text [attr.x]="front.centerX" [attr.y]="front.bottom + 43">
+              {{ 'common.width' | translate }} {{ labels().width }}
+            </text>
+            <line
+              [attr.x1]="front.right + 16"
+              [attr.x2]="front.right + 16"
+              [attr.y1]="front.y"
+              [attr.y2]="front.bottom"
+            />
+            <line
+              [attr.x1]="front.right + 12"
+              [attr.x2]="front.right + 20"
+              [attr.y1]="front.y"
+              [attr.y2]="front.y"
+            />
+            <line
+              [attr.x1]="front.right + 12"
+              [attr.x2]="front.right + 20"
+              [attr.y1]="front.bottom"
+              [attr.y2]="front.bottom"
+            />
+            <text x="264" [attr.y]="front.centerY - 7">{{ 'common.height' | translate }}</text>
+            <text x="264" [attr.y]="front.centerY + 13">{{ labels().height }}</text>
+          </g>
+        </svg>
+        <figcaption>{{ 'catalog.frontView' | translate }}</figcaption>
+      </figure>
+      <figure>
+        @let top = topPlane();
+        <svg
+          viewBox="0 0 320 220"
+          role="img"
+          [attr.aria-label]="
+            'catalog.topDimensionDiagram'
+              | translate: { width: labels().width, depth: labels().depth }
+          "
+        >
+          <rect
+            class="plane"
+            [attr.x]="top.x"
+            [attr.y]="top.y"
+            [attr.width]="top.width"
+            [attr.height]="top.height"
+          />
+          <g class="measurement">
+            <line
+              [attr.x1]="top.x"
+              [attr.x2]="top.right"
+              [attr.y1]="top.bottom + 20"
+              [attr.y2]="top.bottom + 20"
+            />
+            <line
+              [attr.x1]="top.x"
+              [attr.x2]="top.x"
+              [attr.y1]="top.bottom + 16"
+              [attr.y2]="top.bottom + 24"
+            />
+            <line
+              [attr.x1]="top.right"
+              [attr.x2]="top.right"
+              [attr.y1]="top.bottom + 16"
+              [attr.y2]="top.bottom + 24"
+            />
+            <text [attr.x]="top.centerX" [attr.y]="top.bottom + 43">
+              {{ 'common.width' | translate }} {{ labels().width }}
+            </text>
+            <line
+              [attr.x1]="top.right + 16"
+              [attr.x2]="top.right + 16"
+              [attr.y1]="top.y"
+              [attr.y2]="top.bottom"
+            />
+            <line
+              [attr.x1]="top.right + 12"
+              [attr.x2]="top.right + 20"
+              [attr.y1]="top.y"
+              [attr.y2]="top.y"
+            />
+            <line
+              [attr.x1]="top.right + 12"
+              [attr.x2]="top.right + 20"
+              [attr.y1]="top.bottom"
+              [attr.y2]="top.bottom"
+            />
+            <text x="264" [attr.y]="top.centerY - 7">{{ 'catalog.depth' | translate }}</text>
+            <text x="264" [attr.y]="top.centerY + 13">{{ labels().depth }}</text>
+          </g>
+        </svg>
+        <figcaption>{{ 'catalog.topView' | translate }}</figcaption>
+      </figure>
+    </div>
+    <p class="mt-5 px-2 text-xs leading-relaxed text-text-secondary">
+      {{ 'catalog.dimensionDiagramNotice' | translate }}
+    </p>
+  </div>
+}
+<dl
+  class="grid grid-cols-3 border-t border-border-color"
+  [attr.aria-label]="'catalog.publishedDimensions' | translate"
+>
+  @for (measurement of measurements(); track measurement.key) {
+    <div
+      class="flex min-w-0 flex-col items-center gap-1 px-2 py-4 text-center not-first:border-l not-first:border-border-color"
+    >
+      <dt class="text-xs text-text-secondary">{{ measurement.key | translate }}</dt>
+      <dd class="max-w-full break-words text-sm font-medium text-primary">
+        {{ measurement.value }}
+      </dd>
+    </div>
+  }
+</dl>

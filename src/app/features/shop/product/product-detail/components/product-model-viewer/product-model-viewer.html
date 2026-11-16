@@ -1,0 +1,172 @@
+<dialog
+  #dialog
+  aria-labelledby="product-model-title"
+  (cancel)="closeModel3dViewer($event)"
+  class="bg-surface-element text-primary"
+>
+  <!-- Close button -->
+  <button
+    type="button"
+    (click)="closeModel3dViewer()"
+    class="absolute top-4 right-4 z-10 flex items-center justify-center size-12 bg-primary/5 backdrop-blur-md border border-primary/10 text-primary hover:bg-primary/10 transition-all duration-300"
+    [attr.aria-label]="'common.close' | translate"
+  >
+    <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
+  </button>
+
+  <!-- Title -->
+  <div class="absolute top-4 left-4 z-10 text-primary font-body">
+    <h2 id="product-model-title" class="text-sm uppercase tracking-wider opacity-60">
+      {{ 'catalog.3dView' | translate }} · {{ title() }}
+    </h2>
+  </div>
+
+  @if (hasProductDimensions()) {
+    <button
+      type="button"
+      (click)="toggleDimensions()"
+      [attr.aria-pressed]="showDimensions()"
+      class="absolute top-14 left-4 z-10 flex items-center gap-2 px-4 py-3 bg-surface-light/95 backdrop-blur-md border border-primary/15 text-primary shadow-sm hover:bg-surface-light transition-colors font-body sm:top-auto sm:bottom-4"
+      [attr.title]="
+        showDimensions()
+          ? ('common.hideDimensions' | translate)
+          : ('common.showDimensions' | translate)
+      "
+    >
+      <span class="material-symbols-outlined text-xl" aria-hidden="true">straighten</span>
+      <span class="text-sm font-semibold">{{
+        showDimensions()
+          ? ('common.hideDimensions' | translate)
+          : ('common.showDimensions' | translate)
+      }}</span>
+    </button>
+  }
+
+  <!-- Model Viewer (only if loaded) -->
+  @if (viewerError()) {
+    <div class="flex max-w-sm flex-col items-center gap-4 p-6 text-center" role="alert">
+      <p class="text-sm text-text-secondary">{{ 'catalog.modelViewerUnavailable' | translate }}</p>
+      <button
+        type="button"
+        (click)="retryViewer()"
+        class="rounded-control bg-primary px-5 py-3 text-sm text-surface-light"
+      >
+        {{ 'common.retry' | translate }}
+      </button>
+    </div>
+  } @else if (modelViewerLoaded()) {
+    <model-viewer
+      #modelViewer
+      [attr.src]="glbAsset().url"
+      [attr.ios-src]="usdzAsset()?.url"
+      [alt]="title()"
+      camera-controls
+      auto-rotate
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      shadow-intensity="1"
+      (load)="onModelLoaded()"
+      (error)="onModelError()"
+      (camera-change)="onCameraChange()"
+      (ar-status)="onArStatus($event)"
+      class="model-stage"
+    >
+      @if (hasProductDimensions()) {
+        <span
+          slot="hotspot-width-start"
+          class="dimension-anchor"
+          data-position="0 0 0"
+          aria-hidden="true"
+        ></span>
+        <span
+          slot="hotspot-width-end"
+          class="dimension-anchor"
+          data-position="0 0 0"
+          aria-hidden="true"
+        ></span>
+        <span
+          slot="hotspot-height-start"
+          class="dimension-anchor"
+          data-position="0 0 0"
+          aria-hidden="true"
+        ></span>
+        <span
+          slot="hotspot-height-end"
+          class="dimension-anchor"
+          data-position="0 0 0"
+          aria-hidden="true"
+        ></span>
+        <span
+          slot="hotspot-depth-start"
+          class="dimension-anchor"
+          data-position="0 0 0"
+          aria-hidden="true"
+        ></span>
+        <span
+          slot="hotspot-depth-end"
+          class="dimension-anchor"
+          data-position="0 0 0"
+          aria-hidden="true"
+        ></span>
+
+        <span
+          slot="hotspot-width-label"
+          class="dimension-label"
+          [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()"
+          data-position="0 0 0"
+        >
+          <small>{{ 'common.width' | translate }}</small>
+          {{ formatDimension(dimensions()!.width) }}
+        </span>
+        <span
+          slot="hotspot-height-label"
+          class="dimension-label"
+          [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()"
+          data-position="0 0 0"
+        >
+          <small>{{ 'common.height' | translate }}</small>
+          {{ formatDimension(dimensions()!.height) }}
+        </span>
+        <span
+          slot="hotspot-depth-label"
+          class="dimension-label"
+          [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()"
+          data-position="0 0 0"
+        >
+          <small>{{ 'catalog.depth' | translate }}</small>
+          {{ formatDimension(dimensions()!.depth) }}
+        </span>
+
+        <svg
+          #dimensionLines
+          class="dimension-lines"
+          [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()"
+          width="100%"
+          height="100%"
+          aria-hidden="true"
+        >
+          <line data-dimension-line="width"></line>
+          <line data-dimension-line="height"></line>
+          <line data-dimension-line="depth"></line>
+        </svg>
+      }
+
+      <!-- AR Button Slot -->
+      <button
+        slot="ar-button"
+        class="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-secondary text-surface-light font-bold uppercase tracking-wider text-sm hover:bg-secondary/90 transition-colors font-body flex items-center gap-2"
+      >
+        <span class="material-symbols-outlined">view_in_ar</span>
+        {{ 'catalog.viewInYourSpace' | translate }}
+      </button>
+    </model-viewer>
+  } @else {
+    <!-- Loading state -->
+    <div class="flex flex-col items-center gap-4">
+      <span class="material-symbols-outlined text-4xl text-text-light/40 animate-spin"
+        >progress_activity</span
+      >
+      <p class="text-text-light/60 font-body">{{ 'catalog.loading3dViewer' | translate }}</p>
+    </div>
+  }
+</dialog>
