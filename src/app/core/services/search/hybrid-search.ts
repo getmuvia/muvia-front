@@ -14,7 +14,7 @@ import { createHttpErrorFeedbackContext } from '@core/models/errors/http-error-f
  * Default limits for hybrid search
  */
 export const HYBRID_SEARCH_LIMITS = {
-    MODAL: 10,       // Quick modal search
+    PREVIEW: 10,     // Navbar search preview
     PRODUCT_LIST: 20, // Full product list
 } as const;
 

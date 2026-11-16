@@ -4,9 +4,13 @@ import { Component, computed, input, signal } from '@angular/core';
 @Component({
   selector: 'app-store-avatar',
   imports: [TranslatePipe],
+  host: {
+    class: 'inline-flex shrink-0 leading-none',
+  },
   template: `
     <span
-      class="relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full border border-current/20 bg-current/10"
+      class="relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full"
+      [class.bg-current/10]="!visibleLogoUrl()"
       [style.width.px]="size()"
       [style.height.px]="size()"
     >
