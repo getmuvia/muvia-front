@@ -2,7 +2,7 @@
   <div
     class="flex flex-wrap items-center justify-between gap-3 border-b border-border-color px-4 py-3"
   >
-    <span class="text-2xs font-medium tracking-wider text-text-secondary uppercase">{{
+    <span class="text-sm font-medium tracking-wider text-text-secondary uppercase">{{
       'catalog.publishedModel' | translate
     }}</span>
     <div
@@ -22,7 +22,7 @@
         (keydown)="onViewKeydown($event)"
         class="gallery-view-button"
       >
-        <span class="material-symbols-outlined text-base" aria-hidden="true">image</span>
+        <span class="material-symbols-outlined icon-sm" aria-hidden="true">image</span>
         {{ 'catalog.galleryPhotos' | translate }}
       </button>
       @if (publishedDimensions()) {
@@ -38,7 +38,7 @@
           (keydown)="onViewKeydown($event)"
           class="gallery-view-button"
         >
-          <span class="material-symbols-outlined text-base" aria-hidden="true">straighten</span>
+          <span class="material-symbols-outlined icon-sm" aria-hidden="true">straighten</span>
           {{ 'catalog.dimensionPlan' | translate }}
         </button>
       }
@@ -100,7 +100,7 @@
       [showDiagram]="activeView() === 'dimensions'"
     />
   } @else {
-    <p class="border-t border-border-color px-4 py-4 text-xs text-text-secondary">
+    <p class="border-t border-border-color px-4 py-4 text-text-secondary type-body">
       {{ 'catalog.dimensionsUnavailable' | translate }}
     </p>
   }
@@ -109,18 +109,18 @@
       class="flex flex-wrap items-center justify-end gap-3 border-t border-border-color px-4 py-3"
     >
       <button type="button" (click)="openModel3dViewer()" class="gallery-model-action">
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">3d_rotation</span>
+        <span class="material-symbols-outlined icon-md" aria-hidden="true">3d_rotation</span>
         {{ 'catalog.viewIn3d' | translate }}
       </button>
       @if (isIosDevice() && usdzAsset(); as asset) {
         <a [href]="asset.url" rel="ar" class="gallery-model-action">
           <img alt="" hidden aria-hidden="true" />
-          <span class="material-symbols-outlined text-lg" aria-hidden="true">view_in_ar</span>
+          <span class="material-symbols-outlined icon-md" aria-hidden="true">view_in_ar</span>
           {{ 'catalog.viewInAr' | translate }}
         </a>
       } @else {
         <button type="button" (click)="openModel3dViewer('ar')" class="gallery-model-action">
-          <span class="material-symbols-outlined text-lg" aria-hidden="true">view_in_ar</span>
+          <span class="material-symbols-outlined icon-md" aria-hidden="true">view_in_ar</span>
           {{ 'catalog.viewInAr' | translate }}
         </button>
       }
@@ -132,8 +132,8 @@
     class="flex size-full flex-col items-center justify-center gap-3 p-5 text-center text-text-secondary"
     role="status"
   >
-    <span class="material-symbols-outlined text-2xl" aria-hidden="true">image</span>
-    <p class="text-xs">{{ 'catalog.productImageUnavailable' | translate }}</p>
+    <span class="material-symbols-outlined icon-xl" aria-hidden="true">image</span>
+    <p class="type-body">{{ 'catalog.productImageUnavailable' | translate }}</p>
   </div>
 </ng-template>
 @defer (when viewerRequest()) {

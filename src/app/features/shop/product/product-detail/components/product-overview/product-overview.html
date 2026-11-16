@@ -1,34 +1,37 @@
 <div class="flex flex-col gap-6 p-5 sm:p-6 lg:p-7">
+  <app-product-availability [product]="product()" />
   <div>
-    <p class="mb-3 text-2xs font-medium tracking-wider text-secondary uppercase">
+    <p class="mb-3 font-medium tracking-wider text-secondary uppercase type-caption">
       {{ 'catalog.publishedModel' | translate }}
     </p>
-    <h2 class="font-body text-xl font-semibold text-primary">
+    <h2 class="text-primary type-price">
       <span class="sr-only">{{ 'catalog.publishedModelPrice' | translate }}: </span>
       <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
     </h2>
     @if (dimensionLabel(); as label) {
-      <p class="mt-2 text-xs text-text-secondary">
+      <p class="mt-2 text-text-secondary type-body">
         {{ 'catalog.priceForPublishedDimensions' | translate: { dimensions: label } }}
       </p>
       <button
         type="button"
         (click)="viewDimensions.emit()"
-        class="mt-2 inline-flex min-h-11 cursor-pointer items-center gap-2 text-xs font-medium text-primary underline-offset-4 hover:underline"
+        class="mt-2 inline-flex min-h-11 cursor-pointer items-center gap-2 font-medium text-primary underline-offset-4 hover:underline type-control"
       >
-        <span class="material-symbols-outlined text-base" aria-hidden="true">straighten</span>
+        <span class="material-symbols-outlined icon-sm" aria-hidden="true">straighten</span>
         {{ 'catalog.publishedDimensions' | translate }}
       </button>
     }
   </div>
   <div>
-    <h3 class="font-body text-sm font-medium text-primary">
+    <h3 class="text-primary type-control">
       {{ 'common.description' | translate }}
     </h3>
     @if (description(); as text) {
-      <p class="mt-4 whitespace-pre-line text-sm leading-relaxed text-text-secondary">{{ text }}</p>
+      <p class="mt-4 whitespace-pre-line leading-relaxed text-text-secondary type-body">
+        {{ text }}
+      </p>
     } @else {
-      <p class="mt-4 text-sm text-text-secondary">
+      <p class="mt-4 text-text-secondary type-body">
         {{ 'catalog.descriptionUnavailable' | translate }}
       </p>
     }
@@ -39,9 +42,9 @@
         class="flex min-h-(--control-height) cursor-pointer items-center justify-between gap-3 py-3 text-sm font-medium text-primary"
       >
         {{ 'catalog.details' | translate }}
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">expand_more</span>
+        <span class="material-symbols-outlined icon-md" aria-hidden="true">expand_more</span>
       </summary>
-      <dl class="pb-4 text-xs">
+      <dl class="pb-4 type-body">
         @for (item of specifications(); track item.label) {
           <div
             class="flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-border-color/60 py-3"
@@ -64,8 +67,8 @@
       </dl>
     </details>
   }
-  <p class="flex items-start gap-2 text-xs leading-relaxed text-text-secondary">
-    <span class="material-symbols-outlined shrink-0 text-base text-secondary" aria-hidden="true"
+  <p class="flex items-start gap-2 leading-relaxed text-text-secondary type-body">
+    <span class="material-symbols-outlined shrink-0 icon-sm text-secondary" aria-hidden="true"
       >info</span
     >
     {{ 'catalog.demoNotice' | translate }}

@@ -5,7 +5,7 @@
     aria-labelledby="product-gallery-dimensions-tab"
     class="dimension-plan"
   >
-    <h2 class="mb-4 px-2 font-body text-xs font-medium text-primary">
+    <h2 class="mb-4 px-2 text-primary type-control">
       {{ 'catalog.publishedDimensions' | translate }}
     </h2>
     <div class="dimension-views">
@@ -136,7 +136,7 @@
         <figcaption>{{ 'catalog.topView' | translate }}</figcaption>
       </figure>
     </div>
-    <p class="mt-5 px-2 text-xs leading-relaxed text-text-secondary">
+    <p class="mt-5 px-2 leading-relaxed text-text-secondary type-body">
       {{ 'catalog.dimensionDiagramNotice' | translate }}
     </p>
   </div>
@@ -149,7 +149,7 @@
     <div
       class="flex min-w-0 flex-col items-center gap-1 px-2 py-4 text-center not-first:border-l not-first:border-border-color"
     >
-      <dt class="text-xs text-text-secondary">{{ measurement.key | translate }}</dt>
+      <dt class="text-sm text-text-secondary">{{ measurement.key | translate }}</dt>
       <dd class="max-w-full break-words text-sm font-medium text-primary">
         {{ measurement.value }}
       </dd>

@@ -7,7 +7,7 @@ import { Subject, of, throwError } from 'rxjs';
 import { AuthService } from '@core/auth/services/auth';
 import type { AppError } from '@core/models/errors/api-error.model';
 import type { Product } from '@core/models/product/product';
-import { ProductFormData } from '@core/models/product/product-form.model';
+import { ProductFormData, INITIAL_PRODUCT_FORM } from '@core/models/product/product-form.model';
 import { ProductCondition } from '@core/models/product/product-condition';
 import { CategoryService } from '@core/services/category/category';
 import { ImageOptimizerService } from '@core/services/image-optimizer/image-optimizer.service';
@@ -34,6 +34,7 @@ describe('ProductCreate', () => {
   let productError: WritableSignal<AppError | null>;
 
   const validForm: ProductFormData = {
+    ...INITIAL_PRODUCT_FORM,
     condition: ProductCondition.NEW,
     title: 'Silla Nórdica',
     description: 'Silla de madera para comedor contemporáneo.',
@@ -50,19 +51,23 @@ describe('ProductCreate', () => {
   };
 
   beforeEach(async () => {
-    uploadFile = vi.fn().mockReturnValue(of({
-      key: 'products/seller-id/silla.webp',
-      url: 'https://storage.example/silla.webp',
-    }));
+    uploadFile = vi.fn().mockReturnValue(
+      of({
+        key: 'products/seller-id/silla.webp',
+        url: 'https://storage.example/silla.webp',
+      }),
+    );
     deleteFile = vi.fn().mockReturnValue(of(void 0));
-    createProduct = vi.fn().mockReturnValue(throwError(() => ({
+    createProduct = vi.fn().mockReturnValue(
+      throwError(() => ({
         kind: 'unknown',
         message: 'No pudimos crear el producto.',
         status: null,
         code: null,
         retryable: false,
         correlationId: null,
-    })));
+      })),
+    );
     updateProduct = vi.fn().mockReturnValue(of({}));
     compressImage = vi.fn((file: File) => Promise.resolve(file));
     selectedEntity = signal<Product | null>(null);
@@ -116,16 +121,19 @@ describe('ProductCreate', () => {
     })
       .overrideComponent(ProductCreate, {
         set: {
-          providers: [ProductDraftFiles, {
-            provide: ProductStore,
-            useValue: {
-              selectedEntity: selectedEntity.asReadonly(),
-              isLoading: isStoreLoading.asReadonly(),
-              isError: isStoreError.asReadonly(),
-              error: productError.asReadonly(),
-              getProductById,
+          providers: [
+            ProductDraftFiles,
+            {
+              provide: ProductStore,
+              useValue: {
+                selectedEntity: selectedEntity.asReadonly(),
+                isLoading: isStoreLoading.asReadonly(),
+                isError: isStoreError.asReadonly(),
+                error: productError.asReadonly(),
+                getProductById,
+              },
             },
-          }],
+          ],
         },
       })
       .compileComponents();
@@ -240,12 +248,14 @@ describe('ProductCreate', () => {
   it('removes uploaded files and preserves the local form assets after persistence fails', async () => {
     const localUrl = 'blob:local-silla';
     const file = new File(['image'], 'silla.webp', { type: 'image/webp' });
-    component.imageAssets.set([{
-      url: localUrl,
-      type: 'image',
-      isPrimary: true,
-      metadata: { alt: 'Silla' },
-    }]);
+    component.imageAssets.set([
+      {
+        url: localUrl,
+        type: 'image',
+        isPrimary: true,
+        metadata: { alt: 'Silla' },
+      },
+    ]);
     await component.onFileSelected({ url: localUrl, file });
 
     await component.onFormSubmit(validForm);
@@ -260,7 +270,11 @@ describe('ProductCreate', () => {
 
   it('waits for image compression before an immediate submission uploads the file', async () => {
     let finishCompression!: (file: File) => void;
-    compressImage.mockReturnValue(new Promise<File>(resolve => { finishCompression = resolve; }));
+    compressImage.mockReturnValue(
+      new Promise<File>((resolve) => {
+        finishCompression = resolve;
+      }),
+    );
     const file = new File(['original'], 'silla.png', { type: 'image/png' });
     const optimized = new File(['optimized'], 'silla.webp', { type: 'image/webp' });
     component.imageAssets.set([imageAsset('blob:compressing')]);
@@ -277,7 +291,11 @@ describe('ProductCreate', () => {
 
   it('captures form data and keywords before asynchronous file preparation', async () => {
     let finishCompression!: (file: File) => void;
-    compressImage.mockReturnValue(new Promise<File>(resolve => { finishCompression = resolve; }));
+    compressImage.mockReturnValue(
+      new Promise<File>((resolve) => {
+        finishCompression = resolve;
+      }),
+    );
     const file = new File(['image'], 'silla.webp', { type: 'image/webp' });
     const form = { ...validForm };
     const keywords = ['silla'];
@@ -292,10 +310,13 @@ describe('ProductCreate', () => {
     finishCompression(file);
     await submission;
 
-    expect(createProduct).toHaveBeenCalledWith(expect.objectContaining({
-      title: validForm.title,
-      keywords: ['silla'],
-    }), expect.objectContaining({ errorFeedback: 'local' }));
+    expect(createProduct).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: validForm.title,
+        keywords: ['silla'],
+      }),
+      expect.objectContaining({ errorFeedback: 'local' }),
+    );
   });
 
   it('resets pending files and change detection when the route changes to another product', async () => {
@@ -320,7 +341,10 @@ describe('ProductCreate', () => {
     createProduct.mockReturnValue(persistence);
     const navigate = TestBed.inject(Router).navigate;
     component.imageAssets.set([imageAsset('blob:saving')]);
-    component.onFileSelected({ url: 'blob:saving', file: new File(['image'], 'silla.webp', { type: 'image/webp' }) });
+    component.onFileSelected({
+      url: 'blob:saving',
+      file: new File(['image'], 'silla.webp', { type: 'image/webp' }),
+    });
     const submission = component.onFormSubmit(validForm);
     await vi.waitFor(() => expect(createProduct).toHaveBeenCalledOnce());
 
@@ -340,34 +364,50 @@ describe('ProductCreate', () => {
     fixture.componentRef.setInput('id', 'edited-product');
     fixture.detectChanges();
     const existing = {
-      id: 'existing-image', productId: 'edited-product', url: 'https://storage.example/existing.webp',
-      type: 'image', isPrimary: true, metadata: { alt: 'Existing image' },
+      id: 'existing-image',
+      productId: 'edited-product',
+      url: 'https://storage.example/existing.webp',
+      type: 'image',
+      isPrimary: true,
+      metadata: { alt: 'Existing image' },
     };
     component.originalAssets.set([existing]);
     component.imageAssets.set([
       { ...existing, type: 'image', isPrimary: false },
       imageAsset('blob:new-image'),
     ]);
-    component.onFileSelected({ url: 'blob:new-image', file: new File(['image'], 'silla.webp', { type: 'image/webp' }) });
+    component.onFileSelected({
+      url: 'blob:new-image',
+      file: new File(['image'], 'silla.webp', { type: 'image/webp' }),
+    });
 
     await component.onFormSubmit(validForm);
     fixture.destroy();
 
-    expect(updateProduct).toHaveBeenCalledWith('edited-product', expect.objectContaining({
-      assets: [
-        expect.objectContaining({ id: 'existing-image', url: existing.url, isPrimary: false }),
-        expect.objectContaining({ url: 'https://storage.example/silla.webp', isPrimary: true }),
-      ],
-    }), expect.objectContaining({ errorFeedback: 'local' }));
+    expect(updateProduct).toHaveBeenCalledWith(
+      'edited-product',
+      expect.objectContaining({
+        assets: [
+          expect.objectContaining({ id: 'existing-image', url: existing.url, isPrimary: false }),
+          expect.objectContaining({ url: 'https://storage.example/silla.webp', isPrimary: true }),
+        ],
+      }),
+      expect.objectContaining({ errorFeedback: 'local' }),
+    );
     expect(createProduct).not.toHaveBeenCalled();
     expect(deleteFile).not.toHaveBeenCalled();
   });
 
   it('preserves the localized product limit error after the persistence refactor', async () => {
-    createProduct.mockReturnValue(throwError(() => new HttpErrorResponse({
-      status: 409,
-      error: { code: 'PRODUCT_LIMIT_REACHED', message: 'Internal limit details' },
-    })));
+    createProduct.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 409,
+            error: { code: 'PRODUCT_LIMIT_REACHED', message: 'Internal limit details' },
+          }),
+      ),
+    );
 
     await component.onFormSubmit(validForm);
 

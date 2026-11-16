@@ -1,4 +1,5 @@
 import type { Product } from './product';
+import type { ProductAvailabilityFields } from './product-availability';
 
 export interface ProductImageSummary {
   url: string;
@@ -6,11 +7,12 @@ export interface ProductImageSummary {
 }
 
 /** Public catalog projection. Full specifications and assets belong to the detail. */
-export interface ProductSummary {
+export interface ProductSummary extends ProductAvailabilityFields {
   id: string;
   title: string;
   price: number;
   currencyCode: string;
+  stock?: number;
   category: { id: string; code?: string; name: string } | null;
   primaryImage: ProductImageSummary | null;
 }
@@ -20,7 +22,7 @@ export type ProductPreview = Product | ProductSummary;
 export function productPreviewImage(product: ProductPreview): ProductImageSummary | null {
   if ('primaryImage' in product) return product.primaryImage;
 
-  const images = product.assets?.filter(asset => asset.type === 'image' && asset.url);
-  const image = images?.find(asset => asset.isPrimary) ?? images?.[0];
+  const images = product.assets?.filter((asset) => asset.type === 'image' && asset.url);
+  const image = images?.find((asset) => asset.isPrimary) ?? images?.[0];
   return image ? { url: image.url, alt: image.metadata?.alt ?? null } : null;
 }

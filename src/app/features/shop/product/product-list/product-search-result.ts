@@ -10,6 +10,19 @@ export function mapSearchResultToSummary(result: HybridSearchResult): SearchProd
     title: result.title,
     price: result.price,
     currencyCode: result.currencyCode,
+    ...Object.fromEntries(
+      (
+        [
+          'stock',
+          'availabilityMode',
+          'leadTimeMinDays',
+          'leadTimeMaxDays',
+          'acceptsCustomDimensions',
+        ] as const
+      )
+        .filter((key) => result[key] !== undefined)
+        .map((key) => [key, result[key]]),
+    ),
     category: result.category ?? null,
     primaryImage: result.imageUrl ? { url: result.imageUrl, alt: null } : null,
     score: result.score,

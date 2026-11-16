@@ -1,16 +1,14 @@
 .muvia-footer h3 {
-    color: var(--color-accent);
-    font-family: var(--font-body);
-    font-size: var(--text-2xs);
-    letter-spacing: 0.14em;
+  color: var(--color-accent);
+  letter-spacing: 0.14em;
 }
 
 .muvia-footer p,
 .muvia-footer a {
-    color: color-mix(in srgb, var(--color-surface-light) 68%, transparent);
-    transition: color 150ms ease;
+  color: color-mix(in srgb, var(--color-surface-light) 68%, transparent);
+  transition: color 150ms ease;
 }
 
 .muvia-footer a:hover {
-    color: var(--color-surface-light);
+  color: var(--color-surface-light);
 }

@@ -17,13 +17,17 @@ import { Component, computed, input, signal } from '@angular/core';
       @if (visibleLogoUrl(); as logoUrl) {
         <img
           [src]="logoUrl"
-          [alt]="storeName() ? ('seller.storeLogo' | translate: {name: storeName()}) : ('seller.defaultStoreLogo' | translate)"
+          [alt]="
+            storeName()
+              ? ('seller.storeLogo' | translate: { name: storeName() })
+              : ('seller.defaultStoreLogo' | translate)
+          "
           class="h-full w-full object-cover"
           decoding="async"
           (error)="handleImageError(logoUrl)"
         />
       } @else {
-        <span class="material-symbols-outlined text-lg" aria-hidden="true">
+        <span class="material-symbols-outlined icon-md" aria-hidden="true">
           {{ fallbackIcon() }}
         </span>
       }

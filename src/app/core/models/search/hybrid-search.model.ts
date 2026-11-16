@@ -1,6 +1,7 @@
 import { ProductCondition } from '@core/models/product/product-condition';
 import type { ProductSummary } from '@core/models/product/product-summary';
 import { ProductPriceFilter } from './product-price-filter';
+import type { ProductAvailabilityFields } from '../product/product-availability';
 
 /**
  * Hybrid Search Types
@@ -19,64 +20,65 @@ export type SearchInterpretationSource = 'ai' | 'deterministic';
 export type SearchMeasurementDimension = 'width' | 'height' | 'depth';
 
 export interface SearchMeasurementFilter {
-    dimension: SearchMeasurementDimension;
-    minimum?: { valueCm: number; inclusive: boolean };
-    maximum?: { valueCm: number; inclusive: boolean };
+  dimension: SearchMeasurementDimension;
+  minimum?: { valueCm: number; inclusive: boolean };
+  maximum?: { valueCm: number; inclusive: boolean };
 }
 
 /** Buyer-facing explanation of the intent applied to a hybrid search. */
 export interface HybridSearchInterpretation {
-    summary: string;
-    source: SearchInterpretationSource;
-    price?: ProductPriceFilter;
-    category?: {
-        code: string;
-        label: string;
-    };
-    material?: {
-        code?: string;
-        label: string;
-    };
-    measurements?: SearchMeasurementFilter[];
+  summary: string;
+  source: SearchInterpretationSource;
+  price?: ProductPriceFilter;
+  category?: {
+    code: string;
+    label: string;
+  };
+  material?: {
+    code?: string;
+    label: string;
+  };
+  measurements?: SearchMeasurementFilter[];
 }
 
 /**
  * Request payload for hybrid search
  */
 export interface HybridSearchRequest {
-    query: string;
-    condition?: ProductCondition;
-    limit?: number;
-    marketCode?: string;
-    locale?: string;
-    categoryCode?: string;
-    dimension?: SearchMeasurementDimension;
-    maxDimensionCm?: number;
+  query: string;
+  condition?: ProductCondition;
+  limit?: number;
+  marketCode?: string;
+  locale?: string;
+  categoryCode?: string;
+  dimension?: SearchMeasurementDimension;
+  maxDimensionCm?: number;
 }
 
 /**
  * Single result from hybrid search
  */
-export interface HybridSearchResult {
-    id: string;
-    title: string;
-    description: string | null;
-    price: number;
-    currencyCode: string;
-    category: ProductSummary['category'];
-    imageUrl: string | null;
-    score: number;
-    matchType: MatchType;
+export interface HybridSearchResult extends ProductAvailabilityFields {
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  currencyCode: string;
+  stock?: number;
+  category: ProductSummary['category'];
+  imageUrl: string | null;
+  score: number;
+  matchType: MatchType;
 }
 
 /**
  * Response from the hybrid search endpoint
  */
 export interface HybridSearchResponse {
-    query: string;
-    interpretation: HybridSearchInterpretation;
-    results: HybridSearchResult[];
-    count: number;
-    /** Fallback and broader suggestions supplied separately by the backend. */
-    relatedResults?: HybridSearchResult[];
+  query: string;
+  interpretation: HybridSearchInterpretation;
+  results: HybridSearchResult[];
+  count: number;
+  /** Fallback and broader suggestions supplied separately by the backend. */
+  relatedResults?: HybridSearchResult[];
 }

@@ -11,12 +11,12 @@
     class="absolute top-4 right-4 z-10 flex items-center justify-center size-12 bg-primary/5 backdrop-blur-md border border-primary/10 text-primary hover:bg-primary/10 transition-all duration-300"
     [attr.aria-label]="'common.close' | translate"
   >
-    <span class="material-symbols-outlined text-2xl" aria-hidden="true">close</span>
+    <span class="material-symbols-outlined icon-xl" aria-hidden="true">close</span>
   </button>
 
   <!-- Title -->
   <div class="absolute top-4 left-4 z-10 text-primary font-body">
-    <h2 id="product-model-title" class="text-sm uppercase tracking-wider opacity-60">
+    <h2 id="product-model-title" class="uppercase tracking-wider opacity-60 type-control">
       {{ 'catalog.3dView' | translate }} · {{ title() }}
     </h2>
   </div>
@@ -33,7 +33,7 @@
           : ('common.showDimensions' | translate)
       "
     >
-      <span class="material-symbols-outlined text-xl" aria-hidden="true">straighten</span>
+      <span class="material-symbols-outlined icon-lg" aria-hidden="true">straighten</span>
       <span class="text-sm font-semibold">{{
         showDimensions()
           ? ('common.hideDimensions' | translate)
@@ -45,11 +45,13 @@
   <!-- Model Viewer (only if loaded) -->
   @if (viewerError()) {
     <div class="flex max-w-sm flex-col items-center gap-4 p-6 text-center" role="alert">
-      <p class="text-sm text-text-secondary">{{ 'catalog.modelViewerUnavailable' | translate }}</p>
+      <p class="text-text-secondary type-body">
+        {{ 'catalog.modelViewerUnavailable' | translate }}
+      </p>
       <button
         type="button"
         (click)="retryViewer()"
-        class="rounded-control bg-primary px-5 py-3 text-sm text-surface-light"
+        class="rounded-control bg-primary px-5 py-3 text-surface-light type-control"
       >
         {{ 'common.retry' | translate }}
       </button>
@@ -154,7 +156,7 @@
       <!-- AR Button Slot -->
       <button
         slot="ar-button"
-        class="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-secondary text-surface-light font-bold uppercase tracking-wider text-sm hover:bg-secondary/90 transition-colors font-body flex items-center gap-2"
+        class="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-secondary text-surface-light font-bold uppercase tracking-wider hover:bg-secondary/90 transition-colors font-body flex items-center gap-2 type-control"
       >
         <span class="material-symbols-outlined">view_in_ar</span>
         {{ 'catalog.viewInYourSpace' | translate }}
@@ -163,10 +165,12 @@
   } @else {
     <!-- Loading state -->
     <div class="flex flex-col items-center gap-4">
-      <span class="material-symbols-outlined text-4xl text-text-light/40 animate-spin"
+      <span class="material-symbols-outlined icon-2xl text-text-light/40 animate-spin"
         >progress_activity</span
       >
-      <p class="text-text-light/60 font-body">{{ 'catalog.loading3dViewer' | translate }}</p>
+      <p class="text-text-light/60 font-body type-body">
+        {{ 'catalog.loading3dViewer' | translate }}
+      </p>
     </div>
   }
 </dialog>

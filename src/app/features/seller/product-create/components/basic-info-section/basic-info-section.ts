@@ -5,32 +5,33 @@ import { Category } from '@core/models/category/category';
 import { ProductCondition } from '@core/models/product/product-condition';
 
 @Component({
-    selector: 'app-basic-info-section',
-    imports: [CategoryNamePipe, TranslatePipe, UiTextPipe, FormField],
-    templateUrl: './basic-info-section.html',
-    styleUrl: './basic-info-section.css',
+  selector: 'app-basic-info-section',
+  imports: [CategoryNamePipe, TranslatePipe, UiTextPipe, FormField],
+  templateUrl: './basic-info-section.html',
+  styleUrl: './basic-info-section.css',
 })
 export class BasicInfoSection {
-    readonly titleField = input.required<FieldTree<string>>();
-    readonly conditionField = input.required<FieldTree<ProductCondition>>();
-    readonly productCondition = ProductCondition;
-    readonly descriptionField = input.required<FieldTree<string>>();
-    readonly priceField = input.required<FieldTree<number>>();
-    readonly stockField = input.required<FieldTree<number>>();
-    readonly categoryIdField = input.required<FieldTree<string>>();
+  readonly titleField = input.required<FieldTree<string>>();
+  readonly conditionField = input.required<FieldTree<ProductCondition>>();
+  readonly productCondition = ProductCondition;
+  readonly descriptionField = input.required<FieldTree<string>>();
+  readonly priceField = input.required<FieldTree<number>>();
+  readonly categoryIdField = input.required<FieldTree<string>>();
 
-    readonly categories = input<Category[]>([]);
-    readonly isLoadingCategories = input(false);
-    readonly hasCategoryLoadError = input(false);
+  readonly categories = input<Category[]>([]);
+  readonly isLoadingCategories = input(false);
+  readonly hasCategoryLoadError = input(false);
 
-    isFieldInvalid(field: FieldTree<unknown>): boolean {
-        const state = field();
-        return state.touched() && state.errors().length > 0;
-    }
+  isFieldInvalid(field: FieldTree<unknown>): boolean {
+    const state = field();
+    return state.touched() && state.errors().length > 0;
+  }
 
-    getFieldErrors(field: FieldTree<unknown>): { message: string }[] {
-        return field().errors().map(error => ({
-            message: error.message ?? 'Campo inválido'
-        }));
-    }
+  getFieldErrors(field: FieldTree<unknown>): { message: string }[] {
+    return field()
+      .errors()
+      .map((error) => ({
+        message: error.message ?? 'Campo inválido',
+      }));
+  }
 }

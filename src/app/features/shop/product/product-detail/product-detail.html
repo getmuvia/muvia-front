@@ -4,23 +4,23 @@
       role="status"
       class="flex flex-col items-center justify-center gap-4 py-24 text-text-secondary"
     >
-      <span class="material-symbols-outlined animate-spin text-2xl" aria-hidden="true"
+      <span class="material-symbols-outlined animate-spin icon-xl" aria-hidden="true"
         >progress_activity</span
       >
-      <p class="text-sm">{{ 'catalog.loadingProduct' | translate }}</p>
+      <p class="type-body">{{ 'catalog.loadingProduct' | translate }}</p>
     </div>
   } @else if (error(); as message) {
     <div role="alert" class="flex flex-col items-center justify-center gap-4 py-24 text-center">
-      <span class="material-symbols-outlined text-2xl text-text-secondary" aria-hidden="true"
+      <span class="material-symbols-outlined icon-xl text-text-secondary" aria-hidden="true"
         >error</span
       >
-      <h1 class="font-headline text-xl text-primary">{{ message | uiText }}</h1>
+      <h1 class="text-primary type-section-title md:type-page-title">{{ message | uiText }}</h1>
       <div class="flex flex-wrap justify-center gap-4">
         @if (canRetry()) {
           <button
             type="button"
             (click)="retryProduct()"
-            class="min-h-(--control-height) cursor-pointer rounded-control bg-primary px-5 py-3 text-sm text-surface-light hover:bg-primary-soft"
+            class="min-h-(--control-height) cursor-pointer rounded-control bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft type-control"
           >
             {{ 'common.retry' | translate }}
           </button>
@@ -34,7 +34,7 @@
     </div>
   } @else if (product(); as currentProduct) {
     <nav [attr.aria-label]="'catalog.productBreadcrumb' | translate" class="mb-6">
-      <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-text-secondary">
+      <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-secondary">
         <li>
           <a routerLink="/home" class="underline-offset-4 hover:underline">{{
             'catalog.home' | translate

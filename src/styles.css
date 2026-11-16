@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   /* Muvia Exhibition Palette: Midnight Navy, Warm Ivory & Antique Gold */
@@ -18,32 +18,23 @@
   --color-success: #247553;
   --color-warning: #a15c00;
 
-  --font-headline: "Cormorant Garamond", serif;
-  --font-body: "Montserrat", sans-serif;
+  --font-headline: 'Cormorant Garamond', serif;
+  --font-body: 'Montserrat', sans-serif;
 
-  /* Seven-level type scale: 11 / 12 / 14 / 16 / 20 / 24 / fluid headings */
-  --text-2xs: 0.6875rem;
-  --text-2xs--line-height: 1rem;
-  --text-xs: 0.75rem;
-  --text-xs--line-height: 1rem;
+  /* The only six font sizes. Reset Tailwind's defaults before defining the scale. */
+  --text-*: initial;
   --text-sm: 0.875rem;
-  --text-sm--line-height: 1.25rem;
+  --text-sm--line-height: 1.5;
   --text-base: 1rem;
-  --text-base--line-height: 1.6rem;
+  --text-base--line-height: 1.5;
   --text-lg: 1.25rem;
-  --text-lg--line-height: 1.45rem;
+  --text-lg--line-height: 1.4;
   --text-xl: 1.5rem;
-  --text-xl--line-height: 1.85rem;
-  --text-2xl: clamp(2rem, 3.2vw, 3rem);
-  --text-2xl--line-height: 1.08;
-  --text-3xl: clamp(2.5rem, 4.5vw, 4.75rem);
-  --text-3xl--line-height: 1.02;
-  --text-4xl: var(--text-3xl);
-  --text-4xl--line-height: var(--text-3xl--line-height);
-  --text-5xl: var(--text-3xl);
-  --text-5xl--line-height: var(--text-3xl--line-height);
-  --text-6xl: var(--text-3xl);
-  --text-6xl--line-height: var(--text-3xl--line-height);
+  --text-xl--line-height: 1.333333;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 1.125;
+  --text-3xl: 3rem;
+  --text-3xl--line-height: 1.125;
 
   --shadow-soft: 0 16px 42px color-mix(in srgb, var(--color-text-main) 7%, transparent);
   --shadow-float: 0 24px 64px color-mix(in srgb, var(--color-text-main) 13%, transparent);
@@ -56,6 +47,81 @@
   --radius-control: 0.125rem;
   --radius-panel: 0;
   --radius-dialog: 0.125rem;
+}
+
+/* Semantic roles share the same scale; responsive variants reuse these roles. */
+@utility type-caption {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+}
+
+@utility type-body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+}
+
+@utility type-control {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--text-base--line-height);
+}
+
+@utility type-card-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--text-lg--line-height);
+}
+
+@utility type-section-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--text-xl--line-height);
+}
+
+@utility type-page-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--text-2xl--line-height);
+}
+
+@utility type-hero-title {
+  font-family: var(--font-headline);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--text-3xl--line-height);
+}
+
+@utility type-price {
+  font-family: var(--font-body);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--text-xl--line-height);
+}
+
+/* Icon utilities consume the scale without coupling icons to text roles. */
+@utility icon-xs {
+  --icon-size: var(--text-sm);
+}
+@utility icon-sm {
+  --icon-size: var(--text-base);
+}
+@utility icon-md {
+  --icon-size: var(--text-lg);
+}
+@utility icon-lg {
+  --icon-size: var(--text-xl);
+}
+@utility icon-xl {
+  --icon-size: var(--text-2xl);
+}
+@utility icon-2xl {
+  --icon-size: var(--text-3xl);
 }
 
 @layer base {
@@ -87,6 +153,31 @@
   h4 {
     font-family: var(--font-headline);
     text-wrap: balance;
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    line-height: var(--text-2xl--line-height);
+  }
+  h2 {
+    font-size: var(--text-xl);
+    line-height: var(--text-xl--line-height);
+  }
+  h3 {
+    font-size: var(--text-lg);
+    line-height: var(--text-lg--line-height);
+  }
+  h4 {
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+  h5,
+  h6,
+  small,
+  sub,
+  sup {
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
   }
 
   p {
@@ -133,7 +224,9 @@
     border-radius: var(--radius-control);
     padding-inline: 0.875rem 0.5rem;
     background: var(--color-surface-light);
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
   }
 
   .muvia-select-field:hover {
@@ -148,7 +241,7 @@
   .muvia-select-label {
     flex-shrink: 0;
     color: var(--color-secondary);
-    font-size: var(--text-2xs);
+    font-size: var(--text-sm);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -164,7 +257,7 @@
     padding-right: 0.5rem;
     background: transparent;
     color: var(--color-text-main);
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     font-weight: 500;
     cursor: pointer;
   }
@@ -177,10 +270,27 @@
     color: var(--color-text-secondary);
     cursor: default;
   }
+
+  @media (max-width: 40rem) {
+    .muvia-select-field {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--spacing);
+      padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+    }
+
+    .muvia-select-control {
+      width: 100%;
+      min-height: var(--control-height);
+      padding: 0;
+    }
+  }
 }
 
-/* Material Symbols Configuration */
-.material-symbols-outlined {
+/* Override the external font's unlayered defaults; utilities set only the token. */
+:root .material-symbols-outlined {
+  font-size: var(--icon-size, var(--text-xl));
+  line-height: 1;
   font-variation-settings:
     'FILL' 0,
     'wght' 400,

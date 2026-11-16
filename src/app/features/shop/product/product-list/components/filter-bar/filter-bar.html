@@ -6,7 +6,9 @@
       [attr.aria-label]="'catalog.searchTheCatalog' | translate"
       class="catalog-search"
     >
-      <label for="product-search" class="sr-only">{{ 'catalog.searchProducts2' | translate }}</label>
+      <label for="product-search" class="sr-only">{{
+        'catalog.searchProducts2' | translate
+      }}</label>
       <span class="material-symbols-outlined search-icon" aria-hidden="true">search</span>
       <input
         type="text"
@@ -14,18 +16,38 @@
         [value]="searchQuery()"
         (input)="onSearchInput($event)"
         id="product-search"
-        [placeholder]="(searchPlaceholder()) | uiText"
+        [placeholder]="searchPlaceholder() | uiText"
         enterkeyhint="search"
       />
-      <button type="submit" [attr.aria-label]="'catalog.search' | translate">{{ 'catalog.search' | translate }}</button>
+      <button type="submit" [attr.aria-label]="'catalog.search' | translate">
+        {{ 'catalog.search' | translate }}
+      </button>
     </form>
 
     <div class="condition-filter muvia-select-field">
-      <label for="catalog-condition" class="muvia-select-label">{{ 'catalog.productCondition' | translate }}</label>
-      <select id="catalog-condition" class="muvia-select-control" (change)="onConditionChange($event)">
-        <option value="" [selected]="selectedCondition() === ''">{{ 'catalog.conditionAll' | translate }}</option>
-        <option [value]="productCondition.NEW" [selected]="selectedCondition() === productCondition.NEW">{{ 'catalog.conditionFilterNew' | translate }}</option>
-        <option [value]="productCondition.USED" [selected]="selectedCondition() === productCondition.USED">{{ 'catalog.conditionFilterUsed' | translate }}</option>
+      <label for="catalog-condition" class="muvia-select-label">{{
+        'catalog.productCondition' | translate
+      }}</label>
+      <select
+        id="catalog-condition"
+        class="muvia-select-control type-control"
+        (change)="onConditionChange($event)"
+      >
+        <option value="" [selected]="selectedCondition() === ''">
+          {{ 'catalog.conditionAll' | translate }}
+        </option>
+        <option
+          [value]="productCondition.NEW"
+          [selected]="selectedCondition() === productCondition.NEW"
+        >
+          {{ 'catalog.conditionFilterNew' | translate }}
+        </option>
+        <option
+          [value]="productCondition.USED"
+          [selected]="selectedCondition() === productCondition.USED"
+        >
+          {{ 'catalog.conditionFilterUsed' | translate }}
+        </option>
       </select>
     </div>
 
@@ -58,8 +80,10 @@
         <button
           type="button"
           (click)="onClearCategory()"
-          [attr.aria-label]="'catalog.removeCategoryFilter' | translate: {category: activeCategory()}"
-          [attr.title]="'catalog.removeCategoryFilter' | translate: {category: activeCategory()}"
+          [attr.aria-label]="
+            'catalog.removeCategoryFilter' | translate: { category: activeCategory() }
+          "
+          [attr.title]="'catalog.removeCategoryFilter' | translate: { category: activeCategory() }"
         >
           <span class="truncate">{{ activeCategory() }}</span>
           <span class="material-symbols-outlined" aria-hidden="true">close</span>
@@ -69,8 +93,8 @@
         <button
           type="button"
           (click)="onClearMeasurement()"
-          [attr.aria-label]="'catalog.removeFilter' | translate: {filter: activeMeasurement()}"
-          [attr.title]="'catalog.removeFilter' | translate: {filter: activeMeasurement()}"
+          [attr.aria-label]="'catalog.removeFilter' | translate: { filter: activeMeasurement() }"
+          [attr.title]="'catalog.removeFilter' | translate: { filter: activeMeasurement() }"
         >
           <span class="truncate">{{ activeMeasurement() }}</span>
           <span class="material-symbols-outlined" aria-hidden="true">close</span>

@@ -1,76 +1,104 @@
 <div class="result-container min-h-screen bg-[var(--color-background-light)] pb-20">
-
-    @if (isLoading()) {
+  @if (isLoading()) {
     <div class="h-screen flex flex-col items-center justify-center p-8 text-center animate-fade-in">
-        <div
-            class="w-16 h-16 border-4 border-[var(--color-surface-light)] border-t-[var(--color-primary)] rounded-full spin mb-6">
-        </div>
-        <h2 class="text-2xl font-headline text-[var(--color-text-main)] mb-2">{{ 'staging.designingYourSpace' | translate }}</h2>
-        <p class="text-[var(--color-text-secondary)] animate-pulse">{{ 'staging.weArePreparingYourVisualizationResult' | translate }}</p>
+      <div
+        class="w-16 h-16 border-4 border-[var(--color-surface-light)] border-t-[var(--color-primary)] rounded-full spin mb-6"
+      ></div>
+      <h2 class="text-[var(--color-text-main)] mb-2 type-section-title">
+        {{ 'staging.designingYourSpace' | translate }}
+      </h2>
+      <p class="text-[var(--color-text-secondary)] animate-pulse type-body">
+        {{ 'staging.weArePreparingYourVisualizationResult' | translate }}
+      </p>
     </div>
-    } @else {
-
+  } @else {
     <!-- Comparison Container -->
     <div class="w-full max-w-[1600px] mx-auto p-2 md:p-4">
-        <!-- Fixed size container - both images will fit within this exact same box -->
-        <div class="relative w-full bg-[var(--color-background-light)] overflow-hidden" style="height: 75vh;">
+      <!-- Fixed size container - both images will fit within this exact same box -->
+      <div
+        class="relative w-full bg-[var(--color-background-light)] overflow-hidden"
+        style="height: 75vh"
+      >
+        <!-- Generated Image (Background) -->
+        <img
+          [src]="result()?.stagedImageUrl ?? ''"
+          [alt]="'staging.decoratedRoom' | translate"
+          class="absolute inset-0 w-full h-full object-contain"
+        />
 
-            <!-- Generated Image (Background) -->
-            <img [src]="result()?.stagedImageUrl ?? ''" [alt]="'staging.decoratedRoom' | translate"
-                class="absolute inset-0 w-full h-full object-contain">
-
-            <!-- Original Image (Overlay with Clip Path) - SAME size container -->
-            <div class="absolute inset-0 w-full h-full bg-[var(--color-background-light)] transition-all duration-75 ease-out"
-                [style.clip-path]="'polygon(0 0, ' + sliderPosition() + '% 0, ' + sliderPosition() + '% 100%, 0 100%)'">
-                <img [src]="originalImageUrl()" [alt]="'staging.originalRoom' | translate"
-                    class="absolute inset-0 w-full h-full object-contain">
-            </div>
-
-            <!-- Slider Handle -->
-            <div class="absolute top-0 bottom-0 w-0 cursor-ew-resize z-20" [style.left.%]="sliderPosition()">
-                <div
-                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-surface-element rounded-full shadow-lg flex items-center justify-center text-[var(--color-text-main)]">
-                    <span class="material-symbols-outlined text-xl">code</span>
-                </div>
-            </div>
-
-            <!-- Slider Input (Invisible) -->
-            <input type="range" min="0" max="100" [value]="sliderPosition()" (input)="onSliderChange($event)"
-                class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30 m-0 p-0">
-
-            <!-- Labels -->
-            <div
-                class="absolute top-3 left-3 bg-black/60 text-white px-3 py-1 rounded-control text-xs font-medium backdrop-blur-sm z-10 pointer-events-none">
-                {{ 'staging.original' | translate }}
-            </div>
-            <div
-                class="absolute top-3 right-3 bg-black/60 text-white px-3 py-1 rounded-control text-xs font-medium backdrop-blur-sm z-10 pointer-events-none">
-                {{ 'staging.decorated' | translate }}
-            </div>
-
-            <!-- Download Button -->
-            <button (click)="downloadImage()"
-                class="absolute bottom-3 right-3 z-40 bg-surface-element/80 backdrop-blur-md text-text-secondary hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 rounded-full p-2 shadow-md"
-                [title]="'staging.downloadImage' | translate">
-                <span class="material-symbols-outlined text-lg">download</span>
-            </button>
+        <!-- Original Image (Overlay with Clip Path) - SAME size container -->
+        <div
+          class="absolute inset-0 w-full h-full bg-[var(--color-background-light)] transition-all duration-75 ease-out"
+          [style.clip-path]="
+            'polygon(0 0, ' + sliderPosition() + '% 0, ' + sliderPosition() + '% 100%, 0 100%)'
+          "
+        >
+          <img
+            [src]="originalImageUrl()"
+            [alt]="'staging.originalRoom' | translate"
+            class="absolute inset-0 w-full h-full object-contain"
+          />
         </div>
+
+        <!-- Slider Handle -->
+        <div
+          class="absolute top-0 bottom-0 w-0 cursor-ew-resize z-20"
+          [style.left.%]="sliderPosition()"
+        >
+          <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-surface-element rounded-full shadow-lg flex items-center justify-center text-[var(--color-text-main)]"
+          >
+            <span class="material-symbols-outlined icon-lg">code</span>
+          </div>
+        </div>
+
+        <!-- Slider Input (Invisible) -->
+        <input
+          type="range"
+          min="0"
+          max="100"
+          [value]="sliderPosition()"
+          (input)="onSliderChange($event)"
+          class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-30 m-0 p-0"
+        />
+
+        <!-- Labels -->
+        <div
+          class="absolute top-3 left-3 bg-black/60 text-white px-3 py-1 rounded-control text-sm font-medium backdrop-blur-sm z-10 pointer-events-none"
+        >
+          {{ 'staging.original' | translate }}
+        </div>
+        <div
+          class="absolute top-3 right-3 bg-black/60 text-white px-3 py-1 rounded-control text-sm font-medium backdrop-blur-sm z-10 pointer-events-none"
+        >
+          {{ 'staging.decorated' | translate }}
+        </div>
+
+        <!-- Download Button -->
+        <button
+          (click)="downloadImage()"
+          class="absolute bottom-3 right-3 z-40 bg-surface-element/80 backdrop-blur-md text-text-secondary hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 rounded-full p-2 shadow-md"
+          [title]="'staging.downloadImage' | translate"
+        >
+          <span class="material-symbols-outlined icon-md">download</span>
+        </button>
+      </div>
     </div>
 
     <!-- Selected product -->
     <div class="container mx-auto px-4 mt-8 relative z-10">
-        <h3 class="text-2xl font-headline text-[var(--color-text-main)] mb-2 drop-shadow-sm">{{ 'staging.productUsed' | translate }}</h3>
-        <p class="mb-6 text-sm text-[var(--color-text-secondary)]">
-            {{ 'staging.thisVisualizationWasGeneratedWithTheProductYouSelected' | translate }}
-        </p>
+      <h3 class="text-[var(--color-text-main)] mb-2 drop-shadow-sm type-card-title">
+        {{ 'staging.productUsed' | translate }}
+      </h3>
+      <p class="mb-6 text-[var(--color-text-secondary)] type-body">
+        {{ 'staging.thisVisualizationWasGeneratedWithTheProductYouSelected' | translate }}
+      </p>
 
-        @if (selectedProduct(); as product) {
+      @if (selectedProduct(); as product) {
         <div class="max-w-[260px] pb-4">
-            <app-product-card [product]="product"
-                class="block">
-            </app-product-card>
+          <app-product-card [product]="product" class="block"> </app-product-card>
         </div>
-        }
+      }
     </div>
-    }
+  }
 </div>
