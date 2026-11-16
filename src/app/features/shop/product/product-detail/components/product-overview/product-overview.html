@@ -1,0 +1,73 @@
+<div class="flex flex-col gap-6 p-5 sm:p-6 lg:p-7">
+  <div>
+    <p class="mb-3 text-2xs font-medium tracking-wider text-secondary uppercase">
+      {{ 'catalog.publishedModel' | translate }}
+    </p>
+    <h2 class="font-body text-xl font-semibold text-primary">
+      <span class="sr-only">{{ 'catalog.publishedModelPrice' | translate }}: </span>
+      <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
+    </h2>
+    @if (dimensionLabel(); as label) {
+      <p class="mt-2 text-xs text-text-secondary">
+        {{ 'catalog.priceForPublishedDimensions' | translate: { dimensions: label } }}
+      </p>
+      <button
+        type="button"
+        (click)="viewDimensions.emit()"
+        class="mt-2 inline-flex min-h-11 cursor-pointer items-center gap-2 text-xs font-medium text-primary underline-offset-4 hover:underline"
+      >
+        <span class="material-symbols-outlined text-base" aria-hidden="true">straighten</span>
+        {{ 'catalog.publishedDimensions' | translate }}
+      </button>
+    }
+  </div>
+  <div>
+    <h3 class="font-body text-sm font-medium text-primary">
+      {{ 'common.description' | translate }}
+    </h3>
+    @if (description(); as text) {
+      <p class="mt-4 whitespace-pre-line text-sm leading-relaxed text-text-secondary">{{ text }}</p>
+    } @else {
+      <p class="mt-4 text-sm text-text-secondary">
+        {{ 'catalog.descriptionUnavailable' | translate }}
+      </p>
+    }
+  </div>
+  @if (specifications().length || stock() !== null) {
+    <details class="border-y border-border-color" open>
+      <summary
+        class="flex min-h-(--control-height) cursor-pointer items-center justify-between gap-3 py-3 text-sm font-medium text-primary"
+      >
+        {{ 'catalog.details' | translate }}
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">expand_more</span>
+      </summary>
+      <dl class="pb-4 text-xs">
+        @for (item of specifications(); track item.label) {
+          <div
+            class="flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-border-color/60 py-3"
+          >
+            <dt class="text-text-secondary">{{ item.label | translate }}</dt>
+            <dd class="max-w-full break-words text-primary">{{ item.value }}</dd>
+          </div>
+        }
+        @let count = stock();
+        @if (count !== null) {
+          <div class="flex flex-wrap justify-between gap-3 border-t border-border-color/60 pt-3">
+            <dt class="text-text-secondary">{{ 'common.stock' | translate }}</dt>
+            <dd class="text-primary">
+              {{
+                (count === 1 ? 'catalog.units.one' : 'catalog.units.other') | translate: { count }
+              }}
+            </dd>
+          </div>
+        }
+      </dl>
+    </details>
+  }
+  <p class="flex items-start gap-2 text-xs leading-relaxed text-text-secondary">
+    <span class="material-symbols-outlined shrink-0 text-base text-secondary" aria-hidden="true"
+      >info</span
+    >
+    {{ 'catalog.demoNotice' | translate }}
+  </p>
+</div>

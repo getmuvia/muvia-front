@@ -1,136 +1,152 @@
-<div class="flex flex-col gap-4">
-    <!-- Main Image -->
-    @if (selectedAsset) {
-    <div class="group relative w-full bg-center bg-no-repeat bg-cover flex flex-col justify-end overflow-hidden aspect-square bg-text-light/5 shadow-sm"
-        [style.background-image]="'url(' + selectedAsset.url + ')'">
-
-        <!-- Overlay with 3D/AR buttons (only if 3D model exists) -->
-        @if (hasModel3d()) {
-        <div
-            class="absolute inset-x-0 bottom-0 p-6 flex items-end justify-end bg-gradient-to-t from-black/50 to-transparent">
-            <div class="flex gap-3">
-                <button (click)="openModel3dViewer()"
-                    class="flex items-center justify-center size-12 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-primary hover:border-primary transition-all duration-300"
-                    [title]="'catalog.viewIn3d' | translate">
-                    <span class="material-symbols-outlined text-2xl">3d_rotation</span>
-                </button>
-                @if (isIosDevice() && usdzAsset()) {
-                <a [href]="usdzAsset()!.url" rel="ar"
-                    class="flex items-center justify-center size-12 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-secondary hover:border-secondary transition-all duration-300"
-                    [title]="'catalog.viewInAr' | translate">
-                    <img class="hidden" alt="" aria-hidden="true" />
-                    <span class="material-symbols-outlined text-2xl">view_in_ar</span>
-                </a>
-                } @else {
-                <button type="button" (click)="activateAr()"
-                    class="flex items-center justify-center size-12 bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-secondary hover:border-secondary transition-all duration-300"
-                    [title]="'catalog.viewInAr' | translate">
-                    <span class="material-symbols-outlined text-2xl">view_in_ar</span>
-                </button>
-                }
-            </div>
-        </div>
-        }
-    </div>
-    } @else {
-    <div class="w-full aspect-square bg-text-light/5 flex items-center justify-center">
-        <span class="material-symbols-outlined text-6xl text-text-light/20">image</span>
-    </div>
-    }
-
-    <!-- Thumbnails (only image assets) -->
-    @if (hasMultipleImages) {
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(80px,1fr))] gap-4">
-        @for (asset of imageAssets(); track asset.id; let i = $index) {
-        <div class="flex flex-col">
-            <button (click)="selectImage(i)"
-                class="w-full bg-center bg-no-repeat aspect-square bg-cover cursor-pointer transition-opacity" [class]="selectedIndex() === i
-                    ? 'border-2 border-primary' 
-                    : 'border-2 border-transparent hover:border-text-light/20 hover:opacity-80'"
-                [style.background-image]="'url(' + asset.url + ')'" [attr.aria-label]="'catalog.viewImage' | translate: {index: i + 1}">
-            </button>
-        </div>
-        }
-    </div>
-    }
-</div>
-
-<!-- 3D Model Viewer Modal -->
-@if (showModel3dViewer()) {
-<div class="fixed inset-0 z-50 bg-surface-element flex items-center justify-center">
-    <!-- Close button -->
-    <button (click)="closeModel3dViewer()"
-        class="absolute top-4 right-4 z-10 flex items-center justify-center size-12 bg-black/5 backdrop-blur-md border border-black/10 text-primary hover:bg-black/10 transition-all duration-300"
-        [title]="'common.close' | translate">
-        <span class="material-symbols-outlined text-2xl">close</span>
-    </button>
-
-    <!-- Title -->
-    <div class="absolute top-4 left-4 z-10 text-primary font-body">
-        <span class="text-sm uppercase tracking-wider opacity-60">{{ 'catalog.3dView' | translate }}</span>
-    </div>
-
-    @if (hasProductDimensions()) {
-    <button (click)="toggleDimensions()" [attr.aria-pressed]="showDimensions()"
-        class="absolute top-14 left-4 z-10 flex items-center gap-2 px-4 py-3 bg-white/90 backdrop-blur-md border border-primary/15 text-primary shadow-sm hover:bg-white transition-colors font-body sm:top-auto sm:bottom-4"
-        [attr.title]="showDimensions() ? ('common.hideDimensions' | translate) : ('common.showDimensions' | translate)">
-        <span class="material-symbols-outlined text-xl">straighten</span>
-        <span class="text-sm font-semibold">{{ showDimensions() ? ('common.hideDimensions' | translate) : ('common.showDimensions' | translate) }}</span>
-    </button>
-    }
-
-    <!-- Model Viewer (only if loaded) -->
-    @if (modelViewerLoaded()) {
-    <model-viewer #modelViewer [attr.src]="glbAsset()?.url" [attr.ios-src]="usdzAsset()?.url" [alt]="'catalog.product3dModel' | translate"
-        camera-controls auto-rotate ar ar-modes="webxr scene-viewer quick-look" shadow-intensity="1"
-        (load)="onModelLoaded()" (camera-change)="onCameraChange()" (ar-status)="onArStatus($event)"
-        style="width: 100%; height: 100%; max-width: 90vw; max-height: 90vh;">
-
-        @if (hasProductDimensions()) {
-        <span slot="hotspot-width-start" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
-        <span slot="hotspot-width-end" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
-        <span slot="hotspot-height-start" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
-        <span slot="hotspot-height-end" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
-        <span slot="hotspot-depth-start" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
-        <span slot="hotspot-depth-end" class="dimension-anchor" data-position="0 0 0" aria-hidden="true"></span>
-
-        <span slot="hotspot-width-label" class="dimension-label"
-            [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()" data-position="0 0 0">
-            <small>{{ 'common.width' | translate }}</small>
-            {{ formatDimension(dimensions()!.width) }}
-        </span>
-        <span slot="hotspot-height-label" class="dimension-label"
-            [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()" data-position="0 0 0">
-            <small>{{ 'common.height' | translate }}</small>
-            {{ formatDimension(dimensions()!.height) }}
-        </span>
-        <span slot="hotspot-depth-label" class="dimension-label"
-            [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()" data-position="0 0 0">
-            <small>{{ 'catalog.depth' | translate }}</small>
-            {{ formatDimension(dimensions()!.depth) }}
-        </span>
-
-        <svg #dimensionLines class="dimension-lines" [class.dimension-overlay--hidden]="!showDimensions() || isArPresenting()"
-            width="100%" height="100%" aria-hidden="true">
-            <line data-dimension-line="width"></line>
-            <line data-dimension-line="height"></line>
-            <line data-dimension-line="depth"></line>
-        </svg>
-        }
-
-        <!-- AR Button Slot -->
-        <button slot="ar-button"
-            class="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-secondary text-white font-bold uppercase tracking-wider text-sm hover:bg-secondary/90 transition-colors font-body flex items-center gap-2">
-            <span class="material-symbols-outlined">view_in_ar</span>
-            {{ 'catalog.viewInYourSpace' | translate }}
+<section class="gallery" [attr.aria-label]="'catalog.productGallery' | translate">
+  <div
+    class="flex flex-wrap items-center justify-between gap-3 border-b border-border-color px-4 py-3"
+  >
+    <span class="text-2xs font-medium tracking-wider text-text-secondary uppercase">{{
+      'catalog.publishedModel' | translate
+    }}</span>
+    <div
+      role="tablist"
+      [attr.aria-label]="'catalog.productViews' | translate"
+      class="flex flex-wrap gap-1"
+    >
+      <button
+        #imagesTab
+        id="product-gallery-images-tab"
+        type="button"
+        role="tab"
+        aria-controls="product-gallery-images-panel"
+        [attr.aria-selected]="activeView() === 'images'"
+        [attr.tabindex]="activeView() === 'images' ? 0 : -1"
+        (click)="selectView('images')"
+        (keydown)="onViewKeydown($event)"
+        class="gallery-view-button"
+      >
+        <span class="material-symbols-outlined text-base" aria-hidden="true">image</span>
+        {{ 'catalog.galleryPhotos' | translate }}
+      </button>
+      @if (publishedDimensions()) {
+        <button
+          #dimensionsTab
+          id="product-gallery-dimensions-tab"
+          type="button"
+          role="tab"
+          aria-controls="product-gallery-dimensions-panel"
+          [attr.aria-selected]="activeView() === 'dimensions'"
+          [attr.tabindex]="activeView() === 'dimensions' ? 0 : -1"
+          (click)="selectView('dimensions')"
+          (keydown)="onViewKeydown($event)"
+          class="gallery-view-button"
+        >
+          <span class="material-symbols-outlined text-base" aria-hidden="true">straighten</span>
+          {{ 'catalog.dimensionPlan' | translate }}
         </button>
-    </model-viewer>
-    } @else {
-    <!-- Loading state -->
-    <div class="flex flex-col items-center gap-4">
-        <span class="material-symbols-outlined text-4xl text-text-light/40 animate-spin">progress_activity</span>
-        <p class="text-text-light/60 font-body">{{ 'catalog.loading3dViewer' | translate }}</p>
+      }
     </div>
+  </div>
+  <div
+    id="product-gallery-images-panel"
+    role="tabpanel"
+    aria-labelledby="product-gallery-images-tab"
+    [hidden]="activeView() !== 'images'"
+  >
+    <div class="gallery-image">
+      @if (selectedAsset(); as asset) {
+        @if (!imageFailed()) {
+          <img
+            [ngSrc]="asset.url"
+            [alt]="
+              asset.metadata?.alt ||
+              ('catalog.productImage' | translate: { title: title(), index: selectedIndex() + 1 })
+            "
+            fill
+            priority
+            sizes="(min-width: 1024px) 60vw, 100vw"
+            class="object-contain"
+            (error)="imageFailed.set(true)"
+          />
+        } @else {
+          <ng-container [ngTemplateOutlet]="imagePlaceholder" />
+        }
+      } @else {
+        <ng-container [ngTemplateOutlet]="imagePlaceholder" />
+      }
+    </div>
+    @if (hasMultipleImages()) {
+      <div class="gallery-thumbnails" [attr.aria-label]="'catalog.productImages' | translate">
+        @for (asset of imageAssets(); track asset.id; let index = $index) {
+          <button
+            type="button"
+            (click)="selectImage(index)"
+            [attr.aria-pressed]="selectedIndex() === index"
+            [attr.aria-label]="'catalog.viewImage' | translate: { index: index + 1 }"
+            class="gallery-thumbnail"
+          >
+            <img
+              [src]="asset.url"
+              alt=""
+              loading="lazy"
+              decoding="async"
+              class="size-full object-cover"
+            />
+          </button>
+        }
+      </div>
     }
-</div>
+  </div>
+  @if (publishedDimensions(); as dimensions) {
+    <app-published-dimensions
+      [dimensions]="dimensions"
+      [showDiagram]="activeView() === 'dimensions'"
+    />
+  } @else {
+    <p class="border-t border-border-color px-4 py-4 text-xs text-text-secondary">
+      {{ 'catalog.dimensionsUnavailable' | translate }}
+    </p>
+  }
+  @if (glbAsset()) {
+    <div
+      class="flex flex-wrap items-center justify-end gap-3 border-t border-border-color px-4 py-3"
+    >
+      <button type="button" (click)="openModel3dViewer()" class="gallery-model-action">
+        <span class="material-symbols-outlined text-lg" aria-hidden="true">3d_rotation</span>
+        {{ 'catalog.viewIn3d' | translate }}
+      </button>
+      @if (isIosDevice() && usdzAsset(); as asset) {
+        <a [href]="asset.url" rel="ar" class="gallery-model-action">
+          <img alt="" hidden aria-hidden="true" />
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">view_in_ar</span>
+          {{ 'catalog.viewInAr' | translate }}
+        </a>
+      } @else {
+        <button type="button" (click)="openModel3dViewer('ar')" class="gallery-model-action">
+          <span class="material-symbols-outlined text-lg" aria-hidden="true">view_in_ar</span>
+          {{ 'catalog.viewInAr' | translate }}
+        </button>
+      }
+    </div>
+  }
+</section>
+<ng-template #imagePlaceholder>
+  <div
+    class="flex size-full flex-col items-center justify-center gap-3 p-5 text-center text-text-secondary"
+    role="status"
+  >
+    <span class="material-symbols-outlined text-2xl" aria-hidden="true">image</span>
+    <p class="text-xs">{{ 'catalog.productImageUnavailable' | translate }}</p>
+  </div>
+</ng-template>
+@defer (when viewerRequest()) {
+  @if (viewerRequest(); as mode) {
+    @if (glbAsset(); as asset) {
+      <app-product-model-viewer
+        [glbAsset]="asset"
+        [usdzAsset]="usdzAsset()"
+        [dimensions]="publishedDimensions()"
+        [title]="title()"
+        [startInAr]="mode === 'ar'"
+        (close)="closeModel3dViewer()"
+      />
+    }
+  }
 }

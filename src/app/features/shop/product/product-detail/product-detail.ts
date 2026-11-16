@@ -1,23 +1,49 @@
-import { TranslatePipe, UiTextPipe, CategoryNamePipe } from '@core/services/i18n/translation-pipes';
-import { Component, computed, inject, signal, effect, input, DestroyRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { ProductStore } from '@core/services/product/product.store';
-import { ProductSummary } from '@core/models/product/product-summary';
-import { ImageGallery, ProductInfo, ProductTabs, SimilarProducts } from './components';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
+import type { ProductSummary } from '@core/models/product/product-summary';
+import { CategoryNamePipe, TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
+import { ProductStore } from '@core/services/product/product.store';
+import { ImageGallery, ProductInfo, ProductOverview, SimilarProducts } from './components';
+
+interface SimilarProductRequest {
+  categoryId: string;
+  excludeId: string;
+}
+
+const SIMILAR_PRODUCT_LIMIT = 4;
 
 @Component({
   selector: 'app-product-detail',
-  imports: [CategoryNamePipe, TranslatePipe, UiTextPipe, RouterLink, ImageGallery, ProductInfo, ProductTabs, SimilarProducts],
+  imports: [
+    CategoryNamePipe,
+    TranslatePipe,
+    UiTextPipe,
+    RouterLink,
+    ImageGallery,
+    ProductInfo,
+    ProductOverview,
+    SimilarProducts,
+  ],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
-  providers: [ProductStore]
+  providers: [ProductStore],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductDetail {
   private readonly destroyRef = inject(DestroyRef);
   private readonly productStore = inject(ProductStore);
-  private readonly similarProductRequests = new Subject<{ categoryId: string; excludeId: string }>();
+  private readonly similarProductRequests = new Subject<SimilarProductRequest | null>();
 
   readonly id = input.required<string>();
   readonly product = this.productStore.selectedEntity;
@@ -27,35 +53,12 @@ export class ProductDetail {
   readonly similarProducts = signal<ProductSummary[]>([]);
 
   constructor() {
+    this.observeSimilarProducts();
     effect(() => this.loadProduct(this.id()));
-
     effect(() => {
       const product = this.product();
-      if (!product) {
-        this.similarProducts.set([]);
-        return;
-      }
-
-      this.loadSimilarProducts(product.categoryId, product.id);
+      this.loadSimilarProducts(product?.categoryId ?? '', product?.id ?? '');
     });
-
-    this.similarProductRequests.pipe(
-      switchMap(({ categoryId, excludeId }) =>
-        this.productStore.getAllProducts({
-          page: 1,
-          limit: 5,
-          search: '',
-          categoryId,
-        }).pipe(
-          map(response => response.data
-            .filter(product => product.id !== excludeId)
-            .slice(0, 4)
-          ),
-          catchError(() => of([]))
-        )
-      ),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(products => this.similarProducts.set(products));
   }
 
   loadProduct(id: string): void {
@@ -63,14 +66,38 @@ export class ProductDetail {
   }
 
   retryProduct(): void {
-    if (!this.isLoading() && this.canRetry()) {
-      this.loadProduct(this.id());
-    }
+    if (!this.isLoading() && this.canRetry()) this.loadProduct(this.id());
   }
 
   loadSimilarProducts(categoryId: string, excludeId: string): void {
     this.similarProducts.set([]);
-    this.similarProductRequests.next({ categoryId, excludeId });
+    this.similarProductRequests.next(categoryId ? { categoryId, excludeId } : null);
   }
 
+  private observeSimilarProducts(): void {
+    this.similarProductRequests
+      .pipe(
+        switchMap((request) => (request ? this.fetchSimilarProducts(request) : of([]))),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((products) => this.similarProducts.set(products));
+  }
+
+  private fetchSimilarProducts({ categoryId, excludeId }: SimilarProductRequest) {
+    return this.productStore
+      .getAllProducts({
+        page: 1,
+        limit: SIMILAR_PRODUCT_LIMIT + 1,
+        search: '',
+        categoryId,
+      })
+      .pipe(
+        map((response) =>
+          response.data
+            .filter((product) => product.id !== excludeId)
+            .slice(0, SIMILAR_PRODUCT_LIMIT),
+        ),
+        catchError(() => of([])),
+      );
+  }
 }

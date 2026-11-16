@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+
+.dimension-plan {
+  padding: calc(var(--spacing) * 5) calc(var(--spacing) * 3);
+  background-image: radial-gradient(var(--color-border-color) 1px, transparent 1px);
+  background-size: calc(var(--spacing) * 4) calc(var(--spacing) * 4);
+}
+
+.dimension-views {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: calc(var(--spacing) * 3);
+}
+
+svg {
+  display: block;
+  width: 100%;
+}
+.plane {
+  fill: var(--color-surface-element);
+  stroke: var(--color-text-secondary);
+}
+.measurement line {
+  stroke: var(--color-secondary);
+}
+svg :is(rect, line) {
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+text {
+  fill: var(--color-primary);
+  font-size: var(--text-sm);
+  text-anchor: middle;
+}
+figcaption {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+}
+
+@media (max-width: 40rem) {
+  .dimension-views {
+    grid-template-columns: minmax(0, 1fr);
+    gap: calc(var(--spacing) * 5);
+  }
+}
