@@ -1,4 +1,5 @@
 import { ProductCondition } from './product-condition';
+import type { ProductAvailabilityFields } from './product-availability';
 
 /**
  * Product specifications with dimensions
@@ -72,7 +73,7 @@ export interface ProductSeller {
 /**
  * Product from the backend API
  */
-export interface Product {
+export interface Product extends ProductAvailabilityFields {
   id: string;
   sellerId: string;
   categoryId: string;

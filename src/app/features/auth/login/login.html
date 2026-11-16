@@ -1,122 +1,153 @@
 <div class="flex flex-col gap-8">
-    <div class="flex flex-col gap-2 text-center lg:text-left">
-        <h1 class="text-xl lg:text-4xl font-headline font-semibold text-text-main tracking-tight">
-            {{ 'auth.exploreTheMuviaDashboard' | translate }}
-        </h1>
-        <p class="text-text-secondary text-base font-normal">
-            {{ 'auth.useTheDemoAccountToExploreTheWorkflowAvailable' | translate }}
-        </p>
-    </div>
-
-    <section aria-labelledby="demo-account-title"
-        class="rounded-control border border-primary/20 bg-primary/5 p-4">
-        <div class="flex items-start gap-3">
-            <span class="material-symbols-outlined mt-0.5 text-primary" aria-hidden="true">key</span>
-            <div class="min-w-0 flex-1">
-                <h2 id="demo-account-title" class="text-sm font-bold text-text-main">
-                    {{ 'auth.demoAccount' | translate }}
-                </h2>
-                <p class="mt-1 text-xs leading-5 text-text-secondary">
-                    {{ 'auth.theCredentialsAreAlreadyFilledInNoRegistrationIs' | translate }}
-                </p>
-                <p class="mt-1 text-xs leading-5 text-text-secondary">
-                    {{ 'auth.thisIsASharedAccountDoNotEnterPersonal' | translate }}
-                </p>
-                <dl class="mt-3 grid gap-2 text-sm">
-                    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                        <dt class="font-medium text-text-secondary">{{ 'auth.email' | translate }}</dt>
-                        <dd class="break-all font-mono font-semibold text-text-main">{{ demoCredentials.email }}</dd>
-                    </div>
-                    <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-                        <dt class="font-medium text-text-secondary">{{ 'auth.password' | translate }}</dt>
-                        <dd class="break-all font-mono font-semibold text-text-main">{{ demoCredentials.password }}</dd>
-                    </div>
-                </dl>
-            </div>
-        </div>
-    </section>
-
-    <form class="flex flex-col gap-5" (submit)="onSubmit($event)" novalidate>
-
-        <div class="space-y-2">
-            <label class="text-text-main text-sm font-medium leading-normal" for="email">
-                {{ 'auth.emailAddress' | translate }}
-            </label>
-            <div class="relative flex items-center">
-                <span class="material-symbols-outlined absolute left-4 text-text-secondary">mail</span>
-
-                <input id="email" type="email" autocomplete="username" [formField]="loginForm.email"
-                    class="w-full h-12 rounded-control border border-border-color bg-surface-light text-text-main pl-11 pr-4 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
-                    [placeholder]="'auth.helloExampleCom' | translate" />
-            </div>
-
-            @if ( isFieldInvalid('email') ) {
-            <p class="text-sm text-error font-medium flex items-center gap-1 pl-1">
-                <span class="material-symbols-outlined text-sm">error</span>
-                @for (error of loginForm.email().errors(); track $index) {
-                <span>{{ (error.message) | uiText }}</span>
-                }
-            </p>
-            }
-        </div>
-
-        <div class="space-y-2">
-            <div class="flex items-center">
-                <label class="text-text-main text-sm font-medium leading-normal" for="password">
-                    {{ 'auth.password' | translate }}
-                </label>
-            </div>
-            <div class="relative flex items-center group/input">
-                <span class="material-symbols-outlined absolute left-4 text-text-secondary">lock</span>
-
-                <input id="password" autocomplete="current-password" [type]="showPassword() ? 'text' : 'password'"
-                    [formField]="loginForm.password"
-                    class="w-full h-12 rounded-control border border-border-color bg-surface-light text-text-main pl-11 pr-11 text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50"
-                    placeholder="••••••••" />
-
-                <button type="button" (click)="togglePasswordVisibility()"
-                    [attr.aria-label]="showPassword() ? ('common.hidePassword' | translate) : ('common.showPassword' | translate)"
-                    class="absolute right-3 p-1 rounded-full text-text-secondary hover:text-text-main hover:bg-surface-element transition-colors flex items-center justify-center">
-                    <span class="material-symbols-outlined text-xl">
-                        {{ showPassword() ? 'visibility' : 'visibility_off' }}
-                    </span>
-                </button>
-            </div>
-
-            @if ( isFieldInvalid('password') ) {
-            <p class="text-sm text-error font-medium flex items-center gap-1 pl-1">
-                <span class="material-symbols-outlined text-sm">error</span>
-                @for (error of loginForm.password().errors(); track $index) {
-                <span>{{ (error.message) | uiText }}</span>
-                }
-            </p>
-            }
-        </div>
-
-        <button type="submit" [disabled]="isLoading()"
-            class="mt-2 flex w-full h-12 items-center justify-center rounded-control bg-primary hover:bg-primary/90 active:bg-primary text-white text-sm font-bold uppercase tracking-[0.1em] transition-all shadow-sm hover:-translate-y-0.5 hover:shadow-soft disabled:opacity-50 disabled:cursor-not-allowed">
-            @if (isLoading()) {
-            <span class="animate-spin mr-2">⟳</span>
-            }
-            {{ 'auth.signIn' | translate }}
-        </button>
-    </form>
-
-    @if (error()) {
-    <p role="alert" class="flex items-center gap-2 rounded-panel bg-error/10 px-4 py-3 text-sm font-medium text-error">
-        <span class="material-symbols-outlined text-lg">error</span>
-        <span>{{ (error()) | uiText }}</span>
+  <div class="flex flex-col gap-2 text-center lg:text-left">
+    <h1 class="text-text-main tracking-tight type-section-title md:type-page-title">
+      {{ 'auth.exploreTheMuviaDashboard' | translate }}
+    </h1>
+    <p class="text-text-secondary font-normal type-body">
+      {{ 'auth.useTheDemoAccountToExploreTheWorkflowAvailable' | translate }}
     </p>
-    }
+  </div>
 
-    <div class="rounded-control border border-secondary/20 bg-secondary/5 p-4 text-center">
-        <p class="text-sm font-bold text-text-main">{{ 'auth.accessForBusinessesInThePilotProgram' | translate }}</p>
-        <p class="mt-1 text-xs leading-5 text-text-secondary">
-            {{ 'auth.publicRegistrationIsTemporarilyClosedIfYouRepresentA' | translate }}
+  <section
+    aria-labelledby="demo-account-title"
+    class="rounded-control border border-primary/20 bg-primary/5 p-4"
+  >
+    <div class="flex items-start gap-3">
+      <span class="material-symbols-outlined mt-0.5 text-primary" aria-hidden="true">key</span>
+      <div class="min-w-0 flex-1">
+        <h2 id="demo-account-title" class="text-text-main type-control">
+          {{ 'auth.demoAccount' | translate }}
+        </h2>
+        <p class="mt-1 leading-5 text-text-secondary type-body">
+          {{ 'auth.theCredentialsAreAlreadyFilledInNoRegistrationIs' | translate }}
         </p>
-        <a href="mailto:paul@getmuvia.com?subject=Acceso%20al%20programa%20piloto%20de%20Muvia"
-            class="mt-3 inline-flex text-sm font-bold text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary">
-            {{ 'auth.requestPilotAccess' | translate }}
-        </a>
+        <p class="mt-1 leading-5 text-text-secondary type-body">
+          {{ 'auth.thisIsASharedAccountDoNotEnterPersonal' | translate }}
+        </p>
+        <dl class="mt-3 grid gap-2 type-body">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <dt class="font-medium text-text-secondary">{{ 'auth.email' | translate }}</dt>
+            <dd class="break-all font-mono font-semibold text-text-main">
+              {{ demoCredentials.email }}
+            </dd>
+          </div>
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <dt class="font-medium text-text-secondary">{{ 'auth.password' | translate }}</dt>
+            <dd class="break-all font-mono font-semibold text-text-main">
+              {{ demoCredentials.password }}
+            </dd>
+          </div>
+        </dl>
+      </div>
     </div>
+  </section>
+
+  <form class="flex flex-col gap-5" (submit)="onSubmit($event)" novalidate>
+    <div class="space-y-2">
+      <label class="text-text-main text-sm font-medium leading-normal" for="email">
+        {{ 'auth.emailAddress' | translate }}
+      </label>
+      <div class="relative flex items-center">
+        <span class="material-symbols-outlined absolute left-4 text-text-secondary">mail</span>
+
+        <input
+          id="email"
+          type="email"
+          autocomplete="username"
+          [formField]="loginForm.email"
+          class="w-full h-12 rounded-control border border-border-color bg-surface-light text-text-main pl-11 pr-4 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50 type-control"
+          [placeholder]="'auth.helloExampleCom' | translate"
+        />
+      </div>
+
+      @if (isFieldInvalid('email')) {
+        <p class="text-error font-medium flex items-center gap-1 pl-1 type-body">
+          <span class="material-symbols-outlined icon-xs">error</span>
+          @for (error of loginForm.email().errors(); track $index) {
+            <span>{{ error.message | uiText }}</span>
+          }
+        </p>
+      }
+    </div>
+
+    <div class="space-y-2">
+      <div class="flex items-center">
+        <label class="text-text-main text-sm font-medium leading-normal" for="password">
+          {{ 'auth.password' | translate }}
+        </label>
+      </div>
+      <div class="relative flex items-center group/input">
+        <span class="material-symbols-outlined absolute left-4 text-text-secondary">lock</span>
+
+        <input
+          id="password"
+          autocomplete="current-password"
+          [type]="showPassword() ? 'text' : 'password'"
+          [formField]="loginForm.password"
+          class="w-full h-12 rounded-control border border-border-color bg-surface-light text-text-main pl-11 pr-11 focus:border-primary focus:ring-1 focus:ring-primary focus:bg-white transition-all placeholder:text-text-secondary/50 type-control"
+          placeholder="••••••••"
+        />
+
+        <button
+          type="button"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="
+            showPassword()
+              ? ('common.hidePassword' | translate)
+              : ('common.showPassword' | translate)
+          "
+          class="absolute right-3 p-1 rounded-full text-text-secondary hover:text-text-main hover:bg-surface-element transition-colors flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined icon-lg">
+            {{ showPassword() ? 'visibility' : 'visibility_off' }}
+          </span>
+        </button>
+      </div>
+
+      @if (isFieldInvalid('password')) {
+        <p class="text-error font-medium flex items-center gap-1 pl-1 type-body">
+          <span class="material-symbols-outlined icon-xs">error</span>
+          @for (error of loginForm.password().errors(); track $index) {
+            <span>{{ error.message | uiText }}</span>
+          }
+        </p>
+      }
+    </div>
+
+    <button
+      type="submit"
+      [disabled]="isLoading()"
+      class="mt-2 flex w-full h-12 items-center justify-center rounded-control bg-primary hover:bg-primary/90 active:bg-primary text-white font-bold uppercase tracking-[0.1em] transition-all shadow-sm hover:-translate-y-0.5 hover:shadow-soft disabled:opacity-50 disabled:cursor-not-allowed type-control"
+    >
+      @if (isLoading()) {
+        <span class="animate-spin mr-2">⟳</span>
+      }
+      {{ 'auth.signIn' | translate }}
+    </button>
+  </form>
+
+  @if (error()) {
+    <p
+      role="alert"
+      class="flex items-center gap-2 rounded-panel bg-error/10 px-4 py-3 font-medium text-error type-body"
+    >
+      <span class="material-symbols-outlined icon-md">error</span>
+      <span>{{ error() | uiText }}</span>
+    </p>
+  }
+
+  <div class="rounded-control border border-secondary/20 bg-secondary/5 p-4 text-center">
+    <p class="font-bold text-text-main type-body">
+      {{ 'auth.accessForBusinessesInThePilotProgram' | translate }}
+    </p>
+    <p class="mt-1 leading-5 text-text-secondary type-body">
+      {{ 'auth.publicRegistrationIsTemporarilyClosedIfYouRepresentA' | translate }}
+    </p>
+    <a
+      href="mailto:paul@getmuvia.com?subject=Acceso%20al%20programa%20piloto%20de%20Muvia"
+      class="mt-3 inline-flex text-sm font-bold text-primary underline decoration-primary/30 underline-offset-4 hover:decoration-primary"
+    >
+      {{ 'auth.requestPilotAccess' | translate }}
+    </a>
+  </div>
 </div>

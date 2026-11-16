@@ -1,19 +1,29 @@
 <div class="muvia-select-field" [attr.aria-busy]="isLoading()">
-  <label for="catalog-category" class="muvia-select-label">{{ 'common.category' | translate }}</label>
+  <label for="catalog-category" class="muvia-select-label">{{
+    'common.category' | translate
+  }}</label>
   <select
     id="catalog-category"
-    class="muvia-select-control"
+    class="muvia-select-control type-control"
     [value]="selectedCode()"
     (change)="onSelectionChange($event)"
     [disabled]="isLoading() || !!error()"
     [attr.aria-describedby]="error() ? 'catalog-category-error' : null"
   >
     <option value="" [selected]="!selectedCode()">
-      {{ isLoading() ? ('common.loadingCategories' | translate) : ('common.allCategories' | translate) }}
+      {{
+        isLoading()
+          ? ('common.loadingCategories' | translate)
+          : ('common.allCategories' | translate)
+      }}
     </option>
     @if (hasUnavailableSelection()) {
       <option [value]="selectedCode()" selected disabled>
-        {{ isLoading() ? ('common.loadingCategory' | translate) : ('common.categoryUnavailable' | translate) }}
+        {{
+          isLoading()
+            ? ('common.loadingCategory' | translate)
+            : ('common.categoryUnavailable' | translate)
+        }}
       </option>
     }
     @for (category of categories(); track category.id) {
@@ -25,7 +35,7 @@
 </div>
 @if (error(); as message) {
   <div class="category-error" role="alert">
-    <p id="catalog-category-error">{{ (message) | uiText }}</p>
+    <p class="type-body" id="catalog-category-error">{{ message | uiText }}</p>
     <button type="button" (click)="retry.emit()">{{ 'common.retry' | translate }}</button>
   </div>
 }

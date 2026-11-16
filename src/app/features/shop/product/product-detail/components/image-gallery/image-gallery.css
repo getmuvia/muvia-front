@@ -21,7 +21,7 @@
   padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
   border-radius: var(--radius-control);
   color: var(--color-text-secondary);
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: var(--font-weight-medium);
   cursor: pointer;
   transition:
@@ -37,6 +37,11 @@
 .gallery-model-action {
   border: 1px solid var(--color-border-color);
   color: var(--color-primary);
+}
+@media (max-width: 40rem) {
+  .gallery-view-button .material-symbols-outlined {
+    display: none;
+  }
 }
 .gallery-thumbnails {
   display: grid;

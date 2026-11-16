@@ -1,5 +1,6 @@
 import { CreateProductSpecifications } from './create-product.dto';
 import { ProductCondition } from './product-condition';
+import type { ProductAvailabilityFields } from './product-availability';
 
 /**
  * Asset for updating a product
@@ -8,19 +9,19 @@ import { ProductCondition } from './product-condition';
  * - Excluded from array: asset will be deleted
  */
 export interface UpdateProductAsset {
-    id?: string;
-    url: string;
-    type: 'image' | 'model_3d';
-    isPrimary?: boolean;
-    metadata?: {
-        alt?: string;
-        width?: number;
-        height?: number;
-        scale?: string;
-        arPlacement?: string;
-        format?: string;
-        [key: string]: unknown;
-    };
+  id?: string;
+  url: string;
+  type: 'image' | 'model_3d';
+  isPrimary?: boolean;
+  metadata?: {
+    alt?: string;
+    width?: number;
+    height?: number;
+    scale?: string;
+    arPlacement?: string;
+    format?: string;
+    [key: string]: unknown;
+  };
 }
 
 /**
@@ -28,14 +29,14 @@ export interface UpdateProductAsset {
  * All fields are optional since partial updates are allowed (PATCH)
  * Only include fields that need to be updated
  */
-export interface UpdateProductDto {
-    title?: string;
-    condition?: ProductCondition;
-    description?: string;
-    price?: number;
-    stock?: number;
-    categoryId?: string;
-    specifications?: CreateProductSpecifications;
-    keywords?: string[];
-    assets?: UpdateProductAsset[];
+export interface UpdateProductDto extends ProductAvailabilityFields {
+  title?: string;
+  condition?: ProductCondition;
+  description?: string;
+  price?: number;
+  stock?: number;
+  categoryId?: string;
+  specifications?: CreateProductSpecifications;
+  keywords?: string[];
+  assets?: UpdateProductAsset[];
 }

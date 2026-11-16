@@ -1,0 +1,111 @@
+<fieldset class="mt-6 space-y-5 border-t border-border-color pt-6">
+  <legend class="px-2 font-body text-sm font-semibold text-primary">
+    {{ 'seller.productAvailability' | translate }}
+  </legend>
+  <div class="space-y-2">
+    <label for="product-availability-mode" class="block text-sm font-medium text-primary">{{
+      'seller.sellingMode' | translate
+    }}</label>
+    <select
+      id="product-availability-mode"
+      [formField]="modeField()"
+      [attr.aria-invalid]="invalid(modeField())"
+      aria-describedby="product-availability-help"
+      class="w-full rounded-control border border-border-color bg-surface-light px-4 py-3 font-body text-primary type-control"
+    >
+      <option [value]="mode.IN_STOCK">{{ 'seller.stockMode' | translate }}</option>
+      <option [value]="mode.MADE_TO_ORDER">{{ 'catalog.madeToOrder' | translate }}</option>
+    </select>
+    <p id="product-availability-help" class="leading-relaxed text-text-secondary type-body">
+      {{
+        (modeField()().value() === mode.MADE_TO_ORDER
+          ? 'seller.madeToOrderHelp'
+          : 'seller.stockModeHelp'
+        ) | translate
+      }}
+    </p>
+  </div>
+  @if (modeField()().value() === mode.IN_STOCK) {
+    <div class="space-y-2">
+      <label for="product-stock" class="block text-sm text-primary">{{
+        'common.stock' | translate
+      }}</label>
+      <input
+        id="product-stock"
+        type="number"
+        step="1"
+        [formField]="stockField()"
+        [attr.aria-invalid]="invalid(stockField())"
+        aria-describedby="product-stock-help"
+        class="w-full rounded-control border border-border-color bg-surface-light px-4 py-3 text-primary type-control"
+      />
+      <p
+        id="product-stock-help"
+        class="type-body"
+        [class.text-error]="invalid(stockField())"
+        [class.text-text-secondary]="!invalid(stockField())"
+      >
+        {{ 'seller.stockCountHelp' | translate }}
+      </p>
+    </div>
+  }
+  @if (modeField()().value() === mode.MADE_TO_ORDER) {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div class="space-y-2">
+        <label for="product-lead-time-min" class="block text-sm text-primary">{{
+          'seller.productionMinDays' | translate
+        }}</label>
+        <input
+          id="product-lead-time-min"
+          type="number"
+          step="1"
+          [formField]="minDaysField()"
+          [attr.aria-invalid]="invalid(minDaysField())"
+          aria-describedby="product-lead-time-help"
+          class="w-full rounded-control border border-border-color bg-surface-light px-4 py-3 text-primary type-control"
+        />
+      </div>
+      <div class="space-y-2">
+        <label for="product-lead-time-max" class="block text-sm text-primary">{{
+          'seller.productionMaxDays' | translate
+        }}</label>
+        <input
+          id="product-lead-time-max"
+          type="number"
+          step="1"
+          [formField]="maxDaysField()"
+          [attr.aria-invalid]="invalid(maxDaysField())"
+          aria-describedby="product-lead-time-help"
+          class="w-full rounded-control border border-border-color bg-surface-light px-4 py-3 text-primary type-control"
+        />
+      </div>
+    </div>
+    <p
+      id="product-lead-time-help"
+      class="leading-relaxed type-body"
+      [class.text-error]="invalid(minDaysField()) || invalid(maxDaysField())"
+      [class.text-text-secondary]="!invalid(minDaysField()) && !invalid(maxDaysField())"
+      [attr.role]="invalid(minDaysField()) || invalid(maxDaysField()) ? 'alert' : null"
+    >
+      {{ 'seller.productionRangeHelp' | translate }}
+    </p>
+  }
+  <label
+    class="flex min-h-(--control-height) cursor-pointer items-center gap-3 text-sm text-primary"
+  >
+    <input
+      id="product-custom-dimensions"
+      type="checkbox"
+      [formField]="customDimensionsField()"
+      class="size-4 accent-primary"
+      aria-describedby="product-custom-dimensions-help"
+    />
+    <span>{{ 'seller.acceptCustomDimensions' | translate }}</span>
+  </label>
+  <p id="product-custom-dimensions-help" class="leading-relaxed text-text-secondary type-body">
+    {{ 'seller.customDimensionsHelp' | translate }}
+  </p>
+  <p class="border-l-2 border-accent pl-3 leading-relaxed text-text-secondary type-body">
+    {{ 'seller.publishedPriceHelp' | translate }}
+  </p>
+</fieldset>

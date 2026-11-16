@@ -108,5 +108,14 @@
   "catalog.productLinkCopied": "Enlace copiado.",
   "catalog.productShareUnavailable": "Tu navegador no permite compartir o copiar el enlace automáticamente.",
   "catalog.productShareFailed": "No se pudo compartir el enlace.",
-  "catalog.productBreadcrumb": "Ruta del producto"
+  "catalog.productBreadcrumb": "Ruta del producto",
+  "catalog.madeToOrder": "Por pedido",
+  "catalog.inStock": "Disponible en stock",
+  "catalog.outOfStock": "Sin stock",
+  "catalog.availabilityNotSpecified": "Disponibilidad no especificada",
+  "catalog.customDimensionsAccepted": "Admite medidas personalizadas",
+  "catalog.productionDaysRange": "Fabricación estimada: {min}–{max} días.",
+  "catalog.productionDaysExact": "Fabricación estimada: {min} días.",
+  "catalog.productionNotDelivery": "El plazo corresponde a fabricación; no incluye el envío.",
+  "catalog.customDimensionsPriceNotice": "El precio corresponde a las medidas publicadas. Otras medidas requieren confirmar viabilidad y precio con el comercio; el precio puede variar."
 }

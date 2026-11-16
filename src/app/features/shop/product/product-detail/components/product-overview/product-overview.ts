@@ -4,6 +4,8 @@ import { resolveProductListing, resolveProductPrice } from '@core/models/product
 import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { MarketService } from '@core/services/market/market';
 import { ProductPrice } from '@shared/components/product-price/product-price';
+import { ProductAvailability } from '@shared/components/product-availability/product-availability';
+import { ProductAvailabilityMode } from '@core/models/product/product-availability';
 import {
   formatPublishedDimensions,
   normalizePublishedDimensions,
@@ -11,7 +13,7 @@ import {
 
 @Component({
   selector: 'app-product-overview',
-  imports: [TranslatePipe, ProductPrice],
+  imports: [TranslatePipe, ProductPrice, ProductAvailability],
   templateUrl: './product-overview.html',
   styleUrl: './product-overview.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +40,7 @@ export class ProductOverview {
   });
   readonly stock = computed(() => {
     const product = this.product();
+    if (product.availabilityMode === ProductAvailabilityMode.MADE_TO_ORDER) return null;
     const listing = resolveProductListing(product, this.market.selectedMarket().code);
     const stock = listing?.stock ?? product.stock;
     return Number.isFinite(stock) && stock >= 0 ? stock : null;

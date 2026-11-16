@@ -2,173 +2,227 @@ import { TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes
 import { Component, computed, effect, input, output, signal } from '@angular/core';
 
 @Component({
-    selector: 'app-image-editor-modal',
+  selector: 'app-image-editor-modal',
   imports: [TranslatePipe, UiTextPipe],
-    standalone: true,
-    template: `
+  standalone: true,
+  template: `
     @if (isOpen()) {
-      <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" (click)="onBackdropClick($event)">
-        <div class="bg-white rounded-dialog shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up"
-            role="dialog" aria-modal="true" aria-labelledby="image-editor-title" (click)="$event.stopPropagation()">
-            
-            <!-- Header -->
-            <div class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10">
-                <h3 id="image-editor-title" class="text-lg font-bold text-text-light">{{ (title()) | uiText }}</h3>
-                <button type="button" (click)="close()" [attr.aria-label]="'common.close' | translate" [disabled]="isLoading()"
-                    class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element disabled:cursor-not-allowed disabled:opacity-50">
-                    <span class="material-symbols-outlined text-xl">close</span>
-                </button>
-            </div>
+      <div
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        (click)="onBackdropClick($event)"
+      >
+        <div
+          class="bg-white rounded-dialog shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="image-editor-title"
+          (click)="$event.stopPropagation()"
+        >
+          <!-- Header -->
+          <div
+            class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10"
+          >
+            <h3 id="image-editor-title" class="text-text-light type-card-title">
+              {{ title() | uiText }}
+            </h3>
+            <button
+              type="button"
+              (click)="close()"
+              [attr.aria-label]="'common.close' | translate"
+              [disabled]="isLoading()"
+              class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <span class="material-symbols-outlined icon-lg">close</span>
+            </button>
+          </div>
 
-            <!-- Body -->
-            <div class="p-6 flex flex-col items-center gap-6 overflow-y-auto">
-                
-                <!-- Preview Area -->
-                <div class="relative w-full aspect-video bg-surface-element rounded-panel overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
-                    role="button" tabindex="0" [attr.aria-label]="'seller.selectImage' | translate" aria-describedby="profile-image-help profile-image-error"
-                    [attr.aria-disabled]="isLoading()" [attr.tabindex]="isLoading() ? -1 : 0"
-                    (click)="!isLoading() && fileInput.click()" (keydown.enter)="!isLoading() && fileInput.click()"
-                    (keydown.space)="!isLoading() && fileInput.click(); $event.preventDefault()">
-                    
-                    @if (previewUrl()) {
-                        <img [src]="previewUrl()" class="w-full h-full object-cover" [alt]="'seller.preview' | translate">
-                        
-                        <!-- Avatar Pro Stencil Overlay -->
-                        @if (mode() === 'avatar') {
-                        <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                            <!-- Circular Guide: Fixed size relative to container height -->
-                            <div class="h-5/6 aspect-square rounded-full border-2 border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] box-content"></div>
-                        </div>
-                        }
+          <!-- Body -->
+          <div class="p-6 flex flex-col items-center gap-6 overflow-y-auto">
+            <!-- Preview Area -->
+            <div
+              class="relative w-full aspect-video bg-surface-element rounded-panel overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
+              role="button"
+              tabindex="0"
+              [attr.aria-label]="'seller.selectImage' | translate"
+              aria-describedby="profile-image-help profile-image-error"
+              [attr.aria-disabled]="isLoading()"
+              [attr.tabindex]="isLoading() ? -1 : 0"
+              (click)="!isLoading() && fileInput.click()"
+              (keydown.enter)="!isLoading() && fileInput.click()"
+              (keydown.space)="!isLoading() && fileInput.click(); $event.preventDefault()"
+            >
+              @if (previewUrl()) {
+                <img
+                  [src]="previewUrl()"
+                  class="w-full h-full object-cover"
+                  [alt]="'seller.preview' | translate"
+                />
 
-                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                             <div class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-control text-white font-medium text-sm flex items-center gap-2 border border-white/20">
-                                <span class="material-symbols-outlined text-lg">edit</span> {{ 'seller.change' | translate }}
-                             </div>
-                        </div>
-                    } @else {
-                        <div class="flex flex-col items-center gap-3 text-text-light/40">
-                             <span class="material-symbols-outlined text-4xl">add_photo_alternate</span>
-                             <span class="text-sm font-medium">{{ 'seller.clickToUploadAnImage' | translate }}</span>
-                        </div>
-                    }
-                </div>
-
-                <input #fileInput type="file" class="hidden" [disabled]="isLoading()" (change)="onFileSelected($event)"
-                    aria-describedby="profile-image-help profile-image-error" accept="image/png, image/jpeg, image/webp">
-
-                <p id="profile-image-help" class="text-xs text-center text-text-light/60 px-4">
-                    {{ 'seller.supportedFormatsPngJpgOrWebpMaximum5Mb' | translate }}
-                </p>
-
-                @if (displayedError()) {
-                <p id="profile-image-error" class="w-full rounded-control border border-error/20 bg-error/5 p-3 text-sm font-medium text-error"
-                    role="alert">
-                    {{ (displayedError()) | uiText }}
-                </p>
+                <!-- Avatar Pro Stencil Overlay -->
+                @if (mode() === 'avatar') {
+                  <div
+                    class="absolute inset-0 pointer-events-none flex items-center justify-center"
+                  >
+                    <!-- Circular Guide: Fixed size relative to container height -->
+                    <div
+                      class="h-5/6 aspect-square rounded-full border-2 border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] box-content"
+                    ></div>
+                  </div>
                 }
 
+                <div
+                  class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                >
+                  <div
+                    class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-control text-white font-medium text-sm flex items-center gap-2 border border-white/20"
+                  >
+                    <span class="material-symbols-outlined icon-md">edit</span>
+                    {{ 'seller.change' | translate }}
+                  </div>
+                </div>
+              } @else {
+                <div class="flex flex-col items-center gap-3 text-text-light/40">
+                  <span class="material-symbols-outlined icon-2xl">add_photo_alternate</span>
+                  <span class="text-sm font-medium">{{
+                    'seller.clickToUploadAnImage' | translate
+                  }}</span>
+                </div>
+              }
             </div>
 
-            <!-- Footer -->
-            <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
-                <button type="button" (click)="close()" [disabled]="isLoading()"
-                    class="px-4 py-2 rounded-control text-sm font-medium text-text-light hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50">
-                    {{ 'common.cancel' | translate }}
-                </button>
-                <button type="button" (click)="onSave()"
-                    [disabled]="!selectedFile() || isLoading()"
-                    class="px-6 py-2 rounded-control text-sm font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2">
-                    @if (isLoading()) {
-                        <span class="material-symbols-outlined text-lg animate-spin">refresh</span>
-                    } @else {
-                        <span class="material-symbols-outlined text-lg">check</span>
-                    }
-                    {{ 'common.save' | translate }}
-                </button>
-            </div>
+            <input
+              #fileInput
+              type="file"
+              class="hidden"
+              [disabled]="isLoading()"
+              (change)="onFileSelected($event)"
+              aria-describedby="profile-image-help profile-image-error"
+              accept="image/png, image/jpeg, image/webp"
+            />
+
+            <p id="profile-image-help" class="text-center text-text-light/60 px-4 type-body">
+              {{ 'seller.supportedFormatsPngJpgOrWebpMaximum5Mb' | translate }}
+            </p>
+
+            @if (displayedError()) {
+              <p
+                id="profile-image-error"
+                class="w-full rounded-control border border-error/20 bg-error/5 p-3 font-medium text-error type-body"
+                role="alert"
+              >
+                {{ displayedError() | uiText }}
+              </p>
+            }
+          </div>
+
+          <!-- Footer -->
+          <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
+            <button
+              type="button"
+              (click)="close()"
+              [disabled]="isLoading()"
+              class="px-4 py-2 rounded-control font-medium text-text-light hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50 type-control"
+            >
+              {{ 'common.cancel' | translate }}
+            </button>
+            <button
+              type="button"
+              (click)="onSave()"
+              [disabled]="!selectedFile() || isLoading()"
+              class="px-6 py-2 rounded-control font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2 type-control"
+            >
+              @if (isLoading()) {
+                <span class="material-symbols-outlined icon-md animate-spin">refresh</span>
+              } @else {
+                <span class="material-symbols-outlined icon-md">check</span>
+              }
+              {{ 'common.save' | translate }}
+            </button>
+          </div>
         </div>
       </div>
     }
   `,
-    styles: []
+  styles: [],
 })
 export class ImageEditorModal {
-    readonly isOpen = input<boolean>(false);
-    readonly title = input<string>('Editar Imagen');
-    readonly currentImageUrl = input<string>('');
-    readonly mode = input<'cover' | 'avatar'>('cover');
+  readonly isOpen = input<boolean>(false);
+  readonly title = input<string>('Editar Imagen');
+  readonly currentImageUrl = input<string>('');
+  readonly mode = input<'cover' | 'avatar'>('cover');
 
-    readonly isLoading = input<boolean>(false);
-    readonly errorMessage = input<string | null>(null);
+  readonly isLoading = input<boolean>(false);
+  readonly errorMessage = input<string | null>(null);
 
-    readonly save = output<File>();
-    readonly cancel = output<void>();
-    readonly selectionChange = output<void>();
+  readonly save = output<File>();
+  readonly cancel = output<void>();
+  readonly selectionChange = output<void>();
 
-    previewUrl = signal<string>('');
-    selectedFile = signal<File | null>(null);
-    fileError = signal<string | null>(null);
-    displayedError = computed(() => this.fileError() ?? this.errorMessage());
+  previewUrl = signal<string>('');
+  selectedFile = signal<File | null>(null);
+  fileError = signal<string | null>(null);
+  displayedError = computed(() => this.fileError() ?? this.errorMessage());
 
-    constructor() {
-        effect(() => {
-            if (!this.isOpen()) {
-                this.reset();
-            }
-        });
-    }
-
-    onFileSelected(event: Event) {
-        const input = event.target as HTMLInputElement;
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                this.fileError.set(`No agregamos “${file.name}”: usa un archivo PNG, JPG o WEBP.`);
-                input.value = '';
-                return;
-            }
-            if (file.size > 5 * 1024 * 1024) {
-                this.fileError.set(`No agregamos “${file.name}”: supera el límite de 5 MB. Reduce su tamaño e inténtalo nuevamente.`);
-                input.value = '';
-                return;
-            }
-
-            this.fileError.set(null);
-            this.selectedFile.set(file);
-            this.selectionChange.emit();
-
-            // Create preview
-            const reader = new FileReader();
-            reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
-            reader.readAsDataURL(file);
-        }
-        input.value = '';
-    }
-
-    onSave() {
-        const file = this.selectedFile();
-        if (file) {
-            this.save.emit(file);
-        }
-    }
-
-    close() {
-        if (this.isLoading()) return;
-        this.cancel.emit();
+  constructor() {
+    effect(() => {
+      if (!this.isOpen()) {
         this.reset();
-    }
+      }
+    });
+  }
 
-    onBackdropClick(event: MouseEvent) {
-        if (event.target === event.currentTarget) {
-            this.close();
-        }
-    }
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const validTypes = ['image/png', 'image/jpeg', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        this.fileError.set(`No agregamos “${file.name}”: usa un archivo PNG, JPG o WEBP.`);
+        input.value = '';
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        this.fileError.set(
+          `No agregamos “${file.name}”: supera el límite de 5 MB. Reduce su tamaño e inténtalo nuevamente.`,
+        );
+        input.value = '';
+        return;
+      }
 
-    reset() {
-        this.selectedFile.set(null);
-        this.previewUrl.set('');
-        this.fileError.set(null);
+      this.fileError.set(null);
+      this.selectedFile.set(file);
+      this.selectionChange.emit();
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => this.previewUrl.set(e.target?.result as string);
+      reader.readAsDataURL(file);
     }
+    input.value = '';
+  }
+
+  onSave() {
+    const file = this.selectedFile();
+    if (file) {
+      this.save.emit(file);
+    }
+  }
+
+  close() {
+    if (this.isLoading()) return;
+    this.cancel.emit();
+    this.reset();
+  }
+
+  onBackdropClick(event: MouseEvent) {
+    if (event.target === event.currentTarget) {
+      this.close();
+    }
+  }
+
+  reset() {
+    this.selectedFile.set(null);
+    this.previewUrl.set('');
+    this.fileError.set(null);
+  }
 }

@@ -19,7 +19,9 @@
   border-radius: var(--radius-control);
   padding: 0.25rem 0.25rem 0.25rem 0.875rem;
   background: var(--color-surface-light);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
 }
 .catalog-search:hover {
   border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border-color));
@@ -41,7 +43,7 @@ input {
   padding-block: 0.375rem;
   background: transparent;
   color: var(--color-text-main);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
 }
 input::placeholder {
   color: var(--color-text-secondary);
@@ -55,7 +57,7 @@ input:focus-visible {
   padding-inline: 1.25rem;
   background: var(--color-primary);
   color: var(--color-surface-light);
-  font-size: var(--text-xs);
+  font-size: var(--text-base);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -80,7 +82,7 @@ input:focus-visible {
   padding-inline: 1rem;
   background: var(--color-surface-light);
   color: var(--color-primary);
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -109,7 +111,7 @@ input:focus-visible {
 .active-filters-label {
   margin-right: 0.25rem;
   color: var(--color-secondary);
-  font-size: var(--text-2xs);
+  font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -125,10 +127,12 @@ input:focus-visible {
   padding: 0.25rem 0.625rem;
   background: var(--color-surface-light);
   color: var(--color-primary);
-  font-size: var(--text-xs);
+  font-size: var(--text-sm);
   font-weight: 500;
   cursor: pointer;
-  transition: border-color 150ms ease, background 150ms ease;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease;
 }
 .active-filters button:hover {
   border-color: var(--color-primary);

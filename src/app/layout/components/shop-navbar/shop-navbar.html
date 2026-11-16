@@ -1,168 +1,321 @@
-<header [ngClass]="isTransparent()
-    ? 'navbar-glass absolute inset-x-0 top-0 bg-transparent backdrop-blur-lg'
-    : isOverlay()
+<header
+  [ngClass]="
+    isTransparent()
+      ? 'navbar-glass absolute inset-x-0 top-0 bg-transparent backdrop-blur-lg'
+      : isOverlay()
         ? 'absolute inset-x-0 top-0 bg-background-light/95 backdrop-blur-xl'
-        : 'relative bg-background-light'"
-    class="z-50 w-full border-b border-(--navbar-border) text-(--navbar-foreground) lg:[--navbar-search-panel-offset:var(--navbar-expanded-search-offset)]">
-    <div class="muvia-wide-container">
-        <div [ngClass]="isSearchOpen()
-            ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,var(--container-lg))_minmax(0,1fr)]'
-            : 'lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]'"
-            class="grid min-h-(--navbar-block-size) grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 py-4 lg:gap-x-6 lg:py-0">
-            <a routerLink="/home" class="flex min-h-(--control-height) w-fit shrink-0 items-center gap-3"
-                [attr.aria-label]="'navigation.goToTheMuviaHomePage' | translate">
-                <span class="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-surface-light">
-                    <img src="/images/brand/muvia-symbol.png" alt="" width="28" height="28"
-                        class="size-7 object-contain" aria-hidden="true">
-                </span>
-                <span class="font-headline text-xl font-semibold tracking-wide">Muvia</span>
-            </a>
+        : 'relative bg-background-light'
+  "
+  class="z-50 w-full border-b border-(--navbar-border) text-(--navbar-foreground) lg:[--navbar-search-panel-offset:var(--navbar-expanded-search-offset)]"
+>
+  <div class="muvia-wide-container">
+    <div
+      [ngClass]="
+        isSearchOpen()
+          ? 'lg:grid-cols-[minmax(0,1fr)_minmax(0,var(--container-lg))_minmax(0,1fr)]'
+          : 'lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]'
+      "
+      class="grid min-h-(--navbar-block-size) grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 py-4 xl:gap-x-6 lg:py-0"
+    >
+      <a
+        routerLink="/home"
+        class="flex min-h-(--control-height) w-fit shrink-0 items-center gap-3"
+        [attr.aria-label]="'navigation.goToTheMuviaHomePage' | translate"
+      >
+        <span
+          class="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-surface-light"
+        >
+          <img
+            src="/images/brand/muvia-symbol.png"
+            alt=""
+            width="28"
+            height="28"
+            class="size-7 object-contain"
+            aria-hidden="true"
+          />
+        </span>
+        <span class="font-headline text-xl font-semibold tracking-wide">Muvia</span>
+      </a>
 
-            <ng-template #desktopNavigation>
-            <nav class="flex items-center gap-6 whitespace-nowrap xl:gap-8"
-                [attr.aria-label]="'navigation.mainNavigation' | translate">
-                <a class="navbar-link" routerLink="/home" fragment="novedades">{{ 'home.newArrivals' | translate }}</a>
-                <a class="navbar-link" routerLink="/home" fragment="categorias">{{ 'navigation.categories' | translate }}</a>
-                <a class="navbar-link" routerLink="/products">{{ 'catalog.products' | translate }}</a>
-                <a class="navbar-link" routerLink="/virtual-staging">{{ 'navigation.decorateWithAi' | translate }}</a>
-            </nav>
-            </ng-template>
+      <ng-template #desktopNavigation>
+        <nav
+          class="flex items-center gap-4 whitespace-nowrap xl:gap-8"
+          [attr.aria-label]="'navigation.mainNavigation' | translate"
+        >
+          <a class="navbar-link" routerLink="/home" fragment="novedades">{{
+            'home.newArrivals' | translate
+          }}</a>
+          <a class="navbar-link" routerLink="/home" fragment="categorias">{{
+            'navigation.categories' | translate
+          }}</a>
+          <a class="navbar-link" routerLink="/products">{{ 'catalog.products' | translate }}</a>
+          <a class="navbar-link" routerLink="/virtual-staging">{{
+            'navigation.decorateWithAi' | translate
+          }}</a>
+        </nav>
+      </ng-template>
 
-            @if (isSearchOpen()) {
-            <app-shop-search id="navbar-search-region" (close)="closeSearch()"
-                class="order-3 col-span-2 w-full min-w-0 lg:order-none lg:col-span-1" />
-            } @else {
-            <div class="hidden justify-self-center lg:block">
-                <ng-container [ngTemplateOutlet]="desktopNavigation" />
-            </div>
+      @if (isSearchOpen()) {
+        <app-shop-search
+          id="navbar-search-region"
+          (close)="closeSearch()"
+          class="order-3 col-span-2 w-full min-w-0 lg:order-none lg:col-span-1"
+        />
+      } @else {
+        <div class="hidden justify-self-center lg:block">
+          <ng-container [ngTemplateOutlet]="desktopNavigation" />
+        </div>
+      }
+
+      <div class="flex shrink-0 items-center gap-3 justify-self-end xl:gap-5">
+        <ng-template #preferences>
+          <div class="storefront-preferences relative shrink-0">
+            <button
+              id="storefront-preferences-trigger"
+              type="button"
+              (click)="togglePreferences()"
+              [attr.aria-expanded]="isPreferencesOpen()"
+              aria-controls="storefront-preferences-panel"
+              class="flex shrink-0 cursor-pointer items-center gap-2 py-2 whitespace-nowrap text-(--navbar-muted) transition-colors hover:text-(--navbar-foreground) type-control"
+            >
+              <span class="sr-only"
+                >{{ 'navigation.locationAndLanguage' | translate }}:
+                {{ marketService.selectedMarket() | countryName }} ·
+                {{ 'navigation.currentLanguage' | translate }}</span
+              >
+              <span aria-hidden="true"
+                >{{ marketService.selectedMarket().code }} · {{ languageCode() }}</span
+              >
+              <span class="material-symbols-outlined icon-sm" aria-hidden="true">expand_more</span>
+            </button>
+            @if (isPreferencesOpen()) {
+              <section
+                id="storefront-preferences-panel"
+                [attr.aria-label]="'navigation.locationAndLanguage' | translate"
+                class="navbar-panel absolute right-0 top-full z-50 mt-2 w-80 rounded-control border border-border-color bg-surface-light p-5 text-text-main shadow-float animate-fade-in-up"
+              >
+                <h2 class="mb-4 type-control">
+                  {{ 'navigation.locationAndLanguage' | translate }}
+                </h2>
+                <div
+                  class="flex items-center justify-between gap-4 border-b border-border-color pb-3"
+                >
+                  <span class="text-sm text-text-secondary">{{
+                    'navigation.location' | translate
+                  }}</span>
+                  <a
+                    routerLink="/location"
+                    (click)="closePreferences()"
+                    [attr.aria-label]="
+                      'navigation.currentLocation'
+                        | translate: { country: (marketService.selectedMarket() | countryName) }
+                    "
+                    class="flex items-center gap-2 py-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
+                  >
+                    <span>{{ marketService.selectedMarket() | countryName }}</span>
+                    <span class="material-symbols-outlined icon-sm" aria-hidden="true"
+                      >arrow_forward</span
+                    >
+                  </a>
+                </div>
+                <div class="flex items-center justify-between gap-4 pt-3">
+                  <span class="text-sm text-text-secondary">{{
+                    'common.language' | translate
+                  }}</span>
+                  <app-language-selector variant="full" />
+                </div>
+              </section>
             }
-
-            <div class="flex shrink-0 items-center gap-3 justify-self-end lg:gap-4 xl:gap-5">
-                <ng-template #preferences>
-                <div class="storefront-preferences relative shrink-0">
-                    <button id="storefront-preferences-trigger" type="button" (click)="togglePreferences()"
-                        [attr.aria-expanded]="isPreferencesOpen()" aria-controls="storefront-preferences-panel"
-                        class="flex cursor-pointer items-center gap-2 py-2 text-xs text-(--navbar-muted) transition-colors hover:text-(--navbar-foreground)">
-                        <span class="sr-only">{{ 'navigation.locationAndLanguage' | translate }}: {{ marketService.selectedMarket() | countryName }} · {{ 'navigation.currentLanguage' | translate }}</span>
-                        <span aria-hidden="true">{{ marketService.selectedMarket().code }} · {{ languageCode() }}</span>
-                        <span class="material-symbols-outlined text-base" aria-hidden="true">expand_more</span>
-                    </button>
-                    @if (isPreferencesOpen()) {
-                    <section id="storefront-preferences-panel" [attr.aria-label]="'navigation.locationAndLanguage' | translate"
-                        class="navbar-panel absolute right-0 top-full z-50 mt-2 w-80 rounded-control border border-border-color bg-surface-light p-5 text-text-main shadow-float animate-fade-in-up">
-                        <h2 class="mb-4 font-body text-sm font-semibold">{{ 'navigation.locationAndLanguage' | translate }}</h2>
-                        <div class="flex items-center justify-between gap-4 border-b border-border-color pb-3">
-                            <span class="text-xs text-text-secondary">{{ 'navigation.location' | translate }}</span>
-                            <a routerLink="/location" (click)="closePreferences()"
-                                [attr.aria-label]="'navigation.currentLocation' | translate: {country: (marketService.selectedMarket() | countryName)}"
-                                class="flex items-center gap-2 py-2 text-sm font-medium text-primary underline-offset-4 hover:underline">
-                                <span>{{ marketService.selectedMarket() | countryName }}</span>
-                                <span class="material-symbols-outlined text-base" aria-hidden="true">arrow_forward</span>
-                            </a>
-                        </div>
-                        <div class="flex items-center justify-between gap-4 pt-3">
-                            <span class="text-xs text-text-secondary">{{ 'common.language' | translate }}</span>
-                            <app-language-selector variant="full" />
-                        </div>
-                    </section>
-                    }
-                </div>
-                </ng-template>
-                @if (!isSearchOpen()) {
-                <div class="hidden lg:block"><ng-container [ngTemplateOutlet]="preferences" /></div>
-                }
-                <button id="navbar-search-trigger" type="button" (click)="toggleSearch()"
-                    [attr.aria-label]="(isSearchOpen() ? 'catalog.closeSearch' : 'catalog.search') | translate"
-                    [title]="(isSearchOpen() ? 'catalog.closeSearch' : 'navigation.searchCtrlK') | translate"
-                    [attr.aria-expanded]="isSearchOpen()" aria-controls="navbar-search-region"
-                    aria-keyshortcuts="Control+K Meta+K"
-                    class="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control text-(--navbar-foreground) transition-colors hover:bg-(--navbar-hover-surface)">
-                    <span class="material-symbols-outlined text-lg" aria-hidden="true">{{ isSearchOpen() ? 'close' : 'search' }}</span>
-                </button>
-                <div class="hidden border-l border-(--navbar-border) pl-5 lg:flex">
-                    @if (isAuthenticated()) {
-                    <div class="user-menu relative flex items-center">
-                        <button id="navbar-user-trigger" type="button" (click)="toggleUserMenu($event)"
-                            [title]="vendorDisplayName()"
-                            [attr.aria-label]="'navigation.openAccountMenu' | translate: {name: vendorDisplayName()}"
-                            [attr.aria-expanded]="isUserMenuOpen()" aria-controls="navbar-user-menu"
-                            class="inline-flex cursor-pointer items-center justify-center rounded-full leading-none transition-opacity hover:opacity-85">
-                            <app-store-avatar [logoUrl]="vendorLogoUrl()" [storeName]="vendorDisplayName()"
-                                fallbackIcon="person" [size]="34" />
-                        </button>
-                        @if (isUserMenuOpen()) {
-                        <div id="navbar-user-menu"
-                            class="navbar-panel absolute right-0 top-full z-50 mt-3 w-48 overflow-hidden rounded-control border border-border-color bg-surface-light py-2 text-text-main shadow-float animate-fade-in-up">
-                            <p class="truncate border-b border-border-color px-4 py-2 text-xs font-semibold text-text-main">{{ vendorDisplayName() }}</p>
-                            <a [routerLink]="accountRoute()" (click)="closeUserMenu()"
-                                class="flex items-center gap-3 px-4 py-3 text-xs font-medium text-text-main transition-colors hover:bg-surface-element">
-                                <span class="material-symbols-outlined text-base text-secondary" aria-hidden="true">person</span>
-                                <span>{{ 'navigation.profile' | translate }}</span>
-                            </a>
-                            <button type="button" (click)="logout()"
-                                class="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left text-xs font-medium text-error transition-colors hover:bg-error/10">
-                                <span class="material-symbols-outlined text-base" aria-hidden="true">logout</span>
-                                <span>{{ 'navigation.signOut' | translate }}</span>
-                            </button>
-                        </div>
-                        }
-                    </div>
-                    } @else {
-                    <a routerLink="/auth/login"
-                        class="py-3 text-sm font-medium text-(--navbar-foreground) underline-offset-4 transition-colors hover:text-(--navbar-hover) hover:underline">
-                        {{ 'navigation.signIn' | translate }}
-                    </a>
-                    }
-                </div>
-                <button id="navbar-mobile-trigger" type="button" (click)="toggleMobileMenu()"
-                    [attr.aria-label]="(isMobileMenuOpen() ? 'common.close' : 'navigation.openMenu') | translate"
-                    [attr.aria-expanded]="isMobileMenuOpen()" aria-controls="navbar-mobile-menu"
-                    class="flex size-11 cursor-pointer items-center justify-center rounded-control text-(--navbar-foreground) transition-colors hover:bg-(--navbar-hover-surface) lg:hidden">
-                    <span class="material-symbols-outlined" aria-hidden="true">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
-                </button>
-            </div>
-        </div>
-
-        @if (isSearchOpen()) {
-        <div class="hidden min-h-(--navbar-secondary-block-size) items-center justify-between gap-8 pb-3 lg:flex">
-            <ng-container [ngTemplateOutlet]="desktopNavigation" />
-            <ng-container [ngTemplateOutlet]="preferences" />
-        </div>
+          </div>
+        </ng-template>
+        @if (!isSearchOpen()) {
+          <div class="hidden lg:block"><ng-container [ngTemplateOutlet]="preferences" /></div>
         }
+        <button
+          id="navbar-search-trigger"
+          type="button"
+          (click)="toggleSearch()"
+          [attr.aria-label]="
+            (isSearchOpen() ? 'catalog.closeSearch' : 'catalog.search') | translate
+          "
+          [title]="(isSearchOpen() ? 'catalog.closeSearch' : 'navigation.searchCtrlK') | translate"
+          [attr.aria-expanded]="isSearchOpen()"
+          aria-controls="navbar-search-region"
+          aria-keyshortcuts="Control+K Meta+K"
+          class="flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-control text-(--navbar-foreground) transition-colors hover:bg-(--navbar-hover-surface)"
+        >
+          <span class="material-symbols-outlined icon-md" aria-hidden="true">{{
+            isSearchOpen() ? 'close' : 'search'
+          }}</span>
+        </button>
+        <div class="hidden border-l border-(--navbar-border) pl-3 xl:pl-5 lg:flex">
+          @if (isAuthenticated()) {
+            <div class="user-menu relative flex items-center">
+              <button
+                id="navbar-user-trigger"
+                type="button"
+                (click)="toggleUserMenu($event)"
+                [title]="vendorDisplayName()"
+                [attr.aria-label]="
+                  'navigation.openAccountMenu' | translate: { name: vendorDisplayName() }
+                "
+                [attr.aria-expanded]="isUserMenuOpen()"
+                aria-controls="navbar-user-menu"
+                class="inline-flex cursor-pointer items-center justify-center rounded-full leading-none transition-opacity hover:opacity-85"
+              >
+                <app-store-avatar
+                  [logoUrl]="vendorLogoUrl()"
+                  [storeName]="vendorDisplayName()"
+                  fallbackIcon="person"
+                  [size]="34"
+                />
+              </button>
+              @if (isUserMenuOpen()) {
+                <div
+                  id="navbar-user-menu"
+                  class="navbar-panel absolute right-0 top-full z-50 mt-3 w-48 overflow-hidden rounded-control border border-border-color bg-surface-light py-2 text-text-main shadow-float animate-fade-in-up"
+                >
+                  <p
+                    class="truncate border-b border-border-color px-4 py-2 font-semibold text-text-main type-caption"
+                  >
+                    {{ vendorDisplayName() }}
+                  </p>
+                  <a
+                    [routerLink]="accountRoute()"
+                    (click)="closeUserMenu()"
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-text-main transition-colors hover:bg-surface-element"
+                  >
+                    <span
+                      class="material-symbols-outlined icon-sm text-secondary"
+                      aria-hidden="true"
+                      >person</span
+                    >
+                    <span>{{ 'navigation.profile' | translate }}</span>
+                  </a>
+                  <button
+                    type="button"
+                    (click)="logout()"
+                    class="flex w-full cursor-pointer items-center gap-3 px-4 py-3 text-left font-medium text-error transition-colors hover:bg-error/10 type-control"
+                  >
+                    <span class="material-symbols-outlined icon-sm" aria-hidden="true">logout</span>
+                    <span>{{ 'navigation.signOut' | translate }}</span>
+                  </button>
+                </div>
+              }
+            </div>
+          } @else {
+            <a
+              routerLink="/auth/login"
+              class="py-3 text-sm font-medium text-(--navbar-foreground) underline-offset-4 transition-colors hover:text-(--navbar-hover) hover:underline"
+            >
+              {{ 'navigation.signIn' | translate }}
+            </a>
+          }
+        </div>
+        <button
+          id="navbar-mobile-trigger"
+          type="button"
+          (click)="toggleMobileMenu()"
+          [attr.aria-label]="
+            (isMobileMenuOpen() ? 'common.close' : 'navigation.openMenu') | translate
+          "
+          [attr.aria-expanded]="isMobileMenuOpen()"
+          aria-controls="navbar-mobile-menu"
+          class="flex size-11 cursor-pointer items-center justify-center rounded-control text-(--navbar-foreground) transition-colors hover:bg-(--navbar-hover-surface) lg:hidden"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true">{{
+            isMobileMenuOpen() ? 'close' : 'menu'
+          }}</span>
+        </button>
+      </div>
     </div>
 
-    @if (isMobileMenuOpen()) {
-    <nav id="navbar-mobile-menu" [attr.aria-label]="'navigation.mainNavigation' | translate"
-        class="navbar-panel mobile-menu absolute inset-x-0 top-full max-h-(--navbar-mobile-menu-height) overflow-y-auto border-b border-border-color bg-background-light py-3 text-text-main shadow-soft animate-fade-in-up lg:hidden">
-        <div class="muvia-wide-container flex flex-col">
-            <a (click)="closeMobileMenu()" routerLink="/home" fragment="novedades" class="navbar-mobile-link">{{ 'home.newArrivals' | translate }}</a>
-            <a (click)="closeMobileMenu()" routerLink="/home" fragment="categorias" class="navbar-mobile-link">{{ 'navigation.categories' | translate }}</a>
-            <a (click)="closeMobileMenu()" routerLink="/products" class="navbar-mobile-link">{{ 'catalog.products' | translate }}</a>
-            <a (click)="closeMobileMenu()" routerLink="/virtual-staging" class="navbar-mobile-link">{{ 'navigation.decorateWithAi' | translate }}</a>
-            <div class="my-3 border-t border-border-color"></div>
-            <a (click)="closeMobileMenu()" routerLink="/location" class="navbar-mobile-link flex items-center justify-between gap-4">
-                <span class="text-text-secondary">{{ 'navigation.location' | translate }}</span>
-                <span>{{ marketService.selectedMarket() | countryName }}</span>
-            </a>
-            <div class="flex items-center justify-between gap-4 py-2">
-                <span class="text-sm text-text-secondary">{{ 'common.language' | translate }}</span>
-                <app-language-selector variant="full" />
-            </div>
-            <div class="my-3 border-t border-border-color"></div>
-            @if (isAuthenticated()) {
-            <a (click)="closeMobileMenu()" [routerLink]="accountRoute()" class="navbar-mobile-link flex items-center gap-3">
-                <app-store-avatar [logoUrl]="vendorLogoUrl()" [storeName]="vendorDisplayName()" fallbackIcon="person" [size]="32" />
-                <span class="truncate">{{ vendorDisplayName() }}</span>
-            </a>
-            <button type="button" (click)="logout(); closeMobileMenu()" class="navbar-mobile-link cursor-pointer text-left text-error">{{ 'navigation.signOut' | translate }}</button>
-            } @else {
-            <a (click)="closeMobileMenu()" routerLink="/auth/login" class="navbar-mobile-link">{{ 'navigation.signIn' | translate }}</a>
-            }
-        </div>
-    </nav>
+    @if (isSearchOpen()) {
+      <div
+        class="hidden min-h-(--navbar-secondary-block-size) items-center justify-between gap-8 pb-3 lg:flex"
+      >
+        <ng-container [ngTemplateOutlet]="desktopNavigation" />
+        <ng-container [ngTemplateOutlet]="preferences" />
+      </div>
     }
+  </div>
+
+  @if (isMobileMenuOpen()) {
+    <nav
+      id="navbar-mobile-menu"
+      [attr.aria-label]="'navigation.mainNavigation' | translate"
+      class="navbar-panel mobile-menu absolute inset-x-0 top-full max-h-(--navbar-mobile-menu-height) overflow-y-auto border-b border-border-color bg-background-light py-3 text-text-main shadow-soft animate-fade-in-up lg:hidden"
+    >
+      <div class="muvia-wide-container flex flex-col">
+        <a
+          (click)="closeMobileMenu()"
+          routerLink="/home"
+          fragment="novedades"
+          class="navbar-mobile-link"
+          >{{ 'home.newArrivals' | translate }}</a
+        >
+        <a
+          (click)="closeMobileMenu()"
+          routerLink="/home"
+          fragment="categorias"
+          class="navbar-mobile-link"
+          >{{ 'navigation.categories' | translate }}</a
+        >
+        <a (click)="closeMobileMenu()" routerLink="/products" class="navbar-mobile-link">{{
+          'catalog.products' | translate
+        }}</a>
+        <a (click)="closeMobileMenu()" routerLink="/virtual-staging" class="navbar-mobile-link">{{
+          'navigation.decorateWithAi' | translate
+        }}</a>
+        <div class="my-3 border-t border-border-color"></div>
+        <a
+          (click)="closeMobileMenu()"
+          routerLink="/location"
+          class="navbar-mobile-link flex items-center justify-between gap-4"
+        >
+          <span class="text-text-secondary">{{ 'navigation.location' | translate }}</span>
+          <span>{{ marketService.selectedMarket() | countryName }}</span>
+        </a>
+        <div class="flex items-center justify-between gap-4 py-2">
+          <span class="text-sm text-text-secondary">{{ 'common.language' | translate }}</span>
+          <app-language-selector variant="full" />
+        </div>
+        <div class="my-3 border-t border-border-color"></div>
+        @if (isAuthenticated()) {
+          <a
+            (click)="closeMobileMenu()"
+            [routerLink]="accountRoute()"
+            class="navbar-mobile-link flex items-center gap-3"
+          >
+            <app-store-avatar
+              [logoUrl]="vendorLogoUrl()"
+              [storeName]="vendorDisplayName()"
+              fallbackIcon="person"
+              [size]="32"
+            />
+            <span class="truncate">{{ vendorDisplayName() }}</span>
+          </a>
+          <button
+            type="button"
+            (click)="logout(); closeMobileMenu()"
+            class="navbar-mobile-link cursor-pointer text-left text-error"
+          >
+            {{ 'navigation.signOut' | translate }}
+          </button>
+        } @else {
+          <a (click)="closeMobileMenu()" routerLink="/auth/login" class="navbar-mobile-link">{{
+            'navigation.signIn' | translate
+          }}</a>
+        }
+      </div>
+    </nav>
+  }
 </header>
 
 @if (isMobileMenuOpen()) {
-<div class="fixed inset-0 z-40 bg-primary-deep/30 lg:hidden" aria-hidden="true" (click)="closeMobileMenu()"></div>
+  <div
+    class="fixed inset-0 z-40 bg-primary-deep/30 lg:hidden"
+    aria-hidden="true"
+    (click)="closeMobileMenu()"
+  ></div>
 }

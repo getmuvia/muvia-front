@@ -1,4 +1,5 @@
 import { ProductCondition } from './product-condition';
+import { ProductAvailabilityMode } from './product-availability';
 
 /**
  * Form data model for creating a product.
@@ -6,37 +7,45 @@ import { ProductCondition } from './product-condition';
  * nested for specifications which are optional.
  */
 export interface ProductFormData {
-    title: string;
-    condition: ProductCondition;
-    description: string;
-    price: number;
-    stock: number;
-    categoryId: string;
-    // Specifications as simple strings
-    weight: string;
-    material: string;
-    color: string;
-    dimensionWidth: number;
-    dimensionHeight: number;
-    dimensionDepth: number;
-    dimensionUnit: string;
+  title: string;
+  condition: ProductCondition;
+  description: string;
+  price: number;
+  stock: number;
+  availabilityMode: ProductAvailabilityMode;
+  leadTimeMinDays: number;
+  leadTimeMaxDays: number;
+  acceptsCustomDimensions: boolean;
+  categoryId: string;
+  // Specifications as simple strings
+  weight: string;
+  material: string;
+  color: string;
+  dimensionWidth: number;
+  dimensionHeight: number;
+  dimensionDepth: number;
+  dimensionUnit: string;
 }
 
 /**
  * Initial values for the product form
  */
 export const INITIAL_PRODUCT_FORM: ProductFormData = {
-    title: '',
-    condition: ProductCondition.NEW,
-    description: '',
-    price: 0,
-    stock: 1,
-    categoryId: '',
-    weight: '',
-    material: '',
-    color: '',
-    dimensionWidth: 0,
-    dimensionHeight: 0,
-    dimensionDepth: 0,
-    dimensionUnit: 'cm'
+  title: '',
+  condition: ProductCondition.NEW,
+  description: '',
+  price: 0,
+  stock: 1,
+  availabilityMode: ProductAvailabilityMode.IN_STOCK,
+  leadTimeMinDays: 0,
+  leadTimeMaxDays: 0,
+  acceptsCustomDimensions: false,
+  categoryId: '',
+  weight: '',
+  material: '',
+  color: '',
+  dimensionWidth: 0,
+  dimensionHeight: 0,
+  dimensionDepth: 0,
+  dimensionUnit: 'cm',
 };

@@ -3,6 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { MarketService } from '@core/services/market/market';
 import { productFixture } from '../../testing/product-fixture';
 import { ProductOverview } from './product-overview';
+import { ProductAvailabilityMode } from '@core/models/product/product-availability';
 
 describe('Published product overview', () => {
   const selectedMarket = signal({ code: 'BO' });
@@ -44,5 +45,21 @@ describe('Published product overview', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('todavía no ha añadido una descripción');
     expect(fixture.nativeElement.textContent).not.toContain('Roble macizo');
+  });
+  it('shows made-to-order availability instead of a zero-stock row', () => {
+    const fixture = TestBed.createComponent(ProductOverview);
+    fixture.componentRef.setInput(
+      'product',
+      productFixture({
+        availabilityMode: ProductAvailabilityMode.MADE_TO_ORDER,
+        leadTimeMinDays: 10,
+        leadTimeMaxDays: 15,
+        acceptsCustomDimensions: true,
+      }),
+    );
+    fixture.detectChanges();
+    expect(fixture.nativeElement.textContent).toContain('Por pedido');
+    expect(fixture.nativeElement.textContent).toContain('10–15 días');
+    expect(fixture.nativeElement.textContent).not.toContain('unidades');
   });
 });

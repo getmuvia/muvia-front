@@ -1,103 +1,151 @@
 <header
-    [class]="isTransparent() ? 'absolute top-0 w-full bg-transparent border-transparent' : 'seller-header--solid sticky top-0'"
-    class="seller-header z-50" [attr.aria-label]="'navigation.sellerArea' | translate">
-    <div class="seller-header__shell mx-auto flex items-center gap-4 px-4 py-3 sm:px-6 lg:px-10 2xl:px-12">
-        <div class="flex min-w-0 items-center gap-3 xl:gap-5">
-            <a routerLink="/home" class="seller-brand flex shrink-0 items-center gap-3 text-text-light"
-                [attr.aria-label]="'navigation.goToTheMuviaPublicStore' | translate">
-                <div class="seller-logo-mark flex size-9 items-center justify-center rounded-full text-primary">
-                    <img src="/images/brand/muvia-symbol.png" alt="" width="28" height="28"
-                        class="size-7 object-contain" aria-hidden="true">
-                </div>
-                <h2 class="hidden text-xl font-headline font-semibold tracking-[0.04em] sm:block">Muvia</h2>
-            </a>
-
-            <span class="hidden border-l border-border-color pl-5 text-xs font-semibold uppercase tracking-[0.12em] text-text-light/55 2xl:block">
-                {{ 'navigation.sellerDashboardPilot' | translate }}
-            </span>
-
+  [class]="
+    isTransparent()
+      ? 'absolute top-0 w-full bg-transparent border-transparent'
+      : 'seller-header--solid sticky top-0'
+  "
+  class="seller-header z-50"
+  [attr.aria-label]="'navigation.sellerArea' | translate"
+>
+  <div
+    class="seller-header__shell mx-auto flex items-center gap-4 px-4 py-3 sm:px-6 lg:px-10 2xl:px-12"
+  >
+    <div class="flex min-w-0 items-center gap-3 xl:gap-5">
+      <a
+        routerLink="/home"
+        class="seller-brand flex shrink-0 items-center gap-3 text-text-light"
+        [attr.aria-label]="'navigation.goToTheMuviaPublicStore' | translate"
+      >
+        <div
+          class="seller-logo-mark flex size-9 items-center justify-center rounded-full text-primary"
+        >
+          <img
+            src="/images/brand/muvia-symbol.png"
+            alt=""
+            width="28"
+            height="28"
+            class="size-7 object-contain"
+            aria-hidden="true"
+          />
         </div>
+        <h2 class="hidden tracking-[0.04em] sm:block type-section-title">Muvia</h2>
+      </a>
 
-        <div class="ml-auto flex min-w-0 items-center gap-2 xl:gap-3">
-            <app-language-selector />
-            <a routerLink="/seller/products/create"
-                [attr.aria-label]="'navigation.uploadProduct' | translate"
-                class="seller-upload-button flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-control px-3.5 text-sm font-body font-bold text-white transition-all duration-200 hover:-translate-y-0.5 sm:px-5">
-                <span class="material-symbols-outlined text-xl">add</span>
-                <span class="hidden sm:inline">{{ 'navigation.uploadProduct' | translate }}</span>
-            </a>
-
-            <a routerLink="/home"
-                class="seller-icon-action hidden h-10 items-center justify-center gap-2 rounded-control px-3 text-sm font-semibold text-primary transition-colors xl:flex"
-                [attr.aria-label]="'navigation.viewPublicStore' | translate">
-                <span class="material-symbols-outlined text-xl">storefront</span>
-                <span class="hidden 2xl:inline">{{ 'navigation.viewStore' | translate }}</span>
-            </a>
-
-            <a routerLink="/seller/profile"
-                class="seller-account hidden h-10 min-w-0 items-center gap-2 rounded-control px-2.5 text-sm font-semibold text-primary transition-colors md:flex"
-                [class.seller-account--avatar-only]="isProfilePage()"
-                [attr.aria-label]="'navigation.openProfile' | translate: {name: vendorDisplayName()}">
-                <app-store-avatar
-                    [logoUrl]="vendorLogoUrl()"
-                    [storeName]="vendorDisplayName()"
-                    [size]="isProfilePage() ? 32 : 28"
-                />
-                @if (!isProfilePage()) {
-                    <span class="seller-account-name hidden max-w-36 truncate 2xl:block">
-                        {{ vendorDisplayName() }}
-                    </span>
-                }
-            </a>
-
-            <button (click)="logout()"
-                class="seller-logout hidden size-10 shrink-0 items-center justify-center rounded-full text-text-light transition-colors md:flex"
-                [title]="'navigation.signOut' | translate" [attr.aria-label]="'navigation.signOut' | translate">
-                <span class="material-symbols-outlined text-xl">logout</span>
-            </button>
-
-            <button (click)="toggleMobileMenu()"
-                class="flex size-10 items-center justify-center rounded-control text-text-light transition-colors hover:bg-text-light/10 lg:hidden"
-                [attr.aria-label]="'navigation.openSellerMenu' | translate" [attr.aria-expanded]="isMobileMenuOpen()">
-                <span class="material-symbols-outlined">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
-            </button>
-        </div>
+      <span
+        class="hidden border-l border-border-color pl-5 text-sm font-semibold uppercase tracking-[0.12em] text-text-light/55 2xl:block"
+      >
+        {{ 'navigation.sellerDashboardPilot' | translate }}
+      </span>
     </div>
+
+    <div class="ml-auto flex min-w-0 items-center gap-2 xl:gap-3">
+      <app-language-selector />
+      <a
+        routerLink="/seller/products/create"
+        [attr.aria-label]="'navigation.uploadProduct' | translate"
+        class="seller-upload-button flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-control px-3.5 text-sm font-body font-bold text-white transition-all duration-200 hover:-translate-y-0.5 sm:px-5"
+      >
+        <span class="material-symbols-outlined icon-lg">add</span>
+        <span class="hidden sm:inline">{{ 'navigation.uploadProduct' | translate }}</span>
+      </a>
+
+      <a
+        routerLink="/home"
+        class="seller-icon-action hidden h-10 items-center justify-center gap-2 rounded-control px-3 text-sm font-semibold text-primary transition-colors xl:flex"
+        [attr.aria-label]="'navigation.viewPublicStore' | translate"
+      >
+        <span class="material-symbols-outlined icon-lg">storefront</span>
+        <span class="hidden 2xl:inline">{{ 'navigation.viewStore' | translate }}</span>
+      </a>
+
+      <a
+        routerLink="/seller/profile"
+        class="seller-account hidden h-10 min-w-0 items-center gap-2 rounded-control px-2.5 text-sm font-semibold text-primary transition-colors md:flex"
+        [class.seller-account--avatar-only]="isProfilePage()"
+        [attr.aria-label]="'navigation.openProfile' | translate: { name: vendorDisplayName() }"
+      >
+        <app-store-avatar
+          [logoUrl]="vendorLogoUrl()"
+          [storeName]="vendorDisplayName()"
+          [size]="isProfilePage() ? 32 : 28"
+        />
+        @if (!isProfilePage()) {
+          <span class="seller-account-name hidden max-w-36 truncate 2xl:block">
+            {{ vendorDisplayName() }}
+          </span>
+        }
+      </a>
+
+      <button
+        (click)="logout()"
+        class="seller-logout hidden size-10 shrink-0 items-center justify-center rounded-full text-text-light transition-colors md:flex"
+        [title]="'navigation.signOut' | translate"
+        [attr.aria-label]="'navigation.signOut' | translate"
+      >
+        <span class="material-symbols-outlined icon-lg">logout</span>
+      </button>
+
+      <button
+        (click)="toggleMobileMenu()"
+        class="flex size-10 items-center justify-center rounded-control text-text-light transition-colors hover:bg-text-light/10 lg:hidden"
+        [attr.aria-label]="'navigation.openSellerMenu' | translate"
+        [attr.aria-expanded]="isMobileMenuOpen()"
+      >
+        <span class="material-symbols-outlined">{{ isMobileMenuOpen() ? 'close' : 'menu' }}</span>
+      </button>
+    </div>
+  </div>
 </header>
 
 @if (isMobileMenuOpen()) {
-<div class="fixed inset-0 z-40 bg-black/35 lg:hidden" (click)="closeMobileMenu()"></div>
-<div class="mobile-menu fixed left-0 right-0 top-[65px] z-50 border-t border-border-color bg-surface-light/98 shadow-lg backdrop-blur-xl lg:hidden">
-    <nav class="mx-auto flex max-w-[1200px] flex-col gap-1 p-4" [attr.aria-label]="'navigation.sellerMobileMenu' | translate">
-        <a (click)="closeMobileMenu()" routerLink="/seller/products/create"
-            class="seller-mobile-primary mt-1 flex items-center gap-3 rounded-control px-4 py-3 text-white">
-            <span class="material-symbols-outlined">add_circle</span>
-            <span class="font-semibold">{{ 'navigation.uploadProduct' | translate }}</span>
-        </a>
-        <a (click)="closeMobileMenu()" routerLink="/home"
-            class="seller-mobile-link flex items-center gap-3 rounded-control px-4 py-3 text-text-light">
-            <span class="material-symbols-outlined text-primary">storefront</span>
-            <span class="font-semibold">{{ 'navigation.viewPublicStore' | translate }}</span>
-        </a>
+  <div class="fixed inset-0 z-40 bg-black/35 lg:hidden" (click)="closeMobileMenu()"></div>
+  <div
+    class="mobile-menu fixed left-0 right-0 top-[65px] z-50 border-t border-border-color bg-surface-light/98 shadow-lg backdrop-blur-xl lg:hidden"
+  >
+    <nav
+      class="mx-auto flex max-w-[1200px] flex-col gap-1 p-4"
+      [attr.aria-label]="'navigation.sellerMobileMenu' | translate"
+    >
+      <a
+        (click)="closeMobileMenu()"
+        routerLink="/seller/products/create"
+        class="seller-mobile-primary mt-1 flex items-center gap-3 rounded-control px-4 py-3 text-white"
+      >
+        <span class="material-symbols-outlined">add_circle</span>
+        <span class="font-semibold">{{ 'navigation.uploadProduct' | translate }}</span>
+      </a>
+      <a
+        (click)="closeMobileMenu()"
+        routerLink="/home"
+        class="seller-mobile-link flex items-center gap-3 rounded-control px-4 py-3 text-text-light"
+      >
+        <span class="material-symbols-outlined text-primary">storefront</span>
+        <span class="font-semibold">{{ 'navigation.viewPublicStore' | translate }}</span>
+      </a>
 
-        <div class="my-2 border-t border-border-color"></div>
+      <div class="my-2 border-t border-border-color"></div>
 
-        <a (click)="closeMobileMenu()" routerLink="/seller/profile"
-            class="seller-mobile-link flex min-w-0 items-center gap-3 rounded-control px-4 py-3 text-text-light">
-            <app-store-avatar
-                [logoUrl]="vendorLogoUrl()"
-                [storeName]="vendorDisplayName()"
-                [size]="32"
-            />
-            <span class="truncate font-semibold">
-                {{ vendorDisplayName() }}
-            </span>
-        </a>
-        <button (click)="logout(); closeMobileMenu()"
-            class="seller-mobile-link flex w-full items-center gap-3 rounded-control px-4 py-3 text-left text-text-light">
-            <span class="material-symbols-outlined">logout</span>
-            <span class="font-semibold">{{ 'navigation.signOut' | translate }}</span>
-        </button>
+      <a
+        (click)="closeMobileMenu()"
+        routerLink="/seller/profile"
+        class="seller-mobile-link flex min-w-0 items-center gap-3 rounded-control px-4 py-3 text-text-light"
+      >
+        <app-store-avatar
+          [logoUrl]="vendorLogoUrl()"
+          [storeName]="vendorDisplayName()"
+          [size]="32"
+        />
+        <span class="truncate font-semibold">
+          {{ vendorDisplayName() }}
+        </span>
+      </a>
+      <button
+        (click)="logout(); closeMobileMenu()"
+        class="seller-mobile-link flex w-full items-center gap-3 rounded-control px-4 py-3 text-left text-text-light"
+      >
+        <span class="material-symbols-outlined">logout</span>
+        <span class="font-semibold">{{ 'navigation.signOut' | translate }}</span>
+      </button>
     </nav>
-</div>
+  </div>
 }

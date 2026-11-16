@@ -25,10 +25,10 @@
   </div>
 
   @if (
-    catalog.useSmartSearch()
-      && !catalog.displayLoading()
-      && !catalog.displayError()
-      && catalog.interpretation();
+    catalog.useSmartSearch() &&
+      !catalog.displayLoading() &&
+      !catalog.displayError() &&
+      catalog.interpretation();
     as searchInterpretation
   ) {
     <app-search-interpretation
@@ -40,30 +40,48 @@
 
   @if (catalog.displayError(); as error) {
     <div role="alert" class="catalog-error">
-      <p>{{ (error) | uiText }}</p>
+      <p class="type-body">{{ error | uiText }}</p>
       @if (catalog.canRetryDisplayError()) {
-        <button type="button" (click)="catalog.retryProducts()">{{ 'common.retry' | translate }}</button>
+        <button type="button" (click)="catalog.retryProducts()">
+          {{ 'common.retry' | translate }}
+        </button>
       }
     </div>
   }
 
-  <p role="status" class="sr-only">
+  <p role="status" class="sr-only type-body">
     @if (catalog.displayLoading()) {
-      {{ catalog.isLoadingMore() ? ('common.loadingMoreProducts' | translate) : ('common.searchingProducts' | translate) }}
+      {{
+        catalog.isLoadingMore()
+          ? ('common.loadingMoreProducts' | translate)
+          : ('common.searchingProducts' | translate)
+      }}
     }
   </p>
 
   @if (!catalog.displayError() || catalog.displayProducts().length > 0) {
-    <section class="catalog-results" [attr.aria-label]="'catalog.products' | translate" [attr.aria-busy]="catalog.displayLoading()">
+    <section
+      class="catalog-results"
+      [attr.aria-label]="'catalog.products' | translate"
+      [attr.aria-busy]="catalog.displayLoading()"
+    >
       <div class="catalog-results-heading">
-        <h2>{{ catalog.useSmartSearch() ? ('catalog.yourSearchResults' | translate) : ('common.exploreTheCatalog' | translate) }}</h2>
-        <p>{{ resultSummary() }}</p>
+        <h2 class="type-section-title">
+          {{
+            catalog.useSmartSearch()
+              ? ('catalog.yourSearchResults' | translate)
+              : ('common.exploreTheCatalog' | translate)
+          }}
+        </h2>
+        <p class="type-caption">{{ resultSummary() }}</p>
       </div>
       <app-product-grid
         [products]="catalog.displayProducts()"
         [isLoading]="catalog.displayLoading() && catalog.displayProducts().length === 0"
         [emptyTitle]="
-          catalog.useSmartSearch() ? ('catalog.noDirectMatches' | translate) : ('common.noProducts' | translate)
+          catalog.useSmartSearch()
+            ? ('catalog.noDirectMatches' | translate)
+            : ('common.noProducts' | translate)
         "
         [emptyDescription]="
           catalog.relatedProducts().length > 0
@@ -75,18 +93,22 @@
   }
 
   @if (
-    catalog.useSmartSearch()
-      && !catalog.displayLoading()
-      && !catalog.displayError()
-      && catalog.relatedProducts().length > 0
+    catalog.useSmartSearch() &&
+    !catalog.displayLoading() &&
+    !catalog.displayError() &&
+    catalog.relatedProducts().length > 0
   ) {
     <section class="catalog-related" aria-labelledby="related-search-heading">
-      <h2 id="related-search-heading">{{ 'catalog.otherProductsYouMightLike' | translate }}</h2>
+      <h2 class="type-section-title" id="related-search-heading">
+        {{ 'catalog.otherProductsYouMightLike' | translate }}
+      </h2>
       <app-product-grid [products]="catalog.relatedProducts()" />
     </section>
   }
 
-  @if (!catalog.useSmartSearch() && !catalog.displayError() && catalog.displayProducts().length > 0) {
+  @if (
+    !catalog.useSmartSearch() && !catalog.displayError() && catalog.displayProducts().length > 0
+  ) {
     <app-load-more-button
       [isLoading]="catalog.isLoadingMore()"
       [hasMore]="catalog.hasNextPage()"
