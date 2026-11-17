@@ -59,13 +59,24 @@
           {{ 'catalog.visualizeInMySpace' | translate }}
         </a>
       }
-      <a
-        [href]="contactHref()"
-        class="flex min-h-(--control-height) items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-center text-sm font-medium text-surface-light transition-colors hover:bg-primary-soft"
-      >
-        {{ 'catalog.requestInformationFromMuviaPilot' | translate }}
-        <span class="material-symbols-outlined icon-md" aria-hidden="true">north_east</span>
-      </a>
+      @if (canCustomize()) {
+        <button
+          type="button"
+          (click)="customize.emit()"
+          class="flex min-h-(--control-height) cursor-pointer items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-center text-surface-light hover:bg-primary-soft type-control"
+        >
+          {{ 'quotations.customize' | translate }}
+          <span class="material-symbols-outlined icon-md" aria-hidden="true">design_services</span>
+        </button>
+      } @else {
+        <a
+          [href]="contactHref()"
+          class="flex min-h-(--control-height) items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-center text-sm font-medium text-surface-light transition-colors hover:bg-primary-soft"
+        >
+          {{ 'catalog.requestInformationFromMuviaPilot' | translate }}
+          <span class="material-symbols-outlined icon-md" aria-hidden="true">north_east</span>
+        </a>
+      }
     </div>
   </footer>
 </section>

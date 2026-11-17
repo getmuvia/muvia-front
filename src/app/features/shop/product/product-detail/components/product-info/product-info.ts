@@ -6,6 +6,7 @@ import {
   inject,
   input,
   linkedSignal,
+  output,
 } from '@angular/core';
 import type { Product } from '@core/models/product/product';
 import { PRODUCT_CONDITION_LABELS } from '@core/models/product/product-condition';
@@ -14,6 +15,7 @@ import { MarketService } from '@core/services/market/market';
 import { ProductPrice } from '@shared/components/product-price/product-price';
 import { RouterLink } from '@angular/router';
 import { I18nService, type TranslationKey } from '@core/services/i18n/i18n';
+import { quotationDimensions } from '@core/models/quotation/quotation-dimensions';
 import {
   formatPublishedDimensions,
   normalizePublishedDimensions,
@@ -30,6 +32,12 @@ export class ProductInfo {
   private readonly market = inject(MarketService);
   private readonly i18n = inject(I18nService);
   readonly product = input.required<Product>();
+  readonly customize = output<void>();
+  readonly canCustomize = computed(
+    () =>
+      this.product().acceptsCustomDimensions &&
+      !!quotationDimensions(this.product().specifications?.dimensions),
+  );
   readonly conditionLabel = computed(() => PRODUCT_CONDITION_LABELS[this.product().condition]);
   readonly shareFeedback = linkedSignal<string, TranslationKey | null>({
     source: () => this.product().id,

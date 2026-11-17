@@ -6,6 +6,7 @@ import { MarketService } from '@core/services/market/market';
 import { ProductPrice } from '@shared/components/product-price/product-price';
 import { ProductAvailability } from '@shared/components/product-availability/product-availability';
 import { ProductAvailabilityMode } from '@core/models/product/product-availability';
+import { quotationDimensions } from '@core/models/quotation/quotation-dimensions';
 import {
   formatPublishedDimensions,
   normalizePublishedDimensions,
@@ -22,6 +23,12 @@ export class ProductOverview {
   private readonly market = inject(MarketService);
   readonly product = input.required<Product>();
   readonly viewDimensions = output<void>();
+  readonly customize = output<void>();
+  readonly canCustomize = computed(
+    () =>
+      this.product().acceptsCustomDimensions &&
+      !!quotationDimensions(this.product().specifications?.dimensions),
+  );
   readonly price = computed(() =>
     resolveProductPrice(this.product(), this.market.selectedMarket().code),
   );

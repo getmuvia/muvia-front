@@ -1,12 +1,12 @@
 @if (showDiagram()) {
   <div
-    id="product-gallery-dimensions-panel"
-    role="tabpanel"
-    aria-labelledby="product-gallery-dimensions-tab"
+    [attr.id]="panelId()"
+    [attr.role]="labelledBy() ? 'tabpanel' : null"
+    [attr.aria-labelledby]="labelledBy()"
     class="dimension-plan"
   >
     <h2 class="mb-4 px-2 text-primary type-control">
-      {{ 'catalog.publishedDimensions' | translate }}
+      {{ label() | translate }}
     </h2>
     <div class="dimension-views">
       <figure>
@@ -137,14 +137,11 @@
       </figure>
     </div>
     <p class="mt-5 px-2 leading-relaxed text-text-secondary type-body">
-      {{ 'catalog.dimensionDiagramNotice' | translate }}
+      {{ notice() | translate }}
     </p>
   </div>
 }
-<dl
-  class="grid grid-cols-3 border-t border-border-color"
-  [attr.aria-label]="'catalog.publishedDimensions' | translate"
->
+<dl class="grid grid-cols-3 border-t border-border-color" [attr.aria-label]="label() | translate">
   @for (measurement of measurements(); track measurement.key) {
     <div
       class="flex min-w-0 flex-col items-center gap-1 px-2 py-4 text-center not-first:border-l not-first:border-border-color"

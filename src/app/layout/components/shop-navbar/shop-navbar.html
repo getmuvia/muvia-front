@@ -200,6 +200,26 @@
                     <span class="material-symbols-outlined icon-sm" aria-hidden="true">logout</span>
                     <span>{{ 'navigation.signOut' | translate }}</span>
                   </button>
+                  <a
+                    routerLink="/quotations"
+                    (click)="closeUserMenu()"
+                    class="flex min-h-11 items-center gap-3 px-4 py-3 text-primary hover:bg-surface-element type-caption"
+                  >
+                    <span
+                      class="material-symbols-outlined icon-sm text-secondary"
+                      aria-hidden="true"
+                      >request_quote</span
+                    >
+                    {{ 'quotations.sentLink' | translate }}
+                  </a>
+                  @if (currentUser()?.role === 'vendor') {
+                    <a
+                      routerLink="/seller/quotations"
+                      (click)="closeUserMenu()"
+                      class="flex min-h-11 items-center gap-3 px-4 py-3 text-primary hover:bg-surface-element type-caption"
+                      >{{ 'quotations.receivedLink' | translate }}</a
+                    >
+                  }
                 </div>
               }
             </div>
@@ -302,6 +322,17 @@
           >
             {{ 'navigation.signOut' | translate }}
           </button>
+          <a routerLink="/quotations" (click)="closeMobileMenu()" class="navbar-mobile-link">{{
+            'quotations.sentLink' | translate
+          }}</a>
+          @if (currentUser()?.role === 'vendor') {
+            <a
+              routerLink="/seller/quotations"
+              (click)="closeMobileMenu()"
+              class="navbar-mobile-link"
+              >{{ 'quotations.receivedLink' | translate }}</a
+            >
+          }
         } @else {
           <a (click)="closeMobileMenu()" routerLink="/auth/login" class="navbar-mobile-link">{{
             'navigation.signIn' | translate

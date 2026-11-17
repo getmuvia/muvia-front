@@ -1,0 +1,130 @@
+<section class="border-t border-border-color p-5 sm:p-7" aria-labelledby="quote-response-title">
+  <h2 id="quote-response-title" class="text-primary type-section-title">
+    {{ 'quotations.respondTitle' | translate }}
+  </h2>
+  <form (submit)="send($event)" novalidate class="mt-5 space-y-5">
+    <fieldset [disabled]="saving()" class="space-y-5 disabled:opacity-60">
+      <div>
+        <label for="quote-decision" class="mb-2 block text-primary type-control">{{
+          'quotations.decision' | translate
+        }}</label>
+        <select
+          id="quote-decision"
+          [formField]="fields.status"
+          class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+        >
+          <option value="QUOTED">{{ 'quotations.quoteOption' | translate }}</option>
+          <option value="DECLINED">{{ 'quotations.declineOption' | translate }}</option>
+        </select>
+      </div>
+      @if (draft().status === 'QUOTED') {
+        <div>
+          <label for="quote-price" class="mb-2 block text-primary type-control"
+            >{{ 'quotations.price' | translate }} ({{ quotation().currencyCode }})</label
+          >
+          <input
+            id="quote-price"
+            type="number"
+            step="0.01"
+            [formField]="fields.price"
+            [attr.aria-invalid]="fields.price().touched() && fields.price().invalid()"
+            aria-describedby="quote-price-help"
+            class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+          />
+          <p id="quote-price-help" class="mt-2 text-text-secondary type-caption">
+            {{ 'quotations.priceHelp' | translate: { currency: quotation().currencyCode } }}
+          </p>
+          @if (fields.price().touched() && fields.price().invalid()) {
+            <p role="alert" class="mt-2 text-error type-caption">
+              {{ 'quotations.invalidPrice' | translate }}
+            </p>
+          }
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="quote-min-days" class="mb-2 block text-primary type-caption">{{
+              'quotations.minDays' | translate
+            }}</label>
+            <input
+              id="quote-min-days"
+              type="number"
+              step="1"
+              [formField]="fields.minDays"
+              [attr.aria-invalid]="fields.minDays().touched() && fields.minDays().invalid()"
+              aria-describedby="quote-days-help"
+              class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+            />
+          </div>
+          <div>
+            <label for="quote-max-days" class="mb-2 block text-primary type-caption">{{
+              'quotations.maxDays' | translate
+            }}</label>
+            <input
+              id="quote-max-days"
+              type="number"
+              step="1"
+              [formField]="fields.maxDays"
+              [attr.aria-invalid]="fields.maxDays().touched() && fields.maxDays().invalid()"
+              aria-describedby="quote-days-help"
+              class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+            />
+          </div>
+        </div>
+        <p id="quote-days-help" class="text-text-secondary type-caption">
+          {{ 'catalog.productionNotDelivery' | translate }}
+        </p>
+        @if (
+          (fields.minDays().touched() && fields.minDays().invalid()) ||
+          (fields.maxDays().touched() && fields.maxDays().invalid())
+        ) {
+          <p role="alert" class="text-error type-caption">
+            {{ 'quotations.invalidDays' | translate }}
+          </p>
+        }
+      }
+      <div>
+        <label for="quote-response-message" class="mb-2 block text-primary type-control">{{
+          'quotations.responseMessage' | translate
+        }}</label>
+        <textarea
+          id="quote-response-message"
+          [formField]="fields.message"
+          rows="4"
+          [attr.aria-invalid]="fields.message().touched() && fields.message().invalid()"
+          aria-describedby="quote-response-help"
+          class="w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-body"
+        ></textarea>
+        <p id="quote-response-help" class="mt-2 text-text-secondary type-caption">
+          {{ 'quotations.responseHelp' | translate }}
+        </p>
+        @if (fields.message().touched() && fields.message().invalid()) {
+          <p role="alert" class="mt-2 text-error type-caption">
+            {{
+              (draft().message.trim() ? 'quotations.notesTooLong' : 'quotations.messageRequired')
+                | translate
+            }}
+          </p>
+        }
+      </div>
+      <p class="text-text-secondary type-caption">{{ 'quotations.responseFinal' | translate }}</p>
+      <button
+        type="submit"
+        class="min-h-(--control-height) w-full cursor-pointer rounded-control bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft type-control"
+      >
+        {{ (saving() ? 'quotations.sending' : 'quotations.sendResponse') | translate }}
+      </button>
+    </fieldset>
+  </form>
+  @if (error(); as message) {
+    <p role="alert" class="mt-5 text-error type-body">{{ message | translate }}</p>
+    @if (message === 'quotations.alreadyAnswered') {
+      <button
+        type="button"
+        (click)="refresh.emit()"
+        class="min-h-11 cursor-pointer text-primary underline type-control"
+      >
+        {{ 'quotations.refresh' | translate }}
+      </button>
+    }
+  }
+</section>

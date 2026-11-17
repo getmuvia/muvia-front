@@ -34,6 +34,17 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/shop/location/location').then(m => m.Location),
             },
             {
+                path: 'quotations',
+                canActivate: [authGuard],
+                loadComponent: () => import('./features/quotations/quotation-list/quotation-list').then(m => m.QuotationList),
+                data: { view: 'sent', headerStyle: 'solid' }
+            },
+            {
+                path: 'quotations/:id',
+                canActivate: [authGuard],
+                loadComponent: () => import('./features/quotations/quotation-detail/quotation-detail').then(m => m.QuotationDetail),
+            },
+            {
                 path: 'auth',
                 loadChildren: () => import('./features/auth/auth.routes').then(m => m.AUTH_ROUTES)
             },
@@ -54,6 +65,15 @@ export const routes: Routes = [
         loadComponent: () => import('./layout/seller-layout/seller-layout').then(m => m.SellerLayout),
         canActivate: [authGuard, vendorGuard],
         children: [
+            {
+                path: 'quotations',
+                loadComponent: () => import('./features/quotations/quotation-list/quotation-list').then(m => m.QuotationList),
+                data: { view: 'received' }
+            },
+            {
+                path: 'quotations/:id',
+                loadComponent: () => import('./features/quotations/quotation-detail/quotation-detail').then(m => m.QuotationDetail),
+            },
             {
                 path: 'profile',
                 loadComponent: () => import('./features/seller/seller-profile/seller-profile').then(m => m.SellerProfile),

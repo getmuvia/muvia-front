@@ -59,8 +59,9 @@ describe('Product availability presentation', () => {
       acceptsCustomDimensions: true,
     });
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Disponible en stock');
-    expect(fixture.nativeElement.textContent).toContain('Admite medidas personalizadas');
+    expect(fixture.nativeElement.textContent).not.toContain('Disponible en stock');
+    expect(fixture.nativeElement.textContent).not.toContain('Admite medidas personalizadas');
+    expect(fixture.nativeElement.textContent).toContain('el precio puede variar');
     expect(fixture.nativeElement.textContent).not.toContain('Fabricación estimada');
   });
 });
