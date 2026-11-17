@@ -1,0 +1,16 @@
+:host {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  flex-direction: column;
+}
+
+app-shop-navbar,
+app-shop-footer {
+  display: block;
+  flex: 0 0 auto;
+}
+
+app-shop-footer {
+  margin-block-start: auto;
+}
