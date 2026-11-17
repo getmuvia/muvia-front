@@ -41,6 +41,14 @@
     <div class="ml-auto flex min-w-0 items-center gap-2 xl:gap-3">
       <app-language-selector />
       <a
+        routerLink="/seller/quotations"
+        [attr.aria-label]="'quotations.receivedLink' | translate"
+        class="seller-icon-action inline-flex min-h-11 items-center justify-center gap-2 rounded-control px-3 text-primary type-caption"
+      >
+        <span class="material-symbols-outlined icon-md" aria-hidden="true">request_quote</span>
+        <span class="hidden xl:inline">{{ 'quotations.receivedLink' | translate }}</span>
+      </a>
+      <a
         routerLink="/seller/products/create"
         [attr.aria-label]="'navigation.uploadProduct' | translate"
         class="seller-upload-button flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-control px-3.5 text-sm font-body font-bold text-white transition-all duration-200 hover:-translate-y-0.5 sm:px-5"
@@ -124,6 +132,18 @@
       </a>
 
       <div class="my-2 border-t border-border-color"></div>
+      <a
+        (click)="closeMobileMenu()"
+        routerLink="/seller/quotations"
+        class="seller-mobile-link flex min-h-11 items-center gap-3 px-4 py-3 text-primary type-control"
+        >{{ 'quotations.receivedLink' | translate }}</a
+      >
+      <a
+        (click)="closeMobileMenu()"
+        routerLink="/quotations"
+        class="seller-mobile-link flex min-h-11 items-center gap-3 px-4 py-3 text-primary type-control"
+        >{{ 'quotations.sentLink' | translate }}</a
+      >
 
       <a
         (click)="closeMobileMenu()"

@@ -11,6 +11,7 @@ import pagination from './pagination.json';
 import search from './search.json';
 import seller from './seller.json';
 import staging from './staging.json';
+import quotations from './quotations.json';
 
 const dictionary = {
   ...app,
@@ -26,6 +27,7 @@ const dictionary = {
   ...search,
   ...seller,
   ...staging,
+  ...quotations,
 };
 
 export default dictionary;

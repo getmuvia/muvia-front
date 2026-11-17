@@ -3,18 +3,21 @@ import {
   Component,
   computed,
   DestroyRef,
+  ElementRef,
   effect,
   inject,
   input,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import type { ProductSummary } from '@core/models/product/product-summary';
 import { CategoryNamePipe, TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { ProductStore } from '@core/services/product/product.store';
 import { ImageGallery, ProductInfo, ProductOverview, SimilarProducts } from './components';
+import { DimensionStudio } from './components/dimension-studio/dimension-studio';
+import { quotationDimensions } from '@core/models/quotation/quotation-dimensions';
 
 interface SimilarProductRequest {
   categoryId: string;
@@ -34,6 +37,7 @@ const SIMILAR_PRODUCT_LIMIT = 4;
     ProductInfo,
     ProductOverview,
     SimilarProducts,
+    DimensionStudio,
   ],
   templateUrl: './product-detail.html',
   styleUrl: './product-detail.css',
@@ -42,6 +46,7 @@ const SIMILAR_PRODUCT_LIMIT = 4;
 })
 export class ProductDetail {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly productStore = inject(ProductStore);
   private readonly similarProductRequests = new Subject<SimilarProductRequest | null>();
 
@@ -51,6 +56,17 @@ export class ProductDetail {
   readonly error = computed(() => this.productStore.error()?.message ?? null);
   readonly canRetry = computed(() => this.productStore.error()?.retryable ?? false);
   readonly similarProducts = signal<ProductSummary[]>([]);
+  readonly studioOpen = signal(inject(ActivatedRoute).snapshot.queryParamMap.get('quote') === '1');
+  readonly canCustomize = computed(
+    () =>
+      this.product()?.acceptsCustomDimensions &&
+      !!quotationDimensions(this.product()?.specifications?.dimensions),
+  );
+
+  openStudio(): void {
+    this.studioOpen.set(true);
+    this.host.nativeElement.querySelector<HTMLElement>('#dimension-studio-title')?.focus();
+  }
 
   constructor() {
     this.observeSimilarProducts();

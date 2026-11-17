@@ -6,9 +6,7 @@ import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 
 const STATUS_LABELS = {
   madeToOrder: 'catalog.madeToOrder',
-  inStock: 'catalog.inStock',
   outOfStock: 'catalog.outOfStock',
-  unknown: 'catalog.availabilityNotSpecified',
 } as const;
 
 @Component({
@@ -16,7 +14,7 @@ const STATUS_LABELS = {
   imports: [TranslatePipe],
   templateUrl: './product-availability.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'block' },
+  host: { class: 'block', '[class.hidden]': '!visible()' },
 })
 export class ProductAvailability {
   private readonly market = inject(MarketService);
@@ -25,5 +23,15 @@ export class ProductAvailability {
   readonly availability = computed(() =>
     resolveProductAvailability(this.product(), this.market.selectedMarket().code),
   );
-  readonly statusLabel = computed(() => STATUS_LABELS[this.availability().status]);
+  readonly statusLabel = computed(() => {
+    const status = this.availability().status;
+    return status === 'madeToOrder' || status === 'outOfStock' ? STATUS_LABELS[status] : null;
+  });
+  readonly visible = computed(() => {
+    const state = this.availability();
+    return (
+      !!this.statusLabel() ||
+      (!this.compact() && (!!state.productionRange || state.acceptsCustomDimensions))
+    );
+  });
 }

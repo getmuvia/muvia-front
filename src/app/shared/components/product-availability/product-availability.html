@@ -1,16 +1,11 @@
 @let state = availability();
-<div class="flex flex-wrap items-center gap-2 text-sm">
-  @if (state.status !== 'unknown') {
-    <span
-      class="border border-border-color bg-surface-element px-2 py-1 font-medium text-primary"
-      [class.text-text-secondary]="state.status === 'outOfStock'"
-      >{{ statusLabel() | translate }}</span
-    >
-  }
-  @if (state.acceptsCustomDimensions) {
-    <span class="text-secondary">{{ 'catalog.customDimensionsAccepted' | translate }}</span>
-  }
-</div>
+@if (statusLabel(); as label) {
+  <span
+    class="inline-flex border border-border-color bg-surface-element px-2 py-1 text-sm font-medium text-primary"
+    [class.text-text-secondary]="state.status === 'outOfStock'"
+    >{{ label | translate }}</span
+  >
+}
 @if (!compact()) {
   @if (state.productionRange; as range) {
     <p class="mt-3 text-text-secondary type-body">

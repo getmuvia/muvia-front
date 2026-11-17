@@ -21,6 +21,9 @@ export const API_ENDPOINTS = {
         MY_PRODUCTS: `${BASE}/products/my-products`,
         UPDATE_PRODUCT: `${BASE}/products`,
     },
+    QUOTATIONS: {
+        BASE: `${BASE}/quotations`,
+    },
     FILES: {
         BASE: `${BASE}/files`,
         UPLOAD: `${BASE}/files/upload-url`,

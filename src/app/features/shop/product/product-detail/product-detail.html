@@ -54,7 +54,7 @@
         <li aria-current="page" class="text-primary">{{ currentProduct.title }}</li>
       </ol>
     </nav>
-    <app-product-info [product]="currentProduct">
+    <app-product-info [product]="currentProduct" (customize)="openStudio()">
       <div class="product-workspace">
         <app-image-gallery
           #gallery
@@ -65,9 +65,15 @@
         <app-product-overview
           [product]="currentProduct"
           (viewDimensions)="gallery.showPublishedDimensions()"
+          (customize)="openStudio()"
         />
       </div>
     </app-product-info>
+    @if (canCustomize()) {
+      @defer (when studioOpen()) {
+        <app-dimension-studio [product]="currentProduct" />
+      }
+    }
     <app-similar-products [products]="similarProducts()" />
   }
 </main>

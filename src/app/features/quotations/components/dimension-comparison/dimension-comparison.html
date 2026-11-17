@@ -1,0 +1,36 @@
+<div class="overflow-x-auto">
+  <table class="w-full text-left type-body">
+    <caption class="sr-only">
+      {{
+        'quotations.summary' | translate
+      }}
+    </caption>
+    <thead class="border-b border-border-color text-text-secondary type-caption">
+      <tr>
+        <th scope="col" class="py-3 pr-3 font-medium">
+          {{ 'quotations.measurement' | translate }}
+        </th>
+        <th scope="col" class="px-2 py-3 font-medium">{{ 'quotations.published' | translate }}</th>
+        <th scope="col" class="py-3 pl-2 font-medium">{{ 'quotations.requested' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (axis of axes; track axis.key) {
+        <tr class="border-b border-border-color/60">
+          <th scope="row" class="py-3 pr-3 font-medium text-text-secondary">
+            {{ axis.label | translate }}
+          </th>
+          <td class="px-2 py-3 text-text-secondary">
+            {{ published()[axis.key] }} {{ published().unit }}
+          </td>
+          <td
+            class="py-3 pl-2 font-semibold text-primary"
+            [class.text-secondary]="published()[axis.key] !== requested()[axis.key]"
+          >
+            {{ requested()[axis.key] }} {{ requested().unit }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import type { ProductDimensions } from '@core/models/product/product';
 import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 import { MarketService } from '@core/services/market/market';
+import type { TranslationKey } from '@core/services/i18n/i18n';
 import { fitDimensionPlane } from './dimension-plane';
 
 @Component({
@@ -15,6 +16,10 @@ export class PublishedDimensions {
   private readonly market = inject(MarketService);
   readonly dimensions = input.required<ProductDimensions>();
   readonly showDiagram = input(false);
+  readonly panelId = input<string | null>('product-gallery-dimensions-panel');
+  readonly labelledBy = input<string | null>('product-gallery-dimensions-tab');
+  readonly label = input<TranslationKey>('catalog.publishedDimensions');
+  readonly notice = input<TranslationKey>('catalog.dimensionDiagramNotice');
   private readonly formatter = computed(
     () =>
       new Intl.NumberFormat(this.market.locale(), {

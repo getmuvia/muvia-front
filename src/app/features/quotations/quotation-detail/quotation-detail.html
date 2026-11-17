@@ -1,0 +1,198 @@
+<main class="muvia-content-container py-7 lg:py-10">
+  <a
+    [routerLink]="backRoute()"
+    class="mb-6 inline-flex min-h-11 items-center gap-2 text-primary underline underline-offset-4 type-control"
+    ><span class="material-symbols-outlined icon-sm" aria-hidden="true">arrow_back</span
+    >{{ 'quotations.back' | translate }}</a
+  >
+  @if (store.loading()) {
+    <p role="status" class="py-12 text-text-secondary type-body">
+      {{ 'quotations.loading' | translate }}
+    </p>
+  } @else if (store.error()) {
+    <p role="alert" class="border border-error/30 p-5 text-error type-body">
+      {{ 'quotations.loadFailed' | translate }}
+    </p>
+    <button
+      type="button"
+      (click)="refresh()"
+      class="mt-4 min-h-11 cursor-pointer text-primary underline type-control"
+    >
+      {{ 'quotations.refresh' | translate }}
+    </button>
+  } @else if (store.selected(); as quotation) {
+    @if (confirmed && !isSeller()) {
+      <div role="status" class="mb-6 border border-success/30 bg-success/5 p-5">
+        <h2 class="text-success type-card-title">{{ 'quotations.confirmed' | translate }}</h2>
+        <p class="mt-2 text-text-secondary type-body">
+          {{ 'quotations.confirmedNotice' | translate }}
+        </p>
+      </div>
+    }
+    @if (responseSaved()) {
+      <p role="status" class="mb-5 text-success type-body">
+        {{ 'quotations.responseSent' | translate }}
+      </p>
+    }
+    <header class="mb-7 flex flex-wrap items-start justify-between gap-5">
+      <div class="min-w-0">
+        <p class="mb-2 text-secondary type-caption">{{ 'quotations.summary' | translate }}</p>
+        <h1 class="break-words text-primary type-section-title md:type-page-title">
+          {{ quotation.productTitle }}
+        </h1>
+        <p class="mt-3 break-all text-text-secondary type-caption">
+          {{ 'quotations.requestId' | translate }}: {{ quotation.id }}
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="rounded-control bg-surface-element px-3 py-2 text-secondary type-caption">{{
+          (isSeller() && quotation.status === 'QUOTED'
+            ? 'quotations.quoteSent'
+            : statuses[quotation.status]
+          ) | translate
+        }}</span>
+        <button
+          type="button"
+          (click)="refresh()"
+          class="min-h-11 cursor-pointer px-2 text-primary underline type-control"
+        >
+          {{ 'quotations.refresh' | translate }}
+        </button>
+      </div>
+    </header>
+    <div class="grid items-start gap-6 lg:grid-cols-2">
+      <section
+        class="min-w-0 overflow-hidden border border-border-color bg-surface-light"
+        aria-labelledby="quote-dimensions-title"
+      >
+        @if (quotation.productImageUrl) {
+          <img
+            [src]="quotation.productImageUrl"
+            [alt]="quotation.productTitle"
+            class="aspect-[16/10] w-full bg-surface-element object-contain"
+          />
+        }
+        <div class="p-5 sm:p-7">
+          <p class="mb-5 text-text-secondary type-caption">
+            {{ 'quotations.photoNotice' | translate }}
+          </p>
+          <h2 id="quote-dimensions-title" class="mb-3 text-primary type-section-title">
+            {{ 'quotations.requested' | translate }}
+          </h2>
+          <app-dimension-comparison
+            [published]="quotation.publishedDimensions"
+            [requested]="quotation.requestedDimensions"
+          />
+          <p class="mt-5 text-text-secondary type-caption">
+            {{ 'quotations.referencePrice' | translate }}
+          </p>
+          <p class="mt-2 text-primary type-price">
+            <app-product-price
+              [amount]="referencePrice()"
+              [currencyCode]="quotation.currencyCode"
+            />
+          </p>
+          <p class="mt-3 text-text-secondary type-body">
+            {{ 'quotations.priceNotice' | translate }}
+          </p>
+          @if (quotation.productId) {
+            <a
+              [routerLink]="['/products', quotation.productId]"
+              class="mt-4 inline-flex min-h-11 items-center text-primary underline underline-offset-4 type-control"
+              >{{ 'catalog.publishedModel' | translate }}</a
+            >
+          }
+        </div>
+      </section>
+      <div class="min-w-0 overflow-hidden border border-border-color bg-surface-light">
+        <section class="p-5 sm:p-7" aria-labelledby="quote-contact-title">
+          <h2 id="quote-contact-title" class="text-primary type-section-title">
+            {{ (isSeller() ? 'quotations.customer' : 'quotations.seller') | translate }}
+          </h2>
+          <p class="mt-3 break-words text-primary type-body">
+            {{
+              isSeller()
+                ? quotation.customerEmail
+                : quotation.sellerName || ('quotations.seller' | translate)
+            }}
+          </p>
+          <p class="mt-3 text-text-secondary type-caption">
+            {{ 'quotations.requestDate' | translate }}:
+            <time [attr.datetime]="quotation.createdAt">{{ date(quotation.createdAt) }}</time>
+          </p>
+          <h3 class="mt-6 text-primary type-control">{{ 'quotations.notes' | translate }}</h3>
+          <p class="mt-3 whitespace-pre-line break-words text-text-secondary type-body">
+            {{ quotation.notes || ('quotations.noNotes' | translate) }}
+          </p>
+        </section>
+        @if (quotation.status === 'PENDING') {
+          @if (isSeller()) {
+            <app-quotation-response
+              [quotation]="quotation"
+              (responded)="responded($event)"
+              (refresh)="refresh()"
+            />
+          } @else {
+            <p
+              role="status"
+              class="border-t border-border-color p-5 text-text-secondary sm:p-7 type-body"
+            >
+              {{ 'quotations.awaiting' | translate }}
+            </p>
+          }
+        } @else {
+          <section
+            class="border-t border-border-color p-5 sm:p-7"
+            aria-labelledby="quote-answer-title"
+          >
+            <h2
+              #answerHeading
+              tabindex="-1"
+              id="quote-answer-title"
+              class="text-primary type-section-title"
+            >
+              {{ 'quotations.responseTitle' | translate }}
+            </h2>
+            @if (quotation.respondedAt) {
+              <p class="mt-3 text-text-secondary type-caption">
+                {{ 'quotations.responseDate' | translate }}:
+                <time [attr.datetime]="quotation.respondedAt">{{
+                  date(quotation.respondedAt)
+                }}</time>
+              </p>
+            }
+            @if (quotation.status === 'QUOTED') {
+              <p class="mt-6 text-text-secondary type-caption">
+                {{ 'quotations.quotedPrice' | translate }}
+              </p>
+              <p class="mt-2 text-primary type-price">
+                <app-product-price
+                  [amount]="quotedPrice()"
+                  [currencyCode]="quotation.currencyCode"
+                />
+              </p>
+              <p class="mt-4 text-primary type-body">
+                {{
+                  'catalog.productionDaysRange'
+                    | translate
+                      : { min: quotation.leadTimeMinDays!, max: quotation.leadTimeMaxDays! }
+                }}
+              </p>
+              <p class="mt-2 text-text-secondary type-caption">
+                {{ 'catalog.productionNotDelivery' | translate }}
+              </p>
+            }
+            <p class="mt-5 whitespace-pre-line break-words text-text-secondary type-body">
+              {{ quotation.responseMessage }}
+            </p>
+            @if (quotation.status === 'QUOTED') {
+              <p class="mt-6 border-l-2 border-accent pl-4 text-text-secondary type-caption">
+                {{ 'quotations.quoteNotice' | translate }}
+              </p>
+            }
+          </section>
+        }
+      </div>
+    </div>
+  }
+</main>

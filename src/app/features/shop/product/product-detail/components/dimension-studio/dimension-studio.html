@@ -1,0 +1,161 @@
+<section
+  class="mt-8 overflow-hidden border border-border-color bg-surface-light"
+  aria-labelledby="dimension-studio-title"
+>
+  <header
+    class="flex flex-wrap items-end justify-between gap-4 border-b border-border-color p-5 sm:p-7"
+  >
+    <div class="max-w-2xl">
+      <p class="mb-2 tracking-wider text-secondary type-caption">
+        {{ 'quotations.studioEyebrow' | translate }}
+      </p>
+      <h2
+        #heading
+        id="dimension-studio-title"
+        tabindex="-1"
+        class="text-primary type-section-title md:type-page-title"
+      >
+        {{ (reviewOpen() ? 'quotations.reviewTitle' : 'quotations.studioTitle') | translate }}
+      </h2>
+      <p class="mt-3 text-text-secondary type-body">{{ 'quotations.studioIntro' | translate }}</p>
+    </div>
+    <span
+      class="border border-accent/40 bg-surface-element px-3 py-2 text-secondary type-caption"
+      >{{ 'quotations.toQuote' | translate }}</span
+    >
+  </header>
+  <div class="grid min-w-0 lg:grid-cols-2">
+    <div
+      [class.hidden]="reviewOpen()"
+      class="min-w-0 border-b border-border-color bg-background-light lg:block lg:border-r lg:border-b-0"
+    >
+      <app-published-dimensions
+        [dimensions]="diagram()"
+        [showDiagram]="true"
+        [panelId]="null"
+        [labelledBy]="null"
+        label="quotations.requested"
+        notice="quotations.diagramNotice"
+      />
+      <div class="border-t border-border-color p-5 sm:p-7">
+        <p class="text-text-secondary type-caption">
+          {{ 'quotations.referencePrice' | translate }}
+        </p>
+        <p class="mt-2 text-primary type-price">
+          <app-product-price
+            [amount]="referencePrice().amount"
+            [currencyCode]="referencePrice().currencyCode"
+          />
+        </p>
+        <p class="mt-3 text-text-secondary type-body">{{ 'quotations.priceNotice' | translate }}</p>
+      </div>
+    </div>
+    <div class="min-w-0 p-5 sm:p-7">
+      @if (!reviewOpen()) {
+        <form (submit)="review($event)" novalidate class="space-y-5">
+          <p id="studio-dimension-range" class="text-text-secondary type-caption">
+            {{ 'quotations.range' | translate: range() }}
+          </p>
+          <div class="grid gap-4 sm:grid-cols-3">
+            @for (axis of axes; track axis.key) {
+              <div class="min-w-0">
+                <label [for]="'studio-' + axis.key" class="mb-2 block text-primary type-caption"
+                  >{{ axis.label | translate }} ({{ base().unit }})</label
+                >
+                <input
+                  [id]="'studio-' + axis.key"
+                  type="number"
+                  step="0.001"
+                  [formField]="fields[axis.key]"
+                  [attr.aria-invalid]="fields[axis.key]().touched() && fields[axis.key]().invalid()"
+                  [attr.aria-describedby]="'studio-dimension-range studio-error-' + axis.key"
+                  class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+                />
+                <p [id]="'studio-error-' + axis.key" class="mt-2 text-error type-caption">
+                  @if (fields[axis.key]().touched() && fields[axis.key]().invalid()) {
+                    {{ 'quotations.invalidDimension' | translate }}
+                  }
+                </p>
+              </div>
+            }
+          </div>
+          <button
+            type="button"
+            (click)="reset()"
+            class="min-h-11 cursor-pointer text-secondary underline underline-offset-4 type-control"
+          >
+            {{ 'quotations.reset' | translate }}
+          </button>
+          <app-dimension-comparison [published]="base()" [requested]="diagram()" />
+          @if (user()) {
+            <div>
+              <label for="studio-notes" class="mb-2 block text-primary type-control">{{
+                'quotations.notes' | translate
+              }}</label>
+              <textarea
+                id="studio-notes"
+                [formField]="fields.notes"
+                rows="4"
+                aria-describedby="studio-notes-help"
+                class="w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-body"
+              ></textarea>
+              <p id="studio-notes-help" class="mt-2 text-text-secondary type-caption">
+                {{ 'quotations.notesHelp' | translate: { max: limits.notesLength } }}
+              </p>
+              @if (fields.notes().touched() && fields.notes().invalid()) {
+                <p role="alert" class="mt-2 text-error type-caption">
+                  {{ 'quotations.notesTooLong' | translate }}
+                </p>
+              }
+            </div>
+          }
+          @if (ownProduct()) {
+            <p class="text-text-secondary type-body">{{ 'quotations.selfRequest' | translate }}</p>
+          } @else {
+            <button
+              type="submit"
+              class="min-h-(--control-height) w-full cursor-pointer rounded-control bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft type-control"
+            >
+              {{ (user() ? 'quotations.review' : 'quotations.login') | translate }}
+            </button>
+          }
+        </form>
+      } @else {
+        <div class="space-y-5">
+          <app-dimension-comparison [published]="base()" [requested]="requested()" />
+          <div>
+            <h3 class="text-primary type-control">{{ 'quotations.contact' | translate }}</h3>
+            <p class="mt-2 break-all text-primary type-body">{{ user()?.email }}</p>
+            <p class="mt-2 text-text-secondary type-caption">
+              {{ 'quotations.contactNotice' | translate }}
+            </p>
+          </div>
+          @if (draft().notes.trim()) {
+            <p class="whitespace-pre-line text-text-secondary type-body">{{ draft().notes }}</p>
+          }
+          <div class="flex flex-col gap-3">
+            <button
+              type="button"
+              (click)="send()"
+              [disabled]="sending()"
+              class="min-h-(--control-height) cursor-pointer rounded-control bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft disabled:cursor-wait disabled:opacity-60 type-control"
+            >
+              {{ (sending() ? 'quotations.sending' : 'quotations.send') | translate }}
+            </button>
+            <button
+              type="button"
+              (click)="edit()"
+              [disabled]="sending()"
+              class="min-h-11 cursor-pointer text-primary underline underline-offset-4 disabled:opacity-60 type-control"
+            >
+              {{ 'quotations.edit' | translate }}
+            </button>
+          </div>
+        </div>
+      }
+      @if (error(); as message) {
+        <p role="alert" class="mt-5 text-error type-body">{{ message | translate }}</p>
+      }
+    </div>
+  </div>
+</section>
