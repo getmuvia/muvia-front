@@ -6,6 +6,7 @@ import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 
 const STATUS_LABELS = {
   madeToOrder: 'catalog.madeToOrder',
+  inStock: 'catalog.inStock',
   outOfStock: 'catalog.outOfStock',
 } as const;
 
@@ -20,18 +21,23 @@ export class ProductAvailability {
   private readonly market = inject(MarketService);
   readonly product = input.required<ProductPreview>();
   readonly compact = input(false);
+  readonly customizable = input<boolean>();
   readonly availability = computed(() =>
     resolveProductAvailability(this.product(), this.market.selectedMarket().code),
   );
   readonly statusLabel = computed(() => {
-    const status = this.availability().status;
-    return status === 'madeToOrder' || status === 'outOfStock' ? STATUS_LABELS[status] : null;
+    const { status } = this.availability();
+    return status === 'unknown' || (status === 'inStock' && this.compact())
+      ? null
+      : STATUS_LABELS[status];
   });
-  readonly visible = computed(() => {
-    const state = this.availability();
-    return (
+  readonly showsCustomization = computed(
+    () => !this.compact() && (this.customizable() ?? this.availability().acceptsCustomDimensions),
+  );
+  readonly visible = computed(
+    () =>
       !!this.statusLabel() ||
-      (!this.compact() && (!!state.productionRange || state.acceptsCustomDimensions))
-    );
-  });
+      this.showsCustomization() ||
+      (!this.compact() && !!this.availability().productionRange),
+  );
 }

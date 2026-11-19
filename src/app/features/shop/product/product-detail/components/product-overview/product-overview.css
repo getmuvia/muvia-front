@@ -2,15 +2,20 @@
   display: block;
   min-width: 0;
 }
-summary {
+
+.description-disclosure summary {
   list-style: none;
 }
-summary::-webkit-details-marker {
+
+.description-disclosure summary::-webkit-details-marker {
   display: none;
 }
-summary span {
-  transition: transform var(--default-transition-duration);
+
+.description-disclosure[open] summary .material-symbols-outlined {
+  transform: rotate(90deg);
 }
-details[open] summary span {
-  transform: rotate(180deg);
+
+.technical-details {
+  inline-size: calc(100% - var(--spacing) * 6);
+  max-block-size: calc(100dvh - var(--spacing) * 6);
 }

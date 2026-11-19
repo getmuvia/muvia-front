@@ -44,7 +44,7 @@ describe('Product availability presentation', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Por pedido');
     expect(fixture.nativeElement.textContent).toContain('10–15 días');
-    expect(fixture.nativeElement.textContent).toContain('el precio puede variar');
+    expect(fixture.nativeElement.textContent).toContain('Medidas personalizables');
     expect(fixture.nativeElement.textContent).not.toContain('Sin stock');
     TestBed.inject(I18nService).selectLanguage('en');
     fixture.detectChanges();
@@ -59,9 +59,8 @@ describe('Product availability presentation', () => {
       acceptsCustomDimensions: true,
     });
     fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).not.toContain('Disponible en stock');
-    expect(fixture.nativeElement.textContent).not.toContain('Admite medidas personalizadas');
-    expect(fixture.nativeElement.textContent).toContain('el precio puede variar');
+    expect(fixture.nativeElement.textContent).toContain('En stock');
+    expect(fixture.nativeElement.textContent).toContain('Medidas personalizables');
     expect(fixture.nativeElement.textContent).not.toContain('Fabricación estimada');
   });
 });

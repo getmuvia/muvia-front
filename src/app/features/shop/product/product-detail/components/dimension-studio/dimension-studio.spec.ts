@@ -54,7 +54,7 @@ describe('Custom-dimension quotation journey', () => {
     const { fixture, component, product } = setup();
     component.draft.update((draft) => ({ ...draft, width: 160, notes: 'Más ancho' }));
     fixture.detectChanges();
-    expect(component.diagram().width).toBe(160);
+    expect(component.comparisonDimensions().width).toBe(160);
     expect(product.specifications?.dimensions?.width).toBe(140);
     expect(component.referencePrice().amount).toBe(2450);
     await component.review(new Event('submit'));
@@ -63,9 +63,7 @@ describe('Custom-dimension quotation journey', () => {
     expect(document.activeElement?.id).toBe('dimension-studio-title');
     expect(fixture.nativeElement.textContent).toContain('A cotizar');
     expect(fixture.nativeElement.textContent).toContain(user()!.email);
-    expect(fixture.nativeElement.querySelectorAll('#product-gallery-dimensions-panel').length).toBe(
-      0,
-    );
+    expect(fixture.nativeElement.querySelector('svg')).toBeNull();
   });
 
   it('blocks invalid measurements before opening review or submitting anything', async () => {

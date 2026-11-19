@@ -21,14 +21,10 @@
   "quotations.back": "Back to requests",
   "quotations.sentLink": "My quotations",
   "quotations.receivedLink": "Received quotations",
-  "quotations.studioEyebrow": "DIMENSION STUDIO",
-  "quotations.studioTitle": "Make it fit your space",
-  "quotations.studioIntro": "Adjust the dimensions, compare them with the published model and request a quotation from the seller.",
   "quotations.customize": "Customize dimensions",
   "quotations.published": "Published model",
   "quotations.requested": "Requested dimensions",
   "quotations.measurement": "Dimension",
-  "quotations.diagramNotice": "Illustrative diagram of the requested dimensions. Shape, feasibility and finish require seller confirmation.",
   "quotations.photoNotice": "The photo shows the published model; it does not change when dimensions are adjusted.",
   "quotations.referencePrice": "Published model reference price",
   "quotations.toQuote": "Quotation required",
@@ -81,5 +77,7 @@
   "quotations.responseSent": "Response sent to the customer.",
   "quotations.responseFailed": "We could not save the response. Check the details and try again.",
   "quotations.alreadyAnswered": "This request has already been answered. Refresh to check its status.",
-  "quotations.notifications": "New requests and responses appear here when you refresh the list."
+  "quotations.notifications": "New requests and responses appear here when you refresh the list.",
+  "quotations.step": "Step {step} of 2",
+  "quotations.withYourDimensions": "With your dimensions"
 }

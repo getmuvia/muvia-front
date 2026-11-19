@@ -7,6 +7,7 @@ import { ProductStore } from '@core/services/product/product.store';
 import type { AppError } from '@core/models/errors/api-error.model';
 import { ProductDetail } from './product-detail';
 import { MarketService } from '@core/services/market/market';
+import { I18nService } from '@core/services/i18n/i18n';
 import { productFixture } from './testing/product-fixture';
 
 describe('ProductDetail', () => {
@@ -131,12 +132,57 @@ describe('ProductDetail', () => {
     expect(page.querySelector('input')).toBeNull();
     expect(page.textContent).not.toContain('Por pedido');
     expect(page.textContent).not.toContain('Solicitar cotización');
-    (page.querySelector('app-product-overview button') as HTMLButtonElement).click();
-    fixture.detectChanges();
-    expect(
-      page.querySelector('#product-gallery-dimensions-tab')?.getAttribute('aria-selected'),
-    ).toBe('true');
-    expect(page.querySelector('#product-gallery-dimensions-panel')).not.toBeNull();
+    const panel = page.querySelector<HTMLDialogElement>('#product-technical-details')!;
+    panel.showModal = vi.fn();
+    page.querySelector<HTMLButtonElement>('[aria-controls="product-technical-details"]')!.click();
+    expect(panel.showModal).toHaveBeenCalledOnce();
+    expect(panel.textContent).toContain('140 cm');
+    expect(panel.textContent).toContain('60 cm');
+    expect(panel.textContent).toContain('Roble macizo');
+    expect(panel.querySelector('svg')).toBeNull();
+  });
+
+  it('offers personalization only for enabled products with valid published dimensions', async () => {
+    const action = '[aria-controls="dimension-studio"]';
+    const page = fixture.nativeElement as HTMLElement;
+
+    selectedProduct.set(productFixture({ acceptsCustomDimensions: true, specifications: null }));
+    await fixture.whenStable();
+    expect(page.querySelector(action)).toBeNull();
+    expect(page.textContent).not.toContain('Medidas personalizables');
+
+    selectedProduct.set(productFixture({ acceptsCustomDimensions: true }));
+    await fixture.whenStable();
+    expect(page.querySelector(action)?.textContent).toContain('Personalizar medidas');
+    expect(page.textContent).toContain('Medidas personalizables');
+    expect(page.querySelector('a[href^="mailto:"]')).toBeNull();
+  });
+
+  it('copies the selected product link and translates share feedback', async () => {
+    localStorage.removeItem('muvia.language');
+    const i18n = TestBed.inject(I18nService);
+    i18n.selectLanguage('es');
+    selectedProduct.set(productFixture());
+    await fixture.whenStable();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('navigator', { clipboard: { writeText } });
+    try {
+      await component.shareProduct();
+      fixture.detectChanges();
+      expect(writeText).toHaveBeenCalledWith('https://app.getmuvia.com/products/desk');
+      expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain(
+        'Enlace copiado',
+      );
+      i18n.selectLanguage('en');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('[role="status"]').textContent).toContain(
+        'Link copied',
+      );
+      expect(fixture.nativeElement.querySelector('h1').textContent).toBe('Escritorio del vendedor');
+    } finally {
+      vi.unstubAllGlobals();
+      i18n.selectLanguage('es');
+    }
   });
 
   it('cancels stale recommendations when a product has no category', () => {

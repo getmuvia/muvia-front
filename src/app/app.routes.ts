@@ -23,6 +23,7 @@ export const routes: Routes = [
             {
                 path: 'products/:id',
                 loadComponent: () => import('./features/shop/product/product-detail/product-detail').then(m => m.ProductDetail),
+                data: { headerStyle: 'product-detail' },
             },
             {
                 path: 'stores/:id',
