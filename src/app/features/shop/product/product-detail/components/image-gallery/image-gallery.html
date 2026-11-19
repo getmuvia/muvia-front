@@ -1,152 +1,146 @@
-<section class="gallery" [attr.aria-label]="'catalog.productGallery' | translate">
-  <div
-    class="flex flex-wrap items-center justify-between gap-3 border-b border-border-color px-4 py-3"
-  >
-    <span class="text-sm font-medium tracking-wider text-text-secondary uppercase">{{
-      'catalog.publishedModel' | translate
-    }}</span>
-    <div
-      role="tablist"
-      [attr.aria-label]="'catalog.productViews' | translate"
-      class="flex flex-wrap gap-1"
-    >
-      <button
-        #imagesTab
-        id="product-gallery-images-tab"
-        type="button"
-        role="tab"
-        aria-controls="product-gallery-images-panel"
-        [attr.aria-selected]="activeView() === 'images'"
-        [attr.tabindex]="activeView() === 'images' ? 0 : -1"
-        (click)="selectView('images')"
-        (keydown)="onViewKeydown($event)"
-        class="gallery-view-button"
-      >
-        <span class="material-symbols-outlined icon-sm" aria-hidden="true">image</span>
-        {{ 'catalog.galleryPhotos' | translate }}
-      </button>
-      @if (publishedDimensions()) {
+<section [attr.aria-label]="'catalog.productGallery' | translate">
+  <div class="gallery-image">
+    @if (selectedAsset(); as asset) {
+      @if (!imageFailed()) {
         <button
-          #dimensionsTab
-          id="product-gallery-dimensions-tab"
           type="button"
-          role="tab"
-          aria-controls="product-gallery-dimensions-panel"
-          [attr.aria-selected]="activeView() === 'dimensions'"
-          [attr.tabindex]="activeView() === 'dimensions' ? 0 : -1"
-          (click)="selectView('dimensions')"
-          (keydown)="onViewKeydown($event)"
-          class="gallery-view-button"
+          class="gallery-image-button"
+          aria-haspopup="dialog"
+          [attr.aria-label]="'catalog.enlargePhoto' | translate"
+          (click)="openViewer(imageViewer)"
+          (touchstart)="startSwipe($event)"
+          (touchend)="endSwipe($event)"
+          (touchcancel)="cancelSwipe()"
         >
-          <span class="material-symbols-outlined icon-sm" aria-hidden="true">straighten</span>
-          {{ 'catalog.dimensionPlan' | translate }}
-        </button>
-      }
-    </div>
-  </div>
-  <div
-    id="product-gallery-images-panel"
-    role="tabpanel"
-    aria-labelledby="product-gallery-images-tab"
-    [hidden]="activeView() !== 'images'"
-  >
-    <div class="gallery-image">
-      @if (selectedAsset(); as asset) {
-        @if (!imageFailed()) {
           <img
             [ngSrc]="asset.url"
-            [alt]="
-              asset.metadata?.alt ||
-              ('catalog.productImage' | translate: { title: title(), index: selectedIndex() + 1 })
-            "
+            [alt]="asset.metadata?.alt || ('catalog.productImage' | translate: { title: title(), index: selectedIndex() + 1 })"
             fill
             priority
-            sizes="(min-width: 1024px) 60vw, 100vw"
-            class="object-contain"
+            sizes="(min-width: 80rem) 43rem, (min-width: 64rem) 55vw, 100vw"
+            class="object-cover"
             (error)="imageFailed.set(true)"
           />
-        } @else {
-          <ng-container [ngTemplateOutlet]="imagePlaceholder" />
-        }
+        </button>
       } @else {
         <ng-container [ngTemplateOutlet]="imagePlaceholder" />
       }
-    </div>
-    @if (hasMultipleImages()) {
-      <div class="gallery-thumbnails" [attr.aria-label]="'catalog.productImages' | translate">
-        @for (asset of imageAssets(); track asset.id; let index = $index) {
-          <button
-            type="button"
-            (click)="selectImage(index)"
-            [attr.aria-pressed]="selectedIndex() === index"
-            [attr.aria-label]="'catalog.viewImage' | translate: { index: index + 1 }"
-            class="gallery-thumbnail"
-          >
-            <img
-              [src]="asset.url"
-              alt=""
-              loading="lazy"
-              decoding="async"
-              class="size-full object-cover"
-            />
-          </button>
-        }
-      </div>
+    } @else {
+      <ng-container [ngTemplateOutlet]="imagePlaceholder" />
     }
   </div>
-  @if (publishedDimensions(); as dimensions) {
-    <app-published-dimensions
-      [dimensions]="dimensions"
-      [showDiagram]="activeView() === 'dimensions'"
-    />
-  } @else {
-    <p class="border-t border-border-color px-4 py-4 text-text-secondary type-body">
-      {{ 'catalog.dimensionsUnavailable' | translate }}
-    </p>
-  }
-  @if (glbAsset()) {
-    <div
-      class="flex flex-wrap items-center justify-end gap-3 border-t border-border-color px-4 py-3"
-    >
-      <button type="button" (click)="openModel3dViewer()" class="gallery-model-action">
-        <span class="material-symbols-outlined icon-md" aria-hidden="true">3d_rotation</span>
-        {{ 'catalog.viewIn3d' | translate }}
-      </button>
-      @if (isIosDevice() && usdzAsset(); as asset) {
-        <a [href]="asset.url" rel="ar" class="gallery-model-action">
-          <img alt="" hidden aria-hidden="true" />
-          <span class="material-symbols-outlined icon-md" aria-hidden="true">view_in_ar</span>
-          {{ 'catalog.viewInAr' | translate }}
-        </a>
-      } @else {
-        <button type="button" (click)="openModel3dViewer('ar')" class="gallery-model-action">
-          <span class="material-symbols-outlined icon-md" aria-hidden="true">view_in_ar</span>
-          {{ 'catalog.viewInAr' | translate }}
+
+  @if (hasMultipleImages() || (selectedAsset() && !imageFailed())) {
+    <div class="gallery-strip">
+      <ng-container [ngTemplateOutlet]="thumbnails" />
+      @if (selectedAsset() && !imageFailed()) {
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          (click)="openViewer(imageViewer)"
+          class="ms-auto flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
+          <span class="material-symbols-outlined icon-sm" aria-hidden="true">fullscreen</span>
+          {{ 'catalog.enlargePhoto' | translate }}
         </button>
       }
     </div>
   }
 </section>
+
+<ng-template #thumbnails>
+  @if (hasMultipleImages()) {
+    <div role="group" class="gallery-thumbnails" [attr.aria-label]="'catalog.productImages' | translate">
+      @for (asset of imageAssets(); track asset.id; let index = $index) {
+        <button
+          type="button"
+          (click)="selectImage(index)"
+          [attr.aria-pressed]="selectedIndex() === index"
+          [attr.aria-label]="'catalog.viewImage' | translate: { index: index + 1 }"
+          class="gallery-thumbnail"
+        >
+          <img [src]="asset.url" alt="" loading="lazy" decoding="async" class="size-full object-cover" />
+        </button>
+      }
+    </div>
+  }
+</ng-template>
+
 <ng-template #imagePlaceholder>
-  <div
-    class="flex size-full flex-col items-center justify-center gap-3 p-5 text-center text-text-secondary"
-    role="status"
-  >
+  <div role="status" class="flex size-full flex-col items-center justify-center gap-3 p-5 text-center text-text-secondary">
     <span class="material-symbols-outlined icon-xl" aria-hidden="true">image</span>
     <p class="type-body">{{ 'catalog.productImageUnavailable' | translate }}</p>
   </div>
 </ng-template>
-@defer (when viewerRequest()) {
-  @if (viewerRequest(); as mode) {
-    @if (glbAsset(); as asset) {
-      <app-product-model-viewer
-        [glbAsset]="asset"
-        [usdzAsset]="usdzAsset()"
-        [dimensions]="publishedDimensions()"
-        [title]="title()"
-        [startInAr]="mode === 'ar'"
-        (close)="closeModel3dViewer()"
-      />
-    }
+
+<dialog
+  #imageViewer
+  class="gallery-viewer m-auto max-w-5xl bg-primary-deep p-4 text-surface-light backdrop:bg-primary-deep/70 sm:p-8"
+  aria-labelledby="gallery-viewer-title"
+  (close)="viewerOpen.set(false)"
+  (keydown)="onViewerKeydown($event)"
+>
+  <header class="flex items-start justify-between gap-3">
+    <div class="min-w-0">
+      <h2 id="gallery-viewer-title" class="wrap-anywhere type-page-title">{{ title() }}</h2>
+      <p aria-live="polite" class="mt-1 text-sm">
+        {{ 'catalog.galleryImageCount' | translate: { index: selectedIndex() + 1, total: imageAssets().length } }}
+      </p>
+    </div>
+    <form method="dialog">
+      <button
+        type="submit"
+        autofocus
+        [attr.aria-label]="'common.close' | translate"
+        class="flex size-11 cursor-pointer items-center justify-center"
+      >
+        <span class="material-symbols-outlined icon-md" aria-hidden="true">close</span>
+      </button>
+    </form>
+  </header>
+
+  @if (viewerOpen()) {
+    <div class="gallery-viewer-content">
+      <div
+        class="gallery-enlarged-image"
+        (touchstart)="startSwipe($event)"
+        (touchend)="endSwipe($event)"
+        (touchcancel)="cancelSwipe()"
+      >
+        @if (selectedAsset(); as asset) {
+          @if (!imageFailed()) {
+            <img
+              [src]="asset.url"
+              [alt]="asset.metadata?.alt || ('catalog.productImage' | translate: { title: title(), index: selectedIndex() + 1 })"
+              (error)="imageFailed.set(true)"
+            />
+          } @else {
+            <p role="status">{{ 'catalog.productImageUnavailable' | translate }}</p>
+          }
+        }
+      </div>
+
+      @if (hasMultipleImages()) {
+        <div class="gallery-viewer-controls">
+          <button
+            type="button"
+            (click)="stepImage(-1)"
+            [attr.aria-label]="'catalog.previousImage' | translate"
+            class="flex size-11 shrink-0 cursor-pointer items-center justify-center"
+          >
+            <span class="material-symbols-outlined icon-md" aria-hidden="true">chevron_left</span>
+          </button>
+          <ng-container [ngTemplateOutlet]="thumbnails" />
+          <button
+            type="button"
+            (click)="stepImage(1)"
+            [attr.aria-label]="'catalog.nextImage' | translate"
+            class="flex size-11 shrink-0 cursor-pointer items-center justify-center"
+          >
+            <span class="material-symbols-outlined icon-md" aria-hidden="true">chevron_right</span>
+          </button>
+        </div>
+      }
+    </div>
   }
-}
+</dialog>

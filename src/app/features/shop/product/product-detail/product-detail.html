@@ -1,74 +1,99 @@
-<main class="muvia-content-container max-w-7xl py-6 lg:py-9">
-  @if (isLoading()) {
-    <div
-      role="status"
-      class="flex flex-col items-center justify-center gap-4 py-24 text-text-secondary"
+<header class="border-b border-border-color bg-background-light lg:hidden">
+  <div class="muvia-content-container grid min-h-14 grid-cols-3 items-center">
+    <a
+      routerLink="/products"
+      [attr.aria-label]="'catalog.backToProducts' | translate"
+      class="inline-flex size-11 items-center justify-start text-primary"
     >
-      <span class="material-symbols-outlined animate-spin icon-xl" aria-hidden="true"
-        >progress_activity</span
+      <span class="material-symbols-outlined icon-lg" aria-hidden="true">arrow_back</span>
+    </a>
+    <a
+      routerLink="/home"
+      [attr.aria-label]="'navigation.goToTheMuviaHomePage' | translate"
+      class="inline-flex min-h-11 items-center justify-self-center gap-2 font-headline text-xl font-semibold text-primary"
+    >
+      <img src="/images/brand/muvia-symbol.png" alt="" width="24" height="24" />
+      Muvia
+    </a>
+    @if (product()) {
+      <button
+        type="button"
+        (click)="shareProduct()"
+        [attr.aria-label]="'catalog.shareProduct' | translate"
+        class="flex size-11 cursor-pointer items-center justify-end justify-self-end text-primary"
       >
+        <span class="material-symbols-outlined icon-md" aria-hidden="true">share</span>
+      </button>
+    }
+  </div>
+</header>
+
+<main class="muvia-content-container product-page max-w-7xl pb-8 lg:pt-5 lg:pb-12">
+  @if (isLoading()) {
+    <div role="status" class="flex flex-col items-center justify-center gap-4 py-24 text-text-secondary">
+      <span class="material-symbols-outlined animate-spin icon-xl" aria-hidden="true">progress_activity</span>
       <p class="type-body">{{ 'catalog.loadingProduct' | translate }}</p>
     </div>
   } @else if (error(); as message) {
     <div role="alert" class="flex flex-col items-center justify-center gap-4 py-24 text-center">
-      <span class="material-symbols-outlined icon-xl text-text-secondary" aria-hidden="true"
-        >error</span
-      >
       <h1 class="text-primary type-section-title md:type-page-title">{{ message | uiText }}</h1>
       <div class="flex flex-wrap justify-center gap-4">
         @if (canRetry()) {
           <button
             type="button"
             (click)="retryProduct()"
-            class="min-h-(--control-height) cursor-pointer rounded-control bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft type-control"
+            class="min-h-(--control-height) cursor-pointer bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft type-control"
           >
             {{ 'common.retry' | translate }}
           </button>
         }
-        <a
-          routerLink="/products"
-          class="inline-flex min-h-(--control-height) items-center text-sm text-primary underline-offset-4 hover:underline"
-          >{{ 'catalog.backToProducts' | translate }}</a
-        >
+        <a routerLink="/products" class="inline-flex min-h-(--control-height) items-center text-sm text-primary underline-offset-4 hover:underline">
+          {{ 'catalog.backToProducts' | translate }}
+        </a>
       </div>
     </div>
   } @else if (product(); as currentProduct) {
-    <nav [attr.aria-label]="'catalog.productBreadcrumb' | translate" class="mb-6">
+    <nav [attr.aria-label]="'catalog.productBreadcrumb' | translate" class="mb-4 hidden lg:block">
       <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-text-secondary">
-        <li>
-          <a routerLink="/home" class="underline-offset-4 hover:underline">{{
-            'catalog.home' | translate
-          }}</a>
-        </li>
-        <li aria-hidden="true">/</li>
-        <li>
-          <a routerLink="/products" class="underline-offset-4 hover:underline">{{
-            'catalog.products' | translate
-          }}</a>
-        </li>
+        <li><a routerLink="/home" class="hover:underline">{{ 'catalog.home' | translate }}</a></li>
+        <li aria-hidden="true">›</li>
+        <li><a routerLink="/products" class="hover:underline">{{ 'catalog.products' | translate }}</a></li>
         @if (currentProduct.category) {
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true">›</li>
           <li>{{ currentProduct.category | categoryName }}</li>
         }
-        <li aria-hidden="true">/</li>
-        <li aria-current="page" class="text-primary">{{ currentProduct.title }}</li>
       </ol>
     </nav>
-    <app-product-info [product]="currentProduct" (customize)="openStudio()">
-      <div class="product-workspace">
-        <app-image-gallery
-          #gallery
-          [assets]="currentProduct.assets || []"
-          [dimensions]="currentProduct.specifications?.dimensions ?? null"
-          [title]="currentProduct.title"
-        />
-        <app-product-overview
-          [product]="currentProduct"
-          (viewDimensions)="gallery.showPublishedDimensions()"
-          (customize)="openStudio()"
-        />
-      </div>
-    </app-product-info>
+
+    @if (shareFeedback(); as feedback) {
+      <p role="status" class="border border-border-color bg-surface-element px-3 py-2 text-sm text-primary lg:mb-4">
+        {{ feedback | translate }}
+      </p>
+    }
+
+    <div class="product-workspace">
+      <app-image-gallery [assets]="currentProduct.assets || []" [title]="currentProduct.title" />
+      <app-product-overview
+        [product]="currentProduct"
+        [canCustomize]="canCustomize()"
+        (share)="shareProduct()"
+        (customize)="openStudio()"
+      />
+    </div>
+
+    <div class="mt-8 flex flex-wrap items-start justify-between gap-x-6 gap-y-2 border-t border-border-color pt-3">
+      <p class="max-w-prose py-2 text-sm text-text-secondary">{{ 'catalog.demoNotice' | translate }}</p>
+      @if (currentProduct.sellerId) {
+        <a
+          [routerLink]="['/stores', currentProduct.sellerId]"
+          class="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-primary underline-offset-4 hover:underline"
+        >
+          {{ 'seller.viewStore' | translate }}
+          <span class="material-symbols-outlined icon-sm" aria-hidden="true">north_east</span>
+        </a>
+      }
+    </div>
+
     @if (canCustomize()) {
       @defer (when studioOpen()) {
         <app-dimension-studio [product]="currentProduct" />

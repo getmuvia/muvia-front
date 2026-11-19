@@ -1,3 +1,4 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -36,7 +37,6 @@ import { MarketService } from '@core/services/market/market';
 import { QuotationService } from '@core/services/quotation/quotation.service';
 import { ProductPrice } from '@shared/components/product-price/product-price';
 import { DimensionComparison } from '@features/quotations/components/dimension-comparison/dimension-comparison';
-import { PublishedDimensions } from '../published-dimensions/published-dimensions';
 
 interface DimensionDraft {
   width: number;
@@ -47,7 +47,7 @@ interface DimensionDraft {
 
 @Component({
   selector: 'app-dimension-studio',
-  imports: [FormField, TranslatePipe, ProductPrice, PublishedDimensions, DimensionComparison],
+  imports: [NgTemplateOutlet, FormField, TranslatePipe, ProductPrice, DimensionComparison],
   templateUrl: './dimension-studio.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'block scroll-mt-6', id: 'dimension-studio' },
@@ -103,7 +103,7 @@ export class DimensionStudio {
     height: this.draft().height,
     unit: this.base().unit,
   }));
-  readonly diagram = computed(() => quotationDimensions(this.requested()) ?? this.base());
+  readonly comparisonDimensions = computed(() => quotationDimensions(this.requested()) ?? this.base());
 
   constructor() {
     this.focusHeading();

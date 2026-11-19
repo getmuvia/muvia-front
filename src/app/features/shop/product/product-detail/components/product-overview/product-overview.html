@@ -1,86 +1,153 @@
-<div class="flex flex-col gap-6 p-5 sm:p-6 lg:p-7">
-  <app-product-availability [product]="product()" />
+<div class="flex min-w-0 items-start gap-4">
+  <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 bg-surface-element px-3 py-2">
+    <p class="min-w-0 font-body text-2xl font-bold wrap-anywhere text-primary lg:text-3xl">
+      <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
+    </p>
+    <p class="min-w-24 flex-1 basis-full text-sm text-text-secondary lg:basis-auto">
+      {{ 'catalog.publishedModelPrice' | translate }}
+    </p>
+  </div>
+  <button
+    type="button"
+    (click)="share.emit()"
+    [attr.aria-label]="'catalog.shareProduct' | translate"
+    class="hidden size-11 shrink-0 cursor-pointer items-center justify-center border border-border-color text-primary hover:bg-surface-element lg:inline-flex"
+  >
+    <span class="material-symbols-outlined icon-md" aria-hidden="true">share</span>
+  </button>
+</div>
+
+<h1 class="mt-2 wrap-anywhere text-primary type-page-title lg:type-hero-title">{{ product().title }}</h1>
+
+<app-product-availability class="mt-3" [product]="product()" [customizable]="canCustomize()" />
+
+<button
+  type="button"
+  (click)="technicalDetails.showModal()"
+  aria-haspopup="dialog"
+  aria-controls="product-technical-details"
+  class="mt-4 flex min-h-16 w-full cursor-pointer items-center gap-3 border border-border-color bg-background-light px-3 py-2.5 text-start hover:bg-surface-element"
+>
+  <span class="flex size-9 shrink-0 items-center justify-center bg-surface-element text-secondary">
+    <span class="material-symbols-outlined icon-md" aria-hidden="true">straighten</span>
+  </span>
+  <span class="min-w-0 flex-1">
+    <span class="block text-sm font-semibold text-primary">{{ 'catalog.dimensionsAndMaterials' | translate }}</span>
+    <span class="mt-0.5 block text-sm text-text-secondary">
+      @if (dimensionLabel(); as label) {
+        <span data-price-dimensions>{{ label }} · </span>
+      }
+      {{ 'catalog.viewTechnicalDetails' | translate }}
+    </span>
+  </span>
+  <span class="material-symbols-outlined shrink-0 text-primary icon-md" aria-hidden="true">chevron_right</span>
+</button>
+
+<div class="mt-4">
   @if (canCustomize()) {
     <button
       type="button"
       (click)="customize.emit()"
-      class="flex min-h-(--control-height) cursor-pointer items-center justify-center gap-2 rounded-control bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft type-control"
+      aria-controls="dimension-studio"
+      class="flex min-h-(--control-height) w-full cursor-pointer items-center justify-center bg-primary px-4 py-3 text-center text-surface-light hover:bg-primary-soft type-control"
     >
-      <span class="material-symbols-outlined icon-md" aria-hidden="true">design_services</span>
       {{ 'quotations.customize' | translate }}
     </button>
-  }
-  <div>
-    <p class="mb-3 font-medium tracking-wider text-secondary uppercase type-caption">
-      {{ 'catalog.publishedModel' | translate }}
-    </p>
-    <h2 class="text-primary type-price">
-      <span class="sr-only">{{ 'catalog.publishedModelPrice' | translate }}: </span>
-      <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
-    </h2>
-    @if (dimensionLabel(); as label) {
-      <p class="mt-2 text-text-secondary type-body">
-        {{ 'catalog.priceForPublishedDimensions' | translate: { dimensions: label } }}
-      </p>
-      <button
-        type="button"
-        (click)="viewDimensions.emit()"
-        class="mt-2 inline-flex min-h-11 cursor-pointer items-center gap-2 font-medium text-primary underline-offset-4 hover:underline type-control"
-      >
-        <span class="material-symbols-outlined icon-sm" aria-hidden="true">straighten</span>
-        {{ 'catalog.publishedDimensions' | translate }}
-      </button>
-    }
-  </div>
-  <div>
-    <h3 class="text-primary type-control">
-      {{ 'common.description' | translate }}
-    </h3>
-    @if (description(); as text) {
-      <p class="mt-4 whitespace-pre-line leading-relaxed text-text-secondary type-body">
-        {{ text }}
-      </p>
-    } @else {
-      <p class="mt-4 text-text-secondary type-body">
-        {{ 'catalog.descriptionUnavailable' | translate }}
-      </p>
-    }
-  </div>
-  @if (specifications().length || stock() !== null) {
-    <details class="border-y border-border-color" open>
-      <summary
-        class="flex min-h-(--control-height) cursor-pointer items-center justify-between gap-3 py-3 text-sm font-medium text-primary"
-      >
-        {{ 'catalog.details' | translate }}
-        <span class="material-symbols-outlined icon-md" aria-hidden="true">expand_more</span>
-      </summary>
-      <dl class="pb-4 type-body">
-        @for (item of specifications(); track item.label) {
-          <div
-            class="flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-border-color/60 py-3"
-          >
-            <dt class="text-text-secondary">{{ item.label | translate }}</dt>
-            <dd class="max-w-full break-words text-primary">{{ item.value }}</dd>
-          </div>
-        }
-        @let count = stock();
-        @if (count !== null) {
-          <div class="flex flex-wrap justify-between gap-3 border-t border-border-color/60 pt-3">
-            <dt class="text-text-secondary">{{ 'common.stock' | translate }}</dt>
-            <dd class="text-primary">
-              {{
-                (count === 1 ? 'catalog.units.one' : 'catalog.units.other') | translate: { count }
-              }}
-            </dd>
-          </div>
-        }
-      </dl>
-    </details>
-  }
-  <p class="flex items-start gap-2 leading-relaxed text-text-secondary type-body">
-    <span class="material-symbols-outlined shrink-0 icon-sm text-secondary" aria-hidden="true"
-      >info</span
+    <p class="mt-2.5 text-sm text-text-secondary">{{ 'catalog.customDimensionsPriceNotice' | translate }}</p>
+  } @else {
+    <a
+      [href]="contactHref()"
+      class="flex min-h-(--control-height) items-center justify-center bg-primary px-4 py-3 text-center text-surface-light hover:bg-primary-soft type-control"
     >
-    {{ 'catalog.demoNotice' | translate }}
-  </p>
+      {{ 'catalog.requestInformation' | translate }}
+    </a>
+  }
 </div>
+
+<details class="description-disclosure mt-4 border-y border-border-color lg:hidden">
+  <summary class="flex min-h-(--control-height) cursor-pointer items-center justify-between gap-3 py-2 text-sm font-semibold text-primary">
+    {{ 'common.description' | translate }}
+    <span class="material-symbols-outlined icon-md" aria-hidden="true">chevron_right</span>
+  </summary>
+  <div class="pb-4"><ng-container [ngTemplateOutlet]="productDescription" /></div>
+</details>
+<section class="mt-6 hidden lg:block">
+  <h2 class="mb-2 font-body text-base font-semibold text-primary">{{ 'common.description' | translate }}</h2>
+  <ng-container [ngTemplateOutlet]="productDescription" />
+</section>
+<ng-template #productDescription>
+  <p class="whitespace-pre-line wrap-anywhere text-text-secondary type-body">
+    @if (description(); as text) {
+      {{ text }}
+    } @else {
+      {{ 'catalog.descriptionUnavailable' | translate }}
+    }
+  </p>
+</ng-template>
+
+<app-product-visualization [product]="product()" [dimensions]="dimensions()" />
+
+<dialog
+  #technicalDetails
+  id="product-technical-details"
+  aria-labelledby="product-technical-details-title"
+  class="technical-details m-auto max-w-2xl border border-border-color bg-surface-light p-4 text-text-main shadow-float backdrop:bg-primary-deep/50 sm:p-8"
+>
+  <header class="flex min-w-0 items-start justify-between gap-3">
+    <div class="min-w-0">
+      <h2 id="product-technical-details-title" class="text-primary type-page-title">
+        {{ 'catalog.dimensionsAndMaterials' | translate }}
+      </h2>
+      <p class="mt-1 wrap-anywhere text-sm text-text-secondary">{{ product().title }}</p>
+    </div>
+    <form method="dialog" class="shrink-0">
+      <button
+        type="submit"
+        autofocus
+        [attr.aria-label]="'common.close' | translate"
+        class="flex size-11 cursor-pointer items-center justify-center border border-border-color text-primary hover:bg-surface-element"
+      >
+        <span class="material-symbols-outlined icon-md" aria-hidden="true">close</span>
+      </button>
+    </form>
+  </header>
+
+  @if (dimensions(); as publishedDimensions) {
+    <app-published-dimensions class="mt-6" [dimensions]="publishedDimensions" />
+  } @else {
+    <p class="mt-6 text-sm text-text-secondary">{{ 'catalog.dimensionsUnavailable' | translate }}</p>
+  }
+
+  <h3 class="mt-6 mb-2 font-body text-base font-semibold text-primary">{{ 'catalog.details' | translate }}</h3>
+  <dl class="type-body">
+    @for (item of specifications(); track item.label) {
+      <div class="grid grid-cols-2 gap-3 border-b border-border-color py-2">
+        <dt class="text-text-secondary">{{ item.label | translate }}</dt>
+        <dd class="wrap-anywhere font-medium text-primary">{{ item.value }}</dd>
+      </div>
+    }
+    @if (conditionLabel(); as label) {
+      <div class="grid grid-cols-2 gap-3 border-b border-border-color py-2">
+        <dt class="text-text-secondary">{{ 'catalog.productCondition' | translate }}</dt>
+        <dd data-product-condition class="font-medium text-primary">{{ label | translate }}</dd>
+      </div>
+    }
+    @let count = stock();
+    @if (count !== null) {
+      <div class="grid grid-cols-2 gap-3 border-b border-border-color py-2">
+        <dt class="text-text-secondary">{{ 'common.stock' | translate }}</dt>
+        <dd class="font-medium text-primary">
+          {{ (count === 1 ? 'catalog.units.one' : 'catalog.units.other') | translate: { count } }}
+        </dd>
+      </div>
+    }
+  </dl>
+  <form method="dialog" class="mt-5">
+    <button
+      type="submit"
+      class="min-h-(--control-height) w-full cursor-pointer border border-border-color px-3 py-2 text-primary hover:bg-surface-element type-control"
+    >
+      {{ 'catalog.backToProduct' | translate }}
+    </button>
+  </form>
+</dialog>

@@ -18,6 +18,10 @@ import { I18nService } from '@core/services/i18n/i18n';
   imports: [CountryNamePipe, TranslatePipe, RouterLink, NgClass, NgTemplateOutlet, ShopSearch, StoreAvatar, LanguageSelector],
   templateUrl: './shop-navbar.html',
   styleUrl: './shop-navbar.css',
+  host: {
+    '[class.product-detail-navbar]': 'isProductDetail()',
+    '[class.product-search-open]': 'isSearchOpen()',
+  },
 })
 export class ShopNavbar implements OnInit {
   private readonly authService = inject(AuthService);
@@ -44,6 +48,7 @@ export class ShopNavbar implements OnInit {
       || this.i18n.text('Mi Cuenta')
   );
 
+  readonly isProductDetail = signal(false);
   isTransparent = signal(false);
   isOverlay = signal<boolean>(false);
   isSearchOpen = signal<boolean>(false);
@@ -178,5 +183,6 @@ export class ShopNavbar implements OnInit {
     const style = route.snapshot.data['headerStyle'] ?? fallbackStyle;
     this.isTransparent.set(style === 'transparent');
     this.isOverlay.set(style === 'overlay');
+    this.isProductDetail.set(style === 'product-detail');
   }
 }

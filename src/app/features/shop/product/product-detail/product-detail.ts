@@ -7,6 +7,7 @@ import {
   effect,
   inject,
   input,
+  linkedSignal,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -15,9 +16,10 @@ import { Subject, catchError, map, of, switchMap } from 'rxjs';
 import type { ProductSummary } from '@core/models/product/product-summary';
 import { CategoryNamePipe, TranslatePipe, UiTextPipe } from '@core/services/i18n/translation-pipes';
 import { ProductStore } from '@core/services/product/product.store';
-import { ImageGallery, ProductInfo, ProductOverview, SimilarProducts } from './components';
-import { DimensionStudio } from './components/dimension-studio/dimension-studio';
+import { I18nService, type TranslationKey } from '@core/services/i18n/i18n';
 import { quotationDimensions } from '@core/models/quotation/quotation-dimensions';
+import { ImageGallery, ProductOverview, SimilarProducts } from './components';
+import { DimensionStudio } from './components/dimension-studio/dimension-studio';
 
 interface SimilarProductRequest {
   categoryId: string;
@@ -34,7 +36,6 @@ const SIMILAR_PRODUCT_LIMIT = 4;
     UiTextPipe,
     RouterLink,
     ImageGallery,
-    ProductInfo,
     ProductOverview,
     SimilarProducts,
     DimensionStudio,
@@ -48,6 +49,8 @@ export class ProductDetail {
   private readonly destroyRef = inject(DestroyRef);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly productStore = inject(ProductStore);
+  private readonly route = inject(ActivatedRoute);
+  private readonly i18n = inject(I18nService);
   private readonly similarProductRequests = new Subject<SimilarProductRequest | null>();
 
   readonly id = input.required<string>();
@@ -56,16 +59,51 @@ export class ProductDetail {
   readonly error = computed(() => this.productStore.error()?.message ?? null);
   readonly canRetry = computed(() => this.productStore.error()?.retryable ?? false);
   readonly similarProducts = signal<ProductSummary[]>([]);
-  readonly studioOpen = signal(inject(ActivatedRoute).snapshot.queryParamMap.get('quote') === '1');
+  readonly studioOpen = linkedSignal({
+    source: this.id,
+    computation: () => this.route.snapshot.queryParamMap.get('quote') === '1',
+  });
+  readonly shareFeedback = linkedSignal<string | undefined, TranslationKey | null>({
+    source: () => this.product()?.id,
+    computation: () => null,
+  });
   readonly canCustomize = computed(
     () =>
-      this.product()?.acceptsCustomDimensions &&
+      this.product()?.acceptsCustomDimensions === true &&
       !!quotationDimensions(this.product()?.specifications?.dimensions),
   );
 
   openStudio(): void {
+    if (!this.canCustomize()) return;
     this.studioOpen.set(true);
     this.host.nativeElement.querySelector<HTMLElement>('#dimension-studio-title')?.focus();
+  }
+
+
+  async shareProduct(): Promise<void> {
+    const product = this.product();
+    if (!product || typeof navigator === 'undefined') return;
+
+    const shareData = {
+      title: `${product.title} · Muvia`,
+      text: this.i18n.t('catalog.shareText', { title: product.title }),
+      url: `https://app.getmuvia.com/products/${product.id}`,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        this.shareFeedback.set('catalog.productShared');
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(shareData.url);
+        this.shareFeedback.set('catalog.productLinkCopied');
+      } else {
+        this.shareFeedback.set('catalog.productShareUnavailable');
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+      this.shareFeedback.set('catalog.productShareFailed');
+    }
   }
 
   constructor() {

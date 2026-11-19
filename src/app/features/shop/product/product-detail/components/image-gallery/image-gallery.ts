@@ -1,46 +1,26 @@
-import { DOCUMENT, NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
+import { NgOptimizedImage, NgTemplateOutlet } from '@angular/common';
 import {
-  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
-  ElementRef,
-  inject,
   input,
   linkedSignal,
   signal,
-  viewChild,
 } from '@angular/core';
-import type { ProductAsset, ProductDimensions } from '@core/models/product/product';
+import type { ProductAsset } from '@core/models/product/product';
 import { TranslatePipe } from '@core/services/i18n/translation-pipes';
-import { normalizePublishedDimensions } from '../../utils/published-dimensions';
-import { PublishedDimensions } from '../published-dimensions/published-dimensions';
-import { ProductModelViewer } from '../product-model-viewer/product-model-viewer';
-
-type GalleryView = 'images' | 'dimensions';
-type ViewerRequest = '3d' | 'ar' | null;
 
 @Component({
   selector: 'app-image-gallery',
-  imports: [
-    TranslatePipe,
-    NgOptimizedImage,
-    NgTemplateOutlet,
-    PublishedDimensions,
-    ProductModelViewer,
-  ],
+  imports: [TranslatePipe, NgOptimizedImage, NgTemplateOutlet],
   templateUrl: './image-gallery.html',
   styleUrl: './image-gallery.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ImageGallery {
-  private readonly document = inject(DOCUMENT);
-  private viewerTrigger: HTMLElement | null = null;
-  private readonly imagesTab = viewChild<ElementRef<HTMLButtonElement>>('imagesTab');
-  private readonly dimensionsTab = viewChild<ElementRef<HTMLButtonElement>>('dimensionsTab');
+  private touchStart: { x: number; y: number } | null = null;
 
   readonly assets = input<ProductAsset[]>([]);
-  readonly dimensions = input<ProductDimensions | null>(null);
   readonly title = input('');
   readonly imageAssets = computed(() =>
     this.assets()
@@ -53,81 +33,52 @@ export class ImageGallery {
   readonly selectedAsset = computed(() => this.imageAssets()[this.selectedIndex()] ?? null);
   readonly imageFailed = linkedSignal({ source: this.selectedAsset, computation: () => false });
   readonly hasMultipleImages = computed(() => this.imageAssets().length > 1);
-  readonly publishedDimensions = computed(() => normalizePublishedDimensions(this.dimensions()));
-  readonly activeView = linkedSignal<GalleryView>(() =>
-    !this.imageAssets().length && this.publishedDimensions() ? 'dimensions' : 'images',
-  );
-  readonly glbAsset = computed(
-    () =>
-      this.assets().find(
-        (asset) =>
-          asset.type === 'model_3d' &&
-          (asset.metadata?.['format'] === 'glb' || asset.metadata?.['format'] === 'gltf'),
-      ) ?? null,
-  );
-  readonly usdzAsset = computed(
-    () =>
-      this.assets().find(
-        (asset) => asset.type === 'model_3d' && asset.metadata?.['format'] === 'usdz',
-      ) ?? null,
-  );
-  readonly viewerRequest = linkedSignal<ProductAsset[], ViewerRequest>({
-    source: this.assets,
-    computation: () => null,
-  });
-  readonly isIosDevice = signal(false);
-
-  constructor() {
-    afterNextRender(() =>
-      this.isIosDevice.set(
-        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-          (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1),
-      ),
-    );
-  }
+  readonly viewerOpen = signal(false);
 
   selectImage(index: number): void {
     if (!Number.isInteger(index) || !this.imageAssets()[index]) return;
     this.selectedIndex.set(index);
   }
 
-  selectView(view: GalleryView): void {
-    if (view === 'dimensions' && !this.publishedDimensions()) return;
-    this.activeView.set(view);
+  stepImage(direction: -1 | 1): void {
+    const count = this.imageAssets().length;
+    if (count > 1) this.selectImage((this.selectedIndex() + direction + count) % count);
   }
 
-  showPublishedDimensions(): void {
-    this.selectView('dimensions');
-    this.dimensionsTab()?.nativeElement.focus();
+  openViewer(dialog: HTMLDialogElement): void {
+    if (!this.selectedAsset() || this.imageFailed() || dialog.open) return;
+    dialog.showModal();
+    this.viewerOpen.set(true);
   }
 
-  onViewKeydown(event: KeyboardEvent): void {
-    if (
-      !this.publishedDimensions() ||
-      !['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)
-    )
+  onViewerKeydown(event: KeyboardEvent): void {
+    if (!this.hasMultipleImages() || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
       return;
+    }
     event.preventDefault();
-    const view =
-      event.key === 'Home'
-        ? 'images'
-        : event.key === 'End'
-          ? 'dimensions'
-          : this.activeView() === 'images'
-            ? 'dimensions'
-            : 'images';
-    this.selectView(view);
-    (view === 'images' ? this.imagesTab() : this.dimensionsTab())?.nativeElement.focus();
+    this.stepImage(event.key === 'ArrowLeft' ? -1 : 1);
   }
 
-  openModel3dViewer(mode: Exclude<ViewerRequest, null> = '3d'): void {
-    if (!this.glbAsset()) return;
-    this.viewerTrigger = this.document.activeElement as HTMLElement | null;
-    this.viewerRequest.set(mode);
+  startSwipe(event: TouchEvent): void {
+    const touch = event.touches.length === 1 ? event.touches[0] : null;
+    this.touchStart = touch ? { x: touch.clientX, y: touch.clientY } : null;
   }
 
-  closeModel3dViewer(): void {
-    this.viewerRequest.set(null);
-    if (this.viewerTrigger?.isConnected) this.viewerTrigger.focus();
+  endSwipe(event: TouchEvent): void {
+    const start = this.touchStart;
+    this.cancelSwipe();
+    const touch = event.changedTouches[0];
+    if (!start || !touch || !this.hasMultipleImages()) return;
+
+    const horizontal = touch.clientX - start.x;
+    const vertical = touch.clientY - start.y;
+    if (Math.abs(horizontal) < 40 || Math.abs(horizontal) <= Math.abs(vertical)) return;
+
+    if (event.cancelable) event.preventDefault();
+    this.stepImage(horizontal < 0 ? 1 : -1);
+  }
+
+  cancelSwipe(): void {
+    this.touchStart = null;
   }
 }
