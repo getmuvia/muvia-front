@@ -38,7 +38,7 @@
           type="button"
           aria-haspopup="dialog"
           (click)="openViewer(imageViewer)"
-          class="ms-auto flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+          class="ms-auto flex min-h-11 shrink-0 cursor-pointer items-center gap-1.5 text-sm font-semibold text-ink hover:underline"
         >
           <span class="material-symbols-outlined icon-sm" aria-hidden="true">fullscreen</span>
           {{ 'catalog.enlargePhoto' | translate }}
@@ -67,7 +67,7 @@
 </ng-template>
 
 <ng-template #imagePlaceholder>
-  <div role="status" class="flex size-full flex-col items-center justify-center gap-3 p-5 text-center text-text-secondary">
+  <div role="status" class="flex size-full flex-col items-center justify-center gap-3 p-5 text-center text-ink">
     <span class="material-symbols-outlined icon-xl" aria-hidden="true">image</span>
     <p class="type-body">{{ 'catalog.productImageUnavailable' | translate }}</p>
   </div>
@@ -75,7 +75,7 @@
 
 <dialog
   #imageViewer
-  class="gallery-viewer m-auto max-w-5xl bg-primary-deep p-4 text-surface-light backdrop:bg-primary-deep/70 sm:p-8"
+  class="gallery-viewer m-auto max-w-5xl bg-ink p-4 text-canvas backdrop:bg-ink backdrop:opacity-70 sm:p-8"
   aria-labelledby="gallery-viewer-title"
   (close)="viewerOpen.set(false)"
   (keydown)="onViewerKeydown($event)"

@@ -2,7 +2,7 @@
   role="search"
   [attr.aria-label]="'catalog.searchTheCatalog' | translate"
   (submit)="submitSearch($event)"
-  class="flex min-w-0 items-center gap-3 border-b border-(--navbar-border) text-(--navbar-muted) transition-colors focus-within:border-(--navbar-foreground)"
+  class="flex min-w-0 items-center gap-3 border-b border-(--navbar-border) text-(--navbar-foreground) transition-colors focus-within:border-(--navbar-foreground)"
 >
   <span class="material-symbols-outlined shrink-0 icon-md" aria-hidden="true">search</span>
   <label for="navbar-search-input" class="sr-only">{{
@@ -25,7 +25,7 @@
     [value]="query()"
     (input)="onSearchInput($event)"
     (keydown)="onKeydown($event)"
-    class="h-(--control-height) min-w-0 flex-1 bg-transparent text-(--navbar-foreground) placeholder:text-(--navbar-muted) focus-visible:outline-none type-control"
+    class="h-(--control-height) min-w-0 flex-1 bg-transparent text-(--navbar-foreground) placeholder:text-(--navbar-foreground) focus-visible:outline-none type-control"
   />
   <button
     type="submit"
@@ -39,12 +39,12 @@
 
 @if (canSearch()) {
   <section
-    class="search-preview rounded-control border border-border-color bg-surface-light text-text-main shadow-float animate-fade-in-up"
+    class="search-preview rounded-control border border-line bg-canvas text-ink animate-fade-in-up"
     [attr.aria-label]="'catalog.yourSearchResults' | translate"
     [attr.aria-busy]="isLoading()"
   >
     @if (isLoading()) {
-      <p role="status" class="flex items-center gap-3 px-5 py-6 text-text-secondary type-body">
+      <p role="status" class="flex items-center gap-3 px-5 py-6 text-ink type-body">
         <span class="material-symbols-outlined animate-spin icon-md" aria-hidden="true"
           >progress_activity</span
         >
@@ -62,11 +62,11 @@
         />
       }
       @if (results().length === 0) {
-        <p role="status" class="px-5 py-6 text-text-secondary type-body">
+        <p role="status" class="px-5 py-6 text-ink type-body">
           {{ 'catalog.noProductsForQuery' | translate: { query: searchText() } }}
         </p>
       } @else if (primaryResults().length === 0) {
-        <p class="px-5 pt-4 text-text-secondary type-body">
+        <p class="px-5 pt-4 text-ink type-body">
           {{ 'catalog.weFoundNoDirectMatches' | translate }}
         </p>
       }
@@ -79,7 +79,7 @@
     >
       @for (group of resultGroups(); track group.label) {
         <div role="group" [attr.aria-label]="group.label | translate">
-          <p aria-hidden="true" class="px-5 pb-2 pt-4 font-semibold text-text-secondary type-body">
+          <p aria-hidden="true" class="px-5 pb-2 pt-4 font-semibold text-ink type-body">
             {{ group.label | translate }}
           </p>
           @for (result of group.results; track result.id; let index = $index) {
@@ -87,20 +87,20 @@
               role="option"
               [id]="'shop-search-option-' + (group.offset + index)"
               [attr.aria-selected]="selectedIndex() === group.offset + index"
-              [class.bg-surface-element]="selectedIndex() === group.offset + index"
+              [class.bg-paper]="selectedIndex() === group.offset + index"
               (mousedown)="$event.preventDefault()"
               (click)="selectResult(result)"
               (pointerenter)="selectedIndex.set(group.offset + index)"
-              class="flex cursor-pointer items-center gap-4 px-5 py-3 transition-colors hover:bg-surface-element"
+              class="flex cursor-pointer items-center gap-4 px-5 py-3 transition-colors hover:bg-paper"
             >
               <span
-                class="relative flex size-14 shrink-0 items-center justify-center overflow-hidden bg-surface-element"
+                class="relative flex size-14 shrink-0 items-center justify-center overflow-hidden bg-paper"
               >
                 @if (result.imageUrl) {
                   <img [ngSrc]="result.imageUrl" alt="" fill class="object-cover" />
                 } @else {
                   <span
-                    class="material-symbols-outlined icon-md text-text-secondary"
+                    class="material-symbols-outlined icon-md text-ink"
                     aria-hidden="true"
                     >image</span
                   >
@@ -109,12 +109,12 @@
               <span class="min-w-0 flex-1">
                 <span class="block truncate text-sm font-medium">{{ result.title }}</span>
                 @if (result.description) {
-                  <span class="mt-1 block truncate text-sm text-text-secondary">{{
+                  <span class="mt-1 block truncate text-sm text-ink">{{
                     result.description
                   }}</span>
                 }
               </span>
-              <span class="shrink-0 text-right text-sm font-semibold text-primary">
+              <span class="shrink-0 text-right text-sm font-semibold text-ink">
                 <app-product-price [amount]="result.price" [currencyCode]="result.currencyCode" />
               </span>
             </div>
@@ -127,7 +127,7 @@
       <button
         type="button"
         (click)="submitSearch()"
-        class="flex w-full cursor-pointer items-center justify-between gap-3 border-t border-border-color px-5 py-4 font-medium text-primary transition-colors hover:bg-surface-element type-control"
+        class="flex w-full cursor-pointer items-center justify-between gap-3 border-t border-line px-5 py-4 font-medium text-ink transition-colors hover:bg-paper type-control"
       >
         <span>{{ 'catalog.viewAllResults' | translate }}</span>
         <span class="material-symbols-outlined icon-md" aria-hidden="true">arrow_forward</span>

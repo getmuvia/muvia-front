@@ -1,5 +1,5 @@
 <div
-  class="w-full h-48 md:h-64 lg:h-[450px] flex flex-col justify-end overflow-hidden relative group/banner bg-background-light"
+  class="w-full h-48 md:h-64 lg:h-[450px] flex flex-col justify-end overflow-hidden relative group/banner bg-canvas"
 >
   @if (coverImageUrl()) {
     <img
@@ -10,7 +10,7 @@
     />
   } @else {
     <div
-      class="absolute inset-0 flex flex-col items-center justify-center text-text-light/40 gap-2 bg-background-light z-10"
+      class="absolute inset-0 flex flex-col items-center justify-center text-ink gap-2 bg-canvas z-10"
     >
       <span class="material-symbols-outlined icon-2xl">store</span>
       <p class="font-medium font-body type-body">{{ 'seller.noCoverImage' | translate }}</p>

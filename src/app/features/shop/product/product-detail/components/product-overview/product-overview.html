@@ -1,9 +1,9 @@
 <div class="flex min-w-0 items-start gap-4">
-  <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 bg-surface-element px-3 py-2">
-    <p class="min-w-0 font-body text-2xl font-bold wrap-anywhere text-primary lg:text-3xl">
+  <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 bg-sand px-3 py-2">
+    <p class="min-w-0 font-body text-2xl font-bold wrap-anywhere text-ink lg:text-3xl">
       <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
     </p>
-    <p class="min-w-24 flex-1 basis-full text-sm text-text-secondary lg:basis-auto">
+    <p class="min-w-24 flex-1 basis-full text-sm text-ink lg:basis-auto">
       {{ 'catalog.publishedModelPrice' | translate }}
     </p>
   </div>
@@ -11,13 +11,13 @@
     type="button"
     (click)="share.emit()"
     [attr.aria-label]="'catalog.shareProduct' | translate"
-    class="hidden size-11 shrink-0 cursor-pointer items-center justify-center border border-border-color text-primary hover:bg-surface-element lg:inline-flex"
+    class="hidden size-11 shrink-0 cursor-pointer items-center justify-center border border-line text-ink hover:bg-paper lg:inline-flex"
   >
     <span class="material-symbols-outlined icon-md" aria-hidden="true">share</span>
   </button>
 </div>
 
-<h1 class="mt-2 wrap-anywhere text-primary type-page-title lg:type-hero-title">{{ product().title }}</h1>
+<h1 class="mt-2 wrap-anywhere text-ink type-page-title lg:type-hero-title">{{ product().title }}</h1>
 
 <app-product-availability class="mt-3" [product]="product()" [customizable]="canCustomize()" />
 
@@ -26,21 +26,21 @@
   (click)="technicalDetails.showModal()"
   aria-haspopup="dialog"
   aria-controls="product-technical-details"
-  class="mt-4 flex min-h-16 w-full cursor-pointer items-center gap-3 border border-border-color bg-background-light px-3 py-2.5 text-start hover:bg-surface-element"
+  class="mt-4 flex min-h-16 w-full cursor-pointer items-center gap-3 border border-line bg-paper px-3 py-2.5 text-start hover:bg-sand"
 >
-  <span class="flex size-9 shrink-0 items-center justify-center bg-surface-element text-secondary">
+  <span class="flex size-9 shrink-0 items-center justify-center bg-canvas text-ink">
     <span class="material-symbols-outlined icon-md" aria-hidden="true">straighten</span>
   </span>
   <span class="min-w-0 flex-1">
-    <span class="block text-sm font-semibold text-primary">{{ 'catalog.dimensionsAndMaterials' | translate }}</span>
-    <span class="mt-0.5 block text-sm text-text-secondary">
+    <span class="block text-sm font-semibold text-ink">{{ 'catalog.dimensionsAndMaterials' | translate }}</span>
+    <span class="mt-0.5 block text-sm text-ink">
       @if (dimensionLabel(); as label) {
         <span data-price-dimensions>{{ label }} · </span>
       }
       {{ 'catalog.viewTechnicalDetails' | translate }}
     </span>
   </span>
-  <span class="material-symbols-outlined shrink-0 text-primary icon-md" aria-hidden="true">chevron_right</span>
+  <span class="material-symbols-outlined shrink-0 text-ink icon-md" aria-hidden="true">chevron_right</span>
 </button>
 
 <div class="mt-4">
@@ -49,34 +49,34 @@
       type="button"
       (click)="customize.emit()"
       aria-controls="dimension-studio"
-      class="flex min-h-(--control-height) w-full cursor-pointer items-center justify-center bg-primary px-4 py-3 text-center text-surface-light hover:bg-primary-soft type-control"
+      class="flex min-h-(--control-height) w-full cursor-pointer items-center justify-center bg-ink px-4 py-3 text-center text-canvas hover:bg-sand hover:text-ink type-control"
     >
       {{ 'quotations.customize' | translate }}
     </button>
-    <p class="mt-2.5 text-sm text-text-secondary">{{ 'catalog.customDimensionsPriceNotice' | translate }}</p>
+    <p class="mt-2.5 text-sm text-ink">{{ 'catalog.customDimensionsPriceNotice' | translate }}</p>
   } @else {
     <a
       [href]="contactHref()"
-      class="flex min-h-(--control-height) items-center justify-center bg-primary px-4 py-3 text-center text-surface-light hover:bg-primary-soft type-control"
+      class="flex min-h-(--control-height) items-center justify-center bg-ink px-4 py-3 text-center text-canvas hover:bg-sand hover:text-ink type-control"
     >
       {{ 'catalog.requestInformation' | translate }}
     </a>
   }
 </div>
 
-<details class="description-disclosure mt-4 border-y border-border-color lg:hidden">
-  <summary class="flex min-h-(--control-height) cursor-pointer items-center justify-between gap-3 py-2 text-sm font-semibold text-primary">
+<details class="description-disclosure mt-4 border-y border-line lg:hidden">
+  <summary class="flex min-h-(--control-height) cursor-pointer items-center justify-between gap-3 py-2 text-sm font-semibold text-ink">
     {{ 'common.description' | translate }}
     <span class="material-symbols-outlined icon-md" aria-hidden="true">chevron_right</span>
   </summary>
   <div class="pb-4"><ng-container [ngTemplateOutlet]="productDescription" /></div>
 </details>
 <section class="mt-6 hidden lg:block">
-  <h2 class="mb-2 font-body text-base font-semibold text-primary">{{ 'common.description' | translate }}</h2>
+  <h2 class="mb-2 font-body text-base font-semibold text-ink">{{ 'common.description' | translate }}</h2>
   <ng-container [ngTemplateOutlet]="productDescription" />
 </section>
 <ng-template #productDescription>
-  <p class="whitespace-pre-line wrap-anywhere text-text-secondary type-body">
+  <p class="whitespace-pre-line wrap-anywhere text-ink type-body">
     @if (description(); as text) {
       {{ text }}
     } @else {
@@ -91,21 +91,21 @@
   #technicalDetails
   id="product-technical-details"
   aria-labelledby="product-technical-details-title"
-  class="technical-details m-auto max-w-2xl border border-border-color bg-surface-light p-4 text-text-main shadow-float backdrop:bg-primary-deep/50 sm:p-8"
+  class="technical-details m-auto max-w-2xl border border-line bg-canvas p-4 text-ink backdrop:bg-ink backdrop:opacity-50 sm:p-8"
 >
   <header class="flex min-w-0 items-start justify-between gap-3">
     <div class="min-w-0">
-      <h2 id="product-technical-details-title" class="text-primary type-page-title">
+      <h2 id="product-technical-details-title" class="text-ink type-page-title">
         {{ 'catalog.dimensionsAndMaterials' | translate }}
       </h2>
-      <p class="mt-1 wrap-anywhere text-sm text-text-secondary">{{ product().title }}</p>
+      <p class="mt-1 wrap-anywhere text-sm text-ink">{{ product().title }}</p>
     </div>
     <form method="dialog" class="shrink-0">
       <button
         type="submit"
         autofocus
         [attr.aria-label]="'common.close' | translate"
-        class="flex size-11 cursor-pointer items-center justify-center border border-border-color text-primary hover:bg-surface-element"
+        class="flex size-11 cursor-pointer items-center justify-center border border-line text-ink hover:bg-paper"
       >
         <span class="material-symbols-outlined icon-md" aria-hidden="true">close</span>
       </button>
@@ -115,28 +115,28 @@
   @if (dimensions(); as publishedDimensions) {
     <app-published-dimensions class="mt-6" [dimensions]="publishedDimensions" />
   } @else {
-    <p class="mt-6 text-sm text-text-secondary">{{ 'catalog.dimensionsUnavailable' | translate }}</p>
+    <p class="mt-6 text-sm text-ink">{{ 'catalog.dimensionsUnavailable' | translate }}</p>
   }
 
-  <h3 class="mt-6 mb-2 font-body text-base font-semibold text-primary">{{ 'catalog.details' | translate }}</h3>
+  <h3 class="mt-6 mb-2 font-body text-base font-semibold text-ink">{{ 'catalog.details' | translate }}</h3>
   <dl class="type-body">
     @for (item of specifications(); track item.label) {
-      <div class="grid grid-cols-2 gap-3 border-b border-border-color py-2">
-        <dt class="text-text-secondary">{{ item.label | translate }}</dt>
-        <dd class="wrap-anywhere font-medium text-primary">{{ item.value }}</dd>
+      <div class="grid grid-cols-2 gap-3 border-b border-line py-2">
+        <dt class="text-ink">{{ item.label | translate }}</dt>
+        <dd class="wrap-anywhere font-medium text-ink">{{ item.value }}</dd>
       </div>
     }
     @if (conditionLabel(); as label) {
-      <div class="grid grid-cols-2 gap-3 border-b border-border-color py-2">
-        <dt class="text-text-secondary">{{ 'catalog.productCondition' | translate }}</dt>
-        <dd data-product-condition class="font-medium text-primary">{{ label | translate }}</dd>
+      <div class="grid grid-cols-2 gap-3 border-b border-line py-2">
+        <dt class="text-ink">{{ 'catalog.productCondition' | translate }}</dt>
+        <dd data-product-condition class="font-medium text-ink">{{ label | translate }}</dd>
       </div>
     }
     @let count = stock();
     @if (count !== null) {
-      <div class="grid grid-cols-2 gap-3 border-b border-border-color py-2">
-        <dt class="text-text-secondary">{{ 'common.stock' | translate }}</dt>
-        <dd class="font-medium text-primary">
+      <div class="grid grid-cols-2 gap-3 border-b border-line py-2">
+        <dt class="text-ink">{{ 'common.stock' | translate }}</dt>
+        <dd class="font-medium text-ink">
           {{ (count === 1 ? 'catalog.units.one' : 'catalog.units.other') | translate: { count } }}
         </dd>
       </div>
@@ -145,7 +145,7 @@
   <form method="dialog" class="mt-5">
     <button
       type="submit"
-      class="min-h-(--control-height) w-full cursor-pointer border border-border-color px-3 py-2 text-primary hover:bg-surface-element type-control"
+      class="min-h-(--control-height) w-full cursor-pointer border border-line px-3 py-2 text-ink hover:bg-paper type-control"
     >
       {{ 'catalog.backToProduct' | translate }}
     </button>

@@ -18,25 +18,25 @@ export interface ProfileMetadataFormData {
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center scrim p-4 backdrop-blur-sm"
         (click)="onBackdropClick($event)"
       >
         <div
-          class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-dialog bg-white shadow-2xl animate-fade-in-up"
+          class="flex max-h-[90vh] w-full max-w-lg flex-col overflow-hidden rounded-dialog bg-canvas animate-fade-in-up"
           role="dialog"
           aria-modal="true"
           aria-labelledby="profile-metadata-title"
           (click)="$event.stopPropagation()"
         >
           <div
-            class="flex shrink-0 items-center justify-between border-b border-text-light/10 px-6 py-4"
+            class="flex shrink-0 items-center justify-between border-b border-line px-6 py-4"
           >
-            <h3 id="profile-metadata-title" class="text-text-light type-card-title">
+            <h3 id="profile-metadata-title" class="text-ink type-card-title">
               {{ 'seller.editProfile' | translate }}
             </h3>
             <button
               type="button"
-              class="rounded-full p-1 text-text-light/40 transition-colors hover:bg-surface-element hover:text-gray-600 disabled:cursor-not-allowed disabled:opacity-50"
+              class="rounded-full p-1 text-ink transition-colors hover:bg-paper hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
               [attr.aria-label]="'common.close' | translate"
               [disabled]="isLoading()"
               (click)="close()"
@@ -68,7 +68,7 @@ export interface ProfileMetadataFormData {
                 </div>
               }
               <div class="flex flex-col gap-2">
-                <label for="business-name" class="text-sm font-bold text-text-light">
+                <label for="business-name" class="text-sm font-bold text-ink">
                   {{ 'seller.sellerName' | translate }}
                 </label>
                 <input
@@ -77,7 +77,7 @@ export interface ProfileMetadataFormData {
                   formControlName="businessName"
                   maxlength="255"
                   autocomplete="organization"
-                  class="w-full rounded-control border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 type-control"
+                  class="w-full rounded-control border border-line bg-paper px-4 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-ink type-control"
                   [attr.aria-invalid]="businessName.invalid && businessName.touched"
                   aria-describedby="business-name-help"
                 />
@@ -99,24 +99,24 @@ export interface ProfileMetadataFormData {
               </div>
 
               <div class="flex flex-col gap-2">
-                <label for="seller-description" class="text-sm font-bold text-text-light">
+                <label for="seller-description" class="text-sm font-bold text-ink">
                   {{ 'common.description' | translate }}
                 </label>
                 <textarea
                   id="seller-description"
                   formControlName="description"
                   rows="4"
-                  class="w-full resize-none rounded-control border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 type-control"
+                  class="w-full resize-none rounded-control border border-line bg-paper px-4 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-ink type-control"
                   [placeholder]="'seller.brieflyDescribeYourBusiness' | translate"
                 ></textarea>
-                <p class="text-text-light/60 type-body">
+                <p class="text-ink type-body">
                   {{ 'seller.youCanLeaveItEmptyIfYouDoNot' | translate }}
                 </p>
               </div>
-              <div class="border-t border-text-light/10 pt-5">
+              <div class="border-t border-line pt-5">
                 <label
                   for="offers-repairs"
-                  class="flex cursor-pointer items-center justify-between gap-4 text-sm font-bold text-text-light"
+                  class="flex cursor-pointer items-center justify-between gap-4 text-sm font-bold text-ink"
                 >
                   {{ 'seller.offerRepairServices' | translate }}
                   <input
@@ -125,13 +125,13 @@ export interface ProfileMetadataFormData {
                     role="switch"
                     formControlName="offersRepairs"
                     [attr.aria-checked]="form.controls.offersRepairs.value"
-                    class="size-5 shrink-0 accent-primary"
+                    class="size-5 shrink-0 accent-ink"
                   />
                 </label>
               </div>
               @if (form.controls.offersRepairs.value) {
                 <div class="flex flex-col gap-2">
-                  <label for="repair-scope" class="text-sm font-bold text-text-light">{{
+                  <label for="repair-scope" class="text-sm font-bold text-ink">{{
                     'seller.repairScope' | translate
                   }}</label>
                   <input
@@ -142,7 +142,7 @@ export interface ProfileMetadataFormData {
                     [placeholder]="'seller.repairScopeExample' | translate"
                     [attr.aria-invalid]="repairScope.invalid && repairScope.touched"
                     aria-describedby="repair-scope-help"
-                    class="w-full rounded-control border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 type-control"
+                    class="w-full rounded-control border border-line bg-paper px-4 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-ink type-control"
                   />
                   <p id="repair-scope-help" class="min-h-5 type-body">
                     @if (
@@ -155,14 +155,14 @@ export interface ProfileMetadataFormData {
                         'seller.repairScopeMaxLength' | translate
                       }}</span>
                     } @else {
-                      <span class="text-text-light/60">{{
+                      <span class="text-ink">{{
                         'seller.repairScopeHelp' | translate
                       }}</span>
                     }
                   </p>
                 </div>
                 <div class="flex flex-col gap-2">
-                  <label for="repair-details" class="text-sm font-bold text-text-light">{{
+                  <label for="repair-details" class="text-sm font-bold text-ink">{{
                     'seller.repairDetails' | translate
                   }}</label>
                   <textarea
@@ -174,21 +174,21 @@ export interface ProfileMetadataFormData {
                       form.controls.repairDetails.invalid && form.controls.repairDetails.touched
                     "
                     aria-describedby="repair-details-help"
-                    class="w-full resize-none rounded-control border border-text-light/20 bg-surface-element px-4 py-2 text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 type-control"
+                    class="w-full resize-none rounded-control border border-line bg-paper px-4 py-2 text-ink focus:outline-none focus:ring-2 focus:ring-ink type-control"
                   ></textarea>
-                  <p id="repair-details-help" class="text-text-light/60 type-body">
+                  <p id="repair-details-help" class="text-ink type-body">
                     {{ 'seller.repairDetailsHelp' | translate }}
                   </p>
                 </div>
                 <label
                   for="external-repairs"
-                  class="flex cursor-pointer items-start gap-3 text-sm text-text-light"
+                  class="flex cursor-pointer items-start gap-3 text-sm text-ink"
                 >
                   <input
                     id="external-repairs"
                     type="checkbox"
                     formControlName="repairsExternalProducts"
-                    class="mt-0.5 size-5 shrink-0 accent-primary"
+                    class="mt-0.5 size-5 shrink-0 accent-ink"
                   />
                   {{ 'seller.repairsExternalProductsLabel' | translate }}
                 </label>
@@ -196,11 +196,11 @@ export interface ProfileMetadataFormData {
             </div>
 
             <div
-              class="flex shrink-0 justify-end gap-3 border-t border-text-light/10 bg-surface-element p-4"
+              class="flex shrink-0 justify-end gap-3 border-t border-line bg-paper p-4"
             >
               <button
                 type="button"
-                class="rounded-control px-4 py-2 font-medium text-text-light transition-colors hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 type-control"
+                class="rounded-control px-4 py-2 font-medium text-ink transition-colors hover:bg-mist disabled:cursor-not-allowed disabled:opacity-50 type-control"
                 [disabled]="isLoading()"
                 (click)="close()"
               >
@@ -208,7 +208,7 @@ export interface ProfileMetadataFormData {
               </button>
               <button
                 type="submit"
-                class="flex items-center gap-2 rounded-control bg-primary px-6 py-2 font-bold text-white shadow-lg shadow-primary/20 transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-50 type-control"
+                class="flex items-center gap-2 rounded-control bg-ink px-6 py-2 font-bold text-canvas transition-colors hover:bg-sand hover:text-ink disabled:cursor-not-allowed disabled:opacity-50 type-control"
                 [disabled]="form.pristine || isLoading()"
               >
                 @if (isLoading()) {

@@ -8,7 +8,7 @@
 }
 h1 {
   margin: 0;
-  color: var(--color-text-main);
+  color: var(--color-ink);
   font-weight: 600;
   letter-spacing: -0.025em;
 }
@@ -18,14 +18,14 @@ h1 {
   align-items: center;
   gap: 0.625rem;
   margin: 0;
-  color: var(--color-text-secondary);
+  color: var(--color-ink);
 }
 .demo-label {
   flex-shrink: 0;
-  border: 1px solid color-mix(in srgb, var(--color-accent) 65%, var(--color-border-color));
-  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  border: 1px solid var(--color-line);
+  background: var(--color-sand);
   padding: 0.125rem 0.5rem;
-  color: var(--color-secondary);
+  color: var(--color-ink);
   font-size: var(--text-sm);
   font-weight: 700;
   text-transform: uppercase;

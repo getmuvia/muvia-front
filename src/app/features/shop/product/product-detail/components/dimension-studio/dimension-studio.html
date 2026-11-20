@@ -1,26 +1,26 @@
 <section
-  class="mt-8 border border-border-color bg-surface-light"
+  class="mt-8 border border-line bg-canvas"
   aria-labelledby="dimension-studio-title"
 >
-  <header class="border-b border-border-color px-5 py-5 sm:px-7">
-    <p class="mb-1 text-sm font-semibold text-secondary">
+  <header class="border-b border-line px-5 py-5 sm:px-7">
+    <p class="mb-1 text-sm font-semibold text-ink">
       {{ 'quotations.step' | translate: { step: reviewOpen() ? 2 : 1 } }}
     </p>
-    <h2 #heading id="dimension-studio-title" tabindex="-1" class="text-primary type-page-title lg:type-hero-title">
+    <h2 #heading id="dimension-studio-title" tabindex="-1" class="text-ink type-page-title lg:type-hero-title">
       {{ (reviewOpen() ? 'quotations.reviewTitle' : 'quotations.customize') | translate }}
     </h2>
-    <p class="mt-2 wrap-anywhere text-sm text-text-secondary">{{ product().title }}</p>
+    <p class="mt-2 wrap-anywhere text-sm text-ink">{{ product().title }}</p>
   </header>
 
   <div class="grid lg:grid-cols-2">
-    <div class="grid min-w-0 content-start gap-5 border-b border-border-color p-5 sm:p-7 lg:border-r lg:border-b-0">
+    <div class="grid min-w-0 content-start gap-5 border-b border-line p-5 sm:p-7 lg:border-r lg:border-b-0">
       @if (!reviewOpen()) {
         <ng-container [ngTemplateOutlet]="priceBand" />
       }
       <app-dimension-comparison
         [published]="base()"
         [requested]="comparisonDimensions()"
-        class="border border-border-color bg-background-light px-3 lg:block"
+        class="border border-line bg-canvas px-3 lg:block"
         [class.hidden]="!reviewOpen()"
       />
       @if (reviewOpen()) {
@@ -32,14 +32,14 @@
       @if (!reviewOpen()) {
         <form (submit)="review($event)" novalidate class="space-y-5">
           <fieldset class="space-y-4">
-            <legend class="font-semibold text-primary type-control">{{ 'quotations.requested' | translate }}</legend>
-            <p id="studio-dimension-range" class="text-text-secondary type-caption">
+            <legend class="font-semibold text-ink type-control">{{ 'quotations.requested' | translate }}</legend>
+            <p id="studio-dimension-range" class="text-ink type-caption">
               {{ 'quotations.range' | translate: range() }}
             </p>
             <div class="grid gap-3 sm:grid-cols-3">
               @for (axis of axes; track axis.key) {
-                <div class="min-w-0 border-t border-border-color pt-2">
-                  <label [for]="'studio-' + axis.key" class="mb-1.5 block text-primary type-caption">
+                <div class="min-w-0 border-t border-line pt-2">
+                  <label [for]="'studio-' + axis.key" class="mb-1.5 block text-ink type-caption">
                     {{ axis.label | translate }} ({{ base().unit }})
                   </label>
                   @let invalid = fields[axis.key]().touched() && fields[axis.key]().invalid();
@@ -50,7 +50,7 @@
                     [formField]="fields[axis.key]"
                     [attr.aria-invalid]="invalid"
                     [attr.aria-describedby]="invalid ? 'studio-dimension-range studio-error-' + axis.key : 'studio-dimension-range'"
-                    class="min-h-(--control-height) w-full border border-border-color bg-background-light px-3 py-2 text-primary type-control"
+                    class="min-h-(--control-height) w-full border border-line bg-canvas px-3 py-2 text-ink type-control"
                   />
                   @if (invalid) {
                     <p [id]="'studio-error-' + axis.key" class="mt-1 text-error type-caption">
@@ -62,21 +62,21 @@
             </div>
           </fieldset>
 
-          <button type="button" (click)="reset()" class="min-h-11 cursor-pointer text-primary underline underline-offset-4 type-caption">
+          <button type="button" (click)="reset()" class="min-h-11 cursor-pointer text-ink underline underline-offset-4 type-caption">
             {{ 'quotations.reset' | translate }}
           </button>
 
           @if (user()) {
             <div>
-              <label for="studio-notes" class="mb-2 block text-primary type-control">{{ 'quotations.notes' | translate }}</label>
+              <label for="studio-notes" class="mb-2 block text-ink type-control">{{ 'quotations.notes' | translate }}</label>
               <textarea
                 id="studio-notes"
                 [formField]="fields.notes"
                 rows="4"
                 aria-describedby="studio-notes-help"
-                class="w-full border border-border-color bg-background-light px-3 py-2 text-primary type-body"
+                class="w-full border border-line bg-canvas px-3 py-2 text-ink type-body"
               ></textarea>
-              <p id="studio-notes-help" class="mt-2 text-text-secondary type-caption">
+              <p id="studio-notes-help" class="mt-2 text-ink type-caption">
                 {{ 'quotations.notesHelp' | translate: { max: limits.notesLength } }}
               </p>
               @if (fields.notes().touched() && fields.notes().invalid()) {
@@ -85,11 +85,11 @@
             </div>
           }
 
-          <p class="text-text-secondary type-caption">{{ 'quotations.priceNotice' | translate }}</p>
+          <p class="text-ink type-caption">{{ 'quotations.priceNotice' | translate }}</p>
           @if (ownProduct()) {
-            <p class="text-text-secondary type-body">{{ 'quotations.selfRequest' | translate }}</p>
+            <p class="text-ink type-body">{{ 'quotations.selfRequest' | translate }}</p>
           } @else {
-            <button type="submit" class="min-h-(--control-height) w-full cursor-pointer bg-primary px-4 py-3 text-surface-light hover:bg-primary-soft type-control">
+            <button type="submit" class="min-h-(--control-height) w-full cursor-pointer bg-ink px-4 py-3 text-canvas hover:bg-sand hover:text-ink type-control">
               {{ (user() ? 'quotations.review' : 'quotations.login') | translate }}
             </button>
           }
@@ -97,19 +97,19 @@
       } @else {
         <div class="space-y-5">
           <div>
-            <h3 class="text-primary type-control">{{ 'quotations.contact' | translate }}</h3>
-            <p class="mt-2 wrap-anywhere text-primary type-body">{{ user()?.email }}</p>
-            <p class="mt-2 text-text-secondary type-caption">{{ 'quotations.contactNotice' | translate }}</p>
+            <h3 class="text-ink type-control">{{ 'quotations.contact' | translate }}</h3>
+            <p class="mt-2 wrap-anywhere text-ink type-body">{{ user()?.email }}</p>
+            <p class="mt-2 text-ink type-caption">{{ 'quotations.contactNotice' | translate }}</p>
           </div>
           @if (draft().notes.trim()) {
-            <p class="whitespace-pre-line wrap-anywhere text-text-secondary type-body">{{ draft().notes }}</p>
+            <p class="whitespace-pre-line wrap-anywhere text-ink type-body">{{ draft().notes }}</p>
           }
           <div class="flex flex-col gap-3">
             <button
               type="button"
               (click)="send()"
               [disabled]="sending()"
-              class="min-h-(--control-height) cursor-pointer bg-primary px-4 py-3 text-surface-light hover:bg-primary-soft disabled:cursor-wait disabled:opacity-60 type-control"
+              class="min-h-(--control-height) cursor-pointer bg-ink px-4 py-3 text-canvas hover:bg-sand hover:text-ink disabled:cursor-wait disabled:opacity-60 type-control"
             >
               {{ (sending() ? 'quotations.sending' : 'quotations.send') | translate }}
             </button>
@@ -117,7 +117,7 @@
               type="button"
               (click)="edit()"
               [disabled]="sending()"
-              class="min-h-11 cursor-pointer border border-border-color px-4 py-2 text-primary hover:bg-surface-element disabled:cursor-wait disabled:opacity-60 type-control"
+              class="min-h-11 cursor-pointer border border-line px-4 py-2 text-ink hover:bg-paper disabled:cursor-wait disabled:opacity-60 type-control"
             >
               {{ 'quotations.edit' | translate }}
             </button>
@@ -132,16 +132,16 @@
 </section>
 
 <ng-template #priceBand>
-  <dl class="grid min-w-0 grid-cols-2 divide-x divide-border-color border border-border-color bg-surface-element py-3">
+  <dl class="grid min-w-0 grid-cols-2 divide-x divide-line border border-line bg-sand py-3">
     <div class="min-w-0 px-3">
-      <dt class="text-text-secondary type-caption">{{ 'quotations.published' | translate }}</dt>
-      <dd class="mt-1 wrap-anywhere text-primary type-price">
+      <dt class="text-ink type-caption">{{ 'quotations.published' | translate }}</dt>
+      <dd class="mt-1 wrap-anywhere text-ink type-price">
         <app-product-price [amount]="referencePrice().amount" [currencyCode]="referencePrice().currencyCode" />
       </dd>
     </div>
     <div class="min-w-0 px-3">
-      <dt class="text-text-secondary type-caption">{{ 'quotations.withYourDimensions' | translate }}</dt>
-      <dd class="mt-1 text-primary type-price">{{ 'quotations.toQuote' | translate }}</dd>
+      <dt class="text-ink type-caption">{{ 'quotations.withYourDimensions' | translate }}</dt>
+      <dd class="mt-1 text-ink type-price">{{ 'quotations.toQuote' | translate }}</dd>
     </div>
   </dl>
 </ng-template>

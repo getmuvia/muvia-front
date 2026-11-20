@@ -8,13 +8,12 @@ import { TranslatePipe } from '@core/services/i18n/translation-pipes';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <label
+      class="text-ink"
       [class]="
         variant() === 'full'
-          ? 'inline-flex items-center text-primary'
-          : 'inline-flex h-10 items-center gap-1 rounded-control border border-current/20 px-2'
+          ? 'inline-flex items-center'
+          : 'inline-flex h-10 items-center gap-1 rounded-control border border-line px-2'
       "
-      [class.text-white]="light()"
-      [class.text-primary]="!light()"
       [title]="(i18n.language() === 'es' ? 'common.spanish' : 'common.english') | translate"
     >
       @if (variant() === 'compact') {
@@ -43,10 +42,10 @@ import { TranslatePipe } from '@core/services/i18n/translation-pipes';
             : 'cursor-pointer bg-transparent py-2 font-semibold uppercase focus-visible:outline-2 focus-visible:outline-offset-2'
         "
       >
-        <option value="es" lang="es" [title]="'common.spanish' | translate" class="text-text-light">
+        <option value="es" lang="es" [title]="'common.spanish' | translate" class="text-ink">
           {{ variant() === 'full' ? ('common.spanish' | translate) : 'ES' }}
         </option>
-        <option value="en" lang="en" [title]="'common.english' | translate" class="text-text-light">
+        <option value="en" lang="en" [title]="'common.english' | translate" class="text-ink">
           {{ variant() === 'full' ? ('common.english' | translate) : 'EN' }}
         </option>
       </select>
@@ -55,7 +54,6 @@ import { TranslatePipe } from '@core/services/i18n/translation-pipes';
 })
 export class LanguageSelector {
   readonly i18n = inject(I18nService);
-  readonly light = input(false);
   readonly variant = input<'compact' | 'full'>('compact');
 
   changeLanguage(event: Event): void {

@@ -3,7 +3,7 @@
     min-height: 100vh;
     min-height: 100dvh;
     flex-direction: column;
-    background: color-mix(in srgb, var(--color-surface-light) 94%, var(--color-primary) 6%);
+    background: var(--color-mist);
 }
 
 .seller-main {

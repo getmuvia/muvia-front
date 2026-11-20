@@ -1,13 +1,13 @@
-<div class="min-h-screen bg-[var(--color-background-light)] px-4 py-12 md:py-16">
+<div class="min-h-screen bg-canvas px-4 py-12 md:py-16">
   <div class="mx-auto flex w-full max-w-6xl flex-col items-center">
     <div class="mb-10 text-center animate-fade-in-up">
-      <h1 class="headline mb-4 text-[var(--color-primary)] type-section-title md:type-page-title">
+      <h1 class="headline mb-4 text-ink type-section-title md:type-page-title">
         {{ 'staging.designYourSpaceWithAi' | translate }}
       </h1>
-      <p class="mx-auto max-w-2xl text-[var(--color-text-secondary)] type-body">
+      <p class="mx-auto max-w-2xl text-ink type-body">
         {{ 'staging.uploadAPhotoOfYourRoomAndChooseThe' | translate }}
       </p>
-      <p class="mt-4 font-medium text-[var(--color-text-secondary)] type-body" aria-live="polite">
+      <p class="mt-4 font-medium text-ink type-body" aria-live="polite">
         @if (isQuotaLoading()) {
           {{ 'staging.checkingAvailableGenerations' | translate }}
         } @else if (quota(); as currentQuota) {
@@ -19,7 +19,7 @@
       </p>
       @if (quotaErrorMessage()) {
         <div
-          class="mx-auto mt-4 flex max-w-xl flex-col items-center justify-center gap-3 rounded-control border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700 sm:flex-row"
+          class="mx-auto mt-4 flex max-w-xl flex-col items-center justify-center gap-3 rounded-control border border-error/20 bg-error/5 p-4 text-sm font-medium text-error sm:flex-row"
           role="alert"
         >
           <span>{{ quotaErrorMessage() | uiText }}</span>
@@ -27,7 +27,7 @@
             type="button"
             (click)="retryQuota()"
             [disabled]="isQuotaLoading()"
-            class="shrink-0 rounded-control border border-red-300 px-4 py-2 font-bold uppercase tracking-wide transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 type-control"
+            class="shrink-0 rounded-control border border-error/30 px-4 py-2 font-bold uppercase tracking-wide transition-colors hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-50 type-control"
           >
             {{ 'common.retry' | translate }}
           </button>
@@ -39,15 +39,15 @@
       <section aria-labelledby="room-photo-title">
         <div class="mb-4 flex items-center gap-3">
           <span
-            class="flex size-8 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white"
+            class="flex size-8 items-center justify-center rounded-full bg-ink text-sm font-bold text-canvas"
           >
             1
           </span>
           <div>
-            <h2 id="room-photo-title" class="text-[var(--color-text-main)] type-section-title">
+            <h2 id="room-photo-title" class="text-ink type-section-title">
               {{ 'staging.chooseYourRoom' | translate }}
             </h2>
-            <p class="text-[var(--color-text-secondary)] type-body">
+            <p class="text-ink type-body">
               {{ 'staging.jpgOrPng' | translate }}
             </p>
           </div>
@@ -55,9 +55,9 @@
 
         <div
           class="upload-area group relative flex h-72 w-full cursor-pointer flex-col items-center justify-center overflow-hidden rounded-panel border-2 border-dashed transition-all duration-300 md:h-96"
-          [class.border-[var(--color-primary)]]="dragActive() || !!selectedFile()"
-          [class.bg-[var(--color-surface-light)]]="dragActive()"
-          [class.border-[var(--color-border-color)]]="!dragActive() && !selectedFile()"
+          [class.border-ink]="dragActive() || !!selectedFile()"
+          [class.bg-canvas]="dragActive()"
+          [class.border-line]="!dragActive() && !selectedFile()"
           (dragover)="onDragOver($event)"
           (dragleave)="onDragLeave($event)"
           (drop)="onDrop($event)"
@@ -74,39 +74,39 @@
           @if (isQuotaLoading()) {
             <div class="flex flex-col items-center px-6 text-center" role="status">
               <span
-                class="material-symbols-outlined mb-4 animate-spin icon-2xl text-[var(--color-primary)]"
+                class="material-symbols-outlined mb-4 animate-spin icon-2xl text-ink"
                 aria-hidden="true"
                 >progress_activity</span
               >
-              <h3 class="text-[var(--color-text-main)] type-card-title">
+              <h3 class="text-ink type-card-title">
                 {{ 'staging.checkingAvailability' | translate }}
               </h3>
             </div>
           } @else if (!quota()) {
             <div class="flex flex-col items-center px-6 text-center">
               <span
-                class="material-symbols-outlined mb-4 icon-2xl text-[var(--color-text-secondary)]"
+                class="material-symbols-outlined mb-4 icon-2xl text-ink"
                 aria-hidden="true"
                 >cloud_off</span
               >
-              <h3 class="mb-2 text-[var(--color-text-main)] type-card-title">
+              <h3 class="mb-2 text-ink type-card-title">
                 {{ 'staging.availabilityNotConfirmed' | translate }}
               </h3>
-              <p class="text-[var(--color-text-secondary)] type-body">
+              <p class="text-ink type-body">
                 {{ 'staging.tryTheAvailabilityCheckAgainBeforeSelectingAPhoto' | translate }}
               </p>
             </div>
           } @else if (quota()?.remaining === 0) {
             <div class="flex flex-col items-center px-6 text-center">
               <span
-                class="material-symbols-outlined mb-4 icon-2xl text-[var(--color-text-secondary)]"
+                class="material-symbols-outlined mb-4 icon-2xl text-ink"
               >
                 hourglass_top
               </span>
-              <h3 class="mb-2 text-[var(--color-text-main)] type-card-title">
+              <h3 class="mb-2 text-ink type-card-title">
                 {{ 'staging.dailyLimitReached' | translate }}
               </h3>
-              <p class="text-[var(--color-text-secondary)] type-body">
+              <p class="text-ink type-body">
                 {{ 'staging.youWillHave10AvailableGenerationsAgainTomorrow' | translate }}
               </p>
             </div>
@@ -117,7 +117,7 @@
               class="absolute inset-0 h-full w-full object-cover"
             />
             <div
-              class="absolute inset-x-0 bottom-0 z-10 bg-black/65 px-4 py-3 text-center text-sm font-semibold text-white backdrop-blur-sm"
+              class="absolute inset-x-0 bottom-0 z-10 bg-ink px-4 py-3 text-center text-sm font-semibold text-canvas backdrop-blur-sm"
             >
               {{ 'staging.changePhoto' | translate }}
             </div>
@@ -126,14 +126,14 @@
               class="flex flex-col items-center px-6 text-center transition-transform duration-300 group-hover:scale-105"
             >
               <div
-                class="mb-4 flex size-16 items-center justify-center rounded-full bg-[var(--color-surface-element)] text-[var(--color-primary)]"
+                class="mb-4 flex size-16 items-center justify-center rounded-full bg-paper text-ink"
               >
                 <span class="material-symbols-outlined icon-xl">add_a_photo</span>
               </div>
-              <h3 class="mb-2 text-[var(--color-text-main)] type-card-title">
+              <h3 class="mb-2 text-ink type-card-title">
                 {{ 'staging.uploadYourPhotoHere' | translate }}
               </h3>
-              <p class="text-[var(--color-text-secondary)] type-body">
+              <p class="text-ink type-body">
                 {{ 'staging.dragAndDrop' | translate }}
               </p>
             </div>
@@ -141,19 +141,19 @@
         </div>
 
         @if (selectedFile(); as roomFile) {
-          <p class="mt-3 truncate text-[var(--color-text-secondary)] type-caption">
+          <p class="mt-3 truncate text-ink type-caption">
             {{ 'staging.photo' | translate }}
-            <span class="font-semibold text-[var(--color-text-main)]">{{ roomFile.name }}</span>
+            <span class="font-semibold text-ink">{{ roomFile.name }}</span>
           </p>
         }
 
-        <p class="mt-4 leading-5 text-[var(--color-text-secondary)] type-body">
+        <p class="mt-4 leading-5 text-ink type-body">
           {{ 'staging.weProcessThisPhotoWithGoogleCloudOnlyTo' | translate }}
           <a
             href="https://getmuvia.com/privacy"
             target="_blank"
             rel="noopener noreferrer"
-            class="font-semibold text-[var(--color-primary)] underline underline-offset-2"
+            class="font-semibold text-ink underline underline-offset-2"
           >
             {{ 'staging.privacyPolicy' | translate }}
           </a>
@@ -163,18 +163,18 @@
       <section aria-labelledby="product-selection-title">
         <div class="mb-4 flex items-center gap-3">
           <span
-            class="flex size-8 items-center justify-center rounded-full bg-[var(--color-primary)] text-sm font-bold text-white"
+            class="flex size-8 items-center justify-center rounded-full bg-ink text-sm font-bold text-canvas"
           >
             2
           </span>
           <div>
             <h2
               id="product-selection-title"
-              class="text-[var(--color-text-main)] type-section-title"
+              class="text-ink type-section-title"
             >
               {{ 'staging.chooseAProduct' | translate }}
             </h2>
-            <p class="text-[var(--color-text-secondary)] type-body">
+            <p class="text-ink type-body">
               {{ 'staging.theAiWillOnlyUseTheProductYouSelect' | translate }}
             </p>
           </div>
@@ -182,7 +182,7 @@
 
         @if (selectionMessage()) {
           <p
-            class="mb-4 rounded-control border border-amber-200 bg-amber-50 p-3 font-medium text-amber-800 type-body"
+            class="mb-4 rounded-control border border-warning/30 bg-warning/10 p-3 font-medium text-warning type-body"
             role="status"
           >
             {{ selectionMessage() | uiText }}
@@ -191,7 +191,7 @@
 
         @if (selectedProductDetails(); as selectedProduct) {
           <div
-            class="mb-4 flex items-center gap-3 rounded-panel border-2 border-[var(--color-primary)] bg-primary/5 p-3"
+            class="mb-4 flex items-center gap-3 rounded-panel border-2 border-ink bg-mist p-3"
           >
             <img
               [src]="productImage(selectedProduct) ?? ''"
@@ -200,14 +200,14 @@
             />
             <div class="min-w-0 flex-1">
               <p
-                class="font-bold uppercase tracking-wider text-[var(--color-primary)] type-caption"
+                class="font-bold uppercase tracking-wider text-ink type-caption"
               >
                 {{ 'staging.selectedProduct' | translate }}
               </p>
-              <p class="mt-1 truncate font-bold text-[var(--color-text-main)] type-caption">
+              <p class="mt-1 truncate font-bold text-ink type-caption">
                 {{ selectedProduct.title }}
               </p>
-              <p class="mt-1 font-semibold text-[var(--color-primary)] type-body">
+              <p class="mt-1 font-semibold text-ink type-body">
                 <app-product-price
                   [amount]="productPrice(selectedProduct).amount"
                   [currencyCode]="productPrice(selectedProduct).currencyCode"
@@ -218,7 +218,7 @@
               type="button"
               (click)="changeProduct()"
               [disabled]="isGenerating()"
-              class="shrink-0 rounded-control border border-primary/25 px-3 py-2 font-bold text-primary transition-colors hover:border-primary hover:bg-white disabled:cursor-not-allowed disabled:opacity-50 type-control"
+              class="shrink-0 rounded-control border border-line px-3 py-2 font-bold text-ink transition-colors hover:border-ink hover:bg-canvas disabled:cursor-not-allowed disabled:opacity-50 type-control"
             >
               {{ 'seller.change' | translate }}
             </button>
@@ -230,7 +230,7 @@
             'catalog.searchProducts2' | translate
           }}</label>
           <span
-            class="material-symbols-outlined pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 icon-lg text-[var(--color-text-secondary)]"
+            class="material-symbols-outlined pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 icon-lg text-ink"
           >
             search
           </span>
@@ -241,7 +241,7 @@
             (input)="onSearchInput($event)"
             [placeholder]="'staging.searchByNameOrDescription' | translate"
             [disabled]="isGenerating()"
-            class="h-12 w-full rounded-control border border-[var(--color-border-color)] bg-white pl-12 pr-12 text-[var(--color-text-main)] outline-none transition focus:border-[var(--color-primary)] focus:ring-4 focus:ring-primary/10 type-control"
+            class="h-12 w-full rounded-control border border-line bg-canvas pl-12 pr-12 text-ink outline-none transition focus:border-ink focus:ring-2 focus:ring-ink type-control"
           />
           @if (searchQuery()) {
             <button
@@ -249,7 +249,7 @@
               (click)="clearSearch()"
               [attr.aria-label]="'catalog.clearSearch' | translate"
               [disabled]="isGenerating()"
-              class="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[var(--color-text-secondary)] hover:bg-[var(--color-surface-element)] hover:text-[var(--color-text-main)]"
+              class="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-ink hover:bg-paper hover:text-ink"
             >
               <span class="material-symbols-outlined icon-md">close</span>
             </button>
@@ -263,12 +263,12 @@
           >
             @for (placeholder of [1, 2, 3, 4, 5, 6]; track placeholder) {
               <div
-                class="animate-pulse overflow-hidden rounded-panel border border-[var(--color-border-color)] bg-white"
+                class="animate-pulse overflow-hidden rounded-panel border border-line bg-canvas"
               >
-                <div class="aspect-square bg-[var(--color-surface-element)]"></div>
+                <div class="aspect-square bg-paper"></div>
                 <div class="space-y-2 p-4">
-                  <div class="h-4 rounded-editorial bg-[var(--color-surface-element)]"></div>
-                  <div class="h-3 w-1/2 rounded-editorial bg-[var(--color-surface-element)]"></div>
+                  <div class="h-4 rounded-editorial bg-paper"></div>
+                  <div class="h-3 w-1/2 rounded-editorial bg-paper"></div>
                 </div>
               </div>
             }
@@ -276,7 +276,7 @@
         } @else {
           @if (catalogErrorMessage()) {
             <div
-              class="mb-4 flex flex-col items-center justify-center gap-3 rounded-panel border border-red-200 bg-red-50 p-4 text-center text-sm font-medium text-red-700 sm:flex-row"
+              class="mb-4 flex flex-col items-center justify-center gap-3 rounded-panel border border-error/20 bg-error/5 p-4 text-center text-sm font-medium text-error sm:flex-row"
               role="alert"
             >
               <span>{{ catalogErrorMessage() | uiText }}</span>
@@ -284,7 +284,7 @@
                 type="button"
                 (click)="retryCatalog()"
                 [disabled]="isCatalogLoading()"
-                class="shrink-0 rounded-control border border-red-300 px-4 py-2 font-bold uppercase tracking-wide transition-colors hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 type-control"
+                class="shrink-0 rounded-control border border-error/30 px-4 py-2 font-bold uppercase tracking-wide transition-colors hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-50 type-control"
               >
                 {{ 'common.retry' | translate }}
               </button>
@@ -293,7 +293,7 @@
 
           @if (isCatalogLoading() && products().length > 0) {
             <p
-              class="mb-4 text-center text-[var(--color-text-secondary)] type-body"
+              class="mb-4 text-center text-ink type-body"
               role="status"
               aria-live="polite"
             >
@@ -304,7 +304,7 @@
           @if (products().length === 0) {
             @if (!catalogErrorMessage()) {
               <div
-                class="rounded-panel border border-[var(--color-border-color)] bg-white p-6 text-center text-sm font-medium text-[var(--color-text-secondary)]"
+                class="rounded-panel border border-line bg-canvas p-6 text-center text-sm font-medium text-ink"
                 role="status"
               >
                 @if (searchQuery().trim()) {
@@ -325,15 +325,15 @@
                 <button
                   type="button"
                   role="radio"
-                  class="relative overflow-hidden rounded-panel border-2 bg-white text-left transition-all hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[var(--color-primary)]/20 disabled:cursor-not-allowed disabled:opacity-60"
-                  [class.border-[var(--color-primary)]]="selectedProductId() === product.id"
-                  [class.border-[var(--color-border-color)]]="selectedProductId() !== product.id"
+                  class="relative overflow-hidden rounded-panel border-2 bg-canvas text-left transition-all hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink disabled:cursor-not-allowed disabled:opacity-60"
+                  [class.border-ink]="selectedProductId() === product.id"
+                  [class.border-line]="selectedProductId() !== product.id"
                   [attr.aria-checked]="selectedProductId() === product.id"
                   [disabled]="isGenerating()"
                   (click)="selectProduct(product)"
                 >
                   <div
-                    class="relative aspect-square overflow-hidden bg-[var(--color-surface-element)]"
+                    class="relative aspect-square overflow-hidden bg-paper"
                   >
                     <img
                       [src]="productImage(product) ?? ''"
@@ -343,17 +343,17 @@
                     />
                     @if (selectedProductId() === product.id) {
                       <span
-                        class="material-symbols-outlined absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-[var(--color-primary)] icon-md text-white shadow-md"
+                        class="material-symbols-outlined absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-ink icon-md text-canvas"
                       >
                         check
                       </span>
                     }
                   </div>
                   <div class="p-3">
-                    <p class="line-clamp-2 font-bold text-[var(--color-text-main)] type-body">
+                    <p class="line-clamp-2 font-bold text-ink type-body">
                       {{ product.title }}
                     </p>
-                    <p class="mt-1 font-semibold text-[var(--color-primary)] type-body">
+                    <p class="mt-1 font-semibold text-ink type-body">
                       <app-product-price
                         [amount]="product.price"
                         [currencyCode]="product.currencyCode"
@@ -367,7 +367,7 @@
 
           @if (!catalogErrorMessage() || products().length > 0) {
             <p
-              class="mt-4 text-center text-[var(--color-text-secondary)] type-body"
+              class="mt-4 text-center text-ink type-body"
               aria-live="polite"
             >
               @if (catalogTotal() > 0) {
@@ -393,7 +393,7 @@
     </div>
 
     @if (errorMessage()) {
-      <p class="mt-6 max-w-2xl text-center font-medium text-red-700 type-body" role="alert">
+      <p class="mt-6 max-w-2xl text-center font-medium text-error type-body" role="alert">
         {{ errorMessage() | uiText }}
       </p>
     }
@@ -403,7 +403,7 @@
         type="button"
         (click)="generateImage()"
         [disabled]="!canGenerate()"
-        class="flex min-h-14 w-full items-center justify-center gap-3 rounded-control bg-[var(--color-primary)] px-8 py-4 font-bold text-white transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:cursor-not-allowed disabled:bg-gray-300 disabled:text-gray-600 disabled:shadow-none type-control"
+        class="flex min-h-14 w-full items-center justify-center gap-3 rounded-control bg-action px-8 py-4 font-bold text-on-action transition-all enabled:hover:-translate-y-0.5 enabled:hover:bg-action/90 disabled:cursor-not-allowed disabled:bg-line disabled:text-ink type-control"
       >
         @if (isGenerating()) {
           <span class="material-symbols-outlined spin icon-lg" aria-hidden="true">autorenew</span>
@@ -414,19 +414,19 @@
         }
       </button>
       @if (quotaErrorMessage()) {
-        <p class="text-center text-[var(--color-text-secondary)] type-body">
+        <p class="text-center text-ink type-body">
           {{ 'staging.firstConfirmYourAvailableGenerations' | translate }}
         </p>
       } @else if (!selectedFile()) {
-        <p class="text-center text-[var(--color-text-secondary)] type-body">
+        <p class="text-center text-ink type-body">
           {{ 'staging.firstSelectAPhoto' | translate }}
         </p>
       } @else if (!selectedProductId()) {
-        <p class="text-center text-[var(--color-text-secondary)] type-body">
+        <p class="text-center text-ink type-body">
           {{ 'staging.nowSelectTheProductYouWantToVisualize' | translate }}
         </p>
       } @else {
-        <p class="text-center text-[var(--color-text-secondary)] type-body">
+        <p class="text-center text-ink type-body">
           {{ 'staging.generationWillUse1OfYourAvailableUses' | translate }}
         </p>
       }
@@ -436,35 +436,35 @@
       class="mt-16 grid max-w-4xl grid-cols-1 gap-8 text-center md:grid-cols-3 animate-fade-in delay-200"
     >
       <div class="feature-item">
-        <span class="material-symbols-outlined mb-2 icon-2xl text-[var(--color-secondary)]"
+        <span class="material-symbols-outlined mb-2 icon-2xl text-ink"
           >auto_fix_high</span
         >
-        <h4 class="text-[var(--color-text-main)] type-card-title">
+        <h4 class="text-ink type-card-title">
           {{ 'staging.advancedAi' | translate }}
         </h4>
-        <p class="text-[var(--color-text-secondary)] type-body">
+        <p class="text-ink type-body">
           {{ 'staging.instantPersonalizedDecoratingIdeas' | translate }}
         </p>
       </div>
       <div class="feature-item">
-        <span class="material-symbols-outlined mb-2 icon-2xl text-[var(--color-secondary)]"
+        <span class="material-symbols-outlined mb-2 icon-2xl text-ink"
           >chair</span
         >
-        <h4 class="text-[var(--color-text-main)] type-card-title">
+        <h4 class="text-ink type-card-title">
           {{ 'staging.demoCatalogProduct' | translate }}
         </h4>
-        <p class="text-[var(--color-text-secondary)] type-body">
+        <p class="text-ink type-body">
           {{ 'staging.visualizeTheProductYouChoose' | translate }}
         </p>
       </div>
       <div class="feature-item">
-        <span class="material-symbols-outlined mb-2 icon-2xl text-[var(--color-secondary)]"
+        <span class="material-symbols-outlined mb-2 icon-2xl text-ink"
           >photo_camera</span
         >
-        <h4 class="text-[var(--color-text-main)] type-card-title">
+        <h4 class="text-ink type-card-title">
           {{ 'staging.youDecide' | translate }}
         </h4>
-        <p class="text-[var(--color-text-secondary)] type-body">
+        <p class="text-ink type-body">
           {{ 'staging.nothingIsGeneratedUntilYouConfirmYourSelection' | translate }}
         </p>
       </div>

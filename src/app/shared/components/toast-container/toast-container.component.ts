@@ -11,13 +11,13 @@ import { ToastService } from '@core/services/toast/toast';
     >
       @for (toast of toastService.toasts(); track toast.id) {
         <div
-          class="pointer-events-auto flex w-full max-w-md transform items-center justify-between rounded-panel p-4 shadow-lg transition-all duration-300 animate-slide-in sm:w-auto sm:min-w-[300px]"
+          class="pointer-events-auto flex w-full max-w-md transform items-center justify-between rounded-panel p-4 transition-all duration-300 animate-slide-in sm:w-auto sm:min-w-[300px]"
           [class.bg-success]="toast.type === 'success'"
           [class.bg-error]="toast.type === 'error'"
-          [class.bg-primary]="toast.type === 'info'"
-          [class.bg-warning]="toast.type === 'warning'"
-          [class.text-white]="toast.type !== 'warning'"
-          [class.text-text-main]="toast.type === 'warning'"
+          [class.bg-ink]="toast.type === 'info'"
+          [class.bg-line]="toast.type === 'warning'"
+          [class.text-canvas]="toast.type !== 'warning'"
+          [class.text-ink]="toast.type === 'warning'"
           [attr.role]="toast.type === 'error' || toast.type === 'warning' ? 'alert' : 'status'"
           [attr.aria-live]="
             toast.type === 'error' || toast.type === 'warning' ? 'assertive' : 'polite'

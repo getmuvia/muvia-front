@@ -1,10 +1,10 @@
-<footer class="muvia-footer border-t border-accent/30 bg-primary-deep text-white">
+<footer class="muvia-footer border-t border-line bg-canvas text-ink">
   <div class="muvia-wide-container py-9 lg:py-11">
     <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-[2.2fr_1fr_1fr_1fr] lg:items-start">
       <div>
-        <div class="flex flex-wrap items-center gap-3 text-white">
+        <div class="flex flex-wrap items-center gap-3">
           <div
-            class="flex size-8 items-center justify-center rounded-full border border-accent/40 bg-surface-light shadow-sm"
+            class="flex size-8 items-center justify-center rounded-full border border-line bg-canvas"
           >
             <img
               src="/images/brand/muvia-symbol.png"
@@ -17,12 +17,12 @@
           </div>
           <h2 class="tracking-[0.04em] type-section-title">Muvia</h2>
           <span
-            class="inline-flex rounded-control border border-accent/35 bg-accent/10 px-2.5 py-0.5 text-sm font-bold uppercase tracking-[0.12em] text-accent"
+            class="inline-flex rounded-control border border-line bg-paper px-2.5 py-0.5 text-sm font-bold uppercase tracking-[0.12em] text-ink"
           >
             {{ 'navigation.mvpDemoCatalog' | translate }}
           </span>
         </div>
-        <p class="mt-2.5 max-w-md font-body leading-5 text-white/65 type-body">
+        <p class="mt-2.5 max-w-md font-body leading-5 type-body">
           {{
             'navigation.discoverFurnitureUsingNaturalLanguageAndExploreVisualizationExperiences'
               | translate
@@ -92,14 +92,14 @@
     </div>
 
     <div
-      class="mt-7 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-5 font-body text-sm text-white/50 sm:flex-row"
+      class="mt-7 flex flex-col items-center justify-between gap-3 border-t border-line pt-5 font-body text-sm sm:flex-row"
     >
       <p class="type-body">{{ 'navigation.copyright' | translate }}</p>
       <div class="flex items-center gap-4">
-        <app-language-selector [light]="true" />
+        <app-language-selector />
         <a
           routerLink="/location"
-          class="inline-flex items-center gap-2 rounded-control px-2.5 py-1.5 transition-colors hover:bg-white/5"
+          class="inline-flex items-center gap-2 rounded-control px-2.5 py-1.5 transition-colors hover:bg-paper"
           [attr.aria-label]="'navigation.changeCountryOrRegion' | translate"
         >
           <img
@@ -107,7 +107,7 @@
             [alt]="
               'common.flag' | translate: { country: (marketService.selectedMarket() | countryName) }
             "
-            class="h-3.5 w-5 rounded-editorial object-cover shadow-sm ring-1 ring-white/20"
+            class="h-3.5 w-5 rounded-editorial object-cover ring-1 ring-line"
           />
           <span>{{ marketService.selectedMarket() | countryName }}</span>
           <span class="material-symbols-outlined icon-xs" aria-hidden="true">language</span>

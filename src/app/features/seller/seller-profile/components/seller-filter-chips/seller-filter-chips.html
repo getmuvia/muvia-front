@@ -4,22 +4,22 @@
       (click)="onChipClick(chip.id)"
       [class]="
         chip.id === activeChipId()
-          ? 'flex h-9 shrink-0 items-center justify-center gap-x-2 bg-primary/20 pl-4 pr-3'
-          : 'flex h-9 shrink-0 items-center justify-center gap-x-2 bg-surface-element pl-4 pr-3 hover:bg-surface-element/80 transition-colors'
+          ? 'flex h-9 shrink-0 items-center justify-center gap-x-2 bg-mist pl-4 pr-3'
+          : 'flex h-9 shrink-0 items-center justify-center gap-x-2 bg-paper pl-4 pr-3 hover:bg-paper transition-colors'
       "
     >
       <p
         class="type-body"
         [class]="
           chip.id === activeChipId()
-            ? 'text-primary text-sm font-body font-medium leading-normal'
-            : 'text-text-light text-sm font-body font-medium leading-normal'
+            ? 'text-ink text-sm font-body font-medium leading-normal'
+            : 'text-ink text-sm font-body font-medium leading-normal'
         "
       >
         {{ chip.label | uiText }}
       </p>
       @if (chip.hasDropdown) {
-        <span class="material-symbols-outlined text-text-light/60">arrow_drop_down</span>
+        <span class="material-symbols-outlined text-ink">arrow_drop_down</span>
       }
     </button>
   }

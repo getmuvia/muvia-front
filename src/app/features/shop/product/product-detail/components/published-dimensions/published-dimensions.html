@@ -4,11 +4,11 @@
 >
   @for (measurement of measurements(); track measurement.key) {
     <div
-      class="min-w-0 border border-border-color bg-background-light px-1 py-2.5 sm:col-span-1 sm:px-3"
+      class="min-w-0 border border-line bg-canvas px-1 py-2.5 sm:col-span-1 sm:px-3"
       [class]="measurement.key === 'depth' ? 'col-span-4' : 'col-span-3'"
     >
-      <dt class="text-sm wrap-anywhere text-text-secondary">{{ measurement.label | translate }}</dt>
-      <dd class="mt-0.5 text-base font-semibold wrap-anywhere text-primary sm:text-lg">{{ measurement.value }}</dd>
+      <dt class="text-sm wrap-anywhere text-ink">{{ measurement.label | translate }}</dt>
+      <dd class="mt-0.5 text-base font-semibold wrap-anywhere text-ink sm:text-lg">{{ measurement.value }}</dd>
     </div>
   }
 </dl>

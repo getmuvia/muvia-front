@@ -2,7 +2,7 @@
   <div class="space-y-2">
     <label
       for="product-title"
-      class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide"
+      class="text-sm font-body font-medium text-ink uppercase tracking-wide"
     >
       {{ 'seller.productTitle' | translate }}
     </label>
@@ -11,7 +11,7 @@
       [formField]="titleField()"
       [attr.aria-invalid]="isFieldInvalid(titleField())"
       [attr.aria-describedby]="isFieldInvalid(titleField()) ? 'product-title-error' : null"
-      class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-text-light placeholder-text-light/40 transition-colors focus:border-primary focus:ring-0 font-body type-control"
+      class="w-full rounded-control border border-line bg-canvas px-4 py-3 text-ink placeholder-text-light/40 transition-colors focus:border-ink focus:ring-0 font-body type-control"
       [placeholder]="'seller.eGMinimalistFloorLamp' | translate"
       type="text"
     />
@@ -32,7 +32,7 @@
   <div class="space-y-2">
     <label
       for="product-condition"
-      class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide"
+      class="text-sm font-body font-medium text-ink uppercase tracking-wide"
     >
       {{ 'catalog.productCondition' | translate }}
     </label>
@@ -45,12 +45,12 @@
           ? 'product-condition-help product-condition-error'
           : 'product-condition-help'
       "
-      class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-text-light transition-colors focus:border-primary focus:ring-0 font-body type-control"
+      class="w-full rounded-control border border-line bg-canvas px-4 py-3 text-ink transition-colors focus:border-ink focus:ring-0 font-body type-control"
     >
       <option [value]="productCondition.NEW">{{ 'catalog.conditionNew' | translate }}</option>
       <option [value]="productCondition.USED">{{ 'catalog.conditionUsed' | translate }}</option>
     </select>
-    <p id="product-condition-help" class="text-text-light/60 font-body type-body">
+    <p id="product-condition-help" class="text-ink font-body type-body">
       {{
         (conditionField()().value() === productCondition.USED
           ? 'seller.conditionUsedHelp'
@@ -70,7 +70,7 @@
   <div class="space-y-2">
     <label
       for="product-description"
-      class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide"
+      class="text-sm font-body font-medium text-ink uppercase tracking-wide"
     >
       {{ 'common.description' | translate }}
     </label>
@@ -81,12 +81,12 @@
       [attr.aria-describedby]="
         isFieldInvalid(descriptionField()) ? 'product-description-error' : null
       "
-      class="w-full rounded-control border border-border-color bg-white p-4 text-text-light placeholder-text-light/40 resize-none transition-colors focus:border-primary focus:ring-0 font-body type-control"
+      class="w-full rounded-control border border-line bg-canvas p-4 text-ink placeholder-text-light/40 resize-none transition-colors focus:border-ink focus:ring-0 font-body type-control"
       [placeholder]="'seller.describeTheStoryInspirationAndDetailsOfYourPiece' | translate"
       rows="4"
     ></textarea>
     @if (conditionField()().value() === productCondition.USED) {
-      <p class="text-text-light/60 font-body type-body">
+      <p class="text-ink font-body type-body">
         {{ 'seller.usedConditionDescription' | translate }}
       </p>
     }
@@ -108,18 +108,18 @@
     <div class="space-y-2">
       <label
         for="product-price"
-        class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide"
+        class="text-sm font-body font-medium text-ink uppercase tracking-wide"
       >
         {{ 'common.price' | translate }}
       </label>
       <div class="relative">
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-text-light/40">Bs</span>
+        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-ink">Bs</span>
         <input
           id="product-price"
           [formField]="priceField()"
           [attr.aria-invalid]="isFieldInvalid(priceField())"
           [attr.aria-describedby]="isFieldInvalid(priceField()) ? 'product-price-error' : null"
-          class="w-full rounded-control border border-border-color bg-white py-3 pl-12 pr-4 text-text-light placeholder-text-light/40 transition-colors focus:border-primary focus:ring-0 font-body type-control"
+          class="w-full rounded-control border border-line bg-canvas py-3 pl-12 pr-4 text-ink placeholder-text-light/40 transition-colors focus:border-ink focus:ring-0 font-body type-control"
           placeholder="0.00"
           type="number"
           step="0.01"
@@ -142,7 +142,7 @@
     <div class="space-y-2">
       <label
         for="product-category"
-        class="text-sm font-body font-medium text-text-light/70 uppercase tracking-wide"
+        class="text-sm font-body font-medium text-ink uppercase tracking-wide"
       >
         {{ 'common.category' | translate }}
       </label>
@@ -154,7 +154,7 @@
         [attr.aria-describedby]="
           isFieldInvalid(categoryIdField()) ? 'product-category-error' : null
         "
-        class="w-full rounded-control border border-border-color bg-white px-4 py-3 text-text-light transition-colors focus:border-primary focus:ring-0 font-body disabled:cursor-wait disabled:bg-surface-element/40 disabled:text-text-light/50 type-control"
+        class="w-full rounded-control border border-line bg-canvas px-4 py-3 text-ink transition-colors focus:border-ink focus:ring-0 font-body disabled:cursor-wait disabled:bg-mist disabled:text-ink type-control"
       >
         @if (isLoadingCategories()) {
           <option value="" disabled>{{ 'catalog.loadingCategories' | translate }}</option>
@@ -170,7 +170,7 @@
         }
       </select>
       @if (isLoadingCategories()) {
-        <p class="flex items-center gap-1 font-medium text-text-light/55 type-body" role="status">
+        <p class="flex items-center gap-1 font-medium text-ink type-body" role="status">
           <span class="material-symbols-outlined animate-spin icon-xs">progress_activity</span>
           <span>{{ 'seller.weAreLoadingTheCategories' | translate }}</span>
         </p>
@@ -180,7 +180,7 @@
           <span>{{ 'seller.categoriesAreCurrentlyUnavailable' | translate }}</span>
         </p>
       } @else if (categories().length === 0) {
-        <p class="flex items-center gap-1 font-medium text-text-light/55 type-body">
+        <p class="flex items-center gap-1 font-medium text-ink type-body">
           <span class="material-symbols-outlined icon-xs">info</span>
           <span>{{ 'seller.thereAreNoCategoriesAvailableForPublishingYet' | translate }}</span>
         </p>

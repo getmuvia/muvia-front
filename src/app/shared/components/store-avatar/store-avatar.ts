@@ -10,7 +10,7 @@ import { Component, computed, input, signal } from '@angular/core';
   template: `
     <span
       class="relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full"
-      [class.bg-current/10]="!visibleLogoUrl()"
+      [class.bg-mist]="!visibleLogoUrl()"
       [style.width.px]="size()"
       [style.height.px]="size()"
     >

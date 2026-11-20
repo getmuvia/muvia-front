@@ -18,7 +18,7 @@ export class Skeleton {
   readonly className = input<string>('');
 
   computedClasses = computed(() => {
-    const baseClasses = 'animate-pulse bg-text-light/10';
+    const baseClasses = 'animate-pulse bg-mist';
     const shapeClasses = this.shape() === 'circle' ? 'rounded-full' : 'rounded-editorial';
     return `${baseClasses} ${shapeClasses} ${this.className()}`;
   });

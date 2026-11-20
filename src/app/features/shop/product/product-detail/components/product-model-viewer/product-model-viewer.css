@@ -20,24 +20,22 @@
   gap: calc(var(--spacing) / 2);
   padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
   transform: translate(-50%, -50%);
-  border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-control);
-  background: color-mix(in srgb, var(--color-surface-light) 95%, transparent);
-  box-shadow: var(--shadow-soft);
-  color: var(--color-primary);
+  background: var(--color-canvas);
+  color: var(--color-ink);
   font-family: var(--font-body);
   font-size: var(--text-sm);
   font-weight: 700;
   line-height: 1;
   pointer-events: none;
   white-space: nowrap;
-  backdrop-filter: blur(calc(var(--spacing) * 2));
   --min-hotspot-opacity: 1;
   --max-hotspot-opacity: 1;
 }
 
 .dimension-label small {
-  color: color-mix(in srgb, var(--color-primary) 62%, transparent);
+  color: var(--color-ink);
   font-size: var(--text-sm);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -53,7 +51,7 @@
 }
 
 .dimension-lines line {
-  stroke: var(--color-primary);
+  stroke: var(--color-ink);
   stroke-width: 1.5;
   stroke-dasharray: 5 4;
   vector-effect: non-scaling-stroke;
@@ -87,7 +85,8 @@ dialog[open] {
   justify-content: center;
 }
 dialog::backdrop {
-  background: color-mix(in srgb, var(--color-primary-deep) 40%, transparent);
+  background: var(--color-ink);
+  opacity: 0.4;
 }
 .model-stage {
   width: 100%;

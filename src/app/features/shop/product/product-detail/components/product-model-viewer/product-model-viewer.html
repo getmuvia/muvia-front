@@ -2,20 +2,20 @@
   #dialog
   aria-labelledby="product-model-title"
   (cancel)="closeModel3dViewer($event)"
-  class="bg-surface-element text-primary"
+  class="bg-paper text-ink"
 >
   <!-- Close button -->
   <button
     type="button"
     (click)="closeModel3dViewer()"
-    class="absolute top-4 right-4 z-10 flex items-center justify-center size-12 bg-primary/5 backdrop-blur-md border border-primary/10 text-primary hover:bg-primary/10 transition-all duration-300"
+    class="absolute top-4 right-4 z-10 flex items-center justify-center size-12 bg-mist backdrop-blur-md border border-line text-ink hover:bg-mist transition-all duration-300"
     [attr.aria-label]="'common.close' | translate"
   >
     <span class="material-symbols-outlined icon-xl" aria-hidden="true">close</span>
   </button>
 
   <!-- Title -->
-  <div class="absolute top-4 left-4 z-10 text-primary font-body">
+  <div class="absolute top-4 left-4 z-10 text-ink font-body">
     <h2 id="product-model-title" class="uppercase tracking-wider opacity-60 type-control">
       {{ 'catalog.3dView' | translate }} · {{ title() }}
     </h2>
@@ -26,7 +26,7 @@
       type="button"
       (click)="toggleDimensions()"
       [attr.aria-pressed]="showDimensions()"
-      class="absolute top-14 left-4 z-10 flex items-center gap-2 px-4 py-3 bg-surface-light/95 backdrop-blur-md border border-primary/15 text-primary shadow-sm hover:bg-surface-light transition-colors font-body sm:top-auto sm:bottom-4"
+      class="absolute top-14 left-4 z-10 flex items-center gap-2 px-4 py-3 bg-canvas backdrop-blur-md border border-line text-ink hover:bg-canvas transition-colors font-body sm:top-auto sm:bottom-4"
       [attr.title]="
         showDimensions()
           ? ('common.hideDimensions' | translate)
@@ -45,13 +45,13 @@
   <!-- Model Viewer (only if loaded) -->
   @if (viewerError()) {
     <div class="flex max-w-sm flex-col items-center gap-4 p-6 text-center" role="alert">
-      <p class="text-text-secondary type-body">
+      <p class="text-ink type-body">
         {{ 'catalog.modelViewerUnavailable' | translate }}
       </p>
       <button
         type="button"
         (click)="retryViewer()"
-        class="rounded-control bg-primary px-5 py-3 text-surface-light type-control"
+        class="rounded-control bg-ink px-5 py-3 text-canvas type-control"
       >
         {{ 'common.retry' | translate }}
       </button>
@@ -156,7 +156,7 @@
       <!-- AR Button Slot -->
       <button
         slot="ar-button"
-        class="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-secondary text-surface-light font-bold uppercase tracking-wider hover:bg-secondary/90 transition-colors font-body flex items-center gap-2 type-control"
+        class="absolute bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 bg-ink text-canvas font-bold uppercase tracking-wider hover:bg-sand hover:text-ink transition-colors font-body flex items-center gap-2 type-control"
       >
         <span class="material-symbols-outlined">view_in_ar</span>
         {{ 'catalog.viewInYourSpace' | translate }}
@@ -165,10 +165,10 @@
   } @else {
     <!-- Loading state -->
     <div class="flex flex-col items-center gap-4">
-      <span class="material-symbols-outlined icon-2xl text-text-light/40 animate-spin"
+      <span class="material-symbols-outlined icon-2xl text-ink animate-spin"
         >progress_activity</span
       >
-      <p class="text-text-light/60 font-body type-body">
+      <p class="text-ink font-body type-body">
         {{ 'catalog.loading3dViewer' | translate }}
       </p>
     </div>

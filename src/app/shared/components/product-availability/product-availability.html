@@ -2,15 +2,14 @@
 <div class="flex flex-wrap items-center gap-2.5">
   @if (statusLabel(); as label) {
     <span
-      class="inline-flex border border-border-color bg-surface-element px-2 py-1 text-sm font-medium text-primary"
-      [class.text-text-secondary]="state.status === 'outOfStock'"
+      class="inline-flex border border-line bg-paper px-2 py-1 text-sm font-medium text-ink"
     >
       {{ label | translate }}
     </span>
   }
   @if (showsCustomization()) {
-    <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-      <span class="material-symbols-outlined text-secondary icon-sm" aria-hidden="true">straighten</span>
+    <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-ink">
+      <span class="material-symbols-outlined text-ink icon-sm" aria-hidden="true">straighten</span>
       {{ 'catalog.customizableDimensions' | translate }}
     </span>
   }
@@ -18,13 +17,13 @@
 @if (!compact()) {
   @if (state.productionRange; as range) {
     <div class="mt-2.5 text-sm">
-      <p class="font-semibold text-primary">
+      <p class="font-semibold text-ink">
         {{
           (range.min === range.max ? 'catalog.productionDaysExact' : 'catalog.productionDaysRange')
             | translate: { min: range.min, max: range.max }
         }}
       </p>
-      <p class="mt-0.5 text-text-secondary">{{ 'catalog.productionNotDelivery' | translate }}</p>
+      <p class="mt-0.5 text-ink">{{ 'catalog.productionNotDelivery' | translate }}</p>
     </div>
   }
 }

@@ -1,9 +1,9 @@
 <div>
   <div class="flex justify-between items-center mb-6">
-    <h3 class="uppercase tracking-wider text-text-light type-control">
+    <h3 class="uppercase tracking-wider text-ink type-control">
       {{ 'seller.imageGallery' | translate }}
     </h3>
-    <span class="material-symbols-outlined text-secondary">imagesmode</span>
+    <span class="material-symbols-outlined text-ink">imagesmode</span>
   </div>
 
   <div
@@ -14,9 +14,9 @@
   >
     <!-- Primary Image Slot -->
     <div
-      class="col-span-2 aspect-[4/3] flex flex-col items-center justify-center rounded-panel border border-dashed bg-surface-element/40 transition-colors cursor-pointer group relative overflow-hidden"
-      [class.border-secondary]="isDragging()"
-      [class.border-border-color]="!isDragging()"
+      class="col-span-2 aspect-[4/3] flex flex-col items-center justify-center rounded-panel border border-dashed bg-mist transition-colors cursor-pointer group relative overflow-hidden"
+      [class.border-ink]="isDragging()"
+      [class.border-line]="!isDragging()"
       [class.cursor-not-allowed]="disabled()"
     >
       <button
@@ -36,11 +36,11 @@
           />
         } @else {
           <span
-            class="material-symbols-outlined icon-2xl text-text-light/40 group-hover:text-secondary mb-2"
+            class="material-symbols-outlined icon-2xl text-ink group-hover:text-ink mb-2"
           >
             add_photo_alternate
           </span>
-          <span class="text-sm text-text-light/60 text-center px-4 font-body">
+          <span class="text-sm text-ink text-center px-4 font-body">
             {{ 'seller.selectOrDragYourImagesHere' | translate }}
           </span>
         }
@@ -48,20 +48,20 @@
 
       @if (primaryImage(); as primary) {
         <div
-          class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center pointer-events-none"
+          class="absolute inset-0 scrim opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center pointer-events-none"
         >
           <button
             type="button"
             (click)="removeImage(primary.url)"
             [attr.aria-label]="'seller.removeMainImage' | translate"
             [disabled]="disabled()"
-            class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors pointer-events-auto"
+            class="bg-error text-canvas p-2 hover:bg-canvas hover:text-error transition-colors pointer-events-auto"
           >
             <span class="material-symbols-outlined">delete</span>
           </button>
         </div>
         <div
-          class="absolute top-2 left-2 bg-secondary text-white text-sm px-2 py-0.5 uppercase font-bold font-body pointer-events-none"
+          class="absolute top-2 left-2 bg-ink text-canvas text-sm px-2 py-0.5 uppercase font-bold font-body pointer-events-none"
         >
           {{ 'seller.main' | translate }}
         </div>
@@ -71,7 +71,7 @@
     <!-- Secondary Image Slots -->
     @for (asset of secondaryImages(); track asset.url) {
       <div
-        class="aspect-square relative overflow-hidden rounded-editorial border border-border-color group"
+        class="aspect-square relative overflow-hidden rounded-editorial border border-line group"
       >
         <button
           type="button"
@@ -87,9 +87,9 @@
           <img [src]="asset.url" [alt]="asset.metadata['alt']" class="w-full h-full object-cover" />
         </button>
         <div
-          class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-1 pointer-events-none"
+          class="absolute inset-0 scrim opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity flex items-center justify-center gap-1 pointer-events-none"
         >
-          <span aria-hidden="true" class="bg-secondary text-white p-1 text-sm">
+          <span aria-hidden="true" class="bg-ink text-canvas p-1 text-sm">
             <span class="material-symbols-outlined icon-xs">star</span>
           </span>
           <button
@@ -100,7 +100,7 @@
                 | translate: { image: asset.metadata['alt'] || ('seller.image' | translate) }
             "
             [disabled]="disabled()"
-            class="bg-red-500 text-white p-1 hover:bg-red-600 transition-colors pointer-events-auto type-caption"
+            class="bg-error text-canvas p-1 hover:bg-canvas hover:text-error transition-colors pointer-events-auto type-caption"
           >
             <span class="material-symbols-outlined icon-xs">delete</span>
           </button>
@@ -112,13 +112,13 @@
     @for (i of emptySlots(); track i) {
       <button
         type="button"
-        class="aspect-square bg-surface-element/60 flex items-center justify-center rounded-panel border border-border-color cursor-pointer hover:bg-surface-element transition-colors disabled:cursor-not-allowed"
+        class="aspect-square bg-paper flex items-center justify-center rounded-panel border border-line cursor-pointer hover:bg-paper transition-colors disabled:cursor-not-allowed"
         [attr.aria-label]="'seller.addImages' | translate"
         [disabled]="disabled()"
         aria-describedby="product-image-upload-help product-image-upload-errors"
         (click)="fileInput.click()"
       >
-        <span class="material-symbols-outlined text-text-light/40">add</span>
+        <span class="material-symbols-outlined text-ink">add</span>
       </button>
     }
   </div>
@@ -134,7 +134,7 @@
     (change)="onFileSelect($event)"
   />
 
-  <p id="product-image-upload-help" class="text-text-light/40 mt-4 text-center font-body type-body">
+  <p id="product-image-upload-help" class="text-ink mt-4 text-center font-body type-body">
     {{ 'seller.imageGalleryHelp' | translate: { count: maxImages } }}
   </p>
 

@@ -1,6 +1,6 @@
 <article class="product-card group flex flex-col gap-3.5">
   <div
-    class="product-image relative overflow-hidden rounded-editorial aspect-[4/5] border border-border-color/80 bg-surface-element transition-colors duration-300 group-hover:border-accent/65"
+    class="product-image relative overflow-hidden rounded-editorial aspect-[4/5] border border-line bg-paper transition-colors duration-300 group-hover:border-line"
   >
     <a
       [routerLink]="['/products', product().id]"
@@ -18,7 +18,7 @@
           class="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
       } @else {
-        <div class="flex h-full flex-col items-center justify-center gap-2 text-text-secondary">
+        <div class="flex h-full flex-col items-center justify-center gap-2 text-ink">
           <span class="material-symbols-outlined icon-xl">image_not_supported</span>
           <span class="text-sm">{{ 'common.imageUnavailable' | translate }}</span>
         </div>
@@ -29,12 +29,12 @@
       <div class="absolute top-2.5 right-2.5 flex items-center gap-1 z-10">
         <a
           [routerLink]="['/seller/products', product().id, 'edit']"
-          class="flex items-center justify-center size-8 rounded-full border border-border-color bg-surface-light/90 backdrop-blur-sm text-text-main hover:bg-surface-light transition-colors"
+          class="flex items-center justify-center size-8 rounded-full border border-line bg-canvas backdrop-blur-sm text-ink hover:bg-canvas transition-colors"
           (click)="$event.stopPropagation()"
           [attr.aria-label]="'common.editProduct' | translate"
           [title]="'common.editProduct' | translate"
         >
-          <span class="material-symbols-outlined icon-sm text-text-main">edit</span>
+          <span class="material-symbols-outlined icon-sm text-ink">edit</span>
         </a>
       </div>
     }
@@ -42,20 +42,20 @@
 
   <div class="product-info flex flex-col items-start gap-1 px-0.5">
     <p
-      class="product-category font-body font-semibold uppercase tracking-[0.12em] text-secondary type-caption"
+      class="product-category font-body font-semibold uppercase tracking-[0.12em] text-ink type-caption"
     >
       {{ product().category | categoryName }}
     </p>
 
     <a [routerLink]="['/products', product().id]" class="block no-underline">
       <h3
-        class="product-title text-text-main transition-colors duration-200 group-hover:text-primary type-card-title"
+        class="product-title text-ink transition-colors duration-200 group-hover:text-ink type-card-title"
       >
         {{ product().title }}
       </h3>
     </a>
 
-    <p class="product-price mt-0.5 font-body font-semibold text-primary type-body">
+    <p class="product-price mt-0.5 font-body font-semibold text-ink type-body">
       <app-product-price [amount]="price().amount" [currencyCode]="price().currencyCode" />
     </p>
     <app-product-availability [product]="product()" [compact]="true" />
