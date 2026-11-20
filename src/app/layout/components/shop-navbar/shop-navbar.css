@@ -1,9 +1,8 @@
 :host {
-  --navbar-foreground: var(--color-primary);
-  --navbar-muted: var(--color-text-secondary);
-  --navbar-border: var(--color-border-color);
-  --navbar-hover: var(--color-secondary);
-  --navbar-hover-surface: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  --navbar-foreground: var(--color-ink);
+  --navbar-action: var(--color-link);
+  --navbar-border: var(--color-line);
+  --navbar-hover-surface: var(--color-mist);
   --navbar-block-size: calc(var(--spacing) * 20);
   --navbar-secondary-block-size: calc(var(--spacing) * 12);
   --navbar-search-panel-offset: calc(var(--spacing) * 6);
@@ -15,18 +14,15 @@
 }
 
 .navbar-glass {
-  --navbar-foreground: var(--color-surface-light);
-  --navbar-muted: color-mix(in srgb, var(--color-surface-light) 85%, transparent);
-  --navbar-border: color-mix(in srgb, var(--color-surface-light) 25%, transparent);
-  --navbar-hover: var(--color-surface-light);
-  --navbar-hover-surface: color-mix(in srgb, var(--color-surface-light) 10%, transparent);
+  --navbar-foreground: var(--color-canvas);
+  --navbar-action: var(--color-canvas);
+  --navbar-border: var(--color-line);
+  --navbar-hover-surface: var(--color-ink);
 }
 
 .navbar-panel {
-  --navbar-foreground: var(--color-primary);
-  --navbar-muted: var(--color-text-secondary);
-  --navbar-hover: var(--color-secondary);
-  --navbar-hover-surface: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  --navbar-foreground: var(--color-ink);
+  --navbar-hover-surface: var(--color-mist);
 }
 
 .navbar-glass :is(a, button):focus-visible {
@@ -35,9 +31,7 @@
 
 .navbar-link,
 .navbar-mobile-link {
-  color: var(--navbar-foreground);
   font-weight: var(--font-weight-medium);
-  transition: color var(--default-transition-duration) var(--default-transition-timing-function);
 }
 
 .navbar-link {
@@ -55,10 +49,6 @@
 
 .navbar-link:hover,
 .navbar-mobile-link:hover {
-  color: var(--navbar-hover);
-}
-
-.navbar-link:hover {
   text-decoration-line: underline;
 }
 

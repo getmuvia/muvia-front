@@ -145,7 +145,7 @@ mapToProduct(stagingProduct: StagingProduct): Product
     "style": "modern",
     "emptyAreas": ["center", "corner"],
     "suggestedFurniture": ["sofa", "coffee table"],
-    "colorPalette": ["#F5F5DC", "#8B4513"]
+    "colorPalette": ["#E6E3DB", "#DAD4C4"]
   },
   "suggestedProducts": [...],
   "stagedImageUrl": "https://storage.../staged-image.png",

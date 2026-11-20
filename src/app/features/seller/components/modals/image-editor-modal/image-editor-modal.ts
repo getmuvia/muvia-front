@@ -8,11 +8,11 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 scrim backdrop-blur-sm"
         (click)="onBackdropClick($event)"
       >
         <div
-          class="bg-white rounded-dialog shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up"
+          class="bg-canvas rounded-dialog w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up"
           role="dialog"
           aria-modal="true"
           aria-labelledby="image-editor-title"
@@ -20,9 +20,9 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
         >
           <!-- Header -->
           <div
-            class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10"
+            class="px-6 py-4 border-b border-line flex justify-between items-center bg-canvas sticky top-0 z-10"
           >
-            <h3 id="image-editor-title" class="text-text-light type-card-title">
+            <h3 id="image-editor-title" class="text-ink type-card-title">
               {{ title() | uiText }}
             </h3>
             <button
@@ -30,7 +30,7 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
               (click)="close()"
               [attr.aria-label]="'common.close' | translate"
               [disabled]="isLoading()"
-              class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element disabled:cursor-not-allowed disabled:opacity-50"
+              class="text-ink hover:text-ink transition-colors rounded-full p-1 hover:bg-paper disabled:cursor-not-allowed disabled:opacity-50"
             >
               <span class="material-symbols-outlined icon-lg">close</span>
             </button>
@@ -40,7 +40,7 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
           <div class="p-6 flex flex-col items-center gap-6 overflow-y-auto">
             <!-- Preview Area -->
             <div
-              class="relative w-full aspect-video bg-surface-element rounded-panel overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center group cursor-pointer transition-colors hover:bg-surface-element hover:border-primary"
+              class="relative w-full aspect-video bg-paper rounded-panel overflow-hidden border-2 border-dashed border-line flex items-center justify-center group cursor-pointer transition-colors hover:bg-paper hover:border-ink"
               role="button"
               tabindex="0"
               [attr.aria-label]="'seller.selectImage' | translate"
@@ -65,7 +65,7 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
                   >
                     <!-- Circular Guide: Fixed size relative to container height -->
                     <div
-                      class="h-5/6 aspect-square rounded-full border-2 border-white/80 shadow-[0_0_0_9999px_rgba(0,0,0,0.6)] box-content"
+                      class="crop-guide relative box-content aspect-square h-5/6 rounded-full border-2 border-canvas"
                     ></div>
                   </div>
                 }
@@ -74,14 +74,14 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
                   class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
                 >
                   <div
-                    class="bg-black/60 backdrop-blur-md px-4 py-2 rounded-control text-white font-medium text-sm flex items-center gap-2 border border-white/20"
+                    class="bg-ink backdrop-blur-md px-4 py-2 rounded-control text-canvas font-medium text-sm flex items-center gap-2 border border-canvas"
                   >
                     <span class="material-symbols-outlined icon-md">edit</span>
                     {{ 'seller.change' | translate }}
                   </div>
                 </div>
               } @else {
-                <div class="flex flex-col items-center gap-3 text-text-light/40">
+                <div class="flex flex-col items-center gap-3 text-ink">
                   <span class="material-symbols-outlined icon-2xl">add_photo_alternate</span>
                   <span class="text-sm font-medium">{{
                     'seller.clickToUploadAnImage' | translate
@@ -100,7 +100,7 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
               accept="image/png, image/jpeg, image/webp"
             />
 
-            <p id="profile-image-help" class="text-center text-text-light/60 px-4 type-body">
+            <p id="profile-image-help" class="text-center text-ink px-4 type-body">
               {{ 'seller.supportedFormatsPngJpgOrWebpMaximum5Mb' | translate }}
             </p>
 
@@ -116,12 +116,12 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
           </div>
 
           <!-- Footer -->
-          <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
+          <div class="p-4 border-t border-line flex justify-end gap-3 bg-paper">
             <button
               type="button"
               (click)="close()"
               [disabled]="isLoading()"
-              class="px-4 py-2 rounded-control font-medium text-text-light hover:bg-gray-200 transition-colors disabled:cursor-not-allowed disabled:opacity-50 type-control"
+              class="px-4 py-2 rounded-control font-medium text-ink hover:bg-mist transition-colors disabled:cursor-not-allowed disabled:opacity-50 type-control"
             >
               {{ 'common.cancel' | translate }}
             </button>
@@ -129,7 +129,7 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
               type="button"
               (click)="onSave()"
               [disabled]="!selectedFile() || isLoading()"
-              class="px-6 py-2 rounded-control font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2 type-control"
+              class="px-6 py-2 rounded-control font-bold text-canvas bg-ink hover:bg-sand hover:text-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 type-control"
             >
               @if (isLoading()) {
                 <span class="material-symbols-outlined icon-md animate-spin">refresh</span>
@@ -143,7 +143,16 @@ import { Component, computed, effect, input, output, signal } from '@angular/cor
       </div>
     }
   `,
-  styles: [],
+  styles: `
+    .crop-guide::before {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      box-shadow: 0 0 0 100vmax var(--color-ink);
+      opacity: 0.6;
+      content: '';
+    }
+  `,
 })
 export class ImageEditorModal {
   readonly isOpen = input<boolean>(false);

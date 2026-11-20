@@ -1,17 +1,17 @@
-<section class="border-t border-border-color p-5 sm:p-7" aria-labelledby="quote-response-title">
-  <h2 id="quote-response-title" class="text-primary type-section-title">
+<section class="border-t border-line p-5 sm:p-7" aria-labelledby="quote-response-title">
+  <h2 id="quote-response-title" class="text-ink type-section-title">
     {{ 'quotations.respondTitle' | translate }}
   </h2>
   <form (submit)="send($event)" novalidate class="mt-5 space-y-5">
     <fieldset [disabled]="saving()" class="space-y-5 disabled:opacity-60">
       <div>
-        <label for="quote-decision" class="mb-2 block text-primary type-control">{{
+        <label for="quote-decision" class="mb-2 block text-ink type-control">{{
           'quotations.decision' | translate
         }}</label>
         <select
           id="quote-decision"
           [formField]="fields.status"
-          class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+          class="min-h-(--control-height) w-full rounded-control border border-line bg-canvas px-3 py-3 text-ink type-control"
         >
           <option value="QUOTED">{{ 'quotations.quoteOption' | translate }}</option>
           <option value="DECLINED">{{ 'quotations.declineOption' | translate }}</option>
@@ -19,7 +19,7 @@
       </div>
       @if (draft().status === 'QUOTED') {
         <div>
-          <label for="quote-price" class="mb-2 block text-primary type-control"
+          <label for="quote-price" class="mb-2 block text-ink type-control"
             >{{ 'quotations.price' | translate }} ({{ quotation().currencyCode }})</label
           >
           <input
@@ -29,9 +29,9 @@
             [formField]="fields.price"
             [attr.aria-invalid]="fields.price().touched() && fields.price().invalid()"
             aria-describedby="quote-price-help"
-            class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+            class="min-h-(--control-height) w-full rounded-control border border-line bg-canvas px-3 py-3 text-ink type-control"
           />
-          <p id="quote-price-help" class="mt-2 text-text-secondary type-caption">
+          <p id="quote-price-help" class="mt-2 text-ink type-caption">
             {{ 'quotations.priceHelp' | translate: { currency: quotation().currencyCode } }}
           </p>
           @if (fields.price().touched() && fields.price().invalid()) {
@@ -42,7 +42,7 @@
         </div>
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
-            <label for="quote-min-days" class="mb-2 block text-primary type-caption">{{
+            <label for="quote-min-days" class="mb-2 block text-ink type-caption">{{
               'quotations.minDays' | translate
             }}</label>
             <input
@@ -52,11 +52,11 @@
               [formField]="fields.minDays"
               [attr.aria-invalid]="fields.minDays().touched() && fields.minDays().invalid()"
               aria-describedby="quote-days-help"
-              class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+              class="min-h-(--control-height) w-full rounded-control border border-line bg-canvas px-3 py-3 text-ink type-control"
             />
           </div>
           <div>
-            <label for="quote-max-days" class="mb-2 block text-primary type-caption">{{
+            <label for="quote-max-days" class="mb-2 block text-ink type-caption">{{
               'quotations.maxDays' | translate
             }}</label>
             <input
@@ -66,11 +66,11 @@
               [formField]="fields.maxDays"
               [attr.aria-invalid]="fields.maxDays().touched() && fields.maxDays().invalid()"
               aria-describedby="quote-days-help"
-              class="min-h-(--control-height) w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-control"
+              class="min-h-(--control-height) w-full rounded-control border border-line bg-canvas px-3 py-3 text-ink type-control"
             />
           </div>
         </div>
-        <p id="quote-days-help" class="text-text-secondary type-caption">
+        <p id="quote-days-help" class="text-ink type-caption">
           {{ 'catalog.productionNotDelivery' | translate }}
         </p>
         @if (
@@ -83,7 +83,7 @@
         }
       }
       <div>
-        <label for="quote-response-message" class="mb-2 block text-primary type-control">{{
+        <label for="quote-response-message" class="mb-2 block text-ink type-control">{{
           'quotations.responseMessage' | translate
         }}</label>
         <textarea
@@ -92,9 +92,9 @@
           rows="4"
           [attr.aria-invalid]="fields.message().touched() && fields.message().invalid()"
           aria-describedby="quote-response-help"
-          class="w-full rounded-control border border-border-color bg-background-light px-3 py-3 text-primary type-body"
+          class="w-full rounded-control border border-line bg-canvas px-3 py-3 text-ink type-body"
         ></textarea>
-        <p id="quote-response-help" class="mt-2 text-text-secondary type-caption">
+        <p id="quote-response-help" class="mt-2 text-ink type-caption">
           {{ 'quotations.responseHelp' | translate }}
         </p>
         @if (fields.message().touched() && fields.message().invalid()) {
@@ -106,10 +106,10 @@
           </p>
         }
       </div>
-      <p class="text-text-secondary type-caption">{{ 'quotations.responseFinal' | translate }}</p>
+      <p class="text-ink type-caption">{{ 'quotations.responseFinal' | translate }}</p>
       <button
         type="submit"
-        class="min-h-(--control-height) w-full cursor-pointer rounded-control bg-primary px-5 py-3 text-surface-light hover:bg-primary-soft type-control"
+        class="min-h-(--control-height) w-full cursor-pointer rounded-control bg-ink px-5 py-3 text-canvas hover:bg-sand hover:text-ink type-control"
       >
         {{ (saving() ? 'quotations.sending' : 'quotations.sendResponse') | translate }}
       </button>
@@ -121,7 +121,7 @@
       <button
         type="button"
         (click)="refresh.emit()"
-        class="min-h-11 cursor-pointer text-primary underline type-control"
+        class="min-h-11 cursor-pointer text-ink underline type-control"
       >
         {{ 'quotations.refresh' | translate }}
       </button>

@@ -6,7 +6,7 @@
 .gallery-image {
   position: relative;
   aspect-ratio: 4 / 3;
-  background: var(--color-surface-element);
+  background: var(--color-paper);
 }
 
 .gallery-image-button {
@@ -45,13 +45,13 @@
   aspect-ratio: 1;
   overflow: hidden;
   padding: 1px;
-  border: 1px solid var(--color-border-color);
+  border: 1px solid var(--color-line);
   cursor: pointer;
 }
 
 .gallery-thumbnail[aria-pressed='true'] {
-  border-color: var(--color-secondary);
-  box-shadow: inset 0 0 0 1px var(--color-secondary);
+  border-color: var(--gallery-selection-color, var(--color-ink));
+  box-shadow: inset 0 0 0 1px var(--gallery-selection-color, var(--color-ink));
   padding: calc(var(--spacing) / 2);
 }
 
@@ -61,8 +61,13 @@
 }
 
 .gallery-viewer {
+  --gallery-selection-color: var(--color-canvas);
   inline-size: calc(100% - var(--spacing) * 8);
   max-block-size: calc(100dvh - var(--spacing) * 8);
+}
+
+.gallery-viewer button:focus-visible {
+  outline-color: var(--color-canvas);
 }
 
 .gallery-viewer-content {

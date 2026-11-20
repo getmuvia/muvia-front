@@ -5,7 +5,7 @@
         'quotations.summary' | translate
       }}
     </caption>
-    <thead class="border-b border-border-color text-text-secondary type-caption">
+    <thead class="border-b border-line text-ink type-caption">
       <tr>
         <th scope="col" class="py-3 pr-3 font-medium">
           {{ 'quotations.measurement' | translate }}
@@ -16,16 +16,16 @@
     </thead>
     <tbody>
       @for (axis of axes; track axis.key) {
-        <tr class="border-b border-border-color/60">
-          <th scope="row" class="py-3 pr-3 font-medium text-text-secondary">
+        <tr class="border-b border-line">
+          <th scope="row" class="py-3 pr-3 font-medium text-ink">
             {{ axis.label | translate }}
           </th>
-          <td class="px-2 py-3 text-text-secondary">
+          <td class="px-2 py-3 text-ink">
             {{ published()[axis.key] }} {{ published().unit }}
           </td>
           <td
-            class="py-3 pl-2 font-semibold text-primary"
-            [class.text-secondary]="published()[axis.key] !== requested()[axis.key]"
+            class="py-3 pl-2 font-semibold text-ink"
+            [class.text-ink]="published()[axis.key] !== requested()[axis.key]"
           >
             {{ requested()[axis.key] }} {{ requested().unit }}
           </td>

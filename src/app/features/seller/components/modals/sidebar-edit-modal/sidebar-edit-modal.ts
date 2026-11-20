@@ -23,11 +23,11 @@ export interface SidebarFormData {
   template: `
     @if (isOpen()) {
       <div
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 scrim backdrop-blur-sm"
         (click)="close()"
       >
         <div
-          class="bg-white rounded-dialog shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up"
+          class="bg-canvas rounded-dialog w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up"
           role="dialog"
           aria-modal="true"
           aria-labelledby="sidebar-edit-title"
@@ -35,9 +35,9 @@ export interface SidebarFormData {
         >
           <!-- Header -->
           <div
-            class="px-6 py-4 border-b border-text-light/10 flex justify-between items-center bg-white sticky top-0 z-10"
+            class="px-6 py-4 border-b border-line flex justify-between items-center bg-canvas sticky top-0 z-10"
           >
-            <h3 id="sidebar-edit-title" class="text-text-light type-card-title">
+            <h3 id="sidebar-edit-title" class="text-ink type-card-title">
               {{ 'seller.editInformation' | translate }}
             </h3>
             <button
@@ -45,7 +45,7 @@ export interface SidebarFormData {
               (click)="close()"
               [attr.aria-label]="'common.close' | translate"
               [disabled]="isLoading()"
-              class="text-text-light/40 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-surface-element disabled:opacity-50"
+              class="text-ink hover:text-ink transition-colors rounded-full p-1 hover:bg-paper disabled:opacity-50"
             >
               <span class="material-symbols-outlined icon-lg">close</span>
             </button>
@@ -78,32 +78,32 @@ export interface SidebarFormData {
 
             <!-- About Me -->
             <div class="flex flex-col gap-2">
-              <label class="text-sm font-bold text-text-light">{{
+              <label class="text-sm font-bold text-ink">{{
                 'seller.aboutUs' | translate
               }}</label>
               <textarea
                 formControlName="aboutMe"
                 rows="4"
-                class="w-full px-4 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none type-control"
+                class="w-full px-4 py-2 rounded-control border border-line bg-paper text-ink focus:outline-none focus:ring-2 focus:ring-ink resize-none type-control"
                 [placeholder]="'seller.yourBusinessDescription' | translate"
               ></textarea>
             </div>
 
             <!-- Business Hours -->
             <div class="flex flex-col gap-3">
-              <label class="text-sm font-bold text-text-light">{{
+              <label class="text-sm font-bold text-ink">{{
                 'seller.businessHours' | translate
               }}</label>
               <div
-                class="flex flex-col gap-2 bg-surface-element p-4 rounded-panel border border-text-light/10"
+                class="flex flex-col gap-2 bg-paper p-4 rounded-panel border border-line"
               >
                 <div formGroupName="businessHours">
                   @for (day of weekDays; track day.key) {
                     <div
                       [formGroupName]="day.key"
-                      class="flex flex-wrap items-center gap-3 py-1 border-b border-text-light/10 last:border-0 hover:bg-white/50 px-2 rounded-panel transition-colors"
+                      class="flex flex-wrap items-center gap-3 py-1 border-b border-line last:border-0 hover:bg-canvas px-2 rounded-panel transition-colors"
                     >
-                      <span class="w-24 text-sm font-medium text-text-light">{{
+                      <span class="w-24 text-sm font-medium text-ink">{{
                         day.label | uiText
                       }}</span>
 
@@ -111,9 +111,9 @@ export interface SidebarFormData {
                         <input
                           type="checkbox"
                           formControlName="isClosed"
-                          class="accent-primary w-4 h-4 rounded-control"
+                          class="accent-ink w-4 h-4 rounded-control"
                         />
-                        <span class="text-sm text-text-light/60">{{
+                        <span class="text-sm text-ink">{{
                           'seller.closed' | translate
                         }}</span>
                       </label>
@@ -123,13 +123,13 @@ export interface SidebarFormData {
                           <input
                             type="time"
                             formControlName="open"
-                            class="px-2 py-1 rounded-control border border-text-light/20 bg-surface-element text-text-light type-control"
+                            class="px-2 py-1 rounded-control border border-line bg-paper text-ink type-control"
                           />
-                          <span class="text-text-light/40">-</span>
+                          <span class="text-ink">-</span>
                           <input
                             type="time"
                             formControlName="close"
-                            class="px-2 py-1 rounded-control border border-text-light/20 bg-surface-element text-text-light type-control"
+                            class="px-2 py-1 rounded-control border border-line bg-paper text-ink type-control"
                           />
                         </div>
                       }
@@ -142,13 +142,13 @@ export interface SidebarFormData {
             <!-- Social Links -->
             <div class="flex flex-col gap-3">
               <div class="flex justify-between items-center">
-                <label class="text-sm font-bold text-text-light">{{
+                <label class="text-sm font-bold text-ink">{{
                   'seller.socialLinks' | translate
                 }}</label>
                 <button
                   type="button"
                   (click)="addSocialLink()"
-                  class="text-primary hover:text-primary-600 font-bold flex items-center gap-1 type-control"
+                  class="text-ink hover:text-ink font-bold flex items-center gap-1 type-control"
                 >
                   <span class="material-symbols-outlined icon-md">add</span>
                   {{ 'seller.add' | translate }}
@@ -162,7 +162,7 @@ export interface SidebarFormData {
                       <select
                         formControlName="icon"
                         [attr.aria-label]="'seller.socialType' | translate: { index: $index + 1 }"
-                        class="px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light max-w-[120px] type-control"
+                        class="px-3 py-2 rounded-control border border-line bg-paper text-ink max-w-[120px] type-control"
                       >
                         <option value="language">{{ 'seller.website' | translate }}</option>
                         <option value="instagram">Instagram</option>
@@ -182,7 +182,7 @@ export interface SidebarFormData {
                             : null
                         "
                         [placeholder]="'seller.nameEGInstagram' | translate"
-                        class="flex-1 px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 w-0 min-w-[80px] type-control"
+                        class="flex-1 px-3 py-2 rounded-control border border-line bg-paper text-ink placeholder:text-ink w-0 min-w-[80px] type-control"
                       />
                       <input
                         [id]="'social-url-' + $index"
@@ -196,7 +196,7 @@ export interface SidebarFormData {
                           isSocialFieldInvalid($index, 'url') ? 'social-url-error-' + $index : null
                         "
                         [placeholder]="'seller.urlHttps' | translate"
-                        class="flex-[2] px-3 py-2 rounded-control border border-text-light/20 bg-surface-element text-text-light placeholder:text-text-light/60 w-0 min-w-[120px] type-control"
+                        class="flex-[2] px-3 py-2 rounded-control border border-line bg-paper text-ink placeholder:text-ink w-0 min-w-[120px] type-control"
                       />
                       <button
                         type="button"
@@ -204,7 +204,7 @@ export interface SidebarFormData {
                         [attr.aria-label]="
                           'seller.removeSocialLink' | translate: { index: $index + 1 }
                         "
-                        class="p-2 text-red-500 hover:bg-red-50 rounded-control"
+                        class="p-2 text-error hover:bg-error/5 rounded-control"
                       >
                         <span class="material-symbols-outlined icon-md">delete</span>
                       </button>
@@ -234,12 +234,12 @@ export interface SidebarFormData {
           </div>
 
           <!-- Footer -->
-          <div class="p-4 border-t border-text-light/10 flex justify-end gap-3 bg-surface-element">
+          <div class="p-4 border-t border-line flex justify-end gap-3 bg-paper">
             <button
               type="button"
               (click)="close()"
               [disabled]="isLoading()"
-              class="px-4 py-2 rounded-control font-medium text-text-light hover:bg-gray-200 transition-colors type-control"
+              class="px-4 py-2 rounded-control font-medium text-ink hover:bg-mist transition-colors type-control"
             >
               {{ 'common.cancel' | translate }}
             </button>
@@ -247,7 +247,7 @@ export interface SidebarFormData {
               type="button"
               (click)="onSubmit()"
               [disabled]="isLoading() || form.pristine"
-              class="px-6 py-2 rounded-control font-bold text-white bg-primary hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary/20 flex items-center gap-2 type-control"
+              class="px-6 py-2 rounded-control font-bold text-canvas bg-ink hover:bg-sand hover:text-ink transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 type-control"
             >
               @if (isLoading()) {
                 <span class="material-symbols-outlined icon-md animate-spin">refresh</span>

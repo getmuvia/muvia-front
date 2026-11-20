@@ -1,16 +1,16 @@
-<section id="novedades" class="w-full scroll-mt-20 bg-surface-element py-20 lg:py-28">
+<section id="novedades" class="w-full scroll-mt-20 bg-canvas py-20 lg:py-28">
   <div class="muvia-wide-container mb-10 flex items-end justify-between gap-6">
     <div>
-      <p class="mb-3 font-bold uppercase tracking-[0.18em] text-secondary type-caption">
+      <p class="mb-3 font-bold uppercase tracking-[0.18em] text-ink type-caption">
         {{ 'home.justAdded' | translate }}
       </p>
-      <h2 class="text-text-light tracking-[-0.025em] type-section-title">
+      <h2 class="text-ink tracking-[-0.025em] type-section-title">
         {{ 'home.newArrivals' | translate }}
       </h2>
     </div>
     <a
       routerLink="/products"
-      class="hidden border-b border-primary/30 pb-1 text-sm font-bold uppercase tracking-[0.14em] text-primary transition-colors hover:border-primary sm:block"
+      class="hidden border-b border-line pb-1 text-sm font-semibold text-link transition-colors hover:border-link sm:block"
     >
       {{ 'home.viewAll2' | translate }}
     </a>
@@ -35,7 +35,7 @@
     }
 
     @if (isRefreshing()) {
-      <p class="mb-4 text-text-light/60 type-body" role="status" aria-live="polite">
+      <p class="mb-4 text-ink type-body" role="status" aria-live="polite">
         {{ 'home.updatingNewArrivals' | translate }}
       </p>
     }
@@ -47,7 +47,7 @@
       @if (isInitialLoading()) {
         @for (item of [1, 2, 3, 4]; track item) {
           <div
-            class="aspect-[4/5] animate-pulse rounded-editorial bg-text-light/10"
+            class="aspect-[4/5] animate-pulse rounded-editorial bg-mist"
             aria-hidden="true"
           ></div>
         }
@@ -56,7 +56,7 @@
           <app-product-card [product]="product" />
         } @empty {
           @if (!error()) {
-            <p class="col-span-full text-center text-text-light/60 py-16 type-body">
+            <p class="col-span-full text-center text-ink py-16 type-body">
               {{ 'home.thereAreNoNewArrivalsAtTheMoment' | translate }}
             </p>
           }

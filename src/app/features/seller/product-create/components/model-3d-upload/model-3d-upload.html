@@ -1,17 +1,17 @@
 <div>
   <div class="flex justify-between items-center mb-6">
-    <h3 class="uppercase tracking-wider text-text-light type-control">
+    <h3 class="uppercase tracking-wider text-ink type-control">
       {{ 'seller.3dModels' | translate }}
     </h3>
-    <span class="material-symbols-outlined text-secondary">view_in_ar</span>
+    <span class="material-symbols-outlined text-ink">view_in_ar</span>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- GLB/GLTF Upload (Web Viewer) -->
     <div
-      class="relative w-full aspect-video flex flex-col items-center justify-center rounded-panel border border-dashed bg-surface-element/40 transition-all cursor-pointer group"
-      [class.border-secondary]="isDraggingGlb()"
-      [class.border-border-color]="!isDraggingGlb()"
+      class="relative w-full aspect-video flex flex-col items-center justify-center rounded-panel border border-dashed bg-mist transition-all cursor-pointer group"
+      [class.border-ink]="isDraggingGlb()"
+      [class.border-line]="!isDraggingGlb()"
       [attr.aria-disabled]="disabled()"
       [class.cursor-not-allowed]="disabled()"
       role="button"
@@ -26,11 +26,11 @@
     >
       @if (glbAsset()) {
         <div class="flex flex-col items-center justify-center h-full">
-          <span class="material-symbols-outlined icon-xl text-secondary mb-2">3d_rotation</span>
-          <p class="font-body font-medium text-text-light type-body">
+          <span class="material-symbols-outlined icon-xl text-ink mb-2">3d_rotation</span>
+          <p class="font-body font-medium text-ink type-body">
             {{ 'seller.glbUploaded' | translate }}
           </p>
-          <p class="text-text-light/60 font-body mt-1 type-body">
+          <p class="text-ink font-body mt-1 type-body">
             {{
               glbAsset()!.metadata['originalName'] ||
                 (glbAsset()!.metadata['format'] ?? 'GLB').toString().toUpperCase()
@@ -38,30 +38,30 @@
           </p>
         </div>
         <div
-          class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+          class="absolute inset-0 scrim opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
         >
           <button
             type="button"
             (click)="removeGlbModel(); $event.stopPropagation()"
             [attr.aria-label]="'seller.removeGlbOrGltfModel' | translate"
             [disabled]="disabled()"
-            class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors"
+            class="bg-error text-canvas p-2 hover:bg-canvas hover:text-error transition-colors"
           >
             <span class="material-symbols-outlined">delete</span>
           </button>
         </div>
       } @else {
-        <span class="material-symbols-outlined icon-xl text-text-light/40 mb-2">deployed_code</span>
-        <p class="font-body font-medium text-text-light/60 text-center px-2 type-body">
+        <span class="material-symbols-outlined icon-xl text-ink mb-2">deployed_code</span>
+        <p class="font-body font-medium text-ink text-center px-2 type-body">
           .GLB / .GLTF
         </p>
-        <p class="font-body text-text-light/40 mt-1 type-body">
+        <p class="font-body text-ink mt-1 type-body">
           {{ 'seller.webViewer' | translate }}
         </p>
       }
 
       <div
-        class="absolute top-2 right-2 bg-primary text-white text-sm px-2 py-0.5 uppercase font-bold font-body"
+        class="absolute top-2 right-2 bg-ink text-canvas text-sm px-2 py-0.5 uppercase font-bold font-body"
       >
         {{ 'seller.website' | translate }}
       </div>
@@ -88,9 +88,9 @@
 
     <!-- USDZ Upload (iOS AR) -->
     <div
-      class="relative w-full aspect-video flex flex-col items-center justify-center rounded-panel border border-dashed bg-surface-element/40 transition-all cursor-pointer group"
-      [class.border-secondary]="isDraggingUsdz()"
-      [class.border-border-color]="!isDraggingUsdz()"
+      class="relative w-full aspect-video flex flex-col items-center justify-center rounded-panel border border-dashed bg-mist transition-all cursor-pointer group"
+      [class.border-ink]="isDraggingUsdz()"
+      [class.border-line]="!isDraggingUsdz()"
       [attr.aria-disabled]="disabled()"
       [class.cursor-not-allowed]="disabled()"
       role="button"
@@ -105,37 +105,37 @@
     >
       @if (usdzAsset()) {
         <div class="flex flex-col items-center justify-center h-full">
-          <span class="material-symbols-outlined icon-xl text-secondary mb-2">view_in_ar</span>
-          <p class="font-body font-medium text-text-light type-body">
+          <span class="material-symbols-outlined icon-xl text-ink mb-2">view_in_ar</span>
+          <p class="font-body font-medium text-ink type-body">
             {{ 'seller.usdzUploaded' | translate }}
           </p>
-          <p class="text-text-light/60 font-body mt-1 type-body">
+          <p class="text-ink font-body mt-1 type-body">
             {{ usdzAsset()!.metadata['originalName'] || 'iOS AR' }}
           </p>
         </div>
         <div
-          class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+          class="absolute inset-0 scrim opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
         >
           <button
             type="button"
             (click)="removeUsdzModel(); $event.stopPropagation()"
             [attr.aria-label]="'seller.removeUsdzModel' | translate"
             [disabled]="disabled()"
-            class="bg-red-500 text-white p-2 hover:bg-red-600 transition-colors"
+            class="bg-error text-canvas p-2 hover:bg-canvas hover:text-error transition-colors"
           >
             <span class="material-symbols-outlined">delete</span>
           </button>
         </div>
       } @else {
-        <span class="material-symbols-outlined icon-xl text-text-light/40 mb-2">phone_iphone</span>
-        <p class="font-body font-medium text-text-light/60 text-center px-2 type-body">.USDZ</p>
-        <p class="font-body text-text-light/40 mt-1 type-body">
+        <span class="material-symbols-outlined icon-xl text-ink mb-2">phone_iphone</span>
+        <p class="font-body font-medium text-ink text-center px-2 type-body">.USDZ</p>
+        <p class="font-body text-ink mt-1 type-body">
           {{ 'seller.arOnIos' | translate }}
         </p>
       }
 
       <div
-        class="absolute top-2 right-2 bg-secondary text-white text-sm px-2 py-0.5 uppercase font-bold font-body"
+        class="absolute top-2 right-2 bg-ink text-canvas text-sm px-2 py-0.5 uppercase font-bold font-body"
       >
         iOS
       </div>
@@ -165,7 +165,7 @@
     }
   </div>
 
-  <p class="mt-4 text-center text-text-light/40 font-body type-body">
+  <p class="mt-4 text-center text-ink font-body type-body">
     {{ 'seller.glbGltfOrUsdzMaximum50MbPerFile' | translate }}
   </p>
 </div>

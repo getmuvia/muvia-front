@@ -3,11 +3,8 @@
 }
 
 .seller-header--solid {
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border-color) 78%, transparent);
-    background: color-mix(in srgb, var(--color-background-light) 96%, transparent);
-    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-primary) 4%, transparent);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-canvas);
 }
 
 .seller-header__shell {
@@ -15,48 +12,50 @@
 }
 
 .seller-logo-mark {
-    border: 1px solid color-mix(in srgb, var(--color-primary) 40%, var(--color-border-color));
-    background: var(--color-surface-light);
+    border: 1px solid var(--color-line);
+    background: var(--color-canvas);
 }
 
 .seller-brand:hover h2 {
-    color: var(--color-primary);
+    color: var(--color-ink);
 }
 
 .seller-search {
     overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--color-border-color) 80%, transparent);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-control);
-    background: color-mix(in srgb, var(--color-surface-element) 82%, var(--color-surface-light));
+    background: var(--color-paper);
 }
 
 .seller-search:focus-within {
-    border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border-color));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 9%, transparent);
+    border-color: var(--color-ink);
 }
 
 .seller-upload-button,
 .seller-mobile-primary {
-    border: 1px solid var(--color-primary);
-    background: var(--color-primary);
+    border: 1px solid var(--color-ink);
+    background: var(--color-ink);
 }
 
 .seller-upload-button:hover,
 .seller-mobile-primary:hover {
-    background: var(--color-primary-deep);
-    box-shadow: 0 7px 18px color-mix(in srgb, var(--color-primary) 18%, transparent);
+    background: var(--color-sand);
+    color: var(--color-ink);
 }
 
 .seller-icon-action,
 .seller-account {
-    border: 1px solid color-mix(in srgb, var(--color-primary) 16%, transparent);
-    background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+    border: 1px solid var(--color-mist);
+    background: var(--color-mist);
 }
 
 .seller-icon-action:hover,
-.seller-account:hover,
+.seller-account:hover {
+    background: var(--color-canvas);
+}
+
 .seller-mobile-link:hover {
-    background: color-mix(in srgb, var(--color-primary) 11%, transparent);
+    background: var(--color-sand);
 }
 
 .seller-account.seller-account--avatar-only {
@@ -72,8 +71,8 @@
 }
 
 .seller-logout:hover {
-    background: rgb(239 68 68 / 0.1);
-    color: rgb(185 28 28);
+    background: color-mix(in srgb, var(--color-error) 10%, transparent);
+    color: var(--color-error);
 }
 
 .mobile-menu {

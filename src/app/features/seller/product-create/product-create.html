@@ -1,21 +1,21 @@
 @if (isLoadingProduct()) {
   <section
-    class="mx-auto flex min-h-72 w-full max-w-5xl items-center justify-center rounded-panel border border-border-color/80 bg-surface-dark/40 p-8 text-center"
+    class="mx-auto flex min-h-72 w-full max-w-5xl items-center justify-center rounded-panel border border-line bg-mist p-8 text-center"
     role="status"
     aria-live="polite"
     aria-busy="true"
   >
     <div>
       <span
-        class="material-symbols-outlined animate-spin icon-2xl text-secondary"
+        class="material-symbols-outlined animate-spin icon-2xl text-ink"
         aria-hidden="true"
       >
         progress_activity
       </span>
-      <h1 class="mt-4 text-text-light type-section-title md:type-page-title">
+      <h1 class="mt-4 text-ink type-section-title md:type-page-title">
         {{ 'seller.loadingProduct' | translate }}
       </h1>
-      <p class="mt-2 font-body text-text-light/60 type-body">
+      <p class="mt-2 font-body text-ink type-body">
         {{ 'seller.weArePreparingTheInformationForYouToEdit' | translate }}
       </p>
     </div>
@@ -30,18 +30,18 @@
       <span class="material-symbols-outlined icon-2xl text-error" aria-hidden="true">error</span>
       <h1
         id="product-load-error-title"
-        class="mt-4 text-text-light type-section-title md:type-page-title"
+        class="mt-4 text-ink type-section-title md:type-page-title"
       >
         {{ 'errors.weCouldNotLoadTheProduct' | translate }}
       </h1>
-      <p class="mt-2 font-body leading-6 text-text-light/70 type-body">
+      <p class="mt-2 font-body leading-6 text-ink type-body">
         {{ errorMessage | uiText }}
       </p>
       <div class="mt-6 flex flex-col-reverse justify-center gap-3 sm:flex-row">
         <button
           type="button"
           (click)="onCancel()"
-          class="rounded-control px-5 py-3 font-body font-semibold text-text-secondary transition-colors hover:bg-secondary/10 hover:text-secondary type-control"
+          class="rounded-control px-5 py-3 font-body font-semibold text-ink transition-colors hover:bg-sand hover:text-ink type-control"
         >
           {{ 'seller.backToMyProducts' | translate }}
         </button>
@@ -49,7 +49,7 @@
           <button
             type="button"
             (click)="retryProductLoad()"
-            class="rounded-control border border-primary bg-primary px-6 py-3 font-body font-bold uppercase tracking-widest text-white transition-colors hover:bg-primary-deep type-control"
+            class="rounded-control border border-ink bg-ink px-6 py-3 font-body font-bold uppercase tracking-widest text-canvas transition-colors hover:bg-sand hover:text-ink type-control"
           >
             {{ 'common.retry' | translate }}
           </button>

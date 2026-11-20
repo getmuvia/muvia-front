@@ -1,10 +1,10 @@
-<section id="visualizador" class="w-full scroll-mt-20 bg-background-light py-16 lg:py-24">
+<section id="visualizador" class="w-full scroll-mt-20 bg-canvas py-16 lg:py-24">
   <div class="muvia-wide-container">
     <div
-      class="grid overflow-hidden border border-accent/35 bg-primary-deep text-white shadow-float md:min-h-[540px] md:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] xl:min-h-[620px]"
+      class="grid overflow-hidden border border-line md:min-h-[540px] md:grid-cols-[minmax(0,1.12fr)_minmax(0,0.88fr)] xl:min-h-[620px]"
     >
       <div
-        class="relative aspect-square overflow-hidden bg-black/20 md:aspect-auto md:min-h-[540px] xl:min-h-[620px]"
+        class="relative aspect-square overflow-hidden bg-mist md:aspect-auto md:min-h-[540px] xl:min-h-[620px]"
       >
         <img
           [ngSrc]="promo.resultImage"
@@ -13,18 +13,14 @@
           sizes="(min-width: 768px) 58vw, 100vw"
           class="object-cover object-center"
         />
-        <div
-          class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10"
-        ></div>
-
         <span
-          class="absolute right-4 top-4 rounded-control border border-accent/45 bg-primary-deep/90 px-3 py-1.5 text-sm font-bold uppercase tracking-[0.12em] text-accent shadow-lg backdrop-blur-sm sm:right-6 sm:top-6"
+          class="absolute right-4 top-4 rounded-control border border-line bg-canvas px-3 py-1.5 text-sm font-bold uppercase tracking-[0.12em] text-ink sm:right-6 sm:top-6"
         >
           {{ 'home.aiResult' | translate }}
         </span>
 
         <figure
-          class="absolute bottom-4 left-4 w-[36%] max-w-52 overflow-hidden rounded-panel border-2 border-surface-light bg-surface-light shadow-2xl sm:bottom-6 sm:left-6"
+          class="absolute bottom-4 left-4 w-[36%] max-w-52 overflow-hidden rounded-panel border-2 border-canvas bg-canvas sm:bottom-6 sm:left-6"
         >
           <div class="relative aspect-square">
             <img
@@ -36,14 +32,14 @@
             />
           </div>
           <figcaption
-            class="px-3 py-1.5 text-sm font-bold uppercase tracking-[0.12em] text-primary"
+            class="px-3 py-1.5 text-sm font-bold uppercase tracking-[0.12em] text-ink"
           >
             {{ 'home.originalRoom' | translate }}
           </figcaption>
         </figure>
 
         <div
-          class="absolute bottom-6 right-6 hidden w-56 items-center gap-3 rounded-panel border border-border-color bg-surface-light/95 p-3 text-primary shadow-2xl backdrop-blur-sm sm:flex"
+          class="absolute bottom-6 right-6 hidden w-56 items-center gap-3 rounded-panel border border-line bg-canvas p-3 text-ink sm:flex"
         >
           <img
             [ngSrc]="promo.productImage"
@@ -53,36 +49,36 @@
             class="h-14 w-20 shrink-0 rounded-control object-cover"
           />
           <div class="min-w-0">
-            <p class="font-bold uppercase tracking-[0.12em] text-secondary type-caption">
+            <p class="font-bold uppercase tracking-[0.12em] text-ink type-caption">
               {{ 'home.chosenProduct' | translate }}
             </p>
-            <p class="mt-0.5 truncate font-semibold text-text-main type-caption">
+            <p class="mt-0.5 truncate font-semibold text-ink type-caption">
               {{ 'home.desk' | translate }}
             </p>
           </div>
         </div>
       </div>
 
-      <div class="flex items-center px-6 py-12 sm:px-10 md:px-12 lg:px-16 xl:px-20">
+      <div class="flex items-center bg-graphite px-6 py-12 text-on-graphite sm:px-10 md:px-12 lg:px-16 xl:px-20">
         <div class="max-w-xl">
-          <p class="mb-3 font-bold uppercase tracking-[0.2em] text-accent type-caption">
+          <p class="mb-3 font-semibold text-on-graphite type-caption">
             {{ promo.eyebrow | uiText }}
           </p>
-          <h2 class="tracking-[-0.03em] text-white type-section-title">
+          <h2 class="tracking-[-0.03em] type-section-title">
             {{ promo.title | uiText }}
           </h2>
 
-          <p class="mt-5 max-w-lg font-body leading-7 text-white/75 type-body">
+          <p class="mt-5 max-w-lg font-body leading-7 type-body">
             {{ promo.description | uiText }}
           </p>
 
           <div class="mt-8">
             <a
               [routerLink]="promo.link"
-              class="inline-flex items-center gap-2 border-b border-accent/70 pb-1.5 text-sm font-bold uppercase tracking-[0.14em] text-white transition-colors hover:border-accent hover:text-accent"
+              class="inline-flex min-h-(--control-height) items-center gap-2 rounded-control bg-action px-4 py-2 text-sm font-semibold text-on-action transition-colors hover:bg-action/90 focus-visible:outline-on-graphite"
             >
               <span>{{ promo.cta | uiText }}</span>
-              <span class="material-symbols-outlined icon-sm text-accent" aria-hidden="true"
+              <span class="material-symbols-outlined icon-sm" aria-hidden="true"
                 >arrow_forward</span
               >
             </a>

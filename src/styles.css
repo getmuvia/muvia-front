@@ -1,25 +1,27 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Muvia Exhibition Palette: Midnight Navy, Warm Ivory & Antique Gold */
-  --color-primary: #1b2a3a;
-  --color-primary-deep: #101a26;
-  --color-primary-soft: #2c4259;
-  --color-secondary: #8c6a36;
-  --color-accent: #b08d57;
-  --color-text-light: #161d24;
-  --color-text-main: #161d24;
-  --color-text-secondary: #5e6770;
-  --color-background-light: #faf7f2;
-  --color-surface-element: #f2ece1;
-  --color-surface-light: #fffefa;
-  --color-border-color: #e2ddd3;
-  --color-error: #b42318;
-  --color-success: #247553;
-  --color-warning: #a15c00;
+  /* The six colors used by the marketplace theme. */
+  --color-*: initial;
+  --color-ink: #1b211f;
+  --color-canvas: #fafaf8;
+  --color-graphite: #202c28;
+  --color-line: #d9deda;
+  --color-action: #55e2b4;
+  --color-link: #1e654f;
 
-  --font-headline: 'Cormorant Garamond', serif;
+  /* Surface, contrast and feedback roles reuse the palette. */
+  --color-paper: var(--color-line);
+  --color-sand: var(--color-line);
+  --color-mist: var(--color-line);
+  --color-on-graphite: var(--color-canvas);
+  --color-on-action: var(--color-ink);
+  --color-error: var(--color-graphite);
+  --color-success: var(--color-link);
+  --color-warning: var(--color-ink);
+
   --font-body: 'Montserrat', sans-serif;
+  --font-headline: var(--font-body);
 
   /* The only six font sizes. Reset Tailwind's defaults before defining the scale. */
   --text-*: initial;
@@ -36,8 +38,8 @@
   --text-3xl: 3rem;
   --text-3xl--line-height: 1.125;
 
-  --shadow-soft: 0 16px 42px color-mix(in srgb, var(--color-text-main) 7%, transparent);
-  --shadow-float: 0 24px 64px color-mix(in srgb, var(--color-text-main) 13%, transparent);
+  --shadow-*: initial;
+  --drop-shadow-*: initial;
 
   /* Shared control sizing for toolbar consistency */
   --control-height: 3rem;
@@ -79,7 +81,7 @@
 @utility type-section-title {
   font-family: var(--font-headline);
   font-size: var(--text-xl);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   line-height: var(--text-xl--line-height);
 }
 
@@ -124,6 +126,27 @@
   --icon-size: var(--text-3xl);
 }
 
+@utility photo-fade {
+  background-color: var(--color-ink);
+  mask-image: linear-gradient(to top, var(--color-ink), transparent 65%);
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+@utility scrim {
+  isolation: isolate;
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-color: var(--color-ink);
+    opacity: 0.6;
+    pointer-events: none;
+    content: '';
+  }
+}
+
 @layer base {
   :root {
     color-scheme: light;
@@ -132,14 +155,14 @@
   html {
     min-width: 320px;
     scroll-behavior: smooth;
-    background: var(--color-background-light);
+    background: var(--color-canvas);
   }
 
   body {
     min-height: 100vh;
     margin: 0;
-    background: var(--color-background-light);
-    color: var(--color-text-main);
+    background: var(--color-canvas);
+    color: var(--color-ink);
     font-family: var(--font-body);
     font-size: var(--text-base);
     line-height: var(--text-base--line-height);
@@ -191,14 +214,19 @@
     font: inherit;
   }
 
+  ::placeholder {
+    color: var(--color-ink);
+    opacity: 1;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-primary);
+    outline: 2px solid var(--color-ink);
     outline-offset: 3px;
   }
 
   ::selection {
-    background: var(--color-accent);
-    color: var(--color-text-main);
+    background: var(--color-sand);
+    color: var(--color-ink);
   }
 }
 
@@ -220,27 +248,27 @@
     align-items: center;
     gap: 0.625rem;
     min-height: var(--control-height);
-    border: 1px solid var(--color-border-color);
+    border: 1px solid var(--color-line);
     border-radius: var(--radius-control);
     padding-inline: 0.875rem 0.5rem;
-    background: var(--color-surface-light);
+    background: var(--color-canvas);
     transition:
       border-color 150ms ease,
       box-shadow 150ms ease;
   }
 
   .muvia-select-field:hover {
-    border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border-color));
+    border-color: var(--color-line);
   }
 
   .muvia-select-field:focus-within {
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px var(--color-mist);
   }
 
   .muvia-select-label {
     flex-shrink: 0;
-    color: var(--color-secondary);
+    color: var(--color-ink);
     font-size: var(--text-sm);
     font-weight: 700;
     letter-spacing: 0.1em;
@@ -256,7 +284,7 @@
     padding-block: 0.375rem;
     padding-right: 0.5rem;
     background: transparent;
-    color: var(--color-text-main);
+    color: var(--color-ink);
     font-size: var(--text-base);
     font-weight: 500;
     cursor: pointer;
@@ -267,7 +295,7 @@
   }
 
   .muvia-select-control:disabled {
-    color: var(--color-text-secondary);
+    color: var(--color-ink);
     cursor: default;
   }
 

@@ -9,11 +9,10 @@
   display: grid;
   gap: 0.75rem;
   margin-top: 1.5rem;
-  border: 1px solid var(--color-border-color);
+  border: 1px solid var(--color-line);
   border-radius: var(--radius-panel);
   padding: 1rem;
-  background: color-mix(in srgb, var(--color-surface-element) 60%, var(--color-surface-light));
-  box-shadow: var(--shadow-soft);
+  background: var(--color-paper);
 }
 .catalog-results {
   margin-top: 2.25rem;
@@ -25,21 +24,21 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 1.75rem;
-  border-bottom: 1px solid var(--color-border-color);
+  border-bottom: 1px solid var(--color-line);
   padding-bottom: 0.75rem;
 }
 .catalog-results-heading h2,
 .catalog-related h2 {
-  color: var(--color-secondary);
+  color: var(--color-ink);
   font-weight: var(--font-weight-medium);
 }
 .catalog-results-heading p {
-  color: var(--color-text-secondary);
+  color: var(--color-ink);
   font-weight: 500;
 }
 .catalog-related {
   margin-top: 3.5rem;
-  border-top: 1px solid var(--color-border-color);
+  border-top: 1px solid var(--color-line);
   padding-top: 2.5rem;
 }
 .catalog-related h2 {

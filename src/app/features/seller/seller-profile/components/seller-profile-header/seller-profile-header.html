@@ -2,12 +2,12 @@
   <div class="flex w-full flex-col gap-4 lg:flex-row lg:justify-between lg:items-start">
     <div class="flex min-w-0 flex-col gap-4 items-start sm:flex-row lg:flex-1">
       <div
-        class="relative flex shrink-0 items-center justify-center bg-center bg-no-repeat aspect-square bg-cover rounded-full size-20 sm:size-32 ring-4 ring-background-light bg-surface-element"
+        class="relative flex shrink-0 items-center justify-center bg-center bg-no-repeat aspect-square bg-cover rounded-full size-20 sm:size-32 ring-4 ring-canvas bg-paper"
         [class.-mt-12]="hasCoverImage()"
         [style.background-image]="avatarUrl() ? 'url(' + avatarUrl() + ')' : null"
       >
         @if (!avatarUrl()) {
-          <span class="material-symbols-outlined icon-2xl text-text-light/50">storefront</span>
+          <span class="material-symbols-outlined icon-2xl text-ink">storefront</span>
         }
 
         <!-- Edit Avatar Button -->
@@ -23,13 +23,13 @@
       </div>
       <div class="flex min-w-0 flex-col justify-center pb-2">
         <h1
-          class="break-words tracking-[-0.015em] text-text-light type-section-title md:type-page-title"
+          class="break-words tracking-[-0.015em] text-ink type-section-title md:type-page-title"
         >
           {{ sellerName() || ('common.sellerName' | translate) }}
         </h1>
         @if (editable() || description()) {
           <p
-            class="break-words whitespace-pre-line font-body font-normal leading-normal text-text-light/80 type-body"
+            class="break-words whitespace-pre-line font-body font-normal leading-normal text-ink type-body"
           >
             {{ description() || ('common.sellerDescription' | translate) }}
           </p>
@@ -44,14 +44,14 @@
             <button
               type="button"
               (click)="editProfile.emit()"
-              class="inline-flex items-center gap-2 rounded-control border border-text-light/15 px-4 py-2 font-bold uppercase tracking-wider text-text-light transition-colors hover:border-primary/40 hover:bg-primary/5 hover:text-primary type-control"
+              class="inline-flex items-center gap-2 rounded-control border border-line px-4 py-2 font-bold uppercase tracking-wider text-ink transition-colors hover:border-ink hover:bg-mist hover:text-ink type-control"
               [attr.aria-label]="'seller.editProfile' | translate"
             >
               <span class="material-symbols-outlined icon-sm" aria-hidden="true">edit</span>
               {{ 'seller.editProfile' | translate }}
             </button>
             <span
-              class="inline-flex items-center rounded-control bg-secondary/10 px-4 py-2 text-sm font-bold uppercase tracking-wider text-secondary"
+              class="inline-flex items-center rounded-control bg-sand px-4 py-2 text-sm font-bold uppercase tracking-wider text-ink"
             >
               {{ 'seller.pilotDashboard' | translate }}
             </span>

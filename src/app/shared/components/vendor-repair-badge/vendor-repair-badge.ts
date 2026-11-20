@@ -9,10 +9,10 @@ import { TranslatePipe } from '@core/services/i18n/translation-pipes';
     @if (profile()?.offersRepairs && profile()?.repairScope) {
       <details class="group w-full" data-repair-badge>
         <summary
-          class="flex cursor-pointer list-none flex-col items-end rounded-none text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary [&::-webkit-details-marker]:hidden"
+          class="flex cursor-pointer list-none flex-col items-end rounded-none text-right focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink [&::-webkit-details-marker]:hidden"
         >
           <span
-            class="inline-flex min-h-11 items-center gap-1.5 rounded-none border border-primary/20 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary"
+            class="inline-flex min-h-11 items-center gap-1.5 rounded-none border border-line bg-mist px-3 py-2 text-sm font-semibold text-ink"
           >
             <span class="material-symbols-outlined icon-md" aria-hidden="true">build</span>
             <span class="whitespace-nowrap">{{ 'seller.offersRepairs' | translate }}</span>
@@ -22,12 +22,12 @@ import { TranslatePipe } from '@core/services/i18n/translation-pipes';
               >expand_more</span
             >
           </span>
-          <span class="mt-2 block break-words text-sm text-text-light/70">{{
+          <span class="mt-2 block break-words text-sm text-ink">{{
             profile()?.repairScope
           }}</span>
         </summary>
         <div
-          class="mt-3 space-y-2 rounded-none border border-primary/15 bg-primary/5 p-4 text-sm text-text-light/80"
+          class="mt-3 space-y-2 rounded-none border border-line bg-mist p-4 text-sm text-ink"
         >
           @if (profile()?.repairDetails) {
             <p class="whitespace-pre-line break-words type-body">{{ profile()?.repairDetails }}</p>

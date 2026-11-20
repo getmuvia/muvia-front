@@ -8,6 +8,6 @@
 }
 
 .product-card:focus-within .product-image {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-ink);
   outline-offset: 3px;
 }

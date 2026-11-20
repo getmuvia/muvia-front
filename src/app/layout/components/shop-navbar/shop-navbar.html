@@ -3,8 +3,8 @@
     isTransparent()
       ? 'navbar-glass absolute inset-x-0 top-0 bg-transparent backdrop-blur-lg'
       : isOverlay()
-        ? 'absolute inset-x-0 top-0 bg-background-light/95 backdrop-blur-xl'
-        : 'relative bg-background-light'
+        ? 'absolute inset-x-0 top-0 bg-canvas'
+        : 'relative bg-canvas'
   "
   class="z-50 w-full border-b border-(--navbar-border) text-(--navbar-foreground) lg:[--navbar-search-panel-offset:var(--navbar-expanded-search-offset)]"
 >
@@ -23,7 +23,7 @@
         [attr.aria-label]="'navigation.goToTheMuviaHomePage' | translate"
       >
         <span
-          class="flex size-9 shrink-0 items-center justify-center rounded-full border border-primary/20 bg-surface-light"
+          class="flex size-9 shrink-0 items-center justify-center rounded-full border border-line bg-canvas"
         >
           <img
             src="/images/brand/muvia-symbol.png"
@@ -76,7 +76,7 @@
               (click)="togglePreferences()"
               [attr.aria-expanded]="isPreferencesOpen()"
               aria-controls="storefront-preferences-panel"
-              class="flex shrink-0 cursor-pointer items-center gap-2 py-2 whitespace-nowrap text-(--navbar-muted) transition-colors hover:text-(--navbar-foreground) type-control"
+              class="flex shrink-0 cursor-pointer items-center gap-2 py-2 whitespace-nowrap hover:underline type-control"
             >
               <span class="sr-only"
                 >{{ 'navigation.locationAndLanguage' | translate }}:
@@ -92,15 +92,15 @@
               <section
                 id="storefront-preferences-panel"
                 [attr.aria-label]="'navigation.locationAndLanguage' | translate"
-                class="navbar-panel absolute right-0 top-full z-50 mt-2 w-80 rounded-control border border-border-color bg-surface-light p-5 text-text-main shadow-float animate-fade-in-up"
+                class="navbar-panel absolute right-0 top-full z-50 mt-2 w-80 rounded-control border border-line bg-canvas p-5 text-ink animate-fade-in-up"
               >
                 <h2 class="mb-4 type-control">
                   {{ 'navigation.locationAndLanguage' | translate }}
                 </h2>
                 <div
-                  class="flex items-center justify-between gap-4 border-b border-border-color pb-3"
+                  class="flex items-center justify-between gap-4 border-b border-line pb-3"
                 >
-                  <span class="text-sm text-text-secondary">{{
+                  <span class="text-sm text-ink">{{
                     'navigation.location' | translate
                   }}</span>
                   <a
@@ -110,7 +110,7 @@
                       'navigation.currentLocation'
                         | translate: { country: (marketService.selectedMarket() | countryName) }
                     "
-                    class="flex items-center gap-2 py-2 text-sm font-medium text-primary underline-offset-4 hover:underline"
+                    class="flex items-center gap-2 py-2 text-sm font-medium text-ink underline-offset-4 hover:underline"
                   >
                     <span>{{ marketService.selectedMarket() | countryName }}</span>
                     <span class="material-symbols-outlined icon-sm" aria-hidden="true"
@@ -119,7 +119,7 @@
                   </a>
                 </div>
                 <div class="flex items-center justify-between gap-4 pt-3">
-                  <span class="text-sm text-text-secondary">{{
+                  <span class="text-sm text-ink">{{
                     'common.language' | translate
                   }}</span>
                   <app-language-selector variant="full" />
@@ -173,20 +173,20 @@
               @if (isUserMenuOpen()) {
                 <div
                   id="navbar-user-menu"
-                  class="navbar-panel absolute right-0 top-full z-50 mt-3 w-48 overflow-hidden rounded-control border border-border-color bg-surface-light py-2 text-text-main shadow-float animate-fade-in-up"
+                  class="navbar-panel absolute right-0 top-full z-50 mt-3 w-48 overflow-hidden rounded-control border border-line bg-canvas py-2 text-ink animate-fade-in-up"
                 >
                   <p
-                    class="truncate border-b border-border-color px-4 py-2 font-semibold text-text-main type-caption"
+                    class="truncate border-b border-line px-4 py-2 font-semibold text-ink type-caption"
                   >
                     {{ vendorDisplayName() }}
                   </p>
                   <a
                     [routerLink]="accountRoute()"
                     (click)="closeUserMenu()"
-                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-text-main transition-colors hover:bg-surface-element"
+                    class="flex items-center gap-3 px-4 py-3 text-sm font-medium text-ink transition-colors hover:bg-paper"
                   >
                     <span
-                      class="material-symbols-outlined icon-sm text-secondary"
+                      class="material-symbols-outlined icon-sm text-ink"
                       aria-hidden="true"
                       >person</span
                     >
@@ -203,10 +203,10 @@
                   <a
                     routerLink="/quotations"
                     (click)="closeUserMenu()"
-                    class="flex min-h-11 items-center gap-3 px-4 py-3 text-primary hover:bg-surface-element type-caption"
+                    class="flex min-h-11 items-center gap-3 px-4 py-3 text-ink hover:bg-paper type-caption"
                   >
                     <span
-                      class="material-symbols-outlined icon-sm text-secondary"
+                      class="material-symbols-outlined icon-sm text-ink"
                       aria-hidden="true"
                       >request_quote</span
                     >
@@ -216,7 +216,7 @@
                     <a
                       routerLink="/seller/quotations"
                       (click)="closeUserMenu()"
-                      class="flex min-h-11 items-center gap-3 px-4 py-3 text-primary hover:bg-surface-element type-caption"
+                      class="flex min-h-11 items-center gap-3 px-4 py-3 text-ink hover:bg-paper type-caption"
                       >{{ 'quotations.receivedLink' | translate }}</a
                     >
                   }
@@ -226,7 +226,7 @@
           } @else {
             <a
               routerLink="/auth/login"
-              class="py-3 text-sm font-medium text-(--navbar-foreground) underline-offset-4 transition-colors hover:text-(--navbar-hover) hover:underline"
+              class="py-3 text-sm font-semibold text-(--navbar-action) underline-offset-4 hover:underline"
             >
               {{ 'navigation.signIn' | translate }}
             </a>
@@ -264,7 +264,7 @@
     <nav
       id="navbar-mobile-menu"
       [attr.aria-label]="'navigation.mainNavigation' | translate"
-      class="navbar-panel mobile-menu absolute inset-x-0 top-full max-h-(--navbar-mobile-menu-height) overflow-y-auto border-b border-border-color bg-background-light py-3 text-text-main shadow-soft animate-fade-in-up lg:hidden"
+      class="navbar-panel mobile-menu absolute inset-x-0 top-full max-h-(--navbar-mobile-menu-height) overflow-y-auto border-b border-line bg-canvas py-3 text-ink animate-fade-in-up lg:hidden"
     >
       <div class="muvia-wide-container flex flex-col">
         <a
@@ -287,20 +287,20 @@
         <a (click)="closeMobileMenu()" routerLink="/virtual-staging" class="navbar-mobile-link">{{
           'navigation.decorateWithAi' | translate
         }}</a>
-        <div class="my-3 border-t border-border-color"></div>
+        <div class="my-3 border-t border-line"></div>
         <a
           (click)="closeMobileMenu()"
           routerLink="/location"
           class="navbar-mobile-link flex items-center justify-between gap-4"
         >
-          <span class="text-text-secondary">{{ 'navigation.location' | translate }}</span>
+          <span class="text-ink">{{ 'navigation.location' | translate }}</span>
           <span>{{ marketService.selectedMarket() | countryName }}</span>
         </a>
         <div class="flex items-center justify-between gap-4 py-2">
-          <span class="text-sm text-text-secondary">{{ 'common.language' | translate }}</span>
+          <span class="text-sm text-ink">{{ 'common.language' | translate }}</span>
           <app-language-selector variant="full" />
         </div>
-        <div class="my-3 border-t border-border-color"></div>
+        <div class="my-3 border-t border-line"></div>
         @if (isAuthenticated()) {
           <a
             (click)="closeMobileMenu()"
@@ -334,7 +334,7 @@
             >
           }
         } @else {
-          <a (click)="closeMobileMenu()" routerLink="/auth/login" class="navbar-mobile-link">{{
+          <a (click)="closeMobileMenu()" routerLink="/auth/login" class="navbar-mobile-link text-link">{{
             'navigation.signIn' | translate
           }}</a>
         }
@@ -345,7 +345,7 @@
 
 @if (isMobileMenuOpen()) {
   <div
-    class="fixed inset-0 z-40 bg-primary-deep/30 lg:hidden"
+    class="fixed inset-0 z-40 bg-ink opacity-30 lg:hidden"
     aria-hidden="true"
     (click)="closeMobileMenu()"
   ></div>

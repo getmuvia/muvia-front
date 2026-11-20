@@ -1,7 +1,7 @@
 :host {
   display: block;
   min-width: 0;
-  background: var(--color-surface-light);
+  background: var(--color-canvas);
 }
 
 .product-workspace {

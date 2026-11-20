@@ -1,7 +1,7 @@
 <aside class="w-full lg:w-64 lg:flex-shrink-0">
   <div class="sticky top-28">
     <div
-      class="flex h-full flex-col justify-between backdrop-blur-xl bg-white/60 p-4 relative group/sidebar shadow-sm border-r border-white/20"
+      class="flex h-full flex-col justify-between backdrop-blur-xl bg-canvas p-4 relative group/sidebar border-r border-canvas"
     >
       <!-- Header with Title & Edit Trigger -->
       @if (editable()) {
@@ -18,22 +18,22 @@
         <!-- About Section -->
         @if (editable() || aboutText()) {
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-3 px-3 py-2 bg-surface-element rounded-panel">
-              <span class="material-symbols-outlined text-text-light">info</span>
-              <p class="text-text-light font-body font-medium leading-normal type-body">
+            <div class="flex items-center gap-3 px-3 py-2 bg-paper rounded-panel">
+              <span class="material-symbols-outlined text-ink">info</span>
+              <p class="text-ink font-body font-medium leading-normal type-body">
                 {{ 'seller.aboutUs' | translate }}
               </p>
             </div>
 
             @if (aboutText()) {
               <p
-                class="break-words whitespace-pre-line text-text-light/60 font-body px-3 py-1 text-pretty type-body"
+                class="break-words whitespace-pre-line text-ink font-body px-3 py-1 text-pretty type-body"
               >
                 {{ aboutText() }}
               </p>
             } @else {
               <div
-                class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-panel text-text-light/40 gap-1"
+                class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-line rounded-panel text-ink gap-1"
               >
                 <span class="material-symbols-outlined icon-lg">description</span>
                 <p class="font-medium text-center font-body type-body">
@@ -47,9 +47,9 @@
         <!-- Business Hours Section -->
         @if (editable() || hasBusinessHours()) {
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-3 px-3 py-2 bg-surface-element rounded-panel">
-              <span class="material-symbols-outlined text-text-light">schedule</span>
-              <p class="text-text-light font-body font-medium leading-normal type-body">
+            <div class="flex items-center gap-3 px-3 py-2 bg-paper rounded-panel">
+              <span class="material-symbols-outlined text-ink">schedule</span>
+              <p class="text-ink font-body font-medium leading-normal type-body">
                 {{ 'seller.businessHours' | translate }}
               </p>
             </div>
@@ -58,13 +58,13 @@
               <div class="flex flex-col gap-2 px-3">
                 @for (day of weekDays; track day.key) {
                   <div class="flex justify-between items-center text-sm font-body">
-                    <span class="text-text-light/80 w-24">{{ day.label | uiText }}</span>
+                    <span class="text-ink w-24">{{ day.label | uiText }}</span>
                     @if (businessHours()[day.key]?.isClosed) {
                       <span class="text-error/80 font-medium font-body">{{
                         'seller.closed' | translate
                       }}</span>
                     } @else {
-                      <span class="text-text-light/60">
+                      <span class="text-ink">
                         {{ businessHours()[day.key]?.open || '--' }} -
                         {{ businessHours()[day.key]?.close || '--' }}
                       </span>
@@ -74,7 +74,7 @@
               </div>
             } @else {
               <div
-                class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-panel text-text-light/40 gap-1"
+                class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-line rounded-panel text-ink gap-1"
               >
                 <span class="material-symbols-outlined icon-lg">calendar_off</span>
                 <p class="font-medium text-center font-body type-body">
@@ -88,25 +88,25 @@
 
       <!-- Social Links -->
       @if (editable() || socialLinks().length > 0) {
-        <div class="flex flex-col gap-1 mt-6 border-t border-text-light/10 pt-6">
+        <div class="flex flex-col gap-1 mt-6 border-t border-line pt-6">
           @if (socialLinks().length > 0) {
             @for (link of socialLinks(); track link.name) {
               <a
                 [href]="link.url"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="flex items-center gap-3 px-3 py-2 hover:bg-surface-element transition-colors rounded-control group/link"
+                class="flex items-center gap-3 px-3 py-2 hover:bg-paper transition-colors rounded-control group/link"
               >
                 @switch (link.icon) {
                   @case ('language') {
                     <span
-                      class="material-symbols-outlined text-text-light group-hover/link:text-primary transition-colors"
+                      class="material-symbols-outlined text-ink group-hover/link:text-ink transition-colors"
                       >language</span
                     >
                   }
                   @case ('instagram') {
                     <svg
-                      class="h-5 w-5 text-text-light group-hover/link:text-primary transition-colors"
+                      class="h-5 w-5 text-ink group-hover/link:text-ink transition-colors"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +118,7 @@
                   }
                   @case ('pinterest') {
                     <svg
-                      class="h-5 w-5 text-text-light group-hover/link:text-primary transition-colors"
+                      class="h-5 w-5 text-ink group-hover/link:text-ink transition-colors"
                       fill="currentColor"
                       viewBox="0 0 24 24"
                       xmlns="http://www.w3.org/2000/svg"
@@ -129,14 +129,14 @@
                     </svg>
                   }
                 }
-                <p class="text-text-light font-body font-medium leading-normal type-body">
+                <p class="text-ink font-body font-medium leading-normal type-body">
                   {{ link.name }}
                 </p>
               </a>
             }
           } @else {
             <div
-              class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-text-light/10 rounded-panel text-text-light/40 gap-1"
+              class="px-3 py-4 flex flex-col items-center justify-center border-2 border-dashed border-line rounded-panel text-ink gap-1"
             >
               <span class="material-symbols-outlined icon-lg">link_off</span>
               <p class="font-medium text-center font-body type-body">

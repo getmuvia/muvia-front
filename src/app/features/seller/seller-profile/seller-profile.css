@@ -4,7 +4,7 @@
 }
 
 .seller-profile-hero {
-    border: 1px solid color-mix(in srgb, var(--color-border-color) 82%, transparent);
+    border: 1px solid var(--color-line);
 }
 
 .seller-products {

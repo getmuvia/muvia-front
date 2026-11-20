@@ -1,9 +1,9 @@
 <!-- Page Heading -->
 <div class="mb-7 text-center lg:text-left">
-  <h1 class="tracking-tight text-text-light mb-2 type-section-title md:type-page-title">
+  <h1 class="tracking-tight text-ink mb-2 type-section-title md:type-page-title">
     {{ 'auth.createAnAccount' | translate }}
   </h1>
-  <p class="text-text-secondary type-body">
+  <p class="text-ink type-body">
     {{ 'auth.joinOurCommunityAndShowYourProductsToThe' | translate }}
   </p>
 </div>
@@ -22,13 +22,13 @@
 <form (submit)="onSubmit($event)" novalidate class="space-y-5">
   <!-- Business Name Field -->
   <div>
-    <label class="block text-sm font-medium leading-6 text-text-main" for="business-name">
+    <label class="block text-sm font-medium leading-6 text-ink" for="business-name">
       {{ 'auth.businessName' | translate }}
     </label>
     <div class="mt-2">
       <input
         [formField]="registerForm.businessName"
-        class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary type-control"
+        class="block h-12 w-full rounded-control border border-line bg-canvas px-4 text-ink transition-all placeholder:text-ink focus:border-ink focus:bg-canvas focus:ring-1 focus:ring-ink type-control"
         id="business-name"
         [placeholder]="'auth.eGStudioDecor' | translate"
         type="text"
@@ -46,14 +46,14 @@
 
   <!-- Email Field -->
   <div>
-    <label class="block text-sm font-medium leading-6 text-text-main" for="email">
+    <label class="block text-sm font-medium leading-6 text-ink" for="email">
       {{ 'auth.email2' | translate }}
     </label>
     <div class="mt-2">
       <input
         [formField]="registerForm.email"
         autocomplete="email"
-        class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary type-control"
+        class="block h-12 w-full rounded-control border border-line bg-canvas px-4 text-ink transition-all placeholder:text-ink focus:border-ink focus:bg-canvas focus:ring-1 focus:ring-ink type-control"
         id="email"
         [placeholder]="'auth.nameExampleCom' | translate"
         type="text"
@@ -71,14 +71,14 @@
 
   <!-- Password Field -->
   <div>
-    <label class="block text-sm font-medium leading-6 text-text-main" for="password">
+    <label class="block text-sm font-medium leading-6 text-ink" for="password">
       {{ 'auth.password' | translate }}
     </label>
     <div class="relative mt-2">
       <input
         [formField]="registerForm.password"
         autocomplete="new-password"
-        class="block h-12 w-full rounded-control border border-border-color bg-surface-light px-4 pr-11 text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary type-control"
+        class="block h-12 w-full rounded-control border border-line bg-canvas px-4 pr-11 text-ink transition-all placeholder:text-ink focus:border-ink focus:bg-canvas focus:ring-1 focus:ring-ink type-control"
         id="password"
         placeholder="••••••••"
         [type]="showPassword() ? 'text' : 'password'"
@@ -93,7 +93,7 @@
               : ('common.showPassword' | translate)
           "
           [attr.aria-pressed]="showPassword()"
-          class="flex size-10 items-center justify-center rounded-full text-text-secondary transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+          class="flex size-10 items-center justify-center rounded-full text-ink transition-colors hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
         >
           <span class="material-symbols-outlined icon-lg" aria-hidden="true">
             {{ showPassword() ? 'visibility' : 'visibility_off' }}
@@ -113,13 +113,13 @@
 
   <!-- Description Field (Textarea) -->
   <div>
-    <label class="block text-sm font-medium leading-6 text-text-main" for="description">
+    <label class="block text-sm font-medium leading-6 text-ink" for="description">
       {{ 'common.description' | translate }}
     </label>
     <div class="mt-2">
       <textarea
         [formField]="registerForm.description"
-        class="block w-full resize-none rounded-control border border-border-color bg-surface-light px-4 py-3 text-text-main transition-all placeholder:text-text-secondary/50 focus:border-primary focus:bg-white focus:ring-1 focus:ring-primary type-control"
+        class="block w-full resize-none rounded-control border border-line bg-canvas px-4 py-3 text-ink transition-all placeholder:text-ink focus:border-ink focus:bg-canvas focus:ring-1 focus:ring-ink type-control"
         id="description"
         [placeholder]="'auth.brieflyDescribeYourStyleOrProducts' | translate"
         rows="3"
@@ -132,7 +132,7 @@
     <button
       type="submit"
       [disabled]="isLoading()"
-      class="flex w-full justify-center rounded-control bg-primary px-3 py-3.5 font-bold leading-6 text-white shadow-sm hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary transition-all duration-200 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed type-control"
+      class="flex w-full justify-center rounded-control bg-action px-3 py-3.5 font-bold leading-6 text-on-action enabled:hover:-translate-y-0.5 enabled:hover:bg-action/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink transition-all duration-200 transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed type-control"
     >
       @if (isLoading()) {
         <span class="animate-spin mr-2">⟳</span>
@@ -146,18 +146,18 @@
 <div class="mt-7">
   <div class="relative">
     <div aria-hidden="true" class="absolute inset-0 flex items-center">
-      <div class="w-full border-t border-text-light/15"></div>
+      <div class="w-full border-t border-line"></div>
     </div>
     <div class="relative flex justify-center text-sm font-medium leading-6">
-      <span class="bg-background-light px-6 text-text-secondary">{{ 'auth.or' | translate }}</span>
+      <span class="bg-canvas px-6 text-ink">{{ 'auth.or' | translate }}</span>
     </div>
   </div>
   <div class="mt-6 text-center">
-    <p class="text-text-secondary type-body">
+    <p class="text-ink type-body">
       {{ 'auth.alreadyHaveAnAccount' | translate }}
       <a
         routerLink="/auth/login"
-        class="font-bold text-primary hover:text-primary/80 transition-colors ml-1"
+        class="font-bold text-ink hover:text-ink transition-colors ml-1"
       >
         {{ 'auth.signIn2' | translate }}
       </a>
@@ -166,13 +166,13 @@
 </div>
 
 <!-- Terms -->
-<p class="mt-7 text-center text-text-secondary type-body">
+<p class="mt-7 text-center text-ink type-body">
   {{ 'auth.byRegisteringYouAgreeToOur' | translate }}
-  <a class="underline hover:text-primary" href="https://getmuvia.com/terms">{{
+  <a class="underline hover:text-ink" href="https://getmuvia.com/terms">{{
     'auth.termsOfService' | translate
   }}</a>
   {{ 'common.and' | translate }}
-  <a class="underline hover:text-primary" href="https://getmuvia.com/privacy">{{
+  <a class="underline hover:text-ink" href="https://getmuvia.com/privacy">{{
     'auth.privacyPolicy' | translate
   }}</a
   >.

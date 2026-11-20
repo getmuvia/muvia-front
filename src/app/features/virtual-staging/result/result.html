@@ -1,13 +1,13 @@
-<div class="result-container min-h-screen bg-[var(--color-background-light)] pb-20">
+<div class="result-container min-h-screen bg-canvas pb-20">
   @if (isLoading()) {
     <div class="h-screen flex flex-col items-center justify-center p-8 text-center animate-fade-in">
       <div
-        class="w-16 h-16 border-4 border-[var(--color-surface-light)] border-t-[var(--color-primary)] rounded-full spin mb-6"
+        class="w-16 h-16 border-4 border-canvas border-t-ink rounded-full spin mb-6"
       ></div>
-      <h2 class="text-[var(--color-text-main)] mb-2 type-section-title">
+      <h2 class="text-ink mb-2 type-section-title">
         {{ 'staging.designingYourSpace' | translate }}
       </h2>
-      <p class="text-[var(--color-text-secondary)] animate-pulse type-body">
+      <p class="text-ink animate-pulse type-body">
         {{ 'staging.weArePreparingYourVisualizationResult' | translate }}
       </p>
     </div>
@@ -16,7 +16,7 @@
     <div class="w-full max-w-[1600px] mx-auto p-2 md:p-4">
       <!-- Fixed size container - both images will fit within this exact same box -->
       <div
-        class="relative w-full bg-[var(--color-background-light)] overflow-hidden"
+        class="relative w-full bg-canvas overflow-hidden"
         style="height: 75vh"
       >
         <!-- Generated Image (Background) -->
@@ -28,7 +28,7 @@
 
         <!-- Original Image (Overlay with Clip Path) - SAME size container -->
         <div
-          class="absolute inset-0 w-full h-full bg-[var(--color-background-light)] transition-all duration-75 ease-out"
+          class="absolute inset-0 w-full h-full bg-canvas transition-all duration-75 ease-out"
           [style.clip-path]="
             'polygon(0 0, ' + sliderPosition() + '% 0, ' + sliderPosition() + '% 100%, 0 100%)'
           "
@@ -46,7 +46,7 @@
           [style.left.%]="sliderPosition()"
         >
           <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-surface-element rounded-full shadow-lg flex items-center justify-center text-[var(--color-text-main)]"
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 bg-paper rounded-full flex items-center justify-center text-ink"
           >
             <span class="material-symbols-outlined icon-lg">code</span>
           </div>
@@ -64,12 +64,12 @@
 
         <!-- Labels -->
         <div
-          class="absolute top-3 left-3 bg-black/60 text-white px-3 py-1 rounded-control text-sm font-medium backdrop-blur-sm z-10 pointer-events-none"
+          class="absolute top-3 left-3 bg-ink text-canvas px-3 py-1 rounded-control text-sm font-medium backdrop-blur-sm z-10 pointer-events-none"
         >
           {{ 'staging.original' | translate }}
         </div>
         <div
-          class="absolute top-3 right-3 bg-black/60 text-white px-3 py-1 rounded-control text-sm font-medium backdrop-blur-sm z-10 pointer-events-none"
+          class="absolute top-3 right-3 bg-ink text-canvas px-3 py-1 rounded-control text-sm font-medium backdrop-blur-sm z-10 pointer-events-none"
         >
           {{ 'staging.decorated' | translate }}
         </div>
@@ -77,7 +77,7 @@
         <!-- Download Button -->
         <button
           (click)="downloadImage()"
-          class="absolute bottom-3 right-3 z-40 bg-surface-element/80 backdrop-blur-md text-text-secondary hover:bg-[var(--color-primary)] hover:text-white transition-all duration-300 rounded-full p-2 shadow-md"
+          class="absolute bottom-3 right-3 z-40 bg-paper backdrop-blur-md text-ink hover:bg-ink hover:text-canvas transition-all duration-300 rounded-full p-2"
           [title]="'staging.downloadImage' | translate"
         >
           <span class="material-symbols-outlined icon-md">download</span>
@@ -87,10 +87,10 @@
 
     <!-- Selected product -->
     <div class="container mx-auto px-4 mt-8 relative z-10">
-      <h3 class="text-[var(--color-text-main)] mb-2 drop-shadow-sm type-card-title">
+      <h3 class="text-ink mb-2 type-card-title">
         {{ 'staging.productUsed' | translate }}
       </h3>
-      <p class="mb-6 text-[var(--color-text-secondary)] type-body">
+      <p class="mb-6 text-ink type-body">
         {{ 'staging.thisVisualizationWasGeneratedWithTheProductYouSelected' | translate }}
       </p>
 

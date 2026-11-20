@@ -2,20 +2,20 @@
   <button type="button" (click)="previousPage()" [disabled]="currentPage() === 1"
     [attr.aria-label]="'common.goToThePreviousPage' | translate"
     [class]="currentPage() === 1
-      ? 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center bg-surface-element text-text-light/30'
-      : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center bg-surface-element text-text-light/60 transition-colors hover:bg-surface-element/80'">
+      ? 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center bg-paper text-ink'
+      : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center bg-paper text-ink transition-colors hover:bg-paper'">
     <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
   </button>
 
   @for (page of visiblePages(); track $index) {
     @if (page === '...') {
-    <span class="inline-flex h-10 w-10 items-center justify-center font-body text-text-light/60">...</span>
+    <span class="inline-flex h-10 w-10 items-center justify-center font-body text-ink">...</span>
     } @else {
     <button type="button" (click)="goToPage(+page)" [attr.aria-current]="page === currentPage() ? 'page' : null"
       [attr.aria-label]="'pagination.goToPage' | translate: {page: page}"
       [class]="page === currentPage()
-        ? 'inline-flex h-10 w-10 cursor-default items-center justify-center bg-primary font-body font-bold text-white'
-        : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center font-body text-text-light transition-colors hover:bg-surface-element'">
+        ? 'inline-flex h-10 w-10 cursor-default items-center justify-center bg-ink font-body font-bold text-canvas'
+        : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center font-body text-ink transition-colors hover:bg-paper'">
       {{ page }}
     </button>
     }
@@ -24,8 +24,8 @@
   <button type="button" (click)="nextPage()" [disabled]="currentPage() === totalPages()"
     [attr.aria-label]="'common.goToTheNextPage' | translate"
     [class]="currentPage() === totalPages()
-      ? 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center bg-surface-element text-text-light/30'
-      : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center bg-surface-element text-text-light/60 transition-colors hover:bg-surface-element/80'">
+      ? 'inline-flex h-10 w-10 cursor-not-allowed items-center justify-center bg-paper text-ink'
+      : 'inline-flex h-10 w-10 cursor-pointer items-center justify-center bg-paper text-ink transition-colors hover:bg-paper'">
     <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
   </button>
 </nav>
